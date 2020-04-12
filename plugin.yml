@@ -1,0 +1,56 @@
+name: UHC
+api-version: 1.13
+main: ru.main.UHCPlugin
+version: 2.1
+commands:
+ test:
+  description: Debug command
+  usage: /test
+ gm:
+  description: Fast gamemode switch
+  usage: /gm [0-3]
+ ping:
+  description: Посмотреть пинг
+  usage: /ping [player]
+ start:
+  description: Start game
+  usage: /start
+ end:
+  description: End game
+  usage: /end
+ lobby:
+  description: Вернуться в лобби
+  usage: /lobby
+ arena:
+  description: Go to arena
+  usage: /arena
+ skip:
+  description: Skip the current GameState
+  usage: /skip
+ map:
+  description: Actions with map
+  usage: /map <regen/create/remove/status>
+ stat:
+  description: Change stats
+  usage: /stat <delete/set/add/zero>
+ rating:
+  description: Посмотреть рейтинг
+  usage: /rating [player]
+ drop:
+  description: Drops debug
+  usage: /drop <air/cave> <reset/drop/changeloc>
+ customitem:
+  description: CustomItem debug
+  usage: /customitem
+ timer:
+  description: Controls ingame timer
+  usage: /timer <reset/set/add> [value]
+ mutator:
+  description: Shows active mutators (use only in game)
+  usage: /mutator
+ optmutator:
+  description: Mutator debug
+  usage: /optmutator <activate/deactivate/clear/new> [name]
+ options:
+  description: Показать меню настроек
+  usage: /options
