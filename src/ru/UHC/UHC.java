@@ -1279,68 +1279,6 @@ public class UHC implements Listener {
 		p.setFoodLevel(20);
 	}
 
-	public static String getDeathMessage(Player p, EntityDamageEvent.DamageCause cause) {
-		String name = ChatColor.GOLD + p.getName() + ChatColor.YELLOW + " ";
-		switch(cause) {
-		case CONTACT:
-			return name + "умер от кактуса, серьезно?";
-		case ENTITY_ATTACK:
-			return name + "замачили";
-		case ENTITY_SWEEP_ATTACK:
-			return name + "умер от свайпа, бля...";
-		case PROJECTILE:
-			return name + "застрелили";
-		case SUFFOCATION:
-			return name + "задохнулся в стене";
-		case FALL:
-			return name + "позорно разбился";
-		case FIRE:
-		case FIRE_TICK:
-			return name + "сгорел";
-		case MELTING:
-			return name + "расплавился";
-		case LAVA:
-			return name + "трагически сгорел в лаве";
-		case DROWNING:
-			return name + "позорно захлебнулся";
-		case BLOCK_EXPLOSION:
-			return name + "взорвался";
-		case ENTITY_EXPLOSION:
-			return name + "взорвался";
-		case VOID:
-			return name + "выпал из мира";
-		case LIGHTNING:
-			return name + "может купить лотерейный билет";
-		case SUICIDE:
-			return name + "суициднулся";
-		case STARVATION:
-			return name + "умер от голода";
-		case POISON:
-			return name + "отравился";
-		case MAGIC:
-			return name + "взорвался";
-		case WITHER:
-			return name + "высох";
-		case FALLING_BLOCK:
-			return name + "расплющился";
-		case THORNS:
-			return name + "напал на жесткого челика с чаром на шипы";
-		case DRAGON_BREATH:
-			return name + "хз как но умер от дракона";
-		case CUSTOM:
-			return name + "погиб";
-		case FLY_INTO_WALL:
-			return name + "влетел в стену";
-		case HOT_FLOOR:
-			return name + "поджарился на магме";
-		case CRAMMING:
-			return name + "раздавили мобы";
-		case DRYOUT:
-			return name + "высох";
-		}
-		return name + "сдох";
-	}
-
 	public static void teleportToParkour(Player p) {
 		Location newLoc = parkourStart.clone();
 		newLoc.setYaw(p.getLocation().getYaw());

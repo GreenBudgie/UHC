@@ -4,9 +4,9 @@ import org.bukkit.ChatColor;
 
 public enum GameMode {
 
-	SOLO(ChatColor.AQUA + "Solo"), DUO(ChatColor.LIGHT_PURPLE + "Duo"), TRIPLES(ChatColor.DARK_PURPLE + "Triple"), TEAMS(ChatColor.DARK_GREEN + "Teams");
+	SOLO(ChatColor.AQUA + "Solo"), DUO(ChatColor.LIGHT_PURPLE + "Duo"), TRIPLES(ChatColor.DARK_PURPLE + "Triples"), TEAMS(ChatColor.DARK_GREEN + "Teams");
 
-	public static GameMode mode = SOLO;
+	private static GameMode mode = SOLO;
 
 	private String name;
 
