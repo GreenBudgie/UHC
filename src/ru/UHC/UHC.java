@@ -477,7 +477,7 @@ public class UHC implements Listener {
 		for(Player pl : voteResults.keySet()) {
 			if(voteResults.get(pl)) votesFor++;
 		}
-		if(0.7 >= votesFor / (double) voteResults.size()) {
+		if(votesFor / (double) voteResults.size() >= 0.6) {
 			for(Player p : players) {
 				p.sendTitle(ChatColor.GREEN + "Карта норм", ChatColor.GOLD + "35 секунд до начала", 10, 60, 30);
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
