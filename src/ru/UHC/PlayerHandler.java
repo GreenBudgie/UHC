@@ -20,9 +20,7 @@ import ru.pvparena.PvpArena;
 import ru.util.InventoryHelper;
 import ru.util.WorldHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlayerHandler implements Listener {
@@ -196,7 +194,7 @@ public class PlayerHandler implements Listener {
 			}
 			List<Player> teammates = PlayerTeams.getTeammates(player);
 			if(PlayerTeams.getTeams().size() == 3 && teammates.stream().noneMatch(PlayerHandler::isPlaying)) {
-				String info = ChatColor.YELLOW + "Ты занял " + ChatColor.BOLD + ChatColor.AQUA + "третье" + ChatColor.RESET + ChatColor.YELLOW + " место!";
+				String info = ChatColor.YELLOW + "Ты занял " + ChatColor.DARK_AQUA + ChatColor.BOLD + "третье" + ChatColor.RESET + ChatColor.YELLOW + " место!";
 				UHC.addPoints(player, teammates.isEmpty() ? 30 : 20);
 				player.sendMessage(info);
 				for(Player teammate : teammates) {
@@ -205,7 +203,7 @@ public class PlayerHandler implements Listener {
 				}
 			}
 			if(PlayerTeams.getTeams().size() == 2 && teammates.stream().noneMatch(PlayerHandler::isPlaying)) {
-				String info = ChatColor.YELLOW + "Ты занял " + ChatColor.BOLD + ChatColor.AQUA + "второе" + ChatColor.RESET + ChatColor.YELLOW + " место!";
+				String info = ChatColor.YELLOW + "Ты занял " + ChatColor.AQUA + ChatColor.BOLD + "второе" + ChatColor.RESET + ChatColor.YELLOW + " место!";
 				UHC.addPoints(player, teammates.isEmpty() ? 40 : 25);
 				player.sendMessage(info);
 				for(Player teammate : teammates) {

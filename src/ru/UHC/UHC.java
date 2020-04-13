@@ -56,10 +56,7 @@ public class UHC implements Listener {
 	public static int endTimer = 0;
 	public static int arenaPvpTimer = 0;
 	//V 2.0
-	public static boolean isDuo = false;
 	public static Map<Player, Player> teammateChoices = new HashMap<>();
-	public static List<PlayerTeam> teams = new ArrayList<>();
-	public static List<Player> spectators = new ArrayList<>();
 	public static int mapSize = 1;
 	public static int gameDuration = 1;
 	public static boolean generating = false;
@@ -1417,53 +1414,6 @@ public class UHC implements Listener {
 	}
 
 	@EventHandler
-	public void noMinecartCollide(VehicleEntityCollisionEvent e) {
-		if(e.getEntity() instanceof Player) {
-			Player p = (Player) e.getEntity();
-			if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
-				e.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	public void noMinecartDamage(VehicleDamageEvent e) {
-		if(e.getAttacker() instanceof Player) {
-			Player p = (Player) e.getAttacker();
-			if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
-				e.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	public void noItemFrameInteract(PlayerInteractEntityEvent e) {
-		Player p = e.getPlayer();
-		Entity ent = e.getRightClicked();
-		if(ent instanceof ItemFrame && p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
-			e.setCancelled(true);
-		}
-	}
-
-	@EventHandler
-	public void noLobbyGrief(HangingBreakByEntityEvent e) {
-		if(e.getRemover() instanceof Player) {
-			Player p = (Player) e.getRemover();
-			if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
-				e.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	public void noFrameItemBreak(EntityDamageByEntityEvent e) {
-		if(e.getEntityType() == EntityType.ITEM_FRAME && e.getDamager() instanceof Player && isInLobby((Player) e.getDamager())
-				&& ((Player) e.getDamager()).getGameMode() != GameMode.CREATIVE) {
-			e.setCancelled(true);
-		}
-	}
-
-	@EventHandler
 	public void preJoin(AsyncPlayerPreLoginEvent e) {
 		if(generating) {
 			e.setKickMessage(ChatColor.GOLD + "Сейчас идет генерация мира, зайди немного позже");
@@ -1500,23 +1450,6 @@ public class UHC implements Listener {
 		}
 		(
 		*/
-	}
-
-	@EventHandler
-	public void allowMusicDisks(PlayerInteractEvent e) {
-		if(e.getPlayer().getWorld() == WorldManager.getLobby() && e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.JUKEBOX
-				&& e.getHand() == EquipmentSlot.HAND && e.getPlayer().getGameMode() == GameMode.ADVENTURE) {
-			Jukebox jukebox = (Jukebox) e.getClickedBlock().getState();
-			if(!jukebox.isPlaying() && (jukebox.getRecord() == null || jukebox.getRecord().getType() == Material.AIR) && e.getItem() != null && e.getItem().getType()
-					.isRecord()) {
-				e.setCancelled(true);
-				e.setUseInteractedBlock(Event.Result.DENY);
-				e.setUseItemInHand(Event.Result.DENY);
-				jukebox.setRecord(e.getItem().clone());
-				e.getItem().setAmount(e.getItem().getAmount() - 1);
-				TaskManager.invokeLater(jukebox::update);
-			}
-		}
 	}
 
 	@EventHandler
@@ -1616,13 +1549,13 @@ public class UHC implements Listener {
 				}
 				receiver.sendMessage(suffix);
 			} else {
-				if((isInLobby(sender) && isInLobby(receiver)) || (isSpectator(sender) && isSpectator(receiver)) || (!isDuo && isPlaying(sender) && isPlaying(
+				if((isInLobby(sender) && isInLobby(receiver)) || (isSpectator(sender) && isSpectator(receiver)) || (GameMode.SOLO.isActive() && isPlaying(sender) && isPlaying(
 						receiver))) {
 					receiver.sendMessage(prefix + suffix);
 					continue;
 				}
 				Player teammate = getTeammate(sender);
-				if(isDuo && ((teammate != null && teammate == receiver) || receiver == sender)) {
+				if(!GameMode.SOLO.isActive() && ((teammate != null && teammate == receiver) || receiver == sender)) {
 					receiver.sendMessage(ChatColor.LIGHT_PURPLE + "<Тиме> " + suffix);
 				}
 			}
@@ -1893,15 +1826,6 @@ public class UHC implements Listener {
 	public void tntArena(EntityExplodeEvent e) {
 		if(e.getEntityType() == EntityType.PRIMED_TNT && (state == GameState.DEATHMATCH || state == GameState.ENDING)) {
 			e.blockList().clear();
-		}
-	}
-
-	@EventHandler
-	public void noFoodLoss(FoodLevelChangeEvent e) {
-		Player p = (Player) e.getEntity();
-		if(isInLobby(p) && e.getFoodLevel() < 20) {
-			p.setFoodLevel(20);
-			e.setCancelled(true);
 		}
 	}
 

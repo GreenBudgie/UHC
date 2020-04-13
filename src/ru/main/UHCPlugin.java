@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.UHC.PlayerHandler;
 import ru.artifact.ArtifactManager;
 import ru.UHC.RecipeHandler;
 import ru.UHC.SignManager;
@@ -12,6 +13,8 @@ import ru.UHC.UHC;
 import ru.commands.*;
 import ru.items.CustomItems;
 import ru.items.CustomItemsListener;
+import ru.lobby.LobbyEntertainmentHandler;
+import ru.lobby.LobbyProtectionListener;
 import ru.mutator.MutatorManager;
 import ru.pvparena.PvpArena;
 import ru.requester.ItemRequester;
@@ -52,6 +55,9 @@ public class UHCPlugin extends JavaPlugin {
 		pm.registerEvents(new ArtifactManager(), this);
 		pm.registerEvents(new MutatorManager(), this);
 		pm.registerEvents(new PvpArena(), this);
+		pm.registerEvents(new PlayerHandler(), this);
+		pm.registerEvents(new LobbyProtectionListener(), this);
+		pm.registerEvents(new LobbyEntertainmentHandler(), this);
 
 		TaskManager.init();
 		UHC.init();
