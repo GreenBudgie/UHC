@@ -5,12 +5,13 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import ru.UHC.Drops;
+import ru.UHC.UHC;
 
-public class ArtifactAirdrop extends Artifact {
+public class ArtifactHunger extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.DARK_AQUA + "Небесные Дары";
+		return ChatColor.LIGHT_PURPLE + "Всемирный Голод";
 	}
 
 	@Override
@@ -20,19 +21,23 @@ public class ArtifactAirdrop extends Artifact {
 
 	@Override
 	public int getPrice() {
-		return 8;
+		return 13;
 	}
 
 	@Override
 	public void onUse(Player p) {
-		Drops.chooseAirdropLocation();
-		Drops.airdropTimer /= 3;
-		p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1.5F);
+		for(Player player : UHC.players) {
+			if(player.getFoodLevel() > 2) {
+				if(player.getSaturation() > 2) player.setSaturation(2);
+				player.setFoodLevel(2);
+			}
+		}
+		p.playSound(p.getLocation(), Sound.ENTITY_CAT_DEATH, 1F, 0.5F);
 	}
 
 	@Override
 	public Material getType() {
-		return Material.BEACON;
+		return Material.CHICKEN;
 	}
 
 }

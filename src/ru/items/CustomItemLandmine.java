@@ -31,7 +31,7 @@ public class CustomItemLandmine extends RequesterCustomItem {
 
 	@Override
 	public String getDescription() {
-		return "Мина; активируется при приближении врага к ней на расстоянии 5 блоков с задержкой в 1,5 секунды";
+		return "Мина. Активируется при приближении врага к ней на расстоянии 5 блоков с задержкой в 1,5 секунды. Можно зарыть под землю.";
 	}
 
 	@Override

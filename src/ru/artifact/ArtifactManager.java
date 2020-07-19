@@ -36,23 +36,27 @@ public class ArtifactManager implements Listener {
 	public static ArtifactDamage damage = new ArtifactDamage();
 	public static ArtifactDisableMutator disableMutator = new ArtifactDisableMutator();
 	public static ArtifactRandom random = new ArtifactRandom();
+	public static ArtifactCavedrop cavedrop = new ArtifactCavedrop();
+	public static ArtifactHunger hunger = new ArtifactHunger();
 
 	private static String name = ChatColor.DARK_RED + "Призвать";
 
 	public static void openArtifactInventory(Player p) {
 		NumericalCases cases = new NumericalCases("артефакт", "артефакта", "артефактов");
 		int count = getArtifactCount(p);
-		Inventory inv = Bukkit.createInventory(p, 9,
+		Inventory inv = Bukkit.createInventory(p, 18,
 				name + ChatColor.DARK_GRAY + " (" + ChatColor.YELLOW + count + ChatColor.RED + " " + cases.byNumber(count) + ChatColor.DARK_GRAY + ")");
 		inv.setItem(0, timeLeap.getItemFor(p));
 		inv.setItem(1, airdrop.getItemFor(p));
-		inv.setItem(2, mutator.getItemFor(p));
-		inv.setItem(3, teleport.getItemFor(p));
-		inv.setItem(4, disableMutator.getItemFor(p));
-		inv.setItem(5, time.getItemFor(p));
-		inv.setItem(6, health.getItemFor(p));
-		inv.setItem(7, damage.getItemFor(p));
-		inv.setItem(8, random.getItemFor(p));
+		inv.setItem(2, cavedrop.getItemFor(p));
+		inv.setItem(3, mutator.getItemFor(p));
+		inv.setItem(4, teleport.getItemFor(p));
+		inv.setItem(5, disableMutator.getItemFor(p));
+		inv.setItem(6, hunger.getItemFor(p));
+		inv.setItem(7, time.getItemFor(p));
+		inv.setItem(8, health.getItemFor(p));
+		inv.setItem(9, damage.getItemFor(p));
+		inv.setItem(10, random.getItemFor(p));
 		p.openInventory(inv);
 	}
 

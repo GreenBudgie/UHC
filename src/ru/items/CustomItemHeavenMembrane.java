@@ -31,7 +31,7 @@ public class CustomItemHeavenMembrane extends RequesterCustomItem {
 
 	@Override
 	public String getDescription() {
-		return "При использовании телепортирует высоко в воздух, выдавая эффект медленного падения. Может вытащить из шахты.";
+		return "При использовании телепортирует высоко в воздух, выдавая эффект медленного падения. Может вытащить из шахты. Работает и на арене.";
 	}
 
 	@Override

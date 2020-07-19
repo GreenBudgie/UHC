@@ -32,7 +32,7 @@ public class ArtifactRandom extends Artifact {
 
 	@Override
 	public void onUse(Player p) {
-		List<Artifact> toAdd = Lists.newArrayList(ArtifactManager.timeLeap, ArtifactManager.airdrop, ArtifactManager.teleport, ArtifactManager.time);
+		List<Artifact> toAdd = Lists.newArrayList(ArtifactManager.timeLeap, ArtifactManager.airdrop, ArtifactManager.cavedrop, ArtifactManager.teleport, ArtifactManager.time);
 		toAdd.add(MathUtils.choose(ArtifactManager.health, ArtifactManager.damage));
 		boolean canAddMutator = false;
 		boolean canRemoveMutator = false;

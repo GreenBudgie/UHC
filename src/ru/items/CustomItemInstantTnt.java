@@ -65,7 +65,7 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 
 	@Override
 	public String getDescription() {
-		return "Динамит, который взрывается через 1,5 после установки";
+		return "Динамит, который взрывается через полторы секунды после установки";
 	}
 
 	@Override

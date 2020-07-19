@@ -218,6 +218,7 @@ public class Drops {
 		drops.add(InventoryHelper
 				.generatePotion(ChatColor.WHITE + "Potion of Power", Color.fromRGB(100, 0, 0), new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 1200, 0)));
 		drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Sharp Vial", Color.BLACK, true, false, new PotionEffect(PotionEffectType.HARM, 1, 1)));
+		drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Liquid Helium", Color.WHITE, true, false, new PotionEffect(PotionEffectType.LEVITATION, 400, 0)));
 		drops.add(new ItemStack(Material.DIAMOND_BLOCK, MathUtils.randomRange(1, 2)));
 		drops.add(new ItemStack(Material.GOLD_BLOCK, MathUtils.randomRange(2, 3)));
 		Set<ItemStack> books = Sets.newHashSet(getBook(Enchantment.THORNS, 3), getBook(Enchantment.KNOCKBACK, 2), getBook(Enchantment.ARROW_KNOCKBACK, 2), getBook(Enchantment.LOOT_BONUS_BLOCKS, MathUtils.randomRange(2, 3)), getBook(Enchantment.FIRE_ASPECT, 2));
@@ -263,6 +264,15 @@ public class Drops {
 		drops.add(new ItemStack(Material.LAPIS_BLOCK, MathUtils.randomRange(3, 4)));
 		drops.add(new ItemStack(Material.SPECTRAL_ARROW, MathUtils.randomRange(32, 48)));
 		drops.add(new ItemStack(Material.EMERALD_ORE, MathUtils.randomRange(3, 5)));
+		if(MathUtils.chance(40)) { //Making the chance of appearing netherite really low
+			drops.add(new ItemStack(Material.NETHERITE_BOOTS));
+			drops.add(new ItemStack(Material.NETHERITE_HELMET));
+			drops.add(new ItemStack(Material.NETHERITE_LEGGINGS));
+			drops.add(new ItemStack(Material.NETHERITE_CHESTPLATE));
+			drops.add(new ItemStack(Material.NETHERITE_SWORD));
+			drops.add(new ItemStack(Material.NETHERITE_PICKAXE));
+			drops.add(new ItemStack(Material.NETHERITE_INGOT));
+		}
 		ItemStack artifact = CustomItems.darkArtifact.getItemStack();
 		artifact.setAmount(MathUtils.randomRange(10, 18));
 		drops.add(artifact);
