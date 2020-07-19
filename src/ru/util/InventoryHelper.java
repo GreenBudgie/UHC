@@ -2,14 +2,14 @@ package ru.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import net.minecraft.server.v1_14_R1.*;
+import net.minecraft.server.v1_16_R1.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.EntityType;
@@ -188,8 +188,6 @@ public class InventoryHelper {
 			return Material.SLIME_SPAWN_EGG;
 		case GHAST:
 			return Material.GHAST_SPAWN_EGG;
-		case PIG_ZOMBIE:
-			return Material.ZOMBIE_PIGMAN_SPAWN_EGG;
 		case ENDERMAN:
 			return Material.ENDERMAN_SPAWN_EGG;
 		case CAVE_SPIDER:
@@ -292,7 +290,7 @@ public class InventoryHelper {
 
 	public static void sendActionBarMessage(Player p, String text) {
 		((CraftPlayer) p).getHandle().playerConnection
-				.sendPacket(new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + text + "\"}"), ChatMessageType.GAME_INFO));
+				.sendPacket(new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + text + "\"}"), ChatMessageType.GAME_INFO, p.getUniqueId()));
 	}
 
 	public static ItemStack addLore(ItemStack item, String... lore) {
@@ -420,18 +418,18 @@ public class InventoryHelper {
 	}
 
 	public static ItemStack addAttributes(ItemStack item, CustomAttribute... attributes) {
-		net.minecraft.server.v1_14_R1.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+		net.minecraft.server.v1_16_R1.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
 		NBTTagCompound nbt = (nmsItem.hasTag()) ? nmsItem.getTag() : new NBTTagCompound();
 		NBTTagList modifiers = new NBTTagList();
 		for(CustomAttribute att : attributes) {
 			NBTTagCompound comp = new NBTTagCompound();
-			comp.set("AttributeName", new NBTTagString(att.getName()));
-			comp.set("Name", new NBTTagString(att.getName()));
-			comp.set("Amount", new NBTTagDouble(att.getValue()));
-			comp.set("Operation", new NBTTagInt(att.getOperation().ordinal()));
-			comp.set("UUIDLeast", new NBTTagInt(894654));
-			comp.set("UUIDMost", new NBTTagInt(2872));
-			comp.set("Slot", new NBTTagString(att.getSlot().getName()));
+			comp.set("AttributeName", NBTTagString.a(att.getName()));
+			comp.set("Name", NBTTagString.a(att.getName()));
+			comp.set("Amount", NBTTagDouble.a(att.getValue()));
+			comp.set("Operation", NBTTagInt.a(att.getOperation().ordinal()));
+			comp.set("UUIDLeast", NBTTagInt.a(894654));
+			comp.set("UUIDMost", NBTTagInt.a(2872));
+			comp.set("Slot", NBTTagString.a(att.getSlot().getName()));
 			modifiers.add(comp);
 		}
 		nbt.set("AttributeModifiers", modifiers);

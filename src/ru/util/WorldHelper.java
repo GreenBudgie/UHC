@@ -2,12 +2,12 @@ package ru.util;
 
 import com.google.common.collect.Lists;
 import de.slikey.effectlib.effect.LineEffect;
-import net.minecraft.server.v1_14_R1.BlockPosition;
+import net.minecraft.server.v1_16_R1.BlockPosition;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
@@ -54,7 +54,7 @@ public class WorldHelper {
 				|| t == EntityType.SILVERFISH || t == EntityType.ENDERMAN || t == EntityType.SPIDER || t == EntityType.CAVE_SPIDER || t == EntityType.ZOMBIE_VILLAGER
 				|| t == EntityType.ENDER_DRAGON || t == EntityType.CREEPER || t == EntityType.BLAZE || t == EntityType.ELDER_GUARDIAN || t == EntityType.GUARDIAN
 				|| t == EntityType.ENDERMITE || t == EntityType.EVOKER || t == EntityType.GHAST || t == EntityType.GIANT || t == EntityType.HUSK || t == EntityType.ILLUSIONER
-				|| t == EntityType.MAGMA_CUBE || t == EntityType.PIG_ZOMBIE || t == EntityType.STRAY || t == EntityType.VEX || t == EntityType.VINDICATOR
+				|| t == EntityType.MAGMA_CUBE || t == EntityType.STRAY || t == EntityType.VEX || t == EntityType.VINDICATOR
 				|| t == EntityType.WITCH || t == EntityType.WITHER || t == EntityType.PHANTOM || t == EntityType.DROWNED;
 	}
 
@@ -370,13 +370,6 @@ public class WorldHelper {
 			return c + "на " + ChatColor.GREEN + "«емле";
 		}
 		return null;
-	}
-
-	public static World.Environment getEnvironmentByBiome(Biome b) {
-		if(b == Biome.NETHER) return World.Environment.NETHER;
-		if(b == Biome.THE_END || b == Biome.END_BARRENS || b == Biome.END_HIGHLANDS || b == Biome.END_MIDLANDS || b == Biome.SMALL_END_ISLANDS)
-			return World.Environment.THE_END;
-		return World.Environment.NORMAL;
 	}
 
 	public static World.Environment getEnvironmentFromName(String name) {

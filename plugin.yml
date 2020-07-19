@@ -1,5 +1,5 @@
 name: UHC
-api-version: 1.13
+api-version: 1.16
 main: ru.main.UHCPlugin
 version: 2.1
 commands:

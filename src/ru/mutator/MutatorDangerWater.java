@@ -1,13 +1,11 @@
 package ru.mutator;
 
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.UHC;
-import ru.util.InventoryHelper;
-import ru.util.WorldHelper;
 
 public class MutatorDangerWater extends Mutator {
 

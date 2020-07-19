@@ -3,6 +3,7 @@ package ru.main;
 import de.slikey.effectlib.EffectManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.artifact.ArtifactManager;
@@ -16,6 +17,8 @@ import ru.mutator.MutatorManager;
 import ru.pvparena.PvpArena;
 import ru.requester.ItemRequester;
 import ru.util.TaskManager;
+
+import java.util.function.Consumer;
 
 public class UHCPlugin extends JavaPlugin {
 

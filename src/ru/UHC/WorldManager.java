@@ -1,6 +1,7 @@
 package ru.UHC;
 
 import org.bukkit.*;
+import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import ru.util.TaskManager;
 
 import java.io.*;
@@ -121,10 +122,12 @@ public class WorldManager {
 
 	public static World copyAsTemp(World world) {
 		File source = world.getWorldFolder();
-		File target = new File(source.getAbsolutePath() + "Temp");
+		String path = source.getAbsolutePath();
+		path = path.substring(0, path.length() - 2);
+		File target = new File(path + "Temp\\.");
 		copyWorld(source, target);
 		try {
-			new File(target.getAbsolutePath() + "/temp.info").createNewFile();
+			new File(target.getAbsolutePath() + "temp.info").createNewFile();
 		} catch(IOException e) {
 		}
 		return Bukkit.createWorld(new WorldCreator(world.getName() + "Temp"));
@@ -157,7 +160,7 @@ public class WorldManager {
 	}
 
 	public static boolean deleteTempWorld(World world) {
-		if(!(new File(world.getWorldFolder().getAbsolutePath() + "/temp.info").exists())) {
+		if(!(new File(world.getWorldFolder().getAbsolutePath() + "temp.info").exists())) {
 			return false;
 		}
 		return deleteWorld(world.getWorldFolder());
