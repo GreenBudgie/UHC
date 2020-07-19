@@ -56,10 +56,7 @@ public class UHC implements Listener {
 	public static int endTimer = 0;
 	public static int arenaPvpTimer = 0;
 	//V 2.0
-	public static boolean isDuo = false;
 	public static Map<Player, Player> teammateChoices = new HashMap<>();
-	public static List<PlayerTeam> teams = new ArrayList<>();
-	public static List<Player> spectators = new ArrayList<>();
 	public static int mapSize = 1;
 	public static int gameDuration = 1;
 	public static boolean generating = false;
@@ -477,7 +474,7 @@ public class UHC implements Listener {
 		for(Player pl : voteResults.keySet()) {
 			if(voteResults.get(pl)) votesFor++;
 		}
-		if(0.7 >= votesFor / (double) voteResults.size()) {
+		if(votesFor / (double) voteResults.size() >= 0.6) {
 			for(Player p : players) {
 				p.sendTitle(ChatColor.GREEN + " арта норм", ChatColor.GOLD + "35 секунд до начала", 10, 60, 30);
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
@@ -1279,68 +1276,6 @@ public class UHC implements Listener {
 		p.setFoodLevel(20);
 	}
 
-	public static String getDeathMessage(Player p, EntityDamageEvent.DamageCause cause) {
-		String name = ChatColor.GOLD + p.getName() + ChatColor.YELLOW + " ";
-		switch(cause) {
-		case CONTACT:
-			return name + "умер от кактуса, серьезно?";
-		case ENTITY_ATTACK:
-			return name + "замачили";
-		case ENTITY_SWEEP_ATTACK:
-			return name + "умер от свайпа, бл€...";
-		case PROJECTILE:
-			return name + "застрелили";
-		case SUFFOCATION:
-			return name + "задохнулс€ в стене";
-		case FALL:
-			return name + "позорно разбилс€";
-		case FIRE:
-		case FIRE_TICK:
-			return name + "сгорел";
-		case MELTING:
-			return name + "расплавилс€";
-		case LAVA:
-			return name + "трагически сгорел в лаве";
-		case DROWNING:
-			return name + "позорно захлебнулс€";
-		case BLOCK_EXPLOSION:
-			return name + "взорвалс€";
-		case ENTITY_EXPLOSION:
-			return name + "взорвалс€";
-		case VOID:
-			return name + "выпал из мира";
-		case LIGHTNING:
-			return name + "может купить лотерейный билет";
-		case SUICIDE:
-			return name + "суициднулс€";
-		case STARVATION:
-			return name + "умер от голода";
-		case POISON:
-			return name + "отравилс€";
-		case MAGIC:
-			return name + "взорвалс€";
-		case WITHER:
-			return name + "высох";
-		case FALLING_BLOCK:
-			return name + "расплющилс€";
-		case THORNS:
-			return name + "напал на жесткого челика с чаром на шипы";
-		case DRAGON_BREATH:
-			return name + "хз как но умер от дракона";
-		case CUSTOM:
-			return name + "погиб";
-		case FLY_INTO_WALL:
-			return name + "влетел в стену";
-		case HOT_FLOOR:
-			return name + "поджарилс€ на магме";
-		case CRAMMING:
-			return name + "раздавили мобы";
-		case DRYOUT:
-			return name + "высох";
-		}
-		return name + "сдох";
-	}
-
 	public static void teleportToParkour(Player p) {
 		Location newLoc = parkourStart.clone();
 		newLoc.setYaw(p.getLocation().getYaw());
@@ -1479,53 +1414,6 @@ public class UHC implements Listener {
 	}
 
 	@EventHandler
-	public void noMinecartCollide(VehicleEntityCollisionEvent e) {
-		if(e.getEntity() instanceof Player) {
-			Player p = (Player) e.getEntity();
-			if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
-				e.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	public void noMinecartDamage(VehicleDamageEvent e) {
-		if(e.getAttacker() instanceof Player) {
-			Player p = (Player) e.getAttacker();
-			if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
-				e.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	public void noItemFrameInteract(PlayerInteractEntityEvent e) {
-		Player p = e.getPlayer();
-		Entity ent = e.getRightClicked();
-		if(ent instanceof ItemFrame && p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
-			e.setCancelled(true);
-		}
-	}
-
-	@EventHandler
-	public void noLobbyGrief(HangingBreakByEntityEvent e) {
-		if(e.getRemover() instanceof Player) {
-			Player p = (Player) e.getRemover();
-			if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
-				e.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	public void noFrameItemBreak(EntityDamageByEntityEvent e) {
-		if(e.getEntityType() == EntityType.ITEM_FRAME && e.getDamager() instanceof Player && isInLobby((Player) e.getDamager())
-				&& ((Player) e.getDamager()).getGameMode() != GameMode.CREATIVE) {
-			e.setCancelled(true);
-		}
-	}
-
-	@EventHandler
 	public void preJoin(AsyncPlayerPreLoginEvent e) {
 		if(generating) {
 			e.setKickMessage(ChatColor.GOLD + "—ейчас идет генераци€ мира, зайди немного позже");
@@ -1562,23 +1450,6 @@ public class UHC implements Listener {
 		}
 		(
 		*/
-	}
-
-	@EventHandler
-	public void allowMusicDisks(PlayerInteractEvent e) {
-		if(e.getPlayer().getWorld() == WorldManager.getLobby() && e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.JUKEBOX
-				&& e.getHand() == EquipmentSlot.HAND && e.getPlayer().getGameMode() == GameMode.ADVENTURE) {
-			Jukebox jukebox = (Jukebox) e.getClickedBlock().getState();
-			if(!jukebox.isPlaying() && (jukebox.getRecord() == null || jukebox.getRecord().getType() == Material.AIR) && e.getItem() != null && e.getItem().getType()
-					.isRecord()) {
-				e.setCancelled(true);
-				e.setUseInteractedBlock(Event.Result.DENY);
-				e.setUseItemInHand(Event.Result.DENY);
-				jukebox.setRecord(e.getItem().clone());
-				e.getItem().setAmount(e.getItem().getAmount() - 1);
-				TaskManager.invokeLater(jukebox::update);
-			}
-		}
 	}
 
 	@EventHandler
@@ -1678,13 +1549,13 @@ public class UHC implements Listener {
 				}
 				receiver.sendMessage(suffix);
 			} else {
-				if((isInLobby(sender) && isInLobby(receiver)) || (isSpectator(sender) && isSpectator(receiver)) || (!isDuo && isPlaying(sender) && isPlaying(
+				if((isInLobby(sender) && isInLobby(receiver)) || (isSpectator(sender) && isSpectator(receiver)) || (GameMode.SOLO.isActive() && isPlaying(sender) && isPlaying(
 						receiver))) {
 					receiver.sendMessage(prefix + suffix);
 					continue;
 				}
 				Player teammate = getTeammate(sender);
-				if(isDuo && ((teammate != null && teammate == receiver) || receiver == sender)) {
+				if(!GameMode.SOLO.isActive() && ((teammate != null && teammate == receiver) || receiver == sender)) {
 					receiver.sendMessage(ChatColor.LIGHT_PURPLE + "<“име> " + suffix);
 				}
 			}
@@ -1955,15 +1826,6 @@ public class UHC implements Listener {
 	public void tntArena(EntityExplodeEvent e) {
 		if(e.getEntityType() == EntityType.PRIMED_TNT && (state == GameState.DEATHMATCH || state == GameState.ENDING)) {
 			e.blockList().clear();
-		}
-	}
-
-	@EventHandler
-	public void noFoodLoss(FoodLevelChangeEvent e) {
-		Player p = (Player) e.getEntity();
-		if(isInLobby(p) && e.getFoodLevel() < 20) {
-			p.setFoodLevel(20);
-			e.setCancelled(true);
 		}
 	}
 
