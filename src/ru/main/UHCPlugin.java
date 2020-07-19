@@ -43,6 +43,8 @@ public class UHCPlugin extends JavaPlugin {
 		this.getCommand("optmutator").setExecutor(new CommandOptMutator());
 		this.getCommand("options").setExecutor(new CommandOptions());
 
+		//TEST COMMENT
+
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new UHC(), this);
 		pm.registerEvents(new SignManager(), this);
