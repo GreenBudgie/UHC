@@ -19,7 +19,11 @@ public class  CommandTest implements CommandExecutor {
 		Player p = (Player) sender;
 		String path = Bukkit.getWorldContainer().getAbsolutePath();
 		File temp = new File(path + "\\Arena\\.Temp");
-		p.sendMessage(temp.getAbsolutePath());
+		UHCPlugin.log("ABS: " + Bukkit.getWorldContainer().getAbsolutePath());
+		try {
+			UHCPlugin.log("CAN: " + Bukkit.getWorldContainer().getCanonicalPath());
+		} catch(IOException e) {
+		}
 		return true;
 	}
 }

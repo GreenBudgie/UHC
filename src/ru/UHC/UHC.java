@@ -5,6 +5,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.Jukebox;
+import org.bukkit.block.Lectern;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -18,10 +19,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.inventory.meta.SuspiciousStewMeta;
@@ -1848,6 +1846,24 @@ public class UHC implements Listener {
 				e.setDropItems(false);
 				e.setExpToDrop(0);
 			} else {
+				e.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler
+	public void lectern(PlayerInteractEvent e) {
+		if(isInLobby(e.getPlayer()) && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			Player player = e.getPlayer();
+			Block block = e.getClickedBlock();
+			if(block.getType() == Material.LECTERN) {
+				if(!e.getPlayer().getInventory().contains(Material.WRITTEN_BOOK)) {
+					Lectern lectern = (Lectern) block.getState();
+					ItemStack book = lectern.getInventory().getItem(0);
+					if(book != null) {
+						player.getInventory().addItem(book);
+					}
+				}
 				e.setCancelled(true);
 			}
 		}

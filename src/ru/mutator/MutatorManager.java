@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.util.InventoryHelper;
 import ru.util.ItemUtils;
 import ru.util.MathUtils;
+import ru.util.NumericalCases;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -105,6 +106,20 @@ public class MutatorManager implements Listener {
 					ItemUtils.addLore(item, false, ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Предпочитаемый");
 				} else {
 					ItemUtils.addLore(item, false, ChatColor.DARK_AQUA + "<Сделать предпочитаемым>");
+				}
+				int preferenceCount = getPlayersWhoPrefersMutator(mutator).size();
+				if(preferenceCount == 0) {
+					ItemUtils.addLore(item, false, ChatColor.GOLD + "Нет предпочтений");
+				} else {
+					String prefer = new NumericalCases("Предпочитает ", "Предпочитают ", "Предпочитают ").byNumber(preferenceCount);
+					String player = new NumericalCases(" игрок", " игрока", " игроков").byNumber(preferenceCount);
+					List<Mutator> otherMutators = getAvailablePreferredMutatorsWeighted();
+					otherMutators.removeIf(m -> mutator == m);
+					double otherSize = otherMutators.size();
+					int percent = (int) ((1 - (otherSize / getAvailablePreferredMutatorsWeighted().size())) * 100);
+					ItemUtils.addLore(item, false, ChatColor.GOLD + prefer + ChatColor.AQUA + ChatColor.BOLD + preferenceCount
+						+ ChatColor.RESET + ChatColor.GOLD + player + ChatColor.GRAY + ", " + ChatColor.GREEN + "шанс " + ChatColor.DARK_GREEN + ChatColor.BOLD +
+						percent + ChatColor.RESET + ChatColor.GRAY + "%");
 				}
 			}
 			inv.addItem(item);

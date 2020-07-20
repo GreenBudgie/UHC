@@ -1,14 +1,12 @@
 package ru.UHC;
 
 import org.bukkit.*;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
+import ru.main.UHCPlugin;
 import ru.util.TaskManager;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class WorldManager {
 
@@ -56,7 +54,9 @@ public class WorldManager {
 	}
 
 	public static World createMap() {
-		Bukkit.broadcastMessage(ChatColor.GOLD + "Начинается генерация мира");
+		String arrows = ChatColor.DARK_GRAY + "" + ChatColor.BOLD + ">>>";
+		Bukkit.broadcastMessage(arrows + ChatColor.DARK_AQUA + "" + ChatColor.BOLD + " Начинается генерация мира! " + ChatColor.RESET + ChatColor.GOLD +
+				"Сервер может зависнуть на некоторое время. Это нормально.");
 		UHC.generating = true;
 		World map = Bukkit.createWorld(new WorldCreator("CurrentMap"));
 		map.setDifficulty(Difficulty.HARD);
@@ -68,9 +68,9 @@ public class WorldManager {
 		map.setPVP(false);
 		spawnLocation = map.getSpawnLocation().clone();
 		gameMap = map;
-		Bukkit.broadcastMessage(ChatColor.GOLD + "Копирование арены...");
+		Bukkit.broadcastMessage(arrows + ChatColor.RESET + ChatColor.GRAY + " Копирование арены...");
 		tempArena = copyAsTemp(arena);
-		Bukkit.broadcastMessage(ChatColor.GREEN + "Новый мир создан!");
+		Bukkit.broadcastMessage(arrows + ChatColor.DARK_GREEN + "" + ChatColor.BOLD + " Новый мир создан!");
 		TaskManager.asyncInvokeLater(() -> UHC.generating = false, 20);
 		return map;
 	}
@@ -121,13 +121,11 @@ public class WorldManager {
 	}
 
 	public static World copyAsTemp(World world) {
-		File source = world.getWorldFolder();
-		String path = source.getAbsolutePath();
-		path = path.substring(0, path.length() - 2);
-		File target = new File(path + "Temp\\.");
-		copyWorld(source, target);
 		try {
-			new File(target.getAbsolutePath() + "temp.info").createNewFile();
+			File source = world.getWorldFolder();
+			File target = new File(source.getCanonicalPath() + "Temp");
+			copyWorld(source, target);
+			new File(target.getCanonicalPath() + File.separator + "temp.info").createNewFile();
 		} catch(IOException e) {
 		}
 		return Bukkit.createWorld(new WorldCreator(world.getName() + "Temp"));
@@ -160,10 +158,14 @@ public class WorldManager {
 	}
 
 	public static boolean deleteTempWorld(World world) {
-		if(!(new File(world.getWorldFolder().getAbsolutePath() + "temp.info").exists())) {
+		try {
+			if(!(new File(world.getWorldFolder().getCanonicalPath() + File.separator + "temp.info").exists())) {
+				return false;
+			}
+			return deleteWorld(world.getWorldFolder());
+		} catch(IOException e) {
 			return false;
 		}
-		return deleteWorld(world.getWorldFolder());
 	}
 
 	public static boolean hasMap() {
