@@ -21,8 +21,13 @@ public class ArtifactTime extends Artifact {
 	}
 
 	@Override
-	public int getPrice() {
+	public int getStartingPrice() {
 		return 13;
+	}
+
+	@Override
+	public float getPriceIncreaseAmount() {
+		return 2;
 	}
 
 	@Override

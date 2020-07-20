@@ -11,6 +11,8 @@ import ru.util.NumericalCases;
 
 public abstract class Artifact {
 
+	private float currentPrice = getStartingPrice();
+
 	public Artifact() {
 		ArtifactManager.artifacts.add(this);
 	}
@@ -19,10 +21,20 @@ public abstract class Artifact {
 
 	public abstract String getDescription();
 
-	public abstract int getPrice();
+	public abstract int getStartingPrice();
+
+	public int getCurrentPrice() {
+		return Math.round(currentPrice);
+	}
+
+	public void resetPrice() {
+		currentPrice = getStartingPrice();
+	}
 
 	public void update() {
 	}
+
+	public abstract float getPriceIncreaseAmount();
 
 	public abstract void onUse(Player p);
 
@@ -34,6 +46,7 @@ public abstract class Artifact {
 			}
 		}
 		onUse(p);
+		currentPrice += getPriceIncreaseAmount();
 	}
 
 	public abstract Material getType();
@@ -44,12 +57,18 @@ public abstract class Artifact {
 
 	private String getPriceString() {
 		NumericalCases cases = new NumericalCases("артефакт", "артефакта", "артефактов");
-		return ChatColor.AQUA + "" + getPrice() + ChatColor.GOLD + " " + cases.byNumber(getPrice());
+		int starting = getStartingPrice();
+		int current = getCurrentPrice();
+		String added = "";
+		if(starting != current) {
+			added = ChatColor.GRAY + " (" + ChatColor.DARK_AQUA + "+" + (current - starting) + ChatColor.GRAY + ")";
+		}
+		return ChatColor.AQUA + "" + ChatColor.BOLD + current + ChatColor.RESET + ChatColor.GOLD + " " + cases.byNumber(current) + added;
 	}
 
 	public ItemStack getItemFor(Player p) {
 		ItemStack artifact = getItem();
-		if(ArtifactManager.getArtifactCount(p) >= getPrice()) {
+		if(ArtifactManager.getArtifactCount(p) >= getCurrentPrice()) {
 			ItemUtils.addGlow(artifact);
 			ItemUtils.addLore(artifact, false, ChatColor.GREEN + "Нажми, чтобы призвать");
 		} else {

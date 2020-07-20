@@ -26,13 +26,19 @@ public class ArtifactRandom extends Artifact {
 	}
 
 	@Override
-	public int getPrice() {
+	public int getStartingPrice() {
 		return 20;
 	}
 
 	@Override
+	public float getPriceIncreaseAmount() {
+		return 0;
+	}
+
+	@Override
 	public void onUse(Player p) {
-		List<Artifact> toAdd = Lists.newArrayList(ArtifactManager.timeLeap, ArtifactManager.airdrop, ArtifactManager.cavedrop, ArtifactManager.teleport, ArtifactManager.time);
+		List<Artifact> toAdd = Lists.newArrayList(ArtifactManager.timeLeap, ArtifactManager.airdrop, ArtifactManager.cavedrop, ArtifactManager.teleport, ArtifactManager.time,
+				ArtifactManager.hunger);
 		toAdd.add(MathUtils.choose(ArtifactManager.health, ArtifactManager.damage));
 		boolean canAddMutator = false;
 		boolean canRemoveMutator = false;

@@ -1,5 +1,6 @@
 package ru.artifact;
 
+import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -11,15 +12,18 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.UHC;
 import ru.items.CustomItems;
+import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
 import ru.util.InventoryHelper;
 import ru.util.MathUtils;
 import ru.util.NumericalCases;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -46,17 +50,11 @@ public class ArtifactManager implements Listener {
 		int count = getArtifactCount(p);
 		Inventory inv = Bukkit.createInventory(p, 18,
 				name + ChatColor.DARK_GRAY + " (" + ChatColor.YELLOW + count + ChatColor.RED + " " + cases.byNumber(count) + ChatColor.DARK_GRAY + ")");
-		inv.setItem(0, timeLeap.getItemFor(p));
-		inv.setItem(1, airdrop.getItemFor(p));
-		inv.setItem(2, cavedrop.getItemFor(p));
-		inv.setItem(3, mutator.getItemFor(p));
-		inv.setItem(4, teleport.getItemFor(p));
-		inv.setItem(5, disableMutator.getItemFor(p));
-		inv.setItem(6, hunger.getItemFor(p));
-		inv.setItem(7, time.getItemFor(p));
-		inv.setItem(8, health.getItemFor(p));
-		inv.setItem(9, damage.getItemFor(p));
-		inv.setItem(10, random.getItemFor(p));
+		List<Artifact> sorted = Lists.newArrayList(artifacts);
+		sorted.sort(Comparator.comparingInt(Artifact::getCurrentPrice));
+		for(Artifact artifact : sorted) {
+			inv.addItem(artifact.getItemFor(p));
+		}
 		p.openInventory(inv);
 	}
 
@@ -88,6 +86,12 @@ public class ArtifactManager implements Listener {
 		}
 	}
 
+	public static void resetPrices() {
+		for(Artifact artifact : artifacts) {
+			artifact.resetPrice();
+		}
+	}
+
 	@EventHandler
 	public void invClick(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
@@ -97,9 +101,19 @@ public class ArtifactManager implements Listener {
 				if(item != null) {
 					for(Artifact artifact : artifacts) {
 						if(artifact.getType() == item.getType()) {
-							if(getArtifactCount(p) >= artifact.getPrice()) {
+							if(getArtifactCount(p) >= artifact.getCurrentPrice()) {
 								artifact.use(p);
-								removeArtifacts(p, artifact.getPrice());
+								//Reopening other players' inventories to reset prices
+								for(Player player : UHC.players) {
+									if(player != p) {
+										InventoryView openInv = player.getOpenInventory();
+										if(openInv.getTitle().startsWith(name)) {
+											player.closeInventory();
+											openArtifactInventory(player);
+										}
+									}
+								}
+								removeArtifacts(p, artifact.getCurrentPrice());
 								p.closeInventory();
 								break;
 							} else {

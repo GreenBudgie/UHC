@@ -23,8 +23,13 @@ public class ArtifactHealth extends Artifact {
 	}
 
 	@Override
-	public int getPrice() {
+	public int getStartingPrice() {
 		return 14;
+	}
+
+	@Override
+	public float getPriceIncreaseAmount() {
+		return 1;
 	}
 
 	@Override

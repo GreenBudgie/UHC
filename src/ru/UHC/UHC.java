@@ -26,6 +26,7 @@ import org.bukkit.inventory.meta.SuspiciousStewMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.*;
+import ru.artifact.ArtifactManager;
 import ru.items.CustomItems;
 import ru.main.UHCPlugin;
 import ru.mutator.ItemBasedMutator;
@@ -311,6 +312,7 @@ public class UHC implements Listener {
 			spectators.clear();
 			landmines.clear();
 			tracers.clear();
+			ArtifactManager.resetPrices();
 			ItemRequester.requestedItems.forEach(RequestedItem::deleteStands);
 			ItemRequester.requestedItems.clear();
 			MutatorManager.deactivateMutators();

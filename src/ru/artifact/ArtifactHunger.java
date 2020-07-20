@@ -16,12 +16,17 @@ public class ArtifactHunger extends Artifact {
 
 	@Override
 	public String getDescription() {
-		return "Изменяет позицию выпадения следующего аирдропа и сокращает время его ожидания в 3 раза";
+		return "У всех игроков шкала голода резко падает до 2х единиц";
 	}
 
 	@Override
-	public int getPrice() {
+	public int getStartingPrice() {
 		return 13;
+	}
+
+	@Override
+	public float getPriceIncreaseAmount() {
+		return 1;
 	}
 
 	@Override

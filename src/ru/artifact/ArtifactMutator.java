@@ -19,8 +19,13 @@ public class ArtifactMutator extends Artifact {
 	}
 
 	@Override
-	public int getPrice() {
+	public int getStartingPrice() {
 		return 12;
+	}
+
+	@Override
+	public float getPriceIncreaseAmount() {
+		return 1;
 	}
 
 	@Override

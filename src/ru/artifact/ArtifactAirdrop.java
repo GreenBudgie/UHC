@@ -19,8 +19,13 @@ public class ArtifactAirdrop extends Artifact {
 	}
 
 	@Override
-	public int getPrice() {
+	public int getStartingPrice() {
 		return 8;
+	}
+
+	@Override
+	public float getPriceIncreaseAmount() {
+		return 0;
 	}
 
 	@Override

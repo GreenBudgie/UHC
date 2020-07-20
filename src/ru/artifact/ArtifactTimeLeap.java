@@ -20,8 +20,13 @@ public class ArtifactTimeLeap extends Artifact {
 	}
 
 	@Override
-	public int getPrice() {
+	public int getStartingPrice() {
 		return 4;
+	}
+
+	@Override
+	public float getPriceIncreaseAmount() {
+		return 0;
 	}
 
 	@Override
