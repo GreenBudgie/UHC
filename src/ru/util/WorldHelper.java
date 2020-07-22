@@ -55,7 +55,7 @@ public class WorldHelper {
 				|| t == EntityType.ENDER_DRAGON || t == EntityType.CREEPER || t == EntityType.BLAZE || t == EntityType.ELDER_GUARDIAN || t == EntityType.GUARDIAN
 				|| t == EntityType.ENDERMITE || t == EntityType.EVOKER || t == EntityType.GHAST || t == EntityType.GIANT || t == EntityType.HUSK || t == EntityType.ILLUSIONER
 				|| t == EntityType.MAGMA_CUBE || t == EntityType.STRAY || t == EntityType.VEX || t == EntityType.VINDICATOR
-				|| t == EntityType.WITCH || t == EntityType.WITHER || t == EntityType.PHANTOM || t == EntityType.DROWNED;
+				|| t == EntityType.WITCH || t == EntityType.WITHER || t == EntityType.PHANTOM || t == EntityType.DROWNED || t == EntityType.RAVAGER || t == EntityType.PILLAGER;
 	}
 
 	public static double distanceNoY(Location l, Location l2) {

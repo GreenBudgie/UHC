@@ -76,6 +76,8 @@ public class MutatorManager implements Listener {
 	public static MutatorRequestAnywhere requestAnywhere = new MutatorRequestAnywhere();
 	public static MutatorNoKnockback noKnockback = new MutatorNoKnockback();
 	public static MutatorBinding binding = new MutatorBinding();
+	public static MutatorDamageFly damageFly = new MutatorDamageFly();
+	public static MutatorOverpoweredMobs overpoweredMobs = new MutatorOverpoweredMobs();
 
 	public static void updateMutators() {
 		List<Mutator> copy = Lists.newArrayList(activeMutators); //Prevents concurrent modifications

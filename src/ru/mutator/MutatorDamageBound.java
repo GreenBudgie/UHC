@@ -35,15 +35,17 @@ public class MutatorDamageBound extends Mutator implements Listener {
 	public void damage(EntityDamageEvent e) {
 		if(!e.isCancelled() && e.getCause() != EntityDamageEvent.DamageCause.CUSTOM && e.getEntity() instanceof Player) {
 			Player damager = (Player) e.getEntity();
-			List<Player> playersCopy = Lists.newArrayList(UHC.players);
-			double finalDamage = Math.min(e.getFinalDamage(), damager.getHealth());
-			for(Player victim : playersCopy) {
-				if(damager != victim) {
-					if(victim.getHealth() > 1) {
-						double damage = finalDamage / (MathUtils.clamp(UHC.players.size(), 8, 20) * 1.5);
-						damage = Math.min(damage, maxDamage);
-						if(damage > victim.getHealth() - 1) damage = victim.getHealth() - 1;
-						victim.damage(damage);
+			if(UHC.isPlaying(damager)) {
+				List<Player> playersCopy = Lists.newArrayList(UHC.players);
+				double finalDamage = Math.min(e.getFinalDamage(), damager.getHealth());
+				for(Player victim : playersCopy) {
+					if(damager != victim) {
+						if(victim.getHealth() > 1) {
+							double damage = finalDamage / (MathUtils.clamp(UHC.players.size(), 8, 20) * 1.5);
+							damage = Math.min(damage, maxDamage);
+							if(damage > victim.getHealth() - 1) damage = victim.getHealth() - 1;
+							victim.damage(damage);
+						}
 					}
 				}
 			}

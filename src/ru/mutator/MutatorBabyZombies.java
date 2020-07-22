@@ -31,8 +31,13 @@ public class MutatorBabyZombies extends Mutator implements Listener {
 		return "Все зомби спавнятся мелкими";
 	}
 
+	@Override
+	public boolean conflictsWith(Mutator another) {
+		return another == MutatorManager.overpoweredMobs;
+	}
+
 	@EventHandler
-	public void damage(CreatureSpawnEvent e) {
+	public void spawn(CreatureSpawnEvent e) {
 		if(e.getEntity() instanceof Zombie) {
 			Zombie zombie = (Zombie) e.getEntity();
 			zombie.setBaby(true);
