@@ -1,11 +1,15 @@
 package ru.UHC;
 
 import com.google.common.collect.Lists;
+import net.minecraft.server.v1_16_R1.MerchantRecipeList;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.Jukebox;
 import org.bukkit.block.Lectern;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftItem;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -16,7 +20,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.TradeSelectEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
@@ -1905,10 +1908,34 @@ public class UHC implements Listener {
 	}
 
 	@EventHandler
-	public void emeraldTrade(VillagerAcquireTradeEvent e) {
-		ItemStack result = e.getRecipe().getResult();
-		if(result.getType() == Material.EMERALD) {
-			ItemUtils.addLore(result, ChatColor.DARK_RED + "" + ChatColor.BOLD + "Без бонусов!");
+	public void emeraldTrade(PlayerInteractEntityEvent e) {
+		if(e.getRightClicked().getType() == EntityType.VILLAGER) {
+			Villager villager = (Villager) e.getRightClicked();
+			if (!(villager instanceof CraftVillager)) {
+				return;
+			}
+			List<net.minecraft.server.v1_16_R1.MerchantRecipe> newRecipes = new ArrayList<>();
+			MerchantRecipeList recipes = ((CraftVillager)villager).getHandle().getOffers();
+			Iterator<net.minecraft.server.v1_16_R1.MerchantRecipe> recipeIterator;
+			for(recipeIterator = recipes.iterator(); recipeIterator.hasNext(); ) {
+				net.minecraft.server.v1_16_R1.MerchantRecipe recipe = recipeIterator.next();
+				ItemStack copy = CraftItemStack.asBukkitCopy(recipe.sellingItem);
+				if(copy.getType() == Material.EMERALD) {
+					ItemUtils.setLore(copy, ChatColor.DARK_RED + "" + ChatColor.BOLD + "Без бонусов!");
+					newRecipes.add(new net.minecraft.server.v1_16_R1.MerchantRecipe(
+							recipe.buyingItem1,
+							recipe.buyingItem2,
+							CraftItemStack.asNMSCopy(copy),
+							recipe.uses,
+							recipe.maxUses,
+							recipe.xp,
+							recipe.priceMultiplier,
+							recipe.getDemand()
+					));
+					recipeIterator.remove();
+				}
+			}
+			recipes.addAll(newRecipes);
 		}
 	}
 

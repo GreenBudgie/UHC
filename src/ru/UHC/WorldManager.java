@@ -55,8 +55,8 @@ public class WorldManager {
 		if(Bukkit.getWorld("ArenaTemp") != null) {
 			tempArena = Bukkit.createWorld(new WorldCreator("ArenaTemp"));
 		}
-		if(Bukkit.getWorld("ArenaTemp2") != null) {
-			tempArena = Bukkit.createWorld(new WorldCreator("ArenaTemp2"));
+		if(Bukkit.getWorld("Arena2Temp") != null) {
+			tempArena = Bukkit.createWorld(new WorldCreator("Arena2Temp"));
 		}
 	}
 
