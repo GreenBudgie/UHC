@@ -2,6 +2,7 @@ package ru.UHC;
 
 import org.bukkit.*;
 import ru.main.UHCPlugin;
+import ru.util.MathUtils;
 import ru.util.TaskManager;
 
 import java.io.*;
@@ -20,6 +21,7 @@ public class WorldManager {
 		lobby.setPVP(true);
 		lobby.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 		lobby.setGameRule(GameRule.NATURAL_REGENERATION, false);
+		lobby.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
 		arena = Bukkit.createWorld(new WorldCreator("Arena"));
 		arena.setDifficulty(Difficulty.HARD);
 		arena.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
@@ -29,11 +31,13 @@ public class WorldManager {
 		arena.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
 		arena.setGameRule(GameRule.DO_MOB_SPAWNING, false);
 		arena.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
+		arena.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
 		arena.setPVP(false);
 		arena.setTime(6000);
 		arena2 = Bukkit.createWorld(new WorldCreator("Arena2"));
 		arena2.setDifficulty(Difficulty.HARD);
 		arena2.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+		arena2.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
 		arena2.setGameRule(GameRule.NATURAL_REGENERATION, false);
 		arena2.setGameRule(GameRule.DO_FIRE_TICK, false);
 		arena2.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
@@ -42,7 +46,7 @@ public class WorldManager {
 		arena2.setGameRule(GameRule.DO_MOB_SPAWNING, false);
 		arena2.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
 		arena2.setPVP(false);
-		arena2.setTime(6000);
+		arena2.setTime(18000);
 		if(Bukkit.getWorld("CurrentMap") != null) {
 			gameMap = Bukkit.createWorld(new WorldCreator("CurrentMap"));
 			gameMap.setDifficulty(Difficulty.HARD);
@@ -50,6 +54,9 @@ public class WorldManager {
 		}
 		if(Bukkit.getWorld("ArenaTemp") != null) {
 			tempArena = Bukkit.createWorld(new WorldCreator("ArenaTemp"));
+		}
+		if(Bukkit.getWorld("ArenaTemp2") != null) {
+			tempArena = Bukkit.createWorld(new WorldCreator("ArenaTemp2"));
 		}
 	}
 
@@ -61,6 +68,7 @@ public class WorldManager {
 		World map = Bukkit.createWorld(new WorldCreator("CurrentMap"));
 		map.setDifficulty(Difficulty.HARD);
 		map.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+		map.setGameRule(GameRule.RANDOM_TICK_SPEED, 3);
 		map.setGameRule(GameRule.NATURAL_REGENERATION, false);
 		map.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 		map.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
@@ -69,7 +77,11 @@ public class WorldManager {
 		spawnLocation = map.getSpawnLocation().clone();
 		gameMap = map;
 		Bukkit.broadcastMessage(arrows + ChatColor.RESET + ChatColor.GRAY + " Копирование арены...");
-		tempArena = copyAsTemp(arena);
+		if(MathUtils.chance(50)) {
+			tempArena = copyAsTemp(arena);
+		} else {
+			tempArena = copyAsTemp(arena2);
+		}
 		Bukkit.broadcastMessage(arrows + ChatColor.DARK_GREEN + "" + ChatColor.BOLD + " Новый мир создан!");
 		TaskManager.asyncInvokeLater(() -> UHC.generating = false, 20);
 		return map;

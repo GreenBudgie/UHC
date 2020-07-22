@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.TradeSelectEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
@@ -1904,6 +1905,14 @@ public class UHC implements Listener {
 	}
 
 	@EventHandler
+	public void emeraldTrade(VillagerAcquireTradeEvent e) {
+		ItemStack result = e.getRecipe().getResult();
+		if(result.getType() == Material.EMERALD) {
+			ItemUtils.addLore(result, ChatColor.DARK_RED + "" + ChatColor.BOLD + "Без бонусов!");
+		}
+	}
+
+	@EventHandler
 	public void interact(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		if(state == GameState.VOTE && isPlaying(p) && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
@@ -1915,7 +1924,7 @@ public class UHC implements Listener {
 		}
 		ItemStack item = e.getItem();
 		if(state.isInGame() && isPlaying(p) && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) && item != null
-				&& item.getType() == Material.EMERALD) {
+				&& item.getType() == Material.EMERALD && ItemUtils.getLore(item).isEmpty()) {
 			ItemStack drop = MathUtils
 					.choose(new ItemStack(Material.DIAMOND, MathUtils.randomRange(1, 2)), new ItemStack(Material.REDSTONE, MathUtils.randomRange(24, 40)),
 							new ItemStack(Material.GOLD_INGOT, MathUtils.randomRange(5, 8)));

@@ -1,5 +1,6 @@
 package ru.mutator;
 
+import com.google.common.collect.Lists;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,7 +10,12 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import ru.UHC.UHC;
 import ru.util.MathUtils;
 
+import java.util.Iterator;
+import java.util.List;
+
 public class MutatorDamageBound extends Mutator implements Listener {
+
+	public int maxDamage = 4;
 
 	@Override
 	public Material getItemToShow() {
@@ -30,9 +36,17 @@ public class MutatorDamageBound extends Mutator implements Listener {
 	public void damage(EntityDamageEvent e) {
 		if(!e.isCancelled() && e.getCause() != EntityDamageEvent.DamageCause.CUSTOM && e.getEntity() instanceof Player) {
 			Player p = (Player) e.getEntity();
-			for(Player player : UHC.players) {
+			List<Player> playersCopy = Lists.newArrayList(UHC.players);
+			for(Player player : playersCopy) {
 				if(p != player) {
-					player.damage(e.getFinalDamage() / (MathUtils.clamp(UHC.players.size(), 8, 30) * 1.5));
+					double health = player.getHealth();
+					if(health > 1) {
+						double finalDamage = Math.min(e.getFinalDamage(), health);
+						double damage = finalDamage / (MathUtils.clamp(UHC.players.size(), 8, 20) * 1.5);
+						damage = Math.min(damage, maxDamage);
+						if(damage > health - 1) damage = health - 1;
+						player.damage(damage);
+					}
 				}
 			}
 		}
