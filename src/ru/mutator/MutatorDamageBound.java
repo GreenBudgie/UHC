@@ -10,7 +10,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import ru.UHC.UHC;
 import ru.util.MathUtils;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class MutatorDamageBound extends Mutator implements Listener {
@@ -35,17 +34,16 @@ public class MutatorDamageBound extends Mutator implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void damage(EntityDamageEvent e) {
 		if(!e.isCancelled() && e.getCause() != EntityDamageEvent.DamageCause.CUSTOM && e.getEntity() instanceof Player) {
-			Player p = (Player) e.getEntity();
+			Player damager = (Player) e.getEntity();
 			List<Player> playersCopy = Lists.newArrayList(UHC.players);
-			for(Player player : playersCopy) {
-				if(p != player) {
-					double health = player.getHealth();
-					if(health > 1) {
-						double finalDamage = Math.min(e.getFinalDamage(), health);
+			double finalDamage = Math.min(e.getFinalDamage(), damager.getHealth());
+			for(Player victim : playersCopy) {
+				if(damager != victim) {
+					if(victim.getHealth() > 1) {
 						double damage = finalDamage / (MathUtils.clamp(UHC.players.size(), 8, 20) * 1.5);
 						damage = Math.min(damage, maxDamage);
-						if(damage > health - 1) damage = health - 1;
-						player.damage(damage);
+						if(damage > victim.getHealth() - 1) damage = victim.getHealth() - 1;
+						victim.damage(damage);
 					}
 				}
 			}
