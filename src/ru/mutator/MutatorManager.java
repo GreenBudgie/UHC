@@ -27,7 +27,6 @@ public class MutatorManager implements Listener {
 	public static List<Mutator> activeMutators = new ArrayList<>();
 	public static List<Mutator> mutators = new ArrayList<>();
 	public static MutatorNoDiamonds noDiamonds = new MutatorNoDiamonds();
-	public static MutatorHyperSpeed hyperSpeed = new MutatorHyperSpeed();
 	public static MutatorApples apples = new MutatorApples();
 	public static MutatorGlowing glowing = new MutatorGlowing();
 	public static MutatorHungerGames hungerGames = new MutatorHungerGames();
@@ -41,16 +40,13 @@ public class MutatorManager implements Listener {
 	public static MutatorHaste haste = new MutatorHaste();
 	public static MutatorSimpleRequests simpleRequests = new MutatorSimpleRequests();
 	public static MutatorSmallMap smallMap = new MutatorSmallMap();
-	public static MutatorFastBreak fastBreak = new MutatorFastBreak();
 	public static MutatorFlameFist flameFist = new MutatorFlameFist();
 	public static MutatorNoHunger noHunger = new MutatorNoHunger();
 	public static MutatorDeathTnt deathTnt = new MutatorDeathTnt();
-	public static MutatorChorusFood chorusFood = new MutatorChorusFood();
 	public static MutatorSupply supply = new MutatorSupply();
 	public static MutatorWizardBattle wizardBattle = new MutatorWizardBattle();
 	public static MutatorKnockback knockback = new MutatorKnockback();
 	public static MutatorDamageBound damageBound = new MutatorDamageBound();
-	public static MutatorSingleUse singleUse = new MutatorSingleUse();
 	public static MutatorHealthDisplay healthDisplay = new MutatorHealthDisplay();
 	public static MutatorChemistBattle chemistBattle = new MutatorChemistBattle();
 	public static MutatorNoRegen noRegen = new MutatorNoRegen();

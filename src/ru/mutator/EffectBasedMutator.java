@@ -27,7 +27,7 @@ public abstract class EffectBasedMutator extends Mutator {
 	@Override
 	public void update() {
 		for(Player p : UHC.players) {
-			if(!p.hasPotionEffect(PotionEffectType.JUMP)) {
+			if(!p.hasPotionEffect(getEffect())) {
 				p.addPotionEffect(new PotionEffect(getEffect(), 999999, getAmplifier(), false, false));
 			}
 		}
