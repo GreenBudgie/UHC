@@ -22,6 +22,11 @@ public class MutatorTotems extends ItemBasedMutator implements Listener {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.SUPPORTING;
+	}
+
+	@Override
 	public String getName() {
 		return "Бессмертные";
 	}

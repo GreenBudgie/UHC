@@ -18,6 +18,11 @@ public class MutatorOneForAll extends Mutator implements Listener {
 	private int timer = 0;
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.INNOCENT;
+	}
+
+	@Override
 	public Material getItemToShow() {
 		return Material.PURPLE_DYE;
 	}

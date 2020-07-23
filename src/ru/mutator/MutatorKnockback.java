@@ -18,6 +18,11 @@ public class MutatorKnockback extends Mutator implements Listener {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.INNOCENT;
+	}
+
+	@Override
 	public String getName() {
 		return "Отдача";
 	}

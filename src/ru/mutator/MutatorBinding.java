@@ -17,6 +17,11 @@ public class MutatorBinding extends Mutator implements Listener {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.DANGEROUS;
+	}
+
+	@Override
 	public String getName() {
 		return "Проклятая Броня";
 	}

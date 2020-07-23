@@ -10,6 +10,11 @@ public class MutatorInteractiveArena extends Mutator {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.INNOCENT;
+	}
+
+	@Override
 	public String getName() {
 		return "Интерактивная Арена";
 	}

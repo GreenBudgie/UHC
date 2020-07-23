@@ -16,6 +16,11 @@ public class MutatorEternalNight extends Mutator {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.CRITICAL;
+	}
+
+	@Override
 	public String getName() {
 		return "Вечная Ночь";
 	}

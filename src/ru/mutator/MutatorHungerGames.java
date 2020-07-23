@@ -14,6 +14,11 @@ public class MutatorHungerGames extends Mutator {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.DANGEROUS;
+	}
+
+	@Override
 	public String getName() {
 		return "Голодные Игры";
 	}

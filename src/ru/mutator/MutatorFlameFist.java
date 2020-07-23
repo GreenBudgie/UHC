@@ -22,6 +22,11 @@ public class MutatorFlameFist extends Mutator implements Listener {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.SUPPORTING;
+	}
+
+	@Override
 	public String getName() {
 		return "Огненный Кулак";
 	}

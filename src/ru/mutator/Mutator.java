@@ -34,6 +34,8 @@ public abstract class Mutator {
 		return isHidden;
 	}
 
+	public abstract ThreatStatus getThreatStatus();
+
 	public abstract Material getItemToShow();
 
 	public abstract String getName();

@@ -14,6 +14,11 @@ public class MutatorJump extends EffectBasedMutator {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.SUPPORTING;
+	}
+
+	@Override
 	public String getName() {
 		return "К Небесам";
 	}

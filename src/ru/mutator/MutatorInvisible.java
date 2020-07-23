@@ -14,6 +14,11 @@ public class MutatorInvisible extends EffectBasedMutator {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.INNOCENT;
+	}
+
+	@Override
 	public String getName() {
 		return "Игра в Прятки";
 	}

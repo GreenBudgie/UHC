@@ -33,6 +33,11 @@ public class MutatorRestrictions extends Mutator implements Listener {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.DANGEROUS;
+	}
+
+	@Override
 	public String getName() {
 		return "Я Вам Запрещаю";
 	}

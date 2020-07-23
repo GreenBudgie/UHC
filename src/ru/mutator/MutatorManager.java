@@ -240,6 +240,14 @@ public class MutatorManager implements Listener {
 		activeMutators.clear();
 	}
 
+	public static String getMessageFromCurrentMutators() {
+		ThreatStatus average = ThreatStatus.getAverageStatus(activeMutators.stream().map(Mutator::getThreatStatus).toArray(ThreatStatus[]::new));
+		if(average != null) {
+			return average.getRandomMessage();
+		}
+		return null;
+	}
+
 	public static void setPreference(String name, Mutator mutator, boolean preferred) {
 		Set<Mutator> pref = preferredMutators.getOrDefault(name, new HashSet<>());
 		if(preferred) {

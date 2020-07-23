@@ -15,6 +15,11 @@ public class MutatorDangerWater extends Mutator {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.DANGEROUS;
+	}
+
+	@Override
 	public String getName() {
 		return "Токсичная Вода";
 	}

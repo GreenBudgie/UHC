@@ -573,6 +573,8 @@ public class UHC implements Listener {
 
 	private static void mutatorInvEnd() {
 		for(Player p : getInGamePlayers()) {
+			p.sendMessage(	ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "< " + ChatColor.RESET + MutatorManager.getMessageFromCurrentMutators() +
+							ChatColor.RESET + ChatColor.DARK_GRAY + "" + ChatColor.BOLD + " >");
 			p.sendTitle(ChatColor.GREEN + "Выбор закончен!", "", 0, 60, 10);
 			p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 1F);
 		}

@@ -13,6 +13,11 @@ public class MutatorSmallMap extends Mutator {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.DANGEROUS;
+	}
+
+	@Override
 	public String getName() {
 		return "Ограничение";
 	}

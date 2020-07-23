@@ -26,6 +26,11 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 	private final int radius = 16;
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.DANGEROUS;
+	}
+
+	@Override
 	public Material getItemToShow() {
 		return Material.LIGHT_WEIGHTED_PRESSURE_PLATE;
 	}

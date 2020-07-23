@@ -12,6 +12,11 @@ public class MutatorEternalDay extends Mutator {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.SUPPORTING;
+	}
+
+	@Override
 	public String getName() {
 		return "Вечный День";
 	}

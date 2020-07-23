@@ -10,6 +10,11 @@ public class MutatorRequestAnywhere extends Mutator {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.SUPPORTING;
+	}
+
+	@Override
 	public String getName() {
 		return "Прозрачные Блоки";
 	}

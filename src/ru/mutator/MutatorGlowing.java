@@ -14,6 +14,11 @@ public class MutatorGlowing extends EffectBasedMutator {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.INNOCENT;
+	}
+
+	@Override
 	public String getName() {
 		return "Сияние";
 	}

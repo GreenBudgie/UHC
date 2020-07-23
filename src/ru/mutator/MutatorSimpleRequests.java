@@ -10,6 +10,11 @@ public class MutatorSimpleRequests extends Mutator {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.SUPPORTING;
+	}
+
+	@Override
 	public String getName() {
 		return "ўедрые запросы";
 	}

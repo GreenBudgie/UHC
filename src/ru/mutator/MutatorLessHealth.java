@@ -10,6 +10,11 @@ public class MutatorLessHealth extends Mutator {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.CRITICAL;
+	}
+
+	@Override
 	public String getName() {
 		return "Отличный Старт!";
 	}

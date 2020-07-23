@@ -10,6 +10,11 @@ public class MutatorHealthDisplay extends Mutator {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.INNOCENT;
+	}
+
+	@Override
 	public String getName() {
 		return "Отображение Здоровья";
 	}

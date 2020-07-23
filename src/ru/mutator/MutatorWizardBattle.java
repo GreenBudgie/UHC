@@ -14,6 +14,11 @@ public class MutatorWizardBattle extends ItemBasedMutator {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.SUPPORTING;
+	}
+
+	@Override
 	public String getName() {
 		return "Битва Чародеев";
 	}

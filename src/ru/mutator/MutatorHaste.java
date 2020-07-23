@@ -9,6 +9,11 @@ import ru.UHC.UHC;
 public class MutatorHaste extends Mutator {
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.SUPPORTING;
+	}
+
+	@Override
 	public void onChoose() {
 		for(Player p : UHC.players) {
 			p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 999999, 1, false, false));

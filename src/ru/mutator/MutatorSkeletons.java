@@ -18,6 +18,11 @@ public class MutatorSkeletons extends Mutator implements Listener {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.CRITICAL;
+	}
+
+	@Override
 	public String getName() {
 		return "Обстрел";
 	}

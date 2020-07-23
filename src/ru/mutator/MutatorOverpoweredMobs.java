@@ -28,6 +28,11 @@ public class MutatorOverpoweredMobs extends Mutator implements Listener {
 	}
 
 	@Override
+	public ThreatStatus getThreatStatus() {
+		return ThreatStatus.CRITICAL;
+	}
+
+	@Override
 	public String getName() {
 		return "Сверхсильные Мобы";
 	}
