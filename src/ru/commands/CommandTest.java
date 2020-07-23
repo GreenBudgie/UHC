@@ -1,6 +1,7 @@
 package ru.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,13 +18,8 @@ public class  CommandTest implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!sender.isOp()) return true;
 		Player p = (Player) sender;
-		String path = Bukkit.getWorldContainer().getAbsolutePath();
-		File temp = new File(path + "\\Arena\\.Temp");
-		UHCPlugin.log("ABS: " + Bukkit.getWorldContainer().getAbsolutePath());
-		try {
-			UHCPlugin.log("CAN: " + Bukkit.getWorldContainer().getCanonicalPath());
-		} catch(IOException e) {
-		}
+		p.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + ">>> " + ChatColor.GOLD + ChatColor.BOLD + "ПВП" + ChatColor.RED +
+				ChatColor.BOLD + " Включено!" + ChatColor.DARK_RED + ChatColor.BOLD + " <<<");
 		return true;
 	}
 }

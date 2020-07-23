@@ -71,22 +71,28 @@ public class FightHelper {
 		return null;
 	}
 
+	public static String padCrosses(String deathMessage) {
+		return ChatColor.DARK_RED + "" + ChatColor.BOLD + "\u274C " + ChatColor.RESET + deathMessage + ChatColor.DARK_RED + "" + ChatColor.BOLD + " \u274C";
+	}
+
 	public static String getDeathMessage(Player victim) {
 		FightProcess process = getProcess(victim);
 		Player killer = victim.getKiller();
+		String deathMessage;
 		if(process == null) {
 			if(killer == null) {
-				return ChatColor.GOLD + victim.getName() + ChatColor.YELLOW + " замачили";
+				deathMessage = ChatColor.GOLD + victim.getName() + ChatColor.RED + " замачили";
 			} else {
-				return ChatColor.GOLD + victim.getKiller().getName() + ChatColor.YELLOW + " замачил " + ChatColor.GOLD + victim.getName();
+				deathMessage = ChatColor.GOLD + victim.getKiller().getName() + ChatColor.RED + " замачил " + ChatColor.GOLD + victim.getName();
 			}
 		} else {
 			if(process.killMessage.isEmpty()) {
-				return ChatColor.GOLD + process.attacker.getName() + ChatColor.YELLOW + " замачил " + ChatColor.GOLD + victim.getName();
+				deathMessage = ChatColor.GOLD + process.attacker.getName() + ChatColor.RED + " замачил " + ChatColor.GOLD + victim.getName();
 			} else {
-				return ChatColor.GOLD + process.attacker.getName() + ChatColor.YELLOW + " " + process.killMessage + " " + ChatColor.GOLD + victim.getName();
+				deathMessage = ChatColor.GOLD + process.attacker.getName() + ChatColor.RED + " " + process.killMessage + " " + ChatColor.GOLD + victim.getName();
 			}
 		}
+		return padCrosses(deathMessage);
 	}
 
 	private static class FightProcess {

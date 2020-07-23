@@ -7,7 +7,9 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.Jukebox;
 import org.bukkit.block.Lectern;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftItem;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftVillager;
 import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.entity.*;
@@ -19,7 +21,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
@@ -43,6 +47,7 @@ import ru.util.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class UHC implements Listener {
 
@@ -77,6 +82,7 @@ public class UHC implements Listener {
 	private static int mutatorCount = 0;
 	private static Mutator prevMutator = null;
 	private static Player lastLeft = null;
+	private static BossBar voteBar = Bukkit.createBossBar("", BarColor.RED, BarStyle.SOLID);
 
 	public static void init() {
 		WorldManager.init();
@@ -311,6 +317,8 @@ public class UHC implements Listener {
 				if(isDuo) p.getInventory().setItem(4, getTeammateChooseItem());
 				showPlayer(p);
 			}
+			voteBar.removeAll();
+			voteBar.setVisible(false);
 			players.clear();
 			teams.clear();
 			spectators.clear();
@@ -342,7 +350,10 @@ public class UHC implements Listener {
 			}
 			mutatorCount = MathUtils.chance(30) ? 4 : (MathUtils.chance(65) ? 3 : 2);
 			voteResults.clear();
-			Bukkit.broadcastMessage(ChatColor.GREEN + "Игра начинается!");
+			for(Player player : Bukkit.getOnlinePlayers()) {
+				InventoryHelper.sendActionBarMessage(player, ChatColor.GOLD + "" + ChatColor.BOLD + "Игра" + ChatColor.RED + ChatColor.BOLD +
+						" начинается" + ChatColor.GRAY + "!");
+			}
 			WorldManager.updateBorder();
 			World map = WorldManager.getGameMap();
 			map.setPVP(false);
@@ -377,8 +388,10 @@ public class UHC implements Listener {
 				resetPlayer(p);
 				p.setNoDamageTicks(600);
 				p.setGameMode(GameMode.SURVIVAL);
-				p.getInventory().setItem(3, InventoryHelper.generateItemWithName(Material.LIME_DYE, ChatColor.GREEN + "Норм карта"));
-				p.getInventory().setItem(5, InventoryHelper.generateItemWithName(Material.RED_DYE, ChatColor.RED + "Говно карта"));
+				p.getInventory().setItem(3, InventoryHelper.generateItemWithName(Material.LIME_DYE,
+						ChatColor.GREEN + "Карта " + ChatColor.DARK_GREEN + ChatColor.BOLD + "Норм"));
+				p.getInventory().setItem(5, InventoryHelper.generateItemWithName(Material.RED_DYE,
+						ChatColor.RED + "Карта " + ChatColor.DARK_RED + ChatColor.BOLD + "Говно"));
 			}
 			if(isDuo) {
 				List<Player> newPlayers = new ArrayList<>();
@@ -423,6 +436,11 @@ public class UHC implements Listener {
 			}
 			refreshScoreboards();
 			if(UHC.fastStart == 0) {
+				for(Player player : players) {
+					voteBar.addPlayer(player);
+				}
+				voteBar.setVisible(true);
+				updateVoteBar();
 				state = GameState.VOTE;
 				voteTimer = 20;
 			} else {
@@ -445,8 +463,10 @@ public class UHC implements Listener {
 	public static void addPoints(Player p, int points) {
 		increaseStat(p.getName(), PlayerStat.POINTS, points);
 		if(p.isOnline() && stats) {
-			p.sendMessage(ChatColor.AQUA + "Очки" + ChatColor.WHITE + " +" + ChatColor.DARK_AQUA + points + ChatColor.WHITE + " (" + ChatColor.DARK_AQUA
-					+ PlayerStat.POINTS.getValue(p) + ChatColor.YELLOW + " всего" + ChatColor.WHITE + ")");
+			String pointStr = new NumericalCases("очко)", "очка", "очков").byNumber(points);
+			p.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "| " + ChatColor.RESET + ChatColor.DARK_GREEN + "+" + ChatColor.GREEN + ChatColor.BOLD + points +
+					ChatColor.RESET + " " + ChatColor.LIGHT_PURPLE + pointStr + ChatColor.DARK_GRAY + " (" + ChatColor.GRAY + "всего " + ChatColor.DARK_AQUA + ChatColor.BOLD +
+					PlayerStat.POINTS.getValue(p) + ChatColor.RESET + ChatColor.DARK_GRAY + ")" + ChatColor.BOLD + " |");
 		}
 	}
 
@@ -477,13 +497,22 @@ public class UHC implements Listener {
 	}
 
 	public static void endVote() {
+		voteBar.removeAll();
+		voteBar.setVisible(false);
 		int votesFor = 0;
 		for(Player pl : voteResults.keySet()) {
 			if(voteResults.get(pl)) votesFor++;
 		}
-		if(votesFor / (double) voteResults.size() >= 0.6) {
+		double progress;
+		if(!voteResults.isEmpty()) {
+			progress = votesFor / (double) voteResults.size();
+		} else {
+			progress = 0.5;
+		}
+		if(progress >= 0.6) {
 			for(Player p : players) {
-				p.sendTitle(ChatColor.GREEN + "Карта норм", ChatColor.GOLD + "35 секунд до начала", 10, 60, 30);
+				p.sendTitle(ChatColor.GREEN + "Карта " + ChatColor.DARK_GREEN + ChatColor.BOLD + "Норм",
+						ChatColor.GOLD + "35 секунд до начала", 10, 60, 30);
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
 				p.getInventory().clear();
 			}
@@ -491,7 +520,8 @@ public class UHC implements Listener {
 			preparingTimer = 35;
 		} else {
 			for(Player p : players) {
-				p.sendTitle(ChatColor.RED + "Карта говно!", ChatColor.GOLD + "Большинство проголосовало против", 10, 60, 30);
+				p.sendTitle(ChatColor.RED + "Карта " + ChatColor.DARK_RED + ChatColor.BOLD + "Говно" + ChatColor.GRAY + "!",
+						ChatColor.GOLD + "Большинство проголосовало против", 10, 60, 30);
 				p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1F, 0.5F);
 				p.getInventory().clear();
 				p.setGameMode(GameMode.SPECTATOR);
@@ -507,12 +537,16 @@ public class UHC implements Listener {
 		if(active) {
 			for(Player p : getInGamePlayers()) {
 				if(n < mutatorCount) {
-					p.sendTitle(ChatColor.GOLD + "Выбираем мутаторы", ChatColor.AQUA + "Количество: " + ChatColor.DARK_AQUA + (n + 1), 0, 200, 0);
+					ChatColor color = ChatColor.DARK_AQUA;
+					if(n + 1 == 3)color = ChatColor.RED;
+					if(n + 1 == 4) color = ChatColor.DARK_PURPLE;
+					p.sendTitle(ChatColor.GOLD + "Выбираем мутаторы", ChatColor.AQUA + "Количество" +
+							ChatColor.GRAY + ": " + color + ChatColor.BOLD + (n + 1), 0, 200, 0);
 					p.getInventory().setItem(slot, ItemUtils.builder(Material.REDSTONE).withName(" ").build());
 					p.playSound(p.getLocation(), Sound.ITEM_FIRECHARGE_USE, 0.3F, 1 + 0.1F * n);
 				} else {
 					p.getInventory().setItem(slot, ItemUtils.builder(Material.GRAY_DYE).withName(" ").build());
-					p.playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.3F, 1F);
+					p.playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.3F, 1.2F);
 				}
 			}
 		} else {
@@ -547,7 +581,8 @@ public class UHC implements Listener {
 			p.getInventory()
 					.setItem(slot, ItemUtils.builder(mutator.getItemToShow()).withName(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + mutator.getName()).build());
 			p.playSound(p.getLocation(), Sound.BLOCK_COMPARATOR_CLICK, 0.3F, 1 + pitch);
-			p.sendTitle(ChatColor.GOLD + "Выбираем мутаторы", ChatColor.AQUA + order + " мутатор: " + ChatColor.DARK_GRAY + mutator.getName(), 0, 200, 0);
+			p.sendTitle(ChatColor.GOLD + "Выбираем мутаторы", ChatColor.AQUA + order + " мутатор" + ChatColor.GRAY + ": " +
+					ChatColor.DARK_GRAY + mutator.getName(), 0, 200, 0);
 		}
 	}
 
@@ -559,13 +594,14 @@ public class UHC implements Listener {
 			if(mutator.isHidden()) {
 				p.getInventory().setItem(slot, ItemUtils.builder(Material.NAME_TAG).withName(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Скрытый Мутатор").build());
 				p.sendTitle(ChatColor.GOLD + "Выбираем мутаторы",
-						ChatColor.AQUA + order + " мутатор: " + ChatColor.DARK_RED + "" + ChatColor.BOLD + "Скрытый Мутатор", 0, 200, 0);
+						ChatColor.AQUA + order + " мутатор" + ChatColor.GRAY + ": " + ChatColor.DARK_RED + ChatColor.BOLD + "Скрытый Мутатор", 0, 200, 0);
 				p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.3F, 1F);
 			} else {
 				p.getInventory()
 						.setItem(slot, ItemUtils.builder(mutator.getItemToShow()).withName(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + mutator.getName()).build());
 				p.sendTitle(ChatColor.GOLD + "Выбираем мутаторы",
-						ChatColor.AQUA + order + " мутатор: " + ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + mutator.getName(), 0, 200, 0);
+						ChatColor.AQUA + order + " мутатор" + ChatColor.GRAY + ": " +
+								ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + mutator.getName(), 0, 200, 0);
 				p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.3F, 1F + 0.2F * n);
 			}
 		}
@@ -588,7 +624,7 @@ public class UHC implements Listener {
 					skip = false;
 					endVote();
 				}
-				timerInfo = ChatColor.GOLD + "Голосование: " + ChatColor.AQUA + voteTimer;
+				timerInfo = ChatColor.GOLD + "Голосование" + ChatColor.GRAY + ": " + ChatColor.AQUA + ChatColor.BOLD + voteTimer;
 			}
 		}
 		if(state == GameState.PREPARING) {
@@ -630,12 +666,14 @@ public class UHC implements Listener {
 					skip = false;
 					endPreparing();
 				}
-				timerInfo = ChatColor.GOLD + "Подготовка: " + ChatColor.AQUA + preparingTimer;
+				timerInfo = ChatColor.GOLD + "Подготовка" + ChatColor.GRAY + ": " + ChatColor.AQUA + ChatColor.BOLD + preparingTimer;
 			}
 			if(preparingTimer == 26) {
 				if(TaskManager.tick == 0) {
 					for(Player p : getInGamePlayers()) {
-						p.sendTitle(ChatColor.GOLD + "Выбираем мутаторы", ChatColor.AQUA + "Количество: " + ChatColor.DARK_AQUA + 0, 10, 200, 0);
+						p.sendTitle(ChatColor.GOLD + "Выбираем мутаторы", ChatColor.AQUA + "Количество" + ChatColor.GRAY + ": " +
+										ChatColor.DARK_AQUA + ChatColor.BOLD + 0,
+								10, 200, 0);
 					}
 				}
 				if(TaskManager.tick == 10) {
@@ -744,8 +782,8 @@ public class UHC implements Listener {
 		}
 		if(state == GameState.OUTBREAK) {
 			if(TaskManager.isSecUpdated()) {
-				timerInfo = ChatColor.GOLD + "До ПВП: " + ChatColor.AQUA + MathUtils.formatTime(outbreakTimer);
 				outbreakTimer--;
+				timerInfo = ChatColor.GOLD + "До ПВП" + ChatColor.GRAY + ": " + ChatColor.AQUA + ChatColor.BOLD + MathUtils.formatTime(outbreakTimer);
 				if(outbreakTimer == 0 || skip) {
 					skip = false;
 					state = GameState.GAME;
@@ -753,16 +791,17 @@ public class UHC implements Listener {
 					WorldManager.getGameMap().setPVP(true);
 					for(Player p : getInGamePlayers()) {
 						p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1F, 0.5F);
-						p.sendTitle(ChatColor.GOLD + "ПВП Включено!",
-								ChatColor.YELLOW + "До дезматча " + ChatColor.AQUA + getGameDuration() + ChatColor.YELLOW + " минут", 10, 60, 30);
+						p.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "ПВП " + ChatColor.GOLD + ChatColor.BOLD + "Включено" + ChatColor.GRAY + "!",
+								ChatColor.YELLOW + "До дезматча " + ChatColor.AQUA + ChatColor.BOLD + getGameDuration() +
+										ChatColor.RESET + ChatColor.YELLOW + " минут", 10, 60, 30);
 					}
 				}
 			}
 		}
 		if(state == GameState.GAME) {
 			if(TaskManager.isSecUpdated()) {
-				timerInfo = ChatColor.GOLD + "До дезматча: " + ChatColor.AQUA + MathUtils.formatTime(deathmatchTimer);
 				deathmatchTimer--;
+				timerInfo = ChatColor.GOLD + "До дезматча" + ChatColor.GRAY + ": " + ChatColor.AQUA + ChatColor.BOLD + MathUtils.formatTime(deathmatchTimer);
 				if(deathmatchTimer == 0 || skip) {
 					skip = false;
 					state = GameState.DEATHMATCH;
@@ -771,7 +810,10 @@ public class UHC implements Listener {
 					for(Player p : getInGamePlayers()) {
 						p.teleport(WorldManager.getArena().getSpawnLocation());
 						if(isPlaying(p)) addPoints(p, 5);
-						p.sendTitle(ChatColor.GOLD + "Дезматч!", ChatColor.YELLOW + "15 секунд до ПВП!", 10, 60, 30);
+						p.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Дезматч" + ChatColor.GRAY + "!",
+								ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "15" + ChatColor.RESET + ChatColor.GOLD + " секунд до " +
+										ChatColor.DARK_RED + ChatColor.BOLD + "ПВП" + ChatColor.GRAY + "!",
+								10, 60, 30);
 					}
 				}
 			}
@@ -787,12 +829,20 @@ public class UHC implements Listener {
 				if(arenaPvpTimer == 0) {
 					WorldManager.getArena().setPVP(true);
 					for(Player p : getInGamePlayers()) {
-						p.sendMessage(ChatColor.LIGHT_PURPLE + "ПВП Включено!");
+						p.sendTitle("", ChatColor.DARK_RED + "" + ChatColor.BOLD + ">>> " + ChatColor.GOLD + ChatColor.BOLD + "ПВП" + ChatColor.RED +
+								ChatColor.BOLD + " Включено!" + ChatColor.DARK_RED + ChatColor.BOLD + " <<<", 0, 35, 15);
 						p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
 					}
 				}
+				if(arenaPvpTimer <= 3 && arenaPvpTimer > 0) {
+					for(Player p : getInGamePlayers()) {
+						p.sendTitle("", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + arenaPvpTimer, 0, 40, 0);
+						p.playSound(p.getLocation(), Sound.BLOCK_COMPARATOR_CLICK, 0.8F, 0.5F + arenaPvpTimer / 3F);
+					}
+				}
 				if(arenaPvpTimer > 0) {
-					timerInfo = ChatColor.YELLOW + "До ПВП: " + ChatColor.DARK_RED + arenaPvpTimer;
+					timerInfo = ChatColor.RED + "" + ChatColor.BOLD + "До" + ChatColor.DARK_RED + ChatColor.BOLD + " ПВП" + ChatColor.GRAY + ": " +
+							ChatColor.DARK_AQUA + ChatColor.BOLD + arenaPvpTimer;
 				} else {
 					timerInfo = "";
 				}
@@ -1236,11 +1286,13 @@ public class UHC implements Listener {
 		for(Player p : players) {
 			glassPlates.forEach(location -> location.getBlock().setType(Material.AIR));
 			if(MutatorManager.isActive(MutatorManager.hungerGames)) {
-				p.sendTitle(ChatColor.BOLD + "" + ChatColor.RED + "Игра " + ChatColor.GOLD + "началась!",
-						ChatColor.YELLOW + "У тебя " + ChatColor.DARK_RED + "ОДНА СУКА МИНУТА" + ChatColor.YELLOW + " на развитие без ПВП", 10, 60, 30);
+				p.sendTitle(ChatColor.RED + "" + ChatColor.BOLD + "Игра " + ChatColor.GOLD + ChatColor.BOLD + "началась!",
+						ChatColor.YELLOW + "У тебя " + ChatColor.DARK_RED + ChatColor.BOLD + "ОДНА СУКА МИНУТА" +
+								ChatColor.YELLOW + " на развитие без ПВП", 10, 60, 30);
 			} else {
-				p.sendTitle(ChatColor.BOLD + "" + ChatColor.RED + "Игра " + ChatColor.GOLD + "началась!",
-						ChatColor.YELLOW + "У тебя " + ChatColor.AQUA + getNoPVPDuration() + ChatColor.YELLOW + " минут на развитие без ПВП", 10, 60, 30);
+				p.sendTitle(ChatColor.RED + "" + ChatColor.BOLD + "Игра " + ChatColor.GOLD + ChatColor.BOLD + "началась!",
+						ChatColor.YELLOW + "У тебя " + ChatColor.AQUA + ChatColor.BOLD + getNoPVPDuration() + ChatColor.YELLOW + " минут на развитие без ПВП",
+						10, 60, 30);
 			}
 			p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.5F, 1);
 			p.getInventory().clear();
@@ -1267,14 +1319,36 @@ public class UHC implements Listener {
 
 	public static void passVote(Player p, boolean vote) {
 		voteResults.put(p, vote);
-		Bukkit.broadcastMessage(ChatColor.GOLD + p.getName() + ChatColor.YELLOW + " проголосовал " + (vote ? ChatColor.GREEN + "ЗА" : ChatColor.RED + "ПРОТИВ"));
 		p.getWorld().playSound(p.getLocation(), vote ? Sound.ENTITY_VILLAGER_YES : Sound.ENTITY_VILLAGER_NO, 1, 1);
 		p.getInventory().clear();
 		WorldHelper.spawnParticlesAround(p, Particle.REDSTONE, vote ? Color.LIME : Color.RED, 20);
 		p.getLocation().clone().add(0, -1, 0).getBlock().setType(vote ? Material.LIME_STAINED_GLASS : Material.RED_STAINED_GLASS);
+		updateVoteBar();
 		if(voteResults.size() == players.size()) {
 			endVote();
 		}
+	}
+
+	private static void updateVoteBar() {
+		int votesFor = 0;
+		for(Player pl : voteResults.keySet()) {
+			if(voteResults.get(pl)) votesFor++;
+		}
+		int votesAgainst = voteResults.size() - votesFor;
+		double progress;
+		if(!voteResults.isEmpty()) {
+			progress = votesFor / (double) voteResults.size();
+		} else {
+			progress = 0.5;
+		}
+		if(progress >= 0.6) {
+			voteBar.setColor(BarColor.GREEN);
+		} else {
+			voteBar.setColor(BarColor.RED);
+		}
+		voteBar.setTitle(ChatColor.GOLD + "Голосование " + ChatColor.DARK_GRAY + "(" + ChatColor.GREEN + ChatColor.BOLD + votesFor + ChatColor.GRAY + " / " +
+				ChatColor.RED + ChatColor.BOLD + votesAgainst + ChatColor.DARK_GRAY + ")");
+		voteBar.setProgress(progress);
 	}
 
 	public static void heal(Player p) {
@@ -1286,65 +1360,67 @@ public class UHC implements Listener {
 	}
 
 	public static String getDeathMessage(Player p, EntityDamageEvent.DamageCause cause) {
-		String name = ChatColor.GOLD + p.getName() + ChatColor.YELLOW + " ";
+		String name = ChatColor.GOLD + p.getName() + ChatColor.RED + " ";
 		switch(cause) {
 		case CONTACT:
-			return name + "умер от кактуса, серьезно?";
+			name += "умер от кактуса, серьезно?"; break;
 		case ENTITY_ATTACK:
-			return name + "замачили";
+			name += "погиб"; break;
 		case ENTITY_SWEEP_ATTACK:
-			return name + "умер от свайпа, бля...";
+			name += "умер от свайпа, бля..."; break;
 		case PROJECTILE:
-			return name + "застрелили";
+			name += "застрелили"; break;
 		case SUFFOCATION:
-			return name + "задохнулся в стене";
+			name += "задохнулся в стене"; break;
 		case FALL:
-			return name + "позорно разбился";
+			name += "позорно разбился"; break;
 		case FIRE:
 		case FIRE_TICK:
-			return name + "сгорел";
+			name += "сгорел"; break;
 		case MELTING:
-			return name + "расплавился";
+			name += "расплавился"; break;
 		case LAVA:
-			return name + "трагически сгорел в лаве";
+			name += "трагически сгорел в лаве"; break;
 		case DROWNING:
-			return name + "позорно захлебнулся";
+			name += "позорно захлебнулся"; break;
 		case BLOCK_EXPLOSION:
-			return name + "взорвался";
+			name += "взорвался"; break;
 		case ENTITY_EXPLOSION:
-			return name + "взорвался";
+			name += "взорвался"; break;
 		case VOID:
-			return name + "выпал из мира";
+			name += "выпал из мира"; break;
 		case LIGHTNING:
-			return name + "может купить лотерейный билет";
+			name += "может купить лотерейный билет"; break;
 		case SUICIDE:
-			return name + "суициднулся";
+			name += "суициднулся"; break;
 		case STARVATION:
-			return name + "умер от голода";
+			name += "умер от голода"; break;
 		case POISON:
-			return name + "отравился";
+			name += "отравился"; break;
 		case MAGIC:
-			return name + "взорвался";
+			name += "взорвался"; break;
 		case WITHER:
-			return name + "высох";
+			name += "высох"; break;
 		case FALLING_BLOCK:
-			return name + "расплющился";
+			name += "расплющился"; break;
 		case THORNS:
-			return name + "напал на жесткого челика с чаром на шипы";
+			name += "напал на жесткого челика с чаром на шипы"; break;
 		case DRAGON_BREATH:
-			return name + "хз как но умер от дракона";
+			name += "хз как но умер от дракона"; break;
 		case CUSTOM:
-			return name + "погиб";
+			name += "умер"; break;
 		case FLY_INTO_WALL:
-			return name + "влетел в стену";
+			name += "влетел в стену"; break;
 		case HOT_FLOOR:
-			return name + "поджарился на магме";
+			name += "поджарился на магме"; break;
 		case CRAMMING:
-			return name + "раздавили мобы";
+			name += "раздавили мобы"; break;
 		case DRYOUT:
-			return name + "высох";
+			name += "высох"; break;
+		default:
+			name += "странно умер";
 		}
-		return name + "сдох";
+		return FightHelper.padCrosses(name);
 	}
 
 	public static void teleportToParkour(Player p) {
@@ -1600,7 +1676,9 @@ public class UHC implements Listener {
 				for(Player pl : getInGamePlayers()) {
 					pl.sendMessage(FightHelper.getDeathMessage(p));
 				}
-				p.sendTitle(ChatColor.DARK_RED + "Тебя замачили!", "", 10, 60, 20);
+				String taunt = ChatColor.DARK_AQUA + " " + MathUtils.choose("тебя унизил", "умнее тебя", "сильнее тебя", "не такой тупой, как кажется",
+						"иногда проявляет себя", "играет в кубики лучше тебя");
+				p.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Тебя замачили!", ChatColor.GOLD + killer.getName() + taunt, 10, 60, 20);
 			} else {
 				boolean golden = state == GameState.OUTBREAK;
 				ItemStack apple = InventoryHelper.generateItemWithName(golden ? Material.GOLDEN_APPLE : Material.APPLE,
@@ -1617,7 +1695,7 @@ public class UHC implements Listener {
 			}
 			Player teammate = getTeammate(p);
 			if(teams.size() == 3 && (teammate == null || !isPlaying(teammate))) {
-				String info = ChatColor.YELLOW + "Ты занял " + ChatColor.BOLD + ChatColor.AQUA + "третье" + ChatColor.RESET + ChatColor.YELLOW + " место!";
+				String info = ChatColor.YELLOW + "Ты занял " + ChatColor.DARK_AQUA + ChatColor.BOLD + "третье" + ChatColor.RESET + ChatColor.YELLOW + " место!";
 				addPoints(p, teammate == null ? 30 : 20);
 				p.sendMessage(info);
 				if(teammate != null) {
@@ -1626,7 +1704,7 @@ public class UHC implements Listener {
 				}
 			}
 			if(teams.size() == 2 && (teammate == null || !isPlaying(teammate))) {
-				String info = ChatColor.YELLOW + "Ты занял " + ChatColor.BOLD + ChatColor.AQUA + "второе" + ChatColor.RESET + ChatColor.YELLOW + " место!";
+				String info = ChatColor.YELLOW + "Ты занял " + ChatColor.AQUA + ChatColor.BOLD + "второе" + ChatColor.RESET + ChatColor.YELLOW + " место!";
 				addPoints(p, teammate == null ? 40 : 25);
 				p.sendMessage(info);
 				if(teammate != null) {
@@ -1712,7 +1790,7 @@ public class UHC implements Listener {
 						pl.getWorld().playSound(pl.getLocation(), Sound.ENTITY_PLAYER_BURP, 2F, 1F);
 						WorldHelper.spawnParticlesAround(p, Particle.SMOKE_NORMAL, null, 20);
 					} else {
-						pl.sendMessage(ChatColor.GOLD + p.getName() + ChatColor.RED + " вышел из игры");
+						pl.sendMessage(FightHelper.padCrosses(ChatColor.GOLD + p.getName() + ChatColor.DARK_RED + " вышел из игры"));
 						lastLeft = p;
 					}
 				}
@@ -1734,7 +1812,7 @@ public class UHC implements Listener {
 			updateTeams();
 			leaveTeam(p);
 			for(Player pl : WorldManager.getLobby().getPlayers()) {
-				pl.sendMessage(ChatColor.GOLD + p.getName() + ChatColor.YELLOW + " отключился");
+				pl.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "- " + ChatColor.RESET + ChatColor.GOLD + p.getName() + ChatColor.YELLOW + " отключился");
 			}
 			PvpArena.onArena.remove(p);
 			refreshLobbyScoreboardLater();
@@ -1748,7 +1826,7 @@ public class UHC implements Listener {
 		p.setGameMode(GameMode.ADVENTURE);
 		resetPlayer(p);
 		PlayerStat.defaultStats(p);
-		String msg = ChatColor.GOLD + p.getName() + ChatColor.YELLOW + " присоединился";
+		String msg = ChatColor.GREEN + "" + ChatColor.BOLD + "+ " + ChatColor.RESET + ChatColor.GOLD + p.getName() + ChatColor.YELLOW + " присоединился";
 		for(Player pl : WorldManager.getLobby().getPlayers()) {
 			pl.sendMessage(msg);
 		}
@@ -1760,10 +1838,33 @@ public class UHC implements Listener {
 			p.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Сейчас идет игра! " + ChatColor.RESET + ChatColor.AQUA
 					+ "За игрой можно наблюдать, нажав по табличке на стене.");
 		} else {
-			p.sendMessage(ChatColor.GOLD + "Не забудь проголосовать за " + ChatColor.LIGHT_PURPLE + "мутаторы" + ChatColor.GOLD + "! Команда: " + ChatColor.BOLD
-					+ "/mutator");
+			if(MutatorManager.getAvailablePreferences().getOrDefault(p.getName(), new HashSet<>()).isEmpty()) {
+				p.sendMessage(ChatColor.GOLD + "Проголосуй за " + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "мутаторы" + ChatColor.RESET + ChatColor.GOLD +
+						"! Команда: " + ChatColor.YELLOW + ChatColor.BOLD + "/mutator");
+			}
 		}
 		refreshLobbyScoreboardLater();
+	}
+
+	@EventHandler
+	public void craft(CraftItemEvent e) {
+		if(e.getRecipe().getResult().getType() == Material.EMERALD_BLOCK) {
+			if(Stream.of(e.getInventory().getMatrix()).anyMatch(item -> !ItemUtils.getLore(item).isEmpty())) {
+				Player p = (Player) e.getWhoClicked();
+				p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_BURP, 0.5F, 1F);
+				e.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler
+	public void craft(PrepareItemCraftEvent e) {
+		Recipe recipe = e.getRecipe();
+		if(recipe != null && e.getRecipe().getResult().getType() == Material.EMERALD_BLOCK) {
+			if(Stream.of(e.getInventory().getMatrix()).anyMatch(item -> !ItemUtils.getLore(item).isEmpty())) {
+				recipe.getResult().setAmount(0);
+			}
+		}
 	}
 
 	@EventHandler

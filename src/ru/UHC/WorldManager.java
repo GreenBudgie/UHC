@@ -32,6 +32,7 @@ public class WorldManager {
 		arena.setGameRule(GameRule.DO_MOB_SPAWNING, false);
 		arena.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
 		arena.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+		arena.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 		arena.setPVP(false);
 		arena.setTime(6000);
 		arena2 = Bukkit.createWorld(new WorldCreator("Arena2"));
@@ -45,6 +46,7 @@ public class WorldManager {
 		arena2.setGameRule(GameRule.DO_MOB_SPAWNING, false);
 		arena2.setGameRule(GameRule.DO_MOB_SPAWNING, false);
 		arena2.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
+		arena2.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 		arena2.setPVP(false);
 		arena2.setTime(18000);
 		if(Bukkit.getWorld("CurrentMap") != null) {
@@ -67,6 +69,7 @@ public class WorldManager {
 		UHC.generating = true;
 		World map = Bukkit.createWorld(new WorldCreator("CurrentMap"));
 		map.setDifficulty(Difficulty.HARD);
+		map.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 		map.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 		map.setGameRule(GameRule.RANDOM_TICK_SPEED, 3);
 		map.setGameRule(GameRule.NATURAL_REGENERATION, false);
