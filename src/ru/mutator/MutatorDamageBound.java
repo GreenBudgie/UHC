@@ -18,7 +18,7 @@ public class MutatorDamageBound extends Mutator implements Listener {
 
 	@Override
 	public Material getItemToShow() {
-		return Material.ENDER_EYE;
+		return Material.LEAD;
 	}
 
 	@Override

@@ -3,6 +3,8 @@ package ru.UHC;
 import com.google.common.collect.Lists;
 import net.minecraft.server.v1_16_R1.MerchantRecipeList;
 import org.bukkit.*;
+import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.Jukebox;
@@ -348,6 +350,7 @@ public class UHC implements Listener {
 				Bukkit.broadcastMessage(ChatColor.RED + "Карта не сгенерирована!");
 				return;
 			}
+			resetAllAdvancements();
 			mutatorCount = MathUtils.chance(30) ? 4 : (MathUtils.chance(65) ? 3 : 2);
 			voteResults.clear();
 			for(Player player : Bukkit.getOnlinePlayers()) {
@@ -1437,6 +1440,61 @@ public class UHC implements Listener {
 				.withSplittedLore(ChatColor.GOLD + "Окружи его золотыми слитками и получи 2 золотых яблока").build();
 	}
 
+	public static void giveAllRecipes(Player player) {
+		Iterator<Advancement> iterator = Bukkit.getServer().advancementIterator();
+		while(iterator.hasNext()) {
+			Advancement adv = iterator.next();
+			UHCPlugin.log(adv.getKey().getKey());
+			if(adv.getKey().getKey().startsWith("recipes")) {
+				AdvancementProgress progress = player.getAdvancementProgress(adv);
+				for(String criteria : progress.getRemainingCriteria()) {
+					progress.awardCriteria(criteria);
+				}
+			}
+		}
+	}
+
+	public static void resetAdvancements(Player player) {
+		Iterator<Advancement> iterator = Bukkit.getServer().advancementIterator();
+		while(iterator.hasNext()) {
+			Advancement adv = iterator.next();
+			if(!adv.getKey().getKey().startsWith("recipes")) {
+				AdvancementProgress progress = player.getAdvancementProgress(adv);
+				for(String criteria : progress.getAwardedCriteria()) {
+					progress.revokeCriteria(criteria);
+				}
+			}
+		}
+	}
+
+	public static void resetAllAdvancements() {
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			resetAdvancements(player);
+		}
+	}
+
+	private static String invViewStart = ChatColor.GRAY + "Инвентарь";
+
+	public static void viewInventory(Player observer, Player target) {
+		Inventory inv = Bukkit.createInventory(observer, 9 * 5, invViewStart + ChatColor.GOLD + " " + target.getName());
+		for(int i = 0; i < target.getInventory().getContents().length; i++) {
+			ItemStack item = target.getInventory().getContents()[i];
+			inv.setItem(i, item);
+		}
+		for(int i = 0; i < target.getInventory().getArmorContents().length; i++) {
+			ItemStack armor = target.getInventory().getArmorContents()[i];
+			inv.setItem(9 * 4 + 2 + i, armor);
+		}
+		observer.openInventory(inv);
+	}
+
+	@EventHandler
+	public void noClick(InventoryClickEvent e) {
+		if(e.getView().getTitle().startsWith(invViewStart)) {
+			e.setCancelled(true);
+		}
+	}
+
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void lobbyInvClick(InventoryClickEvent e) {
@@ -1621,6 +1679,8 @@ public class UHC implements Listener {
 			e.setCancelled(true);
 		}
 	}
+
+
 
 	@EventHandler
 	public void entityDeath(EntityDeathEvent e) {
@@ -1826,6 +1886,7 @@ public class UHC implements Listener {
 		p.setGameMode(GameMode.ADVENTURE);
 		resetPlayer(p);
 		PlayerStat.defaultStats(p);
+		giveAllRecipes(p);
 		String msg = ChatColor.GREEN + "" + ChatColor.BOLD + "+ " + ChatColor.RESET + ChatColor.GOLD + p.getName() + ChatColor.YELLOW + " присоединился";
 		for(Player pl : WorldManager.getLobby().getPlayers()) {
 			pl.sendMessage(msg);
@@ -2005,7 +2066,7 @@ public class UHC implements Listener {
 		if((state.isInGame() || state == GameState.DEATHMATCH) && e.getHand() == EquipmentSlot.HAND && e.getRightClicked() instanceof Player && isSpectator(p)) {
 			Player clicked = (Player) e.getRightClicked();
 			if(isPlaying(clicked)) {
-				p.openInventory(clicked.getInventory());
+				viewInventory(p, clicked);
 			}
 		}
 	}

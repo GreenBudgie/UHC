@@ -54,3 +54,6 @@ commands:
  options:
   description: Показать меню настроек
   usage: /options
+ inv:
+  description: Показать инвентарь игрока; работает только с мутатором Всевидящий
+  usage: /inv <ник>
