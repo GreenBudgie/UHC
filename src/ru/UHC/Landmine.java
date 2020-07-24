@@ -7,6 +7,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import ru.util.MathUtils;
+import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 import java.util.List;
@@ -49,12 +50,12 @@ public class Landmine {
 				}
 			}
 			if(MathUtils.chance(10)) {
-				WorldHelper.spawnParticle(location.clone().add(0.5, 0.8, 0.5), Particle.SMOKE_NORMAL, null);
+				ParticleUtils.createParticle(location.clone().add(0.5, 0.8, 0.5), Particle.SMOKE_NORMAL, null);
 			}
 		} else {
 			if(signalTicks.indexOf(fuseTicks) != -1) {
 				location.getWorld().playSound(location, Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1F, 2 - ((float) fuseTicks / (float) maxFuseTicks));
-				WorldHelper.spawnParticle(location.clone().add(0.5, 0.8, 0.5), Particle.FLAME, null);
+				ParticleUtils.createParticle(location.clone().add(0.5, 0.8, 0.5), Particle.FLAME, null);
 			}
 			fuseTicks--;
 			if(fuseTicks <= 0) {

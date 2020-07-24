@@ -1,11 +1,9 @@
 package ru.UHC;
 
-import de.slikey.effectlib.effect.WarpEffect;
 import org.bukkit.*;
-import ru.main.UHCPlugin;
 import ru.util.MathUtils;
+import ru.util.ParticleUtils;
 import ru.util.TaskManager;
-import ru.util.WorldHelper;
 
 public class TerraTracer {
 
@@ -21,7 +19,7 @@ public class TerraTracer {
 		TerraTracer tracer = new TerraTracer();
 		tracer.location = location;
 		location.getWorld().playSound(location, Sound.BLOCK_END_PORTAL_SPAWN, 0.5F, 0.5F);
-		WorldHelper.spawnParticlesInsideSphere(location, RADIUS / 1.5, Particle.SMOKE_NORMAL, null, 40);
+		ParticleUtils.createParticlesInsideSphere(location, RADIUS / 1.5, Particle.SMOKE_NORMAL, null, 40);
 		UHC.tracers.add(tracer);
 	}
 
@@ -43,13 +41,13 @@ public class TerraTracer {
 				if(count > 0) {
 					Location show = location.clone().add(MathUtils.randomRangeDouble(-1.5,  1.5), MathUtils.randomRangeDouble(1.5, 2.5),
 							MathUtils.randomRangeDouble(-1.5, 1.5));
-					WorldHelper.spawnParticlesInsideSphere(show, 0.8, Particle.REDSTONE, ore.color, count);
-					WorldHelper.spawnParticle(show, Particle.FLASH, null);
+					ParticleUtils.createParticlesInsideSphere(show, 0.8, Particle.REDSTONE, ore.color, count);
+					ParticleUtils.createParticle(show, Particle.FLASH, null);
 					show.getWorld().playSound(show, Sound.ENTITY_ENDER_EYE_DEATH, (float) MathUtils.clamp(count / 5.0, 0.8, 1.5),
 							(float) MathUtils.clamp(count / 5.0, 1, 2));
 				} else {
 					location.getWorld().playSound(location, Sound.ENTITY_PLAYER_BURP, 0.5F, 1F);
-					WorldHelper.spawnParticle(location.clone().add(0.5, 1.5, 0.5), Particle.SMOKE_NORMAL, null);
+					ParticleUtils.createParticle(location.clone().add(0.5, 1.5, 0.5), Particle.SMOKE_NORMAL, null);
 				}
 				if(phase < OreType.values().length - 1) {
 					phase++;
@@ -58,14 +56,7 @@ public class TerraTracer {
 				}
 			}
 			if(TaskManager.ticksPassed(50)) {
-				WarpEffect effect = new WarpEffect(UHCPlugin.em);
-				effect.setLocation(location.clone().add(0, 0.7, 0));
-				effect.particle = Particle.CAMPFIRE_COSY_SMOKE;
-				effect.iterations = 1;
-				effect.particles = 50;
-				effect.radius = RADIUS;
-				effect.rings = 1;
-				effect.start();
+				ParticleUtils.createCircle(location.clone().add(0, 0.7, 0), Particle.CAMPFIRE_COSY_SMOKE, null, RADIUS, 50);
 			}
 		}
 	}

@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.UHC;
+import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 public class CustomItemCreatureHighlighter extends RequesterCustomItem {
@@ -30,7 +31,7 @@ public class CustomItemCreatureHighlighter extends RequesterCustomItem {
 				entity.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 240, 0));
 			}
 		}
-		WorldHelper.spawnParticlesInRange(p.getLocation(), 3, Particle.FIREWORKS_SPARK, Color.AQUA, 35);
+		ParticleUtils.createParticlesInsideSphere(p.getLocation(), 3, Particle.FIREWORKS_SPARK, null, 35);
 		p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1.7F);
 	}
 

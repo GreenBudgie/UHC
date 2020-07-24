@@ -1,24 +1,23 @@
 package ru.mutator;
 
-import de.slikey.effectlib.effect.WarpEffect;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
-import ru.main.UHCPlugin;
 import ru.util.MathUtils;
+import ru.util.ParticleUtils;
+import ru.util.Region;
 import ru.util.TaskManager;
 
 public class MutatorMeetingPlace extends Mutator implements Listener {
 
 	private Location meetingLoc;
 	public BossBar bar;
-	private final int maxCooldown = 600;
+	private final int maxCooldown = 10; //FIXME 600
 	private int cooldown = maxCooldown;
 	private int meetingDelay = 10;
 	private boolean isMeeting = false;
@@ -42,7 +41,7 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 
 	@Override
 	public String getDescription() {
-		return "Каждые десять минут все игроки должны собраться в центре карты (не обязательно на поверхности), иначе будут убиты. При этом в аду безопасно!";
+		return "Каждые десять минут все игроки должны собраться в центре карты (не обязательно на поверхности), иначе будут убиты";
 	}
 
 	private String getPos() {
@@ -124,14 +123,8 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 					bar.setProgress(cooldown / (double) maxCooldown);
 					cooldown--;
 				}
-				WarpEffect ef = new WarpEffect(UHCPlugin.em);
-				ef.iterations = 1;
-				ef.radius = radius;
-				ef.rings = 1;
-				ef.setLocation(meetingLoc);
-				ef.particles = radius * 5;
-				ef.particle = Particle.CLOUD;
-				ef.start();
+				Region region = new Region(meetingLoc.clone().subtract(radius, 0, radius), meetingLoc.clone().add(radius, 0, radius));
+				ParticleUtils.createParticlesOnRegionEdges(region, Particle.CLOUD,0.5, null);
 			} else {
 				bar.setVisible(false);
 			}

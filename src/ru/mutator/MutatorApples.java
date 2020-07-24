@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.util.MathUtils;
+import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 public class MutatorApples extends Mutator implements Listener {
@@ -41,7 +42,7 @@ public class MutatorApples extends Mutator implements Listener {
 		if(b.getType() == Material.DARK_OAK_LEAVES || b.getType() == Material.OAK_LEAVES) {
 			Leaves leaves = (Leaves) b.getState().getBlockData();
 			if(!leaves.isPersistent() && MathUtils.chance(7)) {
-				WorldHelper.spawnParticlesInside(b, Particle.REDSTONE, Color.YELLOW, 8);
+				ParticleUtils.createParticlesInside(b, Particle.REDSTONE, Color.YELLOW, 8);
 				b.getWorld().dropItemNaturally(b.getLocation(), new ItemStack(Material.APPLE));
 			}
 		}
@@ -52,7 +53,7 @@ public class MutatorApples extends Mutator implements Listener {
 		Block b = e.getBlock();
 		if(b.getType() == Material.DARK_OAK_LEAVES || b.getType() == Material.OAK_LEAVES) {
 			if(MathUtils.chance(8)) {
-				WorldHelper.spawnParticlesInside(b, Particle.REDSTONE, Color.YELLOW, 8);
+				ParticleUtils.createParticlesInside(b, Particle.REDSTONE, Color.YELLOW, 8);
 				b.getWorld().dropItemNaturally(b.getLocation(), new ItemStack(Material.APPLE));
 			}
 		}

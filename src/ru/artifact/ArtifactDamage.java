@@ -9,6 +9,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.UHC;
 import ru.util.MathUtils;
+import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 public class ArtifactDamage extends Artifact {
@@ -44,7 +45,7 @@ public class ArtifactDamage extends Artifact {
 				player.damage(damage);
 			}
 			player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1F, 0.5F);
-			WorldHelper.spawnParticlesInRange(player.getLocation(), 3, Particle.SMOKE_LARGE, null, 15);
+			ParticleUtils.createParticlesInRange(player.getLocation(), 3, Particle.SMOKE_LARGE, null, 15);
 		}
 	}
 

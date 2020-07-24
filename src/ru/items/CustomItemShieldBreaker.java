@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.UHC;
+import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 public class CustomItemShieldBreaker extends RequesterCustomItem implements Listener {
@@ -33,7 +34,7 @@ public class CustomItemShieldBreaker extends RequesterCustomItem implements List
 				if(off.getType() == Material.SHIELD) off.setAmount(0);
 				else if(main.getType() == Material.SHIELD) main.setAmount(0);
 				victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 1, 0.5F);
-				WorldHelper.spawnParticlesAround(victim, Particle.SMOKE_NORMAL, null, 20);
+				ParticleUtils.createParticlesAround(victim, Particle.SMOKE_NORMAL, null, 20);
 			}
 		}
 	}

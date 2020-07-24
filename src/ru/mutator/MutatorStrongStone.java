@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.util.InventoryHelper;
+import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 public class MutatorStrongStone extends Mutator implements Listener {
@@ -38,7 +39,7 @@ public class MutatorStrongStone extends Mutator implements Listener {
 		Block b = e.getBlock();
 		ItemStack tool = e.getPlayer().getInventory().getItemInMainHand();
 		if(b.getType() == Material.STONE && InventoryHelper.isPickaxe(tool.getType())) {
-			WorldHelper.spawnParticlesOutline(b, Particle.SMOKE_NORMAL, null, 10);
+			ParticleUtils.createParticlesOutline(b, Particle.SMOKE_NORMAL, null, 10);
 			b.getWorld().playSound(b.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.3F, 1F);
 			e.setCancelled(true);
 		}

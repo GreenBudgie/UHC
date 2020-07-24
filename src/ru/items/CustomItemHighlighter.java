@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.UHC;
+import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 public class CustomItemHighlighter extends RequesterCustomItem {
@@ -33,7 +34,7 @@ public class CustomItemHighlighter extends RequesterCustomItem {
 			}
 		}
 		if(!found) p.sendMessage(ChatColor.RED + "В радиусе 128 блоков никого нет");
-		WorldHelper.spawnParticlesInRange(p.getLocation(), 3, Particle.END_ROD, Color.WHITE, 35);
+		ParticleUtils.createParticlesInsideSphere(p.getLocation(), 3, Particle.END_ROD, Color.WHITE, 35);
 		p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1.5F);
 	}
 

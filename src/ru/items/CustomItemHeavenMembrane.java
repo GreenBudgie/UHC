@@ -6,6 +6,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 public class CustomItemHeavenMembrane extends RequesterCustomItem {
@@ -22,10 +23,10 @@ public class CustomItemHeavenMembrane extends RequesterCustomItem {
 	public void onUseRight(Player p, ItemStack item, PlayerInteractEvent e) {
 		item.setAmount(item.getAmount() - 1);
 		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 20 * 30, 0));
-		WorldHelper.spawnParticlesInsideSphere(p.getLocation(), 3, Particle.END_ROD, null, 35);
+		ParticleUtils.createParticlesInsideSphere(p.getLocation(), 3, Particle.END_ROD, null, 35);
 		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PHANTOM_FLAP, 2F, 2F);
 		p.teleport(p.getLocation().clone().add(0, p.getWorld().getHighestBlockYAt(p.getLocation()) + 100, 0));
-		WorldHelper.spawnParticlesInsideSphere(p.getLocation(), 3, Particle.END_ROD, null, 35);
+		ParticleUtils.createParticlesInsideSphere(p.getLocation(), 3, Particle.END_ROD, null, 35);
 		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PHANTOM_FLAP, 2F, 2F);
 	}
 

@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.UHC;
+import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 public class MutatorFlameFist extends Mutator implements Listener {
@@ -43,7 +44,7 @@ public class MutatorFlameFist extends Mutator implements Listener {
 		if(b.getType() == Material.GOLD_ORE) {
 			if(instrument == Material.DIAMOND_PICKAXE || instrument == Material.IRON_PICKAXE) {
 				e.setDropItems(false);
-				WorldHelper.spawnParticlesInside(b, Particle.FLAME, null, 8);
+				ParticleUtils.createParticlesInside(b, Particle.FLAME, null, 8);
 				b.getWorld().playSound(b.getLocation(), Sound.BLOCK_FURNACE_FIRE_CRACKLE, 0.5F, 1F);
 				b.getWorld().dropItemNaturally(b.getLocation(), new ItemStack(Material.GOLD_INGOT));
 			}
@@ -51,7 +52,7 @@ public class MutatorFlameFist extends Mutator implements Listener {
 		if(b.getType() == Material.IRON_ORE) {
 			if(instrument == Material.DIAMOND_PICKAXE || instrument == Material.IRON_PICKAXE || instrument == Material.STONE_PICKAXE) {
 				e.setDropItems(false);
-				WorldHelper.spawnParticlesInside(b, Particle.FLAME, null, 8);
+				ParticleUtils.createParticlesInside(b, Particle.FLAME, null, 8);
 				b.getWorld().playSound(b.getLocation(), Sound.BLOCK_FURNACE_FIRE_CRACKLE, 0.5F, 1F);
 				b.getWorld().dropItemNaturally(b.getLocation(), new ItemStack(Material.IRON_INGOT));
 			}

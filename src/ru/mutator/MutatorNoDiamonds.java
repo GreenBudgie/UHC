@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 public class MutatorNoDiamonds extends Mutator implements Listener {
@@ -43,7 +44,7 @@ public class MutatorNoDiamonds extends Mutator implements Listener {
 		if(b.getType() == Material.DIAMOND_ORE) {
 			e.setDropItems(false);
 			e.setExpToDrop(0);
-			WorldHelper.spawnParticlesInside(b, Particle.SMOKE_NORMAL, null, 10);
+			ParticleUtils.createParticlesInside(b, Particle.SMOKE_NORMAL, null, 10);
 			b.getWorld().playSound(b.getLocation(), Sound.ENTITY_PLAYER_BURP, 0.5F, 1F);
 			b.getWorld().dropItemNaturally(b.getLocation(), new ItemStack(Material.DIRT));
 		}

@@ -1,10 +1,8 @@
 package ru.util;
 
 import com.google.common.collect.Lists;
-import de.slikey.effectlib.effect.LineEffect;
 import net.minecraft.server.v1_16_R1.BlockPosition;
 import org.bukkit.*;
-import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftLivingEntity;
@@ -400,114 +398,13 @@ public class WorldHelper {
 			Location tpLoc = new Location(e.getWorld(), d3, d4, d5);
 			if(e.getWorld().getWorldBorder().isInside(tpLoc)) {
 				if(((CraftLivingEntity) e).getHandle().a(d3, d4, d5, false)) {
-					lineEffect(e.getLocation().clone().add(0, e.getHeight() / 2, 0), new Location(e.getWorld(), x, y + e.getHeight() / 2, z), Particle.REDSTONE, Color.PURPLE,
-							3);
+					ParticleUtils.createLine(e.getLocation().clone().add(0, e.getHeight() / 2, 0), new Location(e.getWorld(), x, y + e.getHeight() / 2, z),
+							Particle.REDSTONE, 3, Color.PURPLE);
 					e.getWorld().playSound(e.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
 					e.getWorld().playSound(new Location(e.getWorld(), x, y, z), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
 					break;
 				}
 			}
-		}
-	}
-
-	public static void lineEffect(Location l1, Location l2, Particle part, Color c, int amountPerBlock) {
-		LineEffect ef = new LineEffect(UHCPlugin.em);
-		ef.particle = part;
-		ef.particles = (int) Math.round(l1.distance(l2) * amountPerBlock);
-		if(c != null) ef.color = c;
-		ef.iterations = 1;
-		ef.setLocation(l1);
-		ef.setTargetLocation(l2);
-		ef.start();
-	}
-
-	public static void spawnParticlesAround(Entity ent, Particle effect, Color color, int amount) {
-		for(int i = 0; i < amount; i++) {
-			ParticleEffectPoint ef = new ParticleEffectPoint();
-			ef.particle = effect;
-			if(color != null) ef.color = color;
-			double h = ent.getHeight();
-			double w = ent.getWidth() / 1.5;
-			ef.setLocation(ent.getLocation().clone().add(MathUtils.randomRangeDouble(-w, w), MathUtils.randomRangeDouble(0, h), MathUtils.randomRangeDouble(-w, w)));
-			ef.start();
-		}
-	}
-
-	public static void spawnParticlesInsideSphere(Location l, double radius, Particle effect, Color color, int amount) {
-		for(int i = 0; i < amount; i++) {
-			ParticleEffectPoint ef = new ParticleEffectPoint();
-			ef.particle = effect;
-			if(color != null) ef.color = color;
-			double u = Math.random();
-			double v = Math.random();
-			double theta = u * 2.0 * Math.PI;
-			double phi = Math.acos(2.0 * v - 1.0);
-			double sinTheta = Math.sin(theta);
-			double cosTheta = Math.cos(theta);
-			double sinPhi = Math.sin(phi);
-			double cosPhi = Math.cos(phi);
-			double r = Math.random() * radius;
-			double x = r * sinPhi * cosTheta;
-			double y = r * sinPhi * sinTheta;
-			double z = r * cosPhi;
-			ef.setLocation(l.clone().add(x, y, z));
-			ef.start();
-		}
-	}
-
-	public static void spawnParticlesOutlineSphere(Location l, double radius, Particle effect, Color color, int amount) {
-		for(int i = 0; i < amount; i++) {
-			ParticleEffectPoint ef = new ParticleEffectPoint();
-			ef.particle = effect;
-			if(color != null) ef.color = color;
-			double u = Math.random();
-			double v = Math.random();
-			double theta = 2 * Math.PI * u;
-			double phi = Math.acos(2 * v - 1);
-			double x = radius * Math.sin(phi) * Math.cos(theta);
-			double y = radius * Math.sin(phi) * Math.sin(theta);
-			double z = radius * Math.cos(phi);
-			ef.setLocation(l.clone().add(x, y, z));
-			ef.start();
-		}
-	}
-
-	public static void spawnParticlesInRange(Location l, double radius, Particle effect, Color color, int amount) {
-		for(int i = 0; i < amount; i++) {
-			ParticleEffectPoint ef = new ParticleEffectPoint();
-			ef.particle = effect;
-			if(color != null) ef.color = color;
-			ef.setLocation(
-					l.clone().add(MathUtils.randomRangeDouble(-radius, radius), MathUtils.randomRangeDouble(-radius, radius), MathUtils.randomRangeDouble(-radius, radius)));
-			ef.start();
-		}
-	}
-
-	public static void spawnParticle(Location l, Particle effect, Color color) {
-		ParticleEffectPoint ef = new ParticleEffectPoint();
-		ef.particle = effect;
-		if(color != null) ef.color = color;
-		ef.setLocation(l);
-		ef.start();
-	}
-
-	public static void spawnParticlesInside(Block b, Particle effect, Color color, int amount) {
-		for(int i = 0; i < amount; i++) {
-			ParticleEffectPoint ef = new ParticleEffectPoint();
-			ef.particle = effect;
-			if(color != null) ef.color = color;
-			ef.setLocation(b.getLocation().clone().add(MathUtils.randomRangeDouble(0, 1), MathUtils.randomRangeDouble(0, 1), MathUtils.randomRangeDouble(0, 1)));
-			ef.start();
-		}
-	}
-
-	public static void spawnParticlesOutline(Block b, Particle effect, Color color, int amount) {
-		for(int i = 0; i < amount; i++) {
-			ParticleEffectPoint ef = new ParticleEffectPoint();
-			ef.particle = effect;
-			if(color != null) ef.color = color;
-			ef.setLocation(MathUtils.getOutlineLocation(b.getLocation().clone().add(0.5, 0.5, 0.5), 0.6));
-			ef.start();
 		}
 	}
 

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.UHC;
+import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 public class ArtifactHealth extends Artifact {
@@ -36,11 +37,11 @@ public class ArtifactHealth extends Artifact {
 	public void onUse(Player p) {
 		for(Player player : UHC.players) {
 			if(player != p) {
-				player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 50, 2), true);
+				player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 50, 2));
 			} else {
-				player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 38, 2), true);
+				player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 38, 2));
 			}
-			WorldHelper.spawnParticlesInRange(player.getLocation(), 3, Particle.HEART, null, 15);
+			ParticleUtils.createParticlesInRange(player.getLocation(), 3, Particle.HEART, null, 15);
 			player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1F, 1F);
 		}
 	}

@@ -13,6 +13,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.UHC;
 import ru.util.MathUtils;
+import ru.util.ParticleUtils;
 import ru.util.TaskManager;
 import ru.util.WorldHelper;
 
@@ -123,7 +124,7 @@ public class MutatorStop extends Mutator implements Listener {
 			intruders.add(p);
 			p.playSound(p.getLocation(), Sound.ENTITY_PHANTOM_DEATH, 1F, 0.7F);
 			p.sendTitle(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Ты пошевелился!", "", 0, 100, 0);
-			WorldHelper.spawnParticlesAround(p, Particle.SMOKE_LARGE, null, 15);
+			ParticleUtils.createParticlesAround(p, Particle.SMOKE_LARGE, null, 15);
 			p.damage(2);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 100, 1));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 0, false, false));

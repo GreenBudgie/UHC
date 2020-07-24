@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.UHC;
+import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 public class MutatorGoodDeath extends Mutator implements Listener {
@@ -40,9 +41,9 @@ public class MutatorGoodDeath extends Mutator implements Listener {
 	public void death(PlayerDeathEvent e) {
 		if(UHC.isPlaying(e.getEntity())) {
 			for(Player player : UHC.players) {
-				player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 50, 2), true);
+				player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 50, 2));
 				player.playSound(player.getLocation(), Sound.ITEM_FIRECHARGE_USE, 0.5F, 1F);
-				WorldHelper.spawnParticlesInRange(player.getLocation(), 3, Particle.HEART, null, 15);
+				ParticleUtils.createParticlesInRange(player.getLocation(), 3, Particle.HEART, null, 15);
 			}
 		}
 	}

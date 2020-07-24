@@ -16,10 +16,7 @@ import org.bukkit.potion.PotionEffectType;
 import ru.items.CustomItems;
 import ru.main.UHCPlugin;
 import ru.mutator.MutatorManager;
-import ru.util.InventoryHelper;
-import ru.util.MathUtils;
-import ru.util.TaskManager;
-import ru.util.WorldHelper;
+import ru.util.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,7 +59,7 @@ public class Drops {
 			setupCavedrop();
 		} else {
 			if(TaskManager.isSecUpdated()) {
-				WorldHelper.spawnParticlesInRange(cavedropLocation, 1.5, Particle.SMOKE_NORMAL, null, 10);
+				ParticleUtils.createParticlesInRange(cavedropLocation, 1.5, Particle.SMOKE_NORMAL, null, 10);
 			}
 			if(TaskManager.isSecUpdated()) cavedropTimer--;
 		}
@@ -70,7 +67,7 @@ public class Drops {
 		if(TaskManager.isSecUpdated()) {
 			for(Item item : airdropLocation.getWorld().getEntitiesByClass(Item.class)) {
 				if(item.hasMetadata("airdrop")) {
-					WorldHelper.lineEffect(item.getLocation(), item.getLocation().clone().add(0, 25, 0), Particle.FLAME, Color.BLACK, 1);
+					ParticleUtils.createLine(item.getLocation(), item.getLocation().clone().add(0, 25, 0), Particle.FLAME, 1, Color.BLACK);
 				}
 			}
 		}
@@ -87,8 +84,8 @@ public class Drops {
 				double angle = height * Math.PI * 2;
 				Location l = airdropLocation.clone().add(Math.sin(angle) * radius, height - 1, Math.cos(angle) * radius);
 				Location l2 = airdropLocation.clone().add(Math.sin(angle + Math.PI) * radius, height - 1, Math.cos(angle + Math.PI) * radius);
-				WorldHelper.spawnParticle(l, Particle.CLOUD, null);
-				WorldHelper.spawnParticle(l2, Particle.CLOUD, null);
+				ParticleUtils.createParticle(l, Particle.CLOUD, null);
+				ParticleUtils.createParticle(l2, Particle.CLOUD, null);
 			}
 			final int initDrop = 5;
 			if(airdropTimer < initDrop) {
@@ -97,8 +94,8 @@ public class Drops {
 				double angle = (maxDropHeight / dropHeight) * Math.PI * 20;
 				Location l = airdropLocation.clone().add(Math.sin(angle) * radius, dropHeight - 1, Math.cos(angle) * radius);
 				Location l2 = airdropLocation.clone().add(Math.sin(angle + Math.PI) * radius, dropHeight - 1, Math.cos(angle + Math.PI) * radius);
-				WorldHelper.spawnParticle(l, Particle.CLOUD, null);
-				WorldHelper.spawnParticle(l2, Particle.CLOUD, null);
+				ParticleUtils.createParticle(l, Particle.CLOUD, null);
+				ParticleUtils.createParticle(l2, Particle.CLOUD, null);
 				if(TaskManager.tick % 5 == 0) {
 					l.getWorld().playSound(l, Sound.ENTITY_ENDER_DRAGON_FLAP, 1F, 1.5F);
 				}
@@ -115,7 +112,7 @@ public class Drops {
 			item.setMetadata("airdrop", new FixedMetadataValue(UHCPlugin.instance, true));
 			airdropLocation.getWorld().playSound(airdropLocation, Sound.ENTITY_ITEM_PICKUP, 1F, 0.5F);
 			airdropLocation.getWorld().playSound(airdropLocation, Sound.BLOCK_WOOL_BREAK, 1.5F, 0.5F);
-			WorldHelper.spawnParticlesInsideSphere(airdropLocation, 3, Particle.REDSTONE, Color.WHITE, 40);
+			ParticleUtils.createParticlesInsideSphere(airdropLocation, 3, Particle.REDSTONE, Color.WHITE, 40);
 			for(Player p : UHC.getInGamePlayers()) {
 				p.sendTitle("", ChatColor.AQUA + "Аирдроп" + ChatColor.DARK_AQUA + " заспавнен!", 10, 40, 20);
 				String comma = ChatColor.WHITE + ", ";
@@ -153,7 +150,7 @@ public class Drops {
 				inv.setItem(slot, i == 0 ? getRandomDrop() : getRandomFiller());
 			}
 			cavedropLocation.getWorld().playSound(cavedropLocation, Sound.ITEM_FIRECHARGE_USE, 1F, 0.5F);
-			WorldHelper.spawnParticlesInRange(cavedropLocation, 1.5, Particle.FLAME, null, 40);
+			ParticleUtils.createParticlesInRange(cavedropLocation, 1.5, Particle.FLAME, null, 40);
 			for(Player p : UHC.getInGamePlayers()) {
 				p.sendTitle("", ChatColor.RED + "Кейвдроп" + ChatColor.DARK_AQUA + " заспавнен!", 5, 40, 20);
 				String comma = ChatColor.WHITE + ", ";

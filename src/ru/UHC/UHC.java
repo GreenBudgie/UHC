@@ -1321,7 +1321,7 @@ public class UHC implements Listener {
 		voteResults.put(p, vote);
 		p.getWorld().playSound(p.getLocation(), vote ? Sound.ENTITY_VILLAGER_YES : Sound.ENTITY_VILLAGER_NO, 1, 1);
 		p.getInventory().clear();
-		WorldHelper.spawnParticlesAround(p, Particle.REDSTONE, vote ? Color.LIME : Color.RED, 20);
+		ParticleUtils.createParticlesAround(p, Particle.REDSTONE, vote ? Color.LIME : Color.RED, 20);
 		p.getLocation().clone().add(0, -1, 0).getBlock().setType(vote ? Material.LIME_STAINED_GLASS : Material.RED_STAINED_GLASS);
 		updateVoteBar();
 		if(voteResults.size() == players.size()) {
@@ -1788,7 +1788,7 @@ public class UHC implements Listener {
 					if(state.isPreGame()) {
 						pl.sendMessage(ChatColor.GOLD + p.getName() + ChatColor.DARK_RED + ChatColor.BOLD + " вылетел с сервера");
 						pl.getWorld().playSound(pl.getLocation(), Sound.ENTITY_PLAYER_BURP, 2F, 1F);
-						WorldHelper.spawnParticlesAround(p, Particle.SMOKE_NORMAL, null, 20);
+						ParticleUtils.createParticlesAround(p, Particle.SMOKE_NORMAL, null, 20);
 					} else {
 						pl.sendMessage(FightHelper.padCrosses(ChatColor.GOLD + p.getName() + ChatColor.DARK_RED + " вышел из игры"));
 						lastLeft = p;
@@ -1915,7 +1915,7 @@ public class UHC implements Listener {
 				Block b = e.getBlock();
 				if(landmines.stream().anyMatch(mine -> WorldHelper.compareLocations(b.getLocation().clone().add(0, -1, 0), mine.getLocation()))) {
 					b.setType(Material.GRASS_BLOCK);
-					WorldHelper.spawnParticlesOutline(b, Particle.VILLAGER_HAPPY, null, 20);
+					ParticleUtils.createParticlesOutline(b, Particle.VILLAGER_HAPPY, null, 20);
 					b.getWorld().playSound(b.getLocation(), Sound.BLOCK_CHORUS_FLOWER_GROW, 1F, 1F);
 				}
 			}
@@ -2094,7 +2094,7 @@ public class UHC implements Listener {
 
 	private void convert(Location l) {
 		if(l.getBlock().getType() == Material.QUARTZ_BLOCK) {
-			WorldHelper.spawnParticlesOutline(l.getBlock(), Particle.FLAME, null, 5);
+			ParticleUtils.createParticlesOutline(l.getBlock(), Particle.FLAME, null, 5);
 			l.getWorld().playSound(l, Sound.BLOCK_WOOD_BREAK, 0.1F, 1F);
 			l.getBlock().setType(Material.BOOKSHELF);
 		}

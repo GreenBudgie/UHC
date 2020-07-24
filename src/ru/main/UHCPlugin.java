@@ -1,15 +1,13 @@
 package ru.main;
 
-import de.slikey.effectlib.EffectManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.artifact.ArtifactManager;
 import ru.UHC.RecipeHandler;
 import ru.UHC.SignManager;
 import ru.UHC.UHC;
+import ru.artifact.ArtifactManager;
 import ru.commands.*;
 import ru.items.CustomItems;
 import ru.items.CustomItemsListener;
@@ -18,16 +16,12 @@ import ru.pvparena.PvpArena;
 import ru.requester.ItemRequester;
 import ru.util.TaskManager;
 
-import java.util.function.Consumer;
-
 public class UHCPlugin extends JavaPlugin {
 
 	public static UHCPlugin instance;
-	public static EffectManager em;
 
 	public void onEnable() {
 		instance = this;
-		em = new EffectManager(this);
 		this.getCommand("test").setExecutor(new CommandTest());
 		this.getCommand("gm").setExecutor(new CommandGM());
 		this.getCommand("ping").setExecutor(new CommandPing());
@@ -77,7 +71,6 @@ public class UHCPlugin extends JavaPlugin {
 		if(!PvpArena.isOpen) {
 			PvpArena.openArena();
 		}
-		em.dispose();
 	}
 
 	public static void log(Object s) {

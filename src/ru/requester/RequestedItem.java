@@ -5,6 +5,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import ru.util.MathUtils;
+import ru.util.ParticleUtils;
 import ru.util.TaskManager;
 import ru.util.WorldHelper;
 
@@ -58,12 +59,12 @@ public class RequestedItem {
 			droppingTimer--;
 			Location l = location.clone().add(0, droppingTimer - 2, 0);
 			if(l.getY() <= l.getWorld().getMaxHeight()) {
-				WorldHelper.spawnParticle(l, Particle.CLOUD, Color.WHITE);
+				ParticleUtils.createParticle(l, Particle.CLOUD, Color.WHITE);
 				if(MathUtils.chance(60 - droppingTimer)) {
 					l.getWorld().playSound(l, Sound.ENTITY_ENDER_DRAGON_FLAP, 1.5F, 1.5F);
 				}
 				if(droppingTimer != 0) {
-					WorldHelper.spawnParticlesOutlineSphere(l, (60 - droppingTimer) / 40.0, Particle.FLAME, null, 30 - (droppingTimer / 2));
+					ParticleUtils.createParticlesInsideSphere(l, (60 - droppingTimer) / 40.0, Particle.FLAME, null, 30 - (droppingTimer / 2));
 				}
 
 			}
@@ -71,8 +72,8 @@ public class RequestedItem {
 				info.remove();
 				Location bottom = l.clone().add(0, -2, 0);
 				bottom.getWorld().dropItemNaturally(location, item);
-				WorldHelper.spawnParticlesInsideSphere(bottom, 3, Particle.LAVA, null, 50);
-				WorldHelper.spawnParticlesInsideSphere(bottom, 3, Particle.EXPLOSION_LARGE, null, 50);
+				ParticleUtils.createParticlesInsideSphere(bottom, 3, Particle.LAVA, null, 50);
+				ParticleUtils.createParticlesInsideSphere(bottom, 3, Particle.EXPLOSION_LARGE, null, 50);
 				bottom.getWorld().playSound(bottom, Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, 1F, 0.5F);
 				bottom.getWorld().playSound(bottom, Sound.ENTITY_GENERIC_EXPLODE, 1F, 0.4F);
 				done = true;

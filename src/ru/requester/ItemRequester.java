@@ -20,6 +20,7 @@ import ru.items.RequesterCustomItem;
 import ru.mutator.MutatorManager;
 import ru.util.InventoryHelper;
 import ru.util.NumericalCases;
+import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class ItemRequester implements Listener {
 					meta.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(Color.RED).withFade(Color.BLACK).build());
 					firework.setFireworkMeta(meta);
 				}
-				WorldHelper.spawnParticlesInsideSphere(p.getLocation(), 3, Particle.TOTEM, null, 30);
+				ParticleUtils.createParticlesInsideSphere(p.getLocation(), 3, Particle.TOTEM, null, 30);
 				int lapisPrice = MutatorManager.simpleRequests.isActive() ? 0 : requesterItem.getLapisPrice();
 				removeMaterials(p, requesterItem.getRedstonePrice(), lapisPrice);
 				for(Player player : UHC.getInGamePlayers()) {

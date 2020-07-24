@@ -17,6 +17,7 @@ import ru.UHC.FightHelper;
 import ru.UHC.GameState;
 import ru.UHC.UHC;
 import ru.main.UHCPlugin;
+import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 public class CustomItemInstantTnt extends RequesterCustomItem implements Listener {
@@ -32,7 +33,7 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 	@Override
 	public void onPlace(Player p, Block b, ItemStack item, BlockPlaceEvent e) {
 		if(UHC.state != GameState.ENDING && (UHC.state != GameState.DEATHMATCH || UHC.arenaPvpTimer <= 0)) {
-			WorldHelper.spawnParticlesOutline(b, Particle.REDSTONE, Color.RED, 15);
+			ParticleUtils.createParticlesOutline(b, Particle.REDSTONE, Color.RED, 15);
 			Location center = b.getLocation().clone().add(0.5, 0, 0.5);
 			b.getWorld().playSound(center, Sound.ENTITY_TNT_PRIMED, 1F, 1F);
 			TNTPrimed tnt = (TNTPrimed) b.getWorld().spawnEntity(center, EntityType.PRIMED_TNT);
