@@ -1444,7 +1444,6 @@ public class UHC implements Listener {
 		Iterator<Advancement> iterator = Bukkit.getServer().advancementIterator();
 		while(iterator.hasNext()) {
 			Advancement adv = iterator.next();
-			UHCPlugin.log(adv.getKey().getKey());
 			if(adv.getKey().getKey().startsWith("recipes")) {
 				AdvancementProgress progress = player.getAdvancementProgress(adv);
 				for(String criteria : progress.getRemainingCriteria()) {
