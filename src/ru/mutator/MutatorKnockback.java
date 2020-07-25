@@ -39,7 +39,7 @@ public class MutatorKnockback extends Mutator implements Listener {
 
 	@EventHandler
 	public void attack(EntityDamageByEntityEvent e) {
-		if(e.getDamager() instanceof Player && e.getEntity() instanceof LivingEntity) {
+		if(e.getDamager() instanceof Player && e.getFinalDamage() > 0 && e.getEntity() instanceof LivingEntity) {
 			if(e.getEntity() instanceof Player) {
 				Player p1 = (Player) e.getDamager();
 				Player p2 = (Player) e.getEntity();

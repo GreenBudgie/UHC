@@ -38,7 +38,7 @@ public class MutatorDamageFly extends Mutator implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void damage(EntityDamageEvent e) {
-		if(!e.isCancelled() && e.getEntity() instanceof Player) {
+		if(!e.isCancelled() && e.getFinalDamage() > 0 && e.getEntity() instanceof Player) {
 			Player player = (Player) e.getEntity();
 			if(UHC.isPlaying(player)) {
 				if(!player.hasPotionEffect(PotionEffectType.LEVITATION)) {
