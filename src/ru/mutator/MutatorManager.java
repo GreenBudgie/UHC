@@ -86,6 +86,17 @@ public class MutatorManager implements Listener {
 		copy.forEach(Mutator::update);
 	}
 
+	public static boolean hasPreferences(Mutator mutator) {
+		return getAvailablePreferences().values().stream().anyMatch(mutators -> mutators.contains(mutator));
+	}
+
+	public static int getPreferencePercent(Mutator mutator) {
+		List<Mutator> otherMutators = getAvailablePreferredMutatorsWeighted();
+		otherMutators.removeIf(m -> mutator == m);
+		double otherSize = otherMutators.size();
+		return (int) ((1 - (otherSize / getAvailablePreferredMutatorsWeighted().size())) * 100);
+	}
+
 	public static Inventory getMutatorInventory(Player p, boolean creative) {
 		Inventory inv = Bukkit.createInventory(p, (int) Math.ceil(mutators.size() / 9.0) * 9,
 				creative ? ChatColor.LIGHT_PURPLE + "Настроить мутаторы" : ChatColor.LIGHT_PURPLE + "Мутаторы");
@@ -113,13 +124,9 @@ public class MutatorManager implements Listener {
 				} else {
 					String prefer = new NumericalCases("Предпочитает ", "Предпочитают ", "Предпочитают ").byNumber(preferenceCount);
 					String player = new NumericalCases(" игрок", " игрока", " игроков").byNumber(preferenceCount);
-					List<Mutator> otherMutators = getAvailablePreferredMutatorsWeighted();
-					otherMutators.removeIf(m -> mutator == m);
-					double otherSize = otherMutators.size();
-					int percent = (int) ((1 - (otherSize / getAvailablePreferredMutatorsWeighted().size())) * 100);
 					ItemUtils.addLore(item, false, ChatColor.GOLD + prefer + ChatColor.AQUA + ChatColor.BOLD + preferenceCount
 						+ ChatColor.RESET + ChatColor.GOLD + player + ChatColor.GRAY + ", " + ChatColor.GREEN + "шанс " + ChatColor.DARK_GREEN + ChatColor.BOLD +
-						percent + ChatColor.RESET + ChatColor.GRAY + "%");
+						getPreferencePercent(mutator) + ChatColor.RESET + ChatColor.GRAY + "%");
 				}
 			}
 			inv.addItem(item);
@@ -261,6 +268,13 @@ public class MutatorManager implements Listener {
 			preferredMutators.remove(name);
 		} else {
 			preferredMutators.put(name, pref);
+		}
+	}
+
+	public static void clearPreferences(String name) {
+		Set<Mutator> preferredSet = Sets.newHashSet(preferredMutators.getOrDefault(name, new HashSet<>()));
+		for(Mutator preferred : preferredSet) {
+			setPreference(name, preferred, false);
 		}
 	}
 

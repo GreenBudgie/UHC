@@ -11,6 +11,7 @@ import ru.artifact.ArtifactManager;
 import ru.commands.*;
 import ru.items.CustomItems;
 import ru.items.CustomItemsListener;
+import ru.mutator.InventoryBuilder;
 import ru.mutator.MutatorManager;
 import ru.pvparena.PvpArena;
 import ru.requester.ItemRequester;
@@ -50,6 +51,7 @@ public class UHCPlugin extends JavaPlugin {
 		pm.registerEvents(new ArtifactManager(), this);
 		pm.registerEvents(new MutatorManager(), this);
 		pm.registerEvents(new PvpArena(), this);
+		InventoryBuilder.registerListener();
 
 		TaskManager.init();
 		UHC.init();

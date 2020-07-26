@@ -2,7 +2,11 @@ package ru.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import net.minecraft.server.v1_16_R1.*;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -20,14 +24,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.main.UHCPlugin;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Stream;
@@ -44,6 +46,48 @@ public class InventoryHelper {
 			}
 		}
 		return null;
+	}
+
+	public static ItemStack generateHeadByName(String owner) {
+		ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+		SkullMeta meta = (SkullMeta) head.getItemMeta();
+		meta.setOwningPlayer(Bukkit.getOfflinePlayer(owner));
+		head.setItemMeta(meta);
+		return head;
+	}
+
+	private static boolean injectFieldValue(Class<?> sourceClass, Object instance, String fieldName, Object value) {
+		try {
+			Field field = sourceClass.getDeclaredField(fieldName);
+			if (!field.isAccessible()) {
+				field.setAccessible(true);
+			}
+			try {
+				field.set(instance, value);
+			} finally {
+				if (!field.isAccessible()) {
+					field.setAccessible(false);
+				}
+			}
+			return true;
+		} catch (Exception e) {
+		}
+		return false;
+	}
+
+	private static GameProfile createProfileWithTexture(String texture) {
+		GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+		PropertyMap propertyMap = profile.getProperties();
+		propertyMap.put("textures", new Property("textures", texture));
+		return profile;
+	}
+
+	public static ItemStack generateHead(String value) {
+		ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+		ItemMeta meta = head.getItemMeta();
+		injectFieldValue(meta.getClass(), meta, "profile", createProfileWithTexture(value));
+		head.setItemMeta(meta);
+		return head;
 	}
 
 	public static boolean addNormalPotionEffect(LivingEntity e, PotionEffect effect) {

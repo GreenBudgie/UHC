@@ -1,18 +1,20 @@
 package ru.commands;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Particle;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.entity.Player;
-import ru.main.UHCPlugin;
-import ru.util.ParticleUtils;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import ru.mutator.InventoryBuilder;
+import ru.util.InventoryHelper;
 
-import java.io.File;
-import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.UUID;
 
 public class  CommandTest implements CommandExecutor {
 
@@ -20,7 +22,7 @@ public class  CommandTest implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!sender.isOp()) return true;
 		Player p = (Player) sender;
-		ParticleUtils.createCircle(p.getLocation(), Particle.CLOUD, null, 10, 100);
+		InventoryBuilder.getBuilder(p).openInventory();
 		return true;
 	}
 }
