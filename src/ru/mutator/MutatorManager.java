@@ -21,7 +21,7 @@ import ru.util.NumericalCases;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MutatorManager implements Listener {
+public class MutatorManager {
 
 	public static Map<String, Set<Mutator>> preferredMutators = new HashMap<>();
 	public static List<Mutator> activeMutators = new ArrayList<>();
@@ -95,43 +95,6 @@ public class MutatorManager implements Listener {
 		otherMutators.removeIf(m -> mutator == m);
 		double otherSize = otherMutators.size();
 		return (int) ((1 - (otherSize / getAvailablePreferredMutatorsWeighted().size())) * 100);
-	}
-
-	public static Inventory getMutatorInventory(Player p, boolean creative) {
-		Inventory inv = Bukkit.createInventory(p, (int) Math.ceil(mutators.size() / 9.0) * 9,
-				creative ? ChatColor.LIGHT_PURPLE + "Настроить мутаторы" : ChatColor.LIGHT_PURPLE + "Мутаторы");
-		for(Mutator mutator : mutators) {
-			ItemStack item = ItemUtils.builder(mutator.getItemToShow()).withName(ChatColor.LIGHT_PURPLE + mutator.getName())
-					.withSplittedLore(ChatColor.YELLOW + mutator.getDescription()).build();
-			if(mutator.canBeHidden()) ItemUtils.addLore(item, ChatColor.GRAY + "" + ChatColor.ITALIC + "Может быть скрыт");
-			if(creative) {
-				if(isActive(mutator)) {
-					ItemUtils.addGlow(item);
-					ItemUtils.addLore(item, false, ChatColor.RED + "<ДЕАКТИВИРОВАТЬ>");
-				} else {
-					ItemUtils.addLore(item, false, ChatColor.GREEN + "<АКТИВИРОВАТЬ>");
-				}
-			} else {
-				if(mutator.isPreferredBy(p.getName())) {
-					ItemUtils.addGlow(item);
-					ItemUtils.addLore(item, false, ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Предпочитаемый");
-				} else {
-					ItemUtils.addLore(item, false, ChatColor.DARK_AQUA + "<Сделать предпочитаемым>");
-				}
-				int preferenceCount = getPlayersWhoPrefersMutator(mutator).size();
-				if(preferenceCount == 0) {
-					ItemUtils.addLore(item, false, ChatColor.GOLD + "Нет предпочтений");
-				} else {
-					String prefer = new NumericalCases("Предпочитает ", "Предпочитают ", "Предпочитают ").byNumber(preferenceCount);
-					String player = new NumericalCases(" игрок", " игрока", " игроков").byNumber(preferenceCount);
-					ItemUtils.addLore(item, false, ChatColor.GOLD + prefer + ChatColor.AQUA + ChatColor.BOLD + preferenceCount
-						+ ChatColor.RESET + ChatColor.GOLD + player + ChatColor.GRAY + ", " + ChatColor.GREEN + "шанс " + ChatColor.DARK_GREEN + ChatColor.BOLD +
-						getPreferencePercent(mutator) + ChatColor.RESET + ChatColor.GRAY + "%");
-				}
-			}
-			inv.addItem(item);
-		}
-		return inv;
 	}
 
 	/**
@@ -275,63 +238,6 @@ public class MutatorManager implements Listener {
 		Set<Mutator> preferredSet = Sets.newHashSet(preferredMutators.getOrDefault(name, new HashSet<>()));
 		for(Mutator preferred : preferredSet) {
 			setPreference(name, preferred, false);
-		}
-	}
-
-	@EventHandler
-	public void invClick(InventoryClickEvent e) {
-		if(e.getView().getTitle().equalsIgnoreCase(ChatColor.LIGHT_PURPLE + "Мутаторы")) {
-			ItemStack item = e.getCurrentItem();
-			if(item != null) {
-				for(Mutator mutator : mutators) {
-					if(item.getType() == mutator.getItemToShow()) {
-						Player p = (Player) e.getWhoClicked();
-						if(mutator.isPreferredBy(p.getName())) {
-							p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
-							setPreference(p.getName(), mutator, false);
-							p.openInventory(getMutatorInventory(p, false));
-						} else {
-							if(preferredMutators.getOrDefault(p.getName(), new HashSet<>()).size() >= 3) {
-								InventoryHelper.sendActionBarMessage(p, ChatColor.DARK_RED + "" + ChatColor.BOLD + "Нельзя выбрать более трех предпочитаемых мутаторов");
-								p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
-							} else {
-								p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 1F);
-								setPreference(p.getName(), mutator, true);
-								p.openInventory(getMutatorInventory(p, false));
-							}
-						}
-					}
-				}
-			}
-			e.setCancelled(true);
-		}
-		if(e.getClickedInventory() != null && e.getClickedInventory() == e.getView().getTopInventory() && e.getView().getTitle()
-				.equalsIgnoreCase(ChatColor.LIGHT_PURPLE + "Настроить мутаторы")) {
-			ItemStack item = e.getCurrentItem();
-			if(item != null) {
-				for(Mutator mutator : mutators) {
-					if(item.getType() == mutator.getItemToShow()) {
-						Player p = (Player) e.getWhoClicked();
-						if(isActive(mutator)) {
-							p.sendMessage(ChatColor.GOLD + "Деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + mutator.getName());
-							p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
-							mutator.deactivate();
-							p.closeInventory();
-						} else {
-							if(doesMutatorConflictsWithActive(mutator)) {
-								p.sendMessage(ChatColor.RED + "Мутатор конфликтует с активными");
-								p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
-							} else {
-								p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 1F);
-								mutator.activate(false, null);
-								p.closeInventory();
-							}
-						}
-						break;
-					}
-				}
-			}
-			e.setCancelled(true);
 		}
 	}
 

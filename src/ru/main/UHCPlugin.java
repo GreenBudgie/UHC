@@ -49,7 +49,6 @@ public class UHCPlugin extends JavaPlugin {
 		pm.registerEvents(new CustomItemsListener(), this);
 		pm.registerEvents(new ItemRequester(), this);
 		pm.registerEvents(new ArtifactManager(), this);
-		pm.registerEvents(new MutatorManager(), this);
 		pm.registerEvents(new PvpArena(), this);
 		InventoryBuilder.registerListener();
 
