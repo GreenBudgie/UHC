@@ -6,6 +6,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import ru.mutator.MutatorManager;
 
+import javax.annotation.Nullable;
+
 public class ArtifactMutator extends Artifact {
 
 	@Override
@@ -29,12 +31,12 @@ public class ArtifactMutator extends Artifact {
 	}
 
 	@Override
-	public void onUse(Player p) {
+	public void onUse(@Nullable Player player) {
 		if(MutatorManager.activeMutators.size() < 6) {
-			p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.8F, 1F);
+			if(player != null) player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.8F, 1F);
 			MutatorManager.activateRandomArtifactMutator();
-		} else {
-			p.sendMessage(ChatColor.RED + "Мутатор не был активирован!");
+		} else if(player != null) {
+			player.sendMessage(ChatColor.RED + "Мутатор не был активирован!");
 		}
 	}
 

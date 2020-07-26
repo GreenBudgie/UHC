@@ -11,6 +11,8 @@ import ru.UHC.UHC;
 import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
+import javax.annotation.Nullable;
+
 public class ArtifactHealth extends Artifact {
 
 	@Override
@@ -34,15 +36,12 @@ public class ArtifactHealth extends Artifact {
 	}
 
 	@Override
-	public void onUse(Player p) {
-		for(Player player : UHC.players) {
-			if(player != p) {
-				player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 50, 2));
-			} else {
-				player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 38, 2));
-			}
-			ParticleUtils.createParticlesInRange(player.getLocation(), 3, Particle.HEART, null, 15);
-			player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1F, 1F);
+	public void onUse(@Nullable Player player) {
+		for(Player currentPlayer : UHC.players) {
+			boolean applyMaxHeal = player == null || player == currentPlayer;
+			currentPlayer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, applyMaxHeal ? 50 : 38, 2));
+			ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.HEART, null, 15);
+			currentPlayer.playSound(currentPlayer.getLocation(), Sound.ENTITY_VILLAGER_YES, 1F, 1F);
 		}
 	}
 

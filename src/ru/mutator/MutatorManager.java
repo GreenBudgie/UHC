@@ -80,6 +80,7 @@ public class MutatorManager {
 	public static MutatorOverpoweredMobs overpoweredMobs = new MutatorOverpoweredMobs();
 	public static MutatorOmniscient omniscient = new MutatorOmniscient();
 	public static MutatorVegetarian vegetarian = new MutatorVegetarian();
+	public static MutatorPhantomArtifacts artifacts = new MutatorPhantomArtifacts();
 
 	public static void updateMutators() {
 		List<Mutator> copy = Lists.newArrayList(activeMutators); //Prevents concurrent modifications

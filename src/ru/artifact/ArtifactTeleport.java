@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import ru.UHC.UHC;
 import ru.util.WorldHelper;
 
+import javax.annotation.Nullable;
+
 public class ArtifactTeleport extends Artifact {
 
 	@Override
@@ -29,9 +31,9 @@ public class ArtifactTeleport extends Artifact {
 	}
 
 	@Override
-	public void onUse(Player p) {
-		for(Player player : UHC.players) {
-			WorldHelper.chorusTeleport(player, 80);
+	public void onUse(@Nullable Player player) {
+		for(Player currentPlayer : UHC.players) {
+			WorldHelper.chorusTeleport(currentPlayer, 80);
 		}
 	}
 

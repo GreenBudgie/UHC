@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -35,17 +36,13 @@ public class ArtifactDamage extends Artifact {
 	}
 
 	@Override
-	public void onUse(Player p) {
-		for(Player player : UHC.players) {
-			if(player != p) {
-				double damage = MathUtils.clamp(4, 0, player.getHealth() - 1);
-				player.damage(damage);
-			} else {
-				double damage = MathUtils.clamp(5, 0, player.getHealth() - 1);
-				player.damage(damage);
-			}
-			player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1F, 0.5F);
-			ParticleUtils.createParticlesInRange(player.getLocation(), 3, Particle.SMOKE_LARGE, null, 15);
+	public void onUse(@Nullable Player player) {
+		for(Player currentPlayer : UHC.players) {
+			boolean doMaxDamage = player == null || player == currentPlayer;
+			double damage = MathUtils.clamp(doMaxDamage ? 5 : 4, 0, currentPlayer.getHealth() - 1);
+			currentPlayer.damage(damage);
+			currentPlayer.playSound(currentPlayer.getLocation(), Sound.ENTITY_VILLAGER_NO, 1F, 0.5F);
+			ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.SMOKE_LARGE, null, 15);
 		}
 	}
 

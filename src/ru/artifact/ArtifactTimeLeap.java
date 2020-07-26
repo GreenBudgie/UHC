@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import ru.UHC.WorldManager;
 import ru.mutator.MutatorManager;
 
+import javax.annotation.Nullable;
+
 public class ArtifactTimeLeap extends Artifact {
 
 	@Override
@@ -30,12 +32,12 @@ public class ArtifactTimeLeap extends Artifact {
 	}
 
 	@Override
-	public void onUse(Player p) {
+	public void onUse(@Nullable Player player) {
 		if(MutatorManager.isActive(MutatorManager.eternalNight) || MutatorManager.isActive(MutatorManager.eternalDay)) {
-			p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_BURP, 0.5F, 0.5F);
+			if(player != null) player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 0.5F, 0.5F);
 		} else {
 			WorldManager.getGameMap().setTime(WorldManager.getGameMap().getTime() + 12000);
-			p.playSound(p.getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 1F, 0.8F);
+			if(player != null) player.playSound(player.getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 1F, 0.8F);
 		}
 	}
 

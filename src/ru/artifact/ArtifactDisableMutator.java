@@ -10,6 +10,7 @@ import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
 import ru.util.MathUtils;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ArtifactDisableMutator extends Artifact {
@@ -35,17 +36,19 @@ public class ArtifactDisableMutator extends Artifact {
 	}
 
 	@Override
-	public void onUse(Player p) {
+	public void onUse(@Nullable Player player) {
 		List<Mutator> mutators = MutatorManager.getMutatorsForDeactivation();
 		if(mutators.size() > 0) {
-			p.playSound(p.getLocation(), Sound.ITEM_TOTEM_USE, 0.8F, 1.2F);
+			if(player != null) {
+				player.playSound(player.getLocation(), Sound.ITEM_TOTEM_USE, 0.8F, 1.2F);
+			}
 			Mutator mutator = MathUtils.choose(mutators);
-			for(Player player : UHC.getInGamePlayers()) {
-				player.sendMessage(ChatColor.YELLOW + "Был деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + mutator.getName());
+			for(Player currentPlayer : UHC.getInGamePlayers()) {
+				currentPlayer.sendMessage(ChatColor.YELLOW + "Был деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + mutator.getName());
 			}
 			mutator.deactivate();
-		} else {
-			p.sendMessage(ChatColor.RED + "Невозможно деактивировать ни один мутатор!");
+		} else if(player != null) {
+			player.sendMessage(ChatColor.RED + "Невозможно деактивировать ни один мутатор!");
 		}
 	}
 

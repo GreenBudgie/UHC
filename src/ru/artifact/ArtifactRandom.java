@@ -10,6 +10,7 @@ import ru.mutator.MutatorManager;
 import ru.util.MathUtils;
 import ru.util.WorldHelper;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class ArtifactRandom extends Artifact {
 	}
 
 	@Override
-	public void onUse(Player p) {
+	public void onUse(@Nullable Player player) {
 		List<Artifact> toAdd = Lists.newArrayList(ArtifactManager.timeLeap, ArtifactManager.airdrop, ArtifactManager.cavedrop, ArtifactManager.teleport, ArtifactManager.time,
 				ArtifactManager.hunger);
 		toAdd.add(MathUtils.choose(ArtifactManager.health, ArtifactManager.damage));
@@ -53,11 +54,13 @@ public class ArtifactRandom extends Artifact {
 		StringBuilder addedInfo = new StringBuilder();
 		for(int i = 0; i < 3; i++) {
 			Artifact artifact = MathUtils.choose(toAdd);
-			artifact.onUse(p);
+			artifact.onUse(player);
 			addedInfo.append(artifact.getName()).append(i == 2 ? "" : (ChatColor.DARK_GRAY + ", "));
 			toAdd.remove(artifact);
 		}
-		p.sendMessage(ChatColor.YELLOW + "Были активированы артефакты: " + addedInfo);
+		if(player != null) {
+			player.sendMessage(ChatColor.YELLOW + "Были активированы артефакты: " + addedInfo);
+		}
 	}
 
 	@Override

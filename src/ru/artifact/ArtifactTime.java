@@ -8,6 +8,8 @@ import ru.UHC.GameState;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
 
+import javax.annotation.Nullable;
+
 public class ArtifactTime extends Artifact {
 
 	@Override
@@ -31,13 +33,13 @@ public class ArtifactTime extends Artifact {
 	}
 
 	@Override
-	public void onUse(Player p) {
+	public void onUse(@Nullable Player player) {
 		if(UHC.state == GameState.GAME) {
 			UHC.deathmatchTimer /= 1.5;
 		} else if(UHC.state == GameState.OUTBREAK) {
 			UHC.outbreakTimer /= 1.5;
 		}
-		p.playSound(p.getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 1F, 0.6F);
+		if(player != null) player.playSound(player.getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 1F, 0.6F);
 	}
 
 	@Override

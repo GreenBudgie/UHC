@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import ru.UHC.Drops;
 import ru.UHC.UHC;
 
+import javax.annotation.Nullable;
+
 public class ArtifactHunger extends Artifact {
 
 	@Override
@@ -30,14 +32,16 @@ public class ArtifactHunger extends Artifact {
 	}
 
 	@Override
-	public void onUse(Player p) {
-		for(Player player : UHC.players) {
-			if(player.getFoodLevel() > 2) {
-				if(player.getSaturation() > 2) player.setSaturation(2);
-				player.setFoodLevel(2);
+	public void onUse(@Nullable Player player) {
+		for(Player currentPlayer : UHC.players) {
+			if(currentPlayer.getFoodLevel() > 2) {
+				if(currentPlayer.getSaturation() > 2) currentPlayer.setSaturation(2);
+				currentPlayer.setFoodLevel(2);
 			}
 		}
-		p.playSound(p.getLocation(), Sound.ENTITY_CAT_DEATH, 1F, 0.5F);
+		if(player != null) {
+			player.playSound(player.getLocation(), Sound.ENTITY_CAT_DEATH, 1F, 0.5F);
+		}
 	}
 
 	@Override

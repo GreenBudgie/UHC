@@ -3,6 +3,7 @@ package ru.artifact;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.Player;
 import ru.UHC.Drops;
 import ru.UHC.UHC;
@@ -30,10 +31,12 @@ public class ArtifactCavedrop extends Artifact {
 	}
 
 	@Override
-	public void onUse(Player p) {
+	public void onUse(@Nullable Player player) {
 		Drops.chooseCavedropLocation();
 		Drops.cavedropTimer /= 3;
-		p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1.2F);
+		if(player != null) {
+			player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1.2F);
+		}
 	}
 
 	@Override

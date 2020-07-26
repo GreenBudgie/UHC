@@ -43,7 +43,7 @@ public class MutatorUnexpectedRequests extends Mutator {
 	}
 
 	private void reset() {
-		timeToNextRequest = MathUtils.randomRange(200, 500);
+		timeToNextRequest = MathUtils.randomRange(200, 450);
 	}
 
 	private Location getRandomLocation() {
