@@ -15,10 +15,10 @@ import java.util.stream.Stream;
 
 public enum PlayerOptions {
 
-	SHOW_TEAMS(true, Material.NAME_TAG, "Показывать тимы", "Отображать длинный список из тим справа экрана"),
-	ONLY_LOCAL(false, Material.OAK_SIGN, "Только локальный чат", "Если включено, то все сообщения во время игры будут уходить в локальный чат");
+	SHOW_TEAMS(true, Material.NAME_TAG, "РџРѕРєР°Р·С‹РІР°С‚СЊ С‚РёРјС‹", "РћС‚РѕР±СЂР°Р¶Р°С‚СЊ РґР»РёРЅРЅС‹Р№ СЃРїРёСЃРѕРє РёР· С‚РёРј СЃРїСЂР°РІР° СЌРєСЂР°РЅР°"),
+	ONLY_LOCAL(false, Material.OAK_SIGN, "РўРѕР»СЊРєРѕ Р»РѕРєР°Р»СЊРЅС‹Р№ С‡Р°С‚", "Р•СЃР»Рё РІРєР»СЋС‡РµРЅРѕ, С‚Рѕ РІСЃРµ СЃРѕРѕР±С‰РµРЅРёСЏ РІРѕ РІСЂРµРјСЏ РёРіСЂС‹ Р±СѓРґСѓС‚ СѓС…РѕРґРёС‚СЊ РІ Р»РѕРєР°Р»СЊРЅС‹Р№ С‡Р°С‚");
 
-	public static final String invName = ChatColor.GOLD + "Настройки";
+	public static final String invName = ChatColor.GOLD + "РќР°СЃС‚СЂРѕР№РєРё";
 	private Map<Player, Boolean> values = new HashMap<>();
 	private boolean defaultValue;
 	private Material item;
@@ -63,9 +63,9 @@ public enum PlayerOptions {
 		if(getDescription() != null) ItemUtils.addSplittedLore(item, ChatColor.GOLD + getDescription());
 		if(isActive(player)) {
 			ItemUtils.addGlow(item);
-			ItemUtils.addLore(item, ChatColor.GREEN + "Включено");
+			ItemUtils.addLore(item, ChatColor.GREEN + "Р’РєР»СЋС‡РµРЅРѕ");
 		} else {
-			ItemUtils.addLore(item, ChatColor.RED + "Отключено");
+			ItemUtils.addLore(item, ChatColor.RED + "РћС‚РєР»СЋС‡РµРЅРѕ");
 		}
 		return item;
 	}

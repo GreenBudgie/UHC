@@ -16,12 +16,12 @@ public class MutatorDoubleArtifacts extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Темные Дела";
+		return "РўРµРјРЅС‹Рµ Р”РµР»Р°";
 	}
 
 	@Override
 	public String getDescription() {
-		return "С мобов выпадает в два раза больше артефактов";
+		return "РЎ РјРѕР±РѕРІ РІС‹РїР°РґР°РµС‚ РІ РґРІР° СЂР°Р·Р° Р±РѕР»СЊС€Рµ Р°СЂС‚РµС„Р°РєС‚РѕРІ";
 	}
 
 }

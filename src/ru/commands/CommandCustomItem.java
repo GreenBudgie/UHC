@@ -32,10 +32,10 @@ public class CommandCustomItem implements CommandExecutor, TabCompleter {
 					CustomItem item = CustomItems.getByName(args[1]);
 					if(item != null) {
 						ItemStack stack = item.getItemStack();
-						p.sendMessage(ChatColor.GREEN + "Выдан " + item.getName());
+						p.sendMessage(ChatColor.GREEN + "Р’С‹РґР°РЅ " + item.getName());
 						p.getInventory().addItem(stack);
 					} else {
-						p.sendMessage(ChatColor.RED + "Такого предмета не существует.");
+						p.sendMessage(ChatColor.RED + "РўР°РєРѕРіРѕ РїСЂРµРґРјРµС‚Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚.");
 					}
 					return true;
 				}
@@ -55,16 +55,16 @@ public class CommandCustomItem implements CommandExecutor, TabCompleter {
 				if(item != null && stack != null) {
 					if(InventoryHelper.hasValue(stack, args[1])) {
 						if(InventoryHelper.changeValue(stack, args[1], args[2])) {
-							p.sendMessage(ChatColor.YELLOW + "Установлено значение " + ChatColor.GOLD + args[2] + ChatColor.YELLOW + " для " + ChatColor.GOLD
+							p.sendMessage(ChatColor.YELLOW + "РЈСЃС‚Р°РЅРѕРІР»РµРЅРѕ Р·РЅР°С‡РµРЅРёРµ " + ChatColor.GOLD + args[2] + ChatColor.YELLOW + " РґР»СЏ " + ChatColor.GOLD
 									+ args[1]);
 						} else {
-							p.sendMessage(ChatColor.DARK_RED + "Неизвестная ошибка");
+							p.sendMessage(ChatColor.DARK_RED + "РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°");
 						}
 					} else {
-						p.sendMessage(ChatColor.RED + "Предмет не имеет параметра " + ChatColor.YELLOW + args[1]);
+						p.sendMessage(ChatColor.RED + "РџСЂРµРґРјРµС‚ РЅРµ РёРјРµРµС‚ РїР°СЂР°РјРµС‚СЂР° " + ChatColor.YELLOW + args[1]);
 					}
 				} else {
-					p.sendMessage(ChatColor.RED + "Нужно держать предмет в руке");
+					p.sendMessage(ChatColor.RED + "РќСѓР¶РЅРѕ РґРµСЂР¶Р°С‚СЊ РїСЂРµРґРјРµС‚ РІ СЂСѓРєРµ");
 				}
 			}
 		}

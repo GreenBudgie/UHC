@@ -16,12 +16,12 @@ public class MutatorLessHealth extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Отличный Старт!";
+		return "РћС‚Р»РёС‡РЅС‹Р№ РЎС‚Р°СЂС‚!";
 	}
 
 	@Override
 	public String getDescription() {
-		return "В начале игры дается лишь 3 сердца";
+		return "Р’ РЅР°С‡Р°Р»Рµ РёРіСЂС‹ РґР°РµС‚СЃСЏ Р»РёС€СЊ 3 СЃРµСЂРґС†Р°";
 	}
 
 	@Override

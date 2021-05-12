@@ -28,12 +28,12 @@ public class MutatorApples extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Яблочный магнат";
+		return "РЇР±Р»РѕС‡РЅС‹Р№ РјР°РіРЅР°С‚";
 	}
 
 	@Override
 	public String getDescription() {
-		return "С листвы будут чаще выпадать яблоки";
+		return "РР· Р»РёСЃС‚РІС‹ Р±СѓРґСѓС‚ С‡Р°С‰Рµ РІС‹РїР°РґР°С‚СЊ В¤Р±Р»РѕРєРё";
 	}
 
 	@EventHandler

@@ -42,7 +42,7 @@ public class CustomItemSoulscriber extends RequesterCustomItem implements Listen
 
 	@Override
 	public String getDescription() {
-		return "При атаке противника пополняет тебе 0-3 хп";
+		return "РџСЂРё Р°С‚Р°РєРµ РїСЂРѕС‚РёРІРЅРёРєР° РїРѕРїРѕР»РЅСЏРµС‚ С‚РµР±Рµ 0-3 С…Рї";
 	}
 
 	@Override

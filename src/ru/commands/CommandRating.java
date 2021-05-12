@@ -71,30 +71,30 @@ public class CommandRating implements CommandExecutor, TabCompleter {
 	}
 
 	private void showRating(CommandSender receiver, String playerName) {
-		receiver.sendMessage(ChatColor.YELLOW + "Статистика " + ChatColor.GOLD + playerName + ChatColor.YELLOW + ":");
+		receiver.sendMessage(ChatColor.YELLOW + "РЎС‚Р°С‚РёСЃС‚РёРєР° " + ChatColor.GOLD + playerName + ChatColor.YELLOW + ":");
 		for(PlayerStat stat : PlayerStat.values()) {
 			receiver.sendMessage(ChatColor.GRAY + "- " + ChatColor.AQUA + stat.getName() + ChatColor.DARK_AQUA + ": " + ChatColor.WHITE + stat.getValue(playerName));
 		}
 		receiver.sendMessage(
-				ChatColor.GOLD + "Рейтинговая позиция: " + getColoredPos(getLadder().get(playerName)) + ChatColor.WHITE + ", " + ChatColor.AQUA + "винрейт: " + ChatColor.DARK_AQUA
+				ChatColor.GOLD + "Р РµР№С‚РёРЅРіРѕРІР°СЏ РїРѕР·РёС†РёСЏ: " + getColoredPos(getLadder().get(playerName)) + ChatColor.WHITE + ", " + ChatColor.AQUA + "РІРёРЅСЂРµР№С‚: " + ChatColor.DARK_AQUA
 						+ MathUtils.decimal(getWinrate(playerName), 2));
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(args.length == 0) {
-			sender.sendMessage(ChatColor.YELLOW + "Рейтинг игроков:");
+			sender.sendMessage(ChatColor.YELLOW + "Р РµР№С‚РёРЅРі РёРіСЂРѕРєРѕРІ:");
 			Map<Integer, String> ladder = getRevLadder();
 			for(int i = 1; i <= ladder.size(); i++) {
 				sender.sendMessage(
-						getColoredPos(i) + ChatColor.WHITE + ". " + ChatColor.GOLD + ladder.get(i) + ChatColor.WHITE + ", " + ChatColor.AQUA + "очки: " + ChatColor.DARK_AQUA
-								+ PlayerStat.POINTS.getValue(ladder.get(i)) + ChatColor.WHITE + ", " + ChatColor.AQUA + "винрейт: " + ChatColor.DARK_AQUA + MathUtils
+						getColoredPos(i) + ChatColor.WHITE + ". " + ChatColor.GOLD + ladder.get(i) + ChatColor.WHITE + ", " + ChatColor.AQUA + "РѕС‡РєРё: " + ChatColor.DARK_AQUA
+								+ PlayerStat.POINTS.getValue(ladder.get(i)) + ChatColor.WHITE + ", " + ChatColor.AQUA + "РІРёРЅСЂРµР№С‚: " + ChatColor.DARK_AQUA + MathUtils
 								.decimal(getWinrate(ladder.get(i)), 2));
 			}
 		} else {
 			if(PlayerStat.getRegisteredPlayerNames().contains(args[0])) {
 				showRating(sender, args[0]);
 			} else {
-				sender.sendMessage(ChatColor.RED + "Игрока " + ChatColor.GOLD + args[0] + ChatColor.RED + " не существует");
+				sender.sendMessage(ChatColor.RED + "РРіСЂРѕРєР° " + ChatColor.GOLD + args[0] + ChatColor.RED + " РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
 			}
 		}
 		return true;

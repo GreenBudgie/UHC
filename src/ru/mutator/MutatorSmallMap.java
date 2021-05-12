@@ -19,12 +19,12 @@ public class MutatorSmallMap extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Ограничение";
+		return "РћРіСЂР°РЅРёС‡РµРЅРёРµ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Размер карты уменьшается в два раза";
+		return "Р Р°Р·РјРµСЂ РєР°СЂС‚С‹ СѓРјРµРЅСЊС€Р°РµС‚СЃСЏ РІ РґРІР° СЂР°Р·Р°";
 	}
 
 	@Override

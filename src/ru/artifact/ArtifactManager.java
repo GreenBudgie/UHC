@@ -43,10 +43,10 @@ public class ArtifactManager implements Listener {
 	public static ArtifactCavedrop cavedrop = new ArtifactCavedrop();
 	public static ArtifactHunger hunger = new ArtifactHunger();
 
-	private static String name = ChatColor.DARK_RED + "Призвать";
+	private static String name = ChatColor.DARK_RED + "РџСЂРёР·РІР°С‚СЊ";
 
 	public static void openArtifactInventory(Player p) {
-		NumericalCases cases = new NumericalCases("артефакт", "артефакта", "артефактов");
+		NumericalCases cases = new NumericalCases("Р°СЂС‚РµС„Р°РєС‚", "Р°СЂС‚РµС„Р°РєС‚Р°", "Р°СЂС‚РµС„Р°РєС‚РѕРІ");
 		int count = getArtifactCount(p);
 		Inventory inv = Bukkit.createInventory(p, 18,
 				name + ChatColor.DARK_GRAY + " (" + ChatColor.YELLOW + count + ChatColor.RED + " " + cases.byNumber(count) + ChatColor.DARK_GRAY + ")");

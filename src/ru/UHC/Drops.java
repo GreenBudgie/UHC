@@ -114,10 +114,10 @@ public class Drops {
 			airdropLocation.getWorld().playSound(airdropLocation, Sound.BLOCK_WOOL_BREAK, 1.5F, 0.5F);
 			ParticleUtils.createParticlesInsideSphere(airdropLocation, 3, Particle.REDSTONE, Color.WHITE, 40);
 			for(Player p : UHC.getInGamePlayers()) {
-				p.sendTitle("", ChatColor.AQUA + "Аирдроп" + ChatColor.DARK_AQUA + " заспавнен!", 10, 40, 20);
+				p.sendTitle("", ChatColor.AQUA + "РђРёСЂРґСЂРѕРї" + ChatColor.DARK_AQUA + " Р·Р°СЃРїР°РІРЅРµРЅ!", 10, 40, 20);
 				String comma = ChatColor.WHITE + ", ";
 				String airdropLocInfo =
-						ChatColor.YELLOW + "Корды аирдропа: " + ChatColor.DARK_AQUA + airdropLocation.getBlockX() + comma + ChatColor.DARK_AQUA + airdropLocation.getBlockY()
+						ChatColor.YELLOW + "РљРѕСЂРґС‹ Р°РёСЂРґСЂРѕРїР°: " + ChatColor.DARK_AQUA + airdropLocation.getBlockX() + comma + ChatColor.DARK_AQUA + airdropLocation.getBlockY()
 								+ comma + ChatColor.DARK_AQUA + airdropLocation.getBlockZ();
 				p.sendMessage(airdropLocInfo);
 				p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_ELYTRA, 0.5F, 1.5F);
@@ -152,10 +152,10 @@ public class Drops {
 			cavedropLocation.getWorld().playSound(cavedropLocation, Sound.ITEM_FIRECHARGE_USE, 1F, 0.5F);
 			ParticleUtils.createParticlesInRange(cavedropLocation, 1.5, Particle.FLAME, null, 40);
 			for(Player p : UHC.getInGamePlayers()) {
-				p.sendTitle("", ChatColor.RED + "Кейвдроп" + ChatColor.DARK_AQUA + " заспавнен!", 5, 40, 20);
+				p.sendTitle("", ChatColor.RED + "РљРµР№РІРґСЂРѕРї" + ChatColor.DARK_AQUA + " Р·Р°СЃРїР°РІРЅРµРЅ!", 5, 40, 20);
 				String comma = ChatColor.WHITE + ", ";
 				String airdropLocInfo =
-						ChatColor.YELLOW + "Корды кейвдропа: " + ChatColor.DARK_AQUA + cavedropLocation.getBlockX() + comma + ChatColor.DARK_AQUA + cavedropLocation.getBlockY()
+						ChatColor.YELLOW + "РљРѕСЂРґС‹ РєРµР№РІРґСЂРѕРїР°: " + ChatColor.DARK_AQUA + cavedropLocation.getBlockX() + comma + ChatColor.DARK_AQUA + cavedropLocation.getBlockY()
 								+ comma + ChatColor.DARK_AQUA + cavedropLocation.getBlockZ();
 				p.sendMessage(airdropLocInfo);
 				p.playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.5F, 0.5F);

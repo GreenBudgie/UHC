@@ -27,12 +27,12 @@ public class MutatorNoRegen extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Без Регена";
+		return "Р‘РµР· Р РµРіРµРЅР°";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Эффекты регенерации и моментального здоровья больше не накладываются ни при каких условиях";
+		return "Р­С„С„РµРєС‚С‹ СЂРµРіРµРЅРµСЂР°С†РёРё Рё РјРѕРјРµРЅС‚Р°Р»СЊРЅРѕРіРѕ Р·РґРѕСЂРѕРІСЊСЏ Р±РѕР»СЊС€Рµ РЅРµ РЅР°РєР»Р°РґС‹РІР°СЋС‚СЃСЏ РЅРё РїСЂРё РєР°РєРёС… СѓСЃР»РѕРІРёСЏС…";
 	}
 
 	@Override

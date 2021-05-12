@@ -55,40 +55,40 @@ public class PvpArena implements Listener {
 				ItemUtils.builder(Material.DIAMOND_SWORD).withEnchantments(new ItemUtils.Enchant(Enchantment.DAMAGE_ALL, 100)).withFlags(ItemFlag.HIDE_ENCHANTS).build());
 		oneShotKillKit.withShield();
 
-		Kit diamondKit = new Kit("Алмазка");
+		Kit diamondKit = new Kit("РђР»РјР°Р·РєР°");
 		diamondKit.addArmorSet(Kit.ArmorMaterial.DIAMOND);
 		diamondKit.addItem(Material.DIAMOND_SWORD);
 		diamondKit.addItem(Material.DIAMOND_AXE);
 		diamondKit.withShield();
 
-		Kit ironKit = new Kit("Железка");
+		Kit ironKit = new Kit("Р–РµР»РµР·РєР°");
 		ironKit.addArmorSet(Kit.ArmorMaterial.IRON);
 		ironKit.addItem(Material.IRON_SWORD);
 		ironKit.addItem(Material.IRON_AXE);
 		ironKit.withShield();
 
-		Kit goldenKit = new Kit("Золото-железка");
+		Kit goldenKit = new Kit("Р—РѕР»РѕС‚Рѕ-Р¶РµР»РµР·РєР°");
 		goldenKit.addArmorSet(Kit.ArmorMaterial.IRON);
 		goldenKit.addItem(Material.GOLDEN_SWORD);
 		goldenKit.addItem(Material.GOLDEN_AXE);
 		goldenKit.withShield();
 
-		Kit chainKit = new Kit("Кольчуга");
+		Kit chainKit = new Kit("РљРѕР»СЊС‡СѓРіР°");
 		chainKit.addArmorSet(Kit.ArmorMaterial.CHAIN);
 		chainKit.addItem(Material.STONE_SWORD);
 		chainKit.addItem(Material.STONE_AXE);
 		chainKit.withShield();
 
-		Kit leatherKit = new Kit("Кожанка");
+		Kit leatherKit = new Kit("РљРѕР¶Р°РЅРєР°");
 		leatherKit.addArmorSet(Kit.ArmorMaterial.LEATHER);
 		leatherKit.addItem(Material.WOODEN_SWORD);
 		leatherKit.addItem(Material.WOODEN_AXE);
 		leatherKit.withShield();
 
-		Kit uselessKit = new Kit("Бесполезная лопата");
+		Kit uselessKit = new Kit("Р‘РµСЃРїРѕР»РµР·РЅР°СЏ Р»РѕРїР°С‚Р°");
 		uselessKit.addItem(Material.WOODEN_SHOVEL);
 
-		Kit healingKit = new Kit("Много хила");
+		Kit healingKit = new Kit("РњРЅРѕРіРѕ С…РёР»Р°");
 		healingKit.addArmorSet(Kit.ArmorMaterial.LEATHER);
 		healingKit.addItem(Material.IRON_SWORD);
 		ItemStack potion = ItemUtils.potionBuilder().asSplash().withColor(Color.FUCHSIA).withName("Heal").withEffects(new PotionEffect(PotionEffectType.HEAL, 1, 1)).build();
@@ -96,32 +96,32 @@ public class PvpArena implements Listener {
 			healingKit.addItem(potion);
 		}
 
-		Kit minerKit = new Kit("Шахтер");
+		Kit minerKit = new Kit("РЁР°С…С‚РµСЂ");
 		minerKit.addArmorSet(Kit.ArmorMaterial.CHAIN);
 		minerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.LAPIS_LAZULI), new ItemUtils.Enchant(Enchantment.DAMAGE_ALL, 4)));
 		minerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.GOLDEN_PICKAXE), new ItemUtils.Enchant(Enchantment.KNOCKBACK, 3)));
 		minerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.REDSTONE_ORE), new ItemUtils.Enchant(Enchantment.FIRE_ASPECT, 1)));
 
-		Kit strangeKit = new Kit("Полет");
+		Kit strangeKit = new Kit("РџРѕР»РµС‚");
 		strangeKit.addArmorSet(Kit.ArmorMaterial.LEATHER);
 		strangeKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.STONE_SHOVEL), new ItemUtils.Enchant(Enchantment.KNOCKBACK, 4)));
 		strangeKit.addItem(
 				ItemUtils.potionBuilder().asSplash().withColor(Color.WHITE).withEffects(new PotionEffect(PotionEffectType.LEVITATION, 80, 1)).withName("Levitation Vial")
 						.build());
 
-		Kit archerKit = new Kit("Лучник");
+		Kit archerKit = new Kit("Р›СѓС‡РЅРёРє");
 		archerKit.addArmorSet(Kit.ArmorMaterial.CHAIN);
 		archerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.BOW), new ItemUtils.Enchant(Enchantment.ARROW_INFINITE)));
 		archerKit.addItem(Material.ARROW);
 
-		Kit crossbowKit = new Kit("Арбалетчик");
+		Kit crossbowKit = new Kit("РђСЂР±Р°Р»РµС‚С‡РёРє");
 		crossbowKit.addArmorSet(Kit.ArmorMaterial.CHAIN);
 		crossbowKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.CROSSBOW), new ItemUtils.Enchant(Enchantment.QUICK_CHARGE, 3)));
 		for(int i = 0; i < 8; i++) {
 			crossbowKit.addItem(new ItemStack(Material.ARROW, 64));
 		}
 
-		Kit advCrossbowKit = new Kit("Продвинутый Арбалетчик");
+		Kit advCrossbowKit = new Kit("РџСЂРѕРґРІРёРЅСѓС‚С‹Р№ РђСЂР±Р°Р»РµС‚С‡РёРє");
 		advCrossbowKit.addArmorSet(Kit.ArmorMaterial.CHAIN);
 		advCrossbowKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.CROSSBOW), new ItemUtils.Enchant(Enchantment.QUICK_CHARGE, 3)));
 		ItemStack firework = new ItemStack(Material.FIREWORK_ROCKET, 64);
@@ -131,13 +131,13 @@ public class PvpArena implements Listener {
 		firework.setItemMeta(meta);
 		advCrossbowKit.putItem(firework, InventoryHelper.getOffHandSlot());
 
-		Kit advArcherKit = new Kit("Лучник 2");
+		Kit advArcherKit = new Kit("Р›СѓС‡РЅРёРє 2");
 		advArcherKit.addArmorSet(Kit.ArmorMaterial.DIAMOND);
 		advArcherKit.addItem(
 				ItemUtils.addEnchantments(new ItemStack(Material.BOW), new ItemUtils.Enchant(Enchantment.ARROW_INFINITE), new ItemUtils.Enchant(Enchantment.ARROW_FIRE)));
 		advArcherKit.addItem(Material.ARROW);
 
-		Kit mixedKit = new Kit("Смешанный");
+		Kit mixedKit = new Kit("РЎРјРµС€Р°РЅРЅС‹Р№");
 		mixedKit.addArmorSet(Kit.ArmorMaterial.IRON);
 		mixedKit.addItem(Material.IRON_SWORD);
 		mixedKit.addItem(Material.IRON_AXE);
@@ -145,7 +145,7 @@ public class PvpArena implements Listener {
 		mixedKit.addItem(Material.ARROW);
 		mixedKit.withShield();
 
-		Kit mixedKit2 = new Kit("Смешанный 2");
+		Kit mixedKit2 = new Kit("РЎРјРµС€Р°РЅРЅС‹Р№ 2");
 		mixedKit2.addArmorSet(Kit.ArmorMaterial.DIAMOND);
 		mixedKit2.addItem(Material.STONE_SWORD);
 		mixedKit2.addItem(Material.STONE_AXE);
@@ -156,7 +156,7 @@ public class PvpArena implements Listener {
 		mixedKit2.addItem(new ItemStack(Material.GOLDEN_APPLE));
 		mixedKit2.withShield();
 
-		Kit mixedKit3 = new Kit("Смешанный 3");
+		Kit mixedKit3 = new Kit("РЎРјРµС€Р°РЅРЅС‹Р№ 3");
 		mixedKit3.addArmorSet(Kit.ArmorMaterial.IRON);
 		mixedKit3.addItem(Material.IRON_SWORD);
 		mixedKit3.addItem(Material.IRON_AXE);
@@ -169,7 +169,7 @@ public class PvpArena implements Listener {
 		}
 		mixedKit3.withShield();
 
-		Kit wizardKit = new Kit("Маг");
+		Kit wizardKit = new Kit("РњР°Рі");
 		wizardKit.addArmorSet(Kit.ArmorMaterial.IRON);
 		wizardKit.addItem(Material.STONE_SWORD);
 		wizardKit.addItem(Material.STONE_AXE);
@@ -184,7 +184,7 @@ public class PvpArena implements Listener {
 				ItemUtils.potionBuilder().asDrinkable().withColor(Color.RED).withEffects(new PotionEffect(PotionEffectType.HEAL, 1, 1)).withName("Healing Vial").build());
 		wizardKit.withShield();
 
-		Kit wizardKit2 = new Kit("Маг 2");
+		Kit wizardKit2 = new Kit("РњР°Рі 2");
 		wizardKit2.addArmorSet(Kit.ArmorMaterial.DIAMOND);
 		wizardKit2.addItem(Material.GOLDEN_SWORD);
 		wizardKit2.addItem(Material.GOLDEN_AXE);
@@ -238,7 +238,7 @@ public class PvpArena implements Listener {
 		onArenaEnter(p2);
 		isDuel = true;
 		for(Player p : getLobbyPlayers()) {
-			p.sendTitle(ChatColor.AQUA + "Дуэль!", ChatColor.GOLD + p1.getName() + ChatColor.RED + ChatColor.BOLD + " VS " + ChatColor.RESET + ChatColor.GOLD + p2.getName(),
+			p.sendTitle(ChatColor.AQUA + "Р”СѓСЌР»СЊ!", ChatColor.GOLD + p1.getName() + ChatColor.RED + ChatColor.BOLD + " VS " + ChatColor.RESET + ChatColor.GOLD + p2.getName(),
 					5, 40, 10);
 			p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 0.5F, 1F);
 			heal(p);
@@ -251,7 +251,7 @@ public class PvpArena implements Listener {
 		duelingPlayer1 = null;
 		duelingPlayer2 = null;
 		for(Player player : getLobbyPlayers()) {
-			player.sendTitle(ChatColor.DARK_AQUA + "Дуэль завершена", ChatColor.GOLD + winner.getName() + ChatColor.YELLOW + " замачил " + ChatColor.GOLD + loser.getName(), 5,
+			player.sendTitle(ChatColor.DARK_AQUA + "Р”СѓСЌР»СЊ Р·Р°РІРµСЂС€РµРЅР°", ChatColor.GOLD + winner.getName() + ChatColor.YELLOW + " Р·Р°РјР°С‡РёР» " + ChatColor.GOLD + loser.getName(), 5,
 					60, 20);
 		}
 		heal(winner);
@@ -325,7 +325,7 @@ public class PvpArena implements Listener {
 					endDuel(rival, p);
 				}
 			} else {
-				InventoryHelper.sendActionBarMessage(p, ChatColor.GOLD + "Ты вышел с арены");
+				InventoryHelper.sendActionBarMessage(p, ChatColor.GOLD + "РўС‹ РІС‹С€РµР» СЃ Р°СЂРµРЅС‹");
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
 			}
 		}
@@ -337,7 +337,7 @@ public class PvpArena implements Listener {
 	public static void onArenaEnter(Player p) {
 		if(!isOnArena(p)) {
 			currentKit.give(p);
-			InventoryHelper.sendActionBarMessage(p, ChatColor.RED + "Ты зашел на арену");
+			InventoryHelper.sendActionBarMessage(p, ChatColor.RED + "РўС‹ Р·Р°С€РµР» РЅР° Р°СЂРµРЅСѓ");
 			p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 1F);
 			onArena.add(p);
 		}
@@ -348,9 +348,9 @@ public class PvpArena implements Listener {
 			List<Player> waiting = getDuelWaitingPlayers();
 			for(Player p : waiting) {
 				if(waiting.size() == 1) {
-					InventoryHelper.sendActionBarMessage(p, ChatColor.GRAY + "Ожидаем второго игрока...");
+					InventoryHelper.sendActionBarMessage(p, ChatColor.GRAY + "РћР¶РёРґР°РµРј РІС‚РѕСЂРѕРіРѕ РёРіСЂРѕРєР°...");
 				} else if(waiting.size() >= 2 && !onArena.isEmpty()) {
-					InventoryHelper.sendActionBarMessage(p, ChatColor.GRAY + "Ожидаем окончания битвы на арене...");
+					InventoryHelper.sendActionBarMessage(p, ChatColor.GRAY + "РћР¶РёРґР°РµРј РѕРєРѕРЅС‡Р°РЅРёСЏ Р±РёС‚РІС‹ РЅР° Р°СЂРµРЅРµ...");
 				}
 			}
 			if(waiting.size() >= 2) {
@@ -425,7 +425,7 @@ public class PvpArena implements Listener {
 					currentKit = getRandomKit();
 					for(Player player : onArena) {
 						InventoryHelper
-								.sendActionBarMessage(player, ChatColor.GOLD + "В следующий раз будет выдан новый набор: " + ChatColor.LIGHT_PURPLE + currentKit.getName());
+								.sendActionBarMessage(player, ChatColor.GOLD + "Р’ СЃР»РµРґСѓСЋС‰РёР№ СЂР°Р· Р±СѓРґРµС‚ РІС‹РґР°РЅ РЅРѕРІС‹Р№ РЅР°Р±РѕСЂ: " + ChatColor.LIGHT_PURPLE + currentKit.getName());
 					}
 				}
 				PlayerStat.ARENA_DEATHS.increaseValue(p, 1);

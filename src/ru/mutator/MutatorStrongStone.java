@@ -26,12 +26,12 @@ public class MutatorStrongStone extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Прочный Камень";
+		return "РџСЂРѕС‡РЅС‹Р№ РљР°РјРµРЅСЊ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Камень нельзя ломать киркой. На булыжник, андезит, гранит и т.д. не действует";
+		return "РљР°РјРµРЅСЊ РЅРµР»СЊР·СЏ Р»РѕРјР°С‚СЊ РєРёСЂРєРѕР№. РќР° Р±СѓР»С‹Р¶РЅРёРє, Р°РЅРґРµР·РёС‚, РіСЂР°РЅРёС‚ Рё С‚.Рґ. РЅРµ РґРµР№СЃС‚РІСѓРµС‚";
 	}
 
 	@EventHandler

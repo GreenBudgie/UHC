@@ -27,12 +27,12 @@ public class MutatorApocalypse extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Апокалипсис";
+		return "РђРїРѕРєР°Р»РёРїСЃРёСЃ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "С неба начинает падать динамит!";
+		return "РЎ РЅРµР±Р° РЅР°С‡РёРЅР°РµС‚ РїР°РґР°С‚СЊ РґРёРЅР°РјРёС‚!";
 	}
 
 	@Override

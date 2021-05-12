@@ -62,76 +62,76 @@ public class SignManager implements Listener {
 			switch(sign.getType()) {
 			case GAME_START:
 				if(UHC.playing) {
-					block.setLine(1, defCol + "Игра идет...");
-					block.setLine(2, ChatColor.DARK_AQUA + "<Наблюдать>");
+					block.setLine(1, defCol + "РРіСЂР° РёРґРµС‚...");
+					block.setLine(2, ChatColor.DARK_AQUA + "<РќР°Р±Р»СЋРґР°С‚СЊ>");
 				} else {
-					block.setLine(1, (WorldManager.hasMap() ? ChatColor.DARK_GREEN : ChatColor.DARK_GRAY) + "Начать игру");
+					block.setLine(1, (WorldManager.hasMap() ? ChatColor.DARK_GREEN : ChatColor.DARK_GRAY) + "РќР°С‡Р°С‚СЊ РёРіСЂСѓ");
 				}
 				break;
 			case REGEN:
 				if(WorldManager.hasMap()) {
-					block.setLine(1, ChatColor.DARK_GREEN + "Мир создан");
-					block.setLine(2, defCol + "<Пересоздать>");
+					block.setLine(1, ChatColor.DARK_GREEN + "РњРёСЂ СЃРѕР·РґР°РЅ");
+					block.setLine(2, defCol + "<РџРµСЂРµСЃРѕР·РґР°С‚СЊ>");
 				} else {
-					block.setLine(1, ChatColor.DARK_RED + "Мир не создан");
-					block.setLine(2, defCol + "<Сгенерировать>");
+					block.setLine(1, ChatColor.DARK_RED + "РњРёСЂ РЅРµ СЃРѕР·РґР°РЅ");
+					block.setLine(2, defCol + "<РЎРіРµРЅРµСЂРёСЂРѕРІР°С‚СЊ>");
 				}
 				break;
 			case SIZE:
-				block.setLine(1, defCol + "Размер карты:");
+				block.setLine(1, defCol + "Р Р°Р·РјРµСЂ РєР°СЂС‚С‹:");
 				block.setLine(2, UHC.mapSize == 0 ?
-						(ChatColor.DARK_GREEN + "Маленький") :
+						(ChatColor.DARK_GREEN + "РњР°Р»РµРЅСЊРєРёР№") :
 						(UHC.mapSize == 1 ?
-								(ChatColor.DARK_AQUA + "Обычный") :
-								(UHC.mapSize == 2 ? (ChatColor.DARK_RED + "Большой") : (ChatColor.LIGHT_PURPLE + "Фиксированный"))));
+								(ChatColor.DARK_AQUA + "РћР±С‹С‡РЅС‹Р№") :
+								(UHC.mapSize == 2 ? (ChatColor.DARK_RED + "Р‘РѕР»СЊС€РѕР№") : (ChatColor.LIGHT_PURPLE + "Р¤РёРєСЃРёСЂРѕРІР°РЅРЅС‹Р№"))));
 				if(UHC.mapSize != 3) {
-					block.setLine(3, ChatColor.DARK_AQUA + String.valueOf(UHC.getMapSize()) + ChatColor.GOLD + " бл. на игрока");
+					block.setLine(3, ChatColor.DARK_AQUA + String.valueOf(UHC.getMapSize()) + ChatColor.GOLD + " Р±Р». РЅР° РёРіСЂРѕРєР°");
 				} else {
-					block.setLine(3, ChatColor.DARK_AQUA + String.valueOf(UHC.getMapSize()) + ChatColor.GOLD + " бл.");
+					block.setLine(3, ChatColor.DARK_AQUA + String.valueOf(UHC.getMapSize()) + ChatColor.GOLD + " Р±Р».");
 				}
 				break;
 			case DURATION:
-				block.setLine(0, defCol + "Длит. игры:");
+				block.setLine(0, defCol + "Р”Р»РёС‚. РёРіСЂС‹:");
 				block.setLine(1, (UHC.gameDuration == 0 ?
-						(ChatColor.DARK_GREEN + "Короткая") :
-						(UHC.gameDuration == 1 ? (ChatColor.DARK_AQUA + "Обычная") : (ChatColor.DARK_RED + "Долгая"))) + defCol + ", " + String
-						.valueOf(UHC.getNoPVPDuration() + UHC.getGameDuration()) + "мин");
-				block.setLine(2, ChatColor.DARK_AQUA + String.valueOf(UHC.getNoPVPDuration()) + defCol + " минут без пвп");
-				block.setLine(3, ChatColor.DARK_AQUA + String.valueOf(UHC.getGameDuration()) + defCol + " минут до ДМ");
+						(ChatColor.DARK_GREEN + "РљРѕСЂРѕС‚РєР°СЏ") :
+						(UHC.gameDuration == 1 ? (ChatColor.DARK_AQUA + "РћР±С‹С‡РЅР°СЏ") : (ChatColor.DARK_RED + "Р”РѕР»РіР°СЏ"))) + defCol + ", " + String
+						.valueOf(UHC.getNoPVPDuration() + UHC.getGameDuration()) + "РјРёРЅ");
+				block.setLine(2, ChatColor.DARK_AQUA + String.valueOf(UHC.getNoPVPDuration()) + defCol + " РјРёРЅСѓС‚ Р±РµР· РїРІРї");
+				block.setLine(3, ChatColor.DARK_AQUA + String.valueOf(UHC.getGameDuration()) + defCol + " РјРёРЅСѓС‚ РґРѕ Р”Рњ");
 				break;
 			case STATS:
-				block.setLine(1, defCol + "Статистика:");
-				block.setLine(2, UHC.stats ? (ChatColor.DARK_GREEN + "Включена") : (ChatColor.DARK_RED + "Отключена"));
+				block.setLine(1, defCol + "РЎС‚Р°С‚РёСЃС‚РёРєР°:");
+				block.setLine(2, UHC.stats ? (ChatColor.DARK_GREEN + "Р’РєР»СЋС‡РµРЅР°") : (ChatColor.DARK_RED + "РћС‚РєР»СЋС‡РµРЅР°"));
 				break;
 			case DUO:
-				block.setLine(1, defCol + "Режим:");
+				block.setLine(1, defCol + "Р РµР¶РёРј:");
 				if(!UHC.isDuo) {
-					block.setLine(2, ChatColor.DARK_AQUA + "Соло");
+					block.setLine(2, ChatColor.DARK_AQUA + "РЎРѕР»Рѕ");
 				} else {
-					block.setLine(2, ChatColor.DARK_PURPLE + "Дуо");
+					block.setLine(2, ChatColor.DARK_PURPLE + "Р”СѓРѕ");
 				}
 				break;
 			case RETURN_LOBBY:
-				block.setLine(1, defCol + "Назад");
+				block.setLine(1, defCol + "РќР°Р·Р°Рґ");
 				break;
 			case TRIDENT_TP:
-				block.setLine(1, defCol + "Паркур");
-				block.setLine(2, ChatColor.DARK_PURPLE + "<Телепорт>");
+				block.setLine(1, defCol + "РџР°СЂРєСѓСЂ");
+				block.setLine(2, ChatColor.DARK_PURPLE + "<РўРµР»РµРїРѕСЂС‚>");
 				break;
 			case ARENA_TP:
-				block.setLine(1, ChatColor.DARK_RED + "Арена");
-				block.setLine(2, ChatColor.DARK_PURPLE + "<Телепорт>");
+				block.setLine(1, ChatColor.DARK_RED + "РђСЂРµРЅР°");
+				block.setLine(2, ChatColor.DARK_PURPLE + "<РўРµР»РµРїРѕСЂС‚>");
 				break;
 			case NEXT_KIT:
-				block.setLine(0, defCol + "Убийств до");
-				block.setLine(1, defCol + "след. набора:");
+				block.setLine(0, defCol + "РЈР±РёР№СЃС‚РІ РґРѕ");
+				block.setLine(1, defCol + "СЃР»РµРґ. РЅР°Р±РѕСЂР°:");
 				block.setLine(2, ChatColor.DARK_AQUA + "" + PvpArena.killsToNextKit);
-				block.setLine(3, ChatColor.DARK_GREEN + "<Сменить>");
+				block.setLine(3, ChatColor.DARK_GREEN + "<РЎРјРµРЅРёС‚СЊ>");
 				break;
 			case FAST_START:
-				block.setLine(1, defCol + "Быстрый старт");
-				block.setLine(2, UHC.fastStart > 0 ? (ChatColor.DARK_GREEN + "Включен") : (ChatColor.DARK_GRAY + "Отключен"));
-				block.setLine(3, UHC.fastStart == 0 ? "" : (UHC.fastStart == 2 ? (ChatColor.DARK_AQUA + "С мутаторами") : (ChatColor.DARK_RED + "Без мутаторов")));
+				block.setLine(1, defCol + "Р‘С‹СЃС‚СЂС‹Р№ СЃС‚Р°СЂС‚");
+				block.setLine(2, UHC.fastStart > 0 ? (ChatColor.DARK_GREEN + "Р’РєР»СЋС‡РµРЅ") : (ChatColor.DARK_GRAY + "РћС‚РєР»СЋС‡РµРЅ"));
+				block.setLine(3, UHC.fastStart == 0 ? "" : (UHC.fastStart == 2 ? (ChatColor.DARK_AQUA + "РЎ РјСѓС‚Р°С‚РѕСЂР°РјРё") : (ChatColor.DARK_RED + "Р‘РµР· РјСѓС‚Р°С‚РѕСЂРѕРІ")));
 				break;
 			}
 			block.update();
@@ -162,7 +162,7 @@ public class SignManager implements Listener {
 							MutatorManager.meetingPlace.bar.addPlayer(p);
 						}
 						for(Player pl : UHC.getInGamePlayers()) {
-							pl.sendMessage(ChatColor.GOLD + p.getName() + ChatColor.AQUA + " присоединился к наблюдателям");
+							pl.sendMessage(ChatColor.GOLD + p.getName() + ChatColor.AQUA + " РїСЂРёСЃРѕРµРґРёРЅРёР»СЃСЏ Рє РЅР°Р±Р»СЋРґР°С‚РµР»СЏРј");
 						}
 					}
 					break;
@@ -216,7 +216,7 @@ public class SignManager implements Listener {
 				case NEXT_KIT:
 					PvpArena.killsToNextKit = 8;
 					PvpArena.currentKit = PvpArena.getRandomKit();
-					String text = ChatColor.GREEN + "Новый набор: " + ChatColor.LIGHT_PURPLE + PvpArena.currentKit.getName();
+					String text = ChatColor.GREEN + "РќРѕРІС‹Р№ РЅР°Р±РѕСЂ: " + ChatColor.LIGHT_PURPLE + PvpArena.currentKit.getName();
 					InventoryHelper.sendActionBarMessage(p, text);
 					for(Player player : PvpArena.onArena) {
 						InventoryHelper.sendActionBarMessage(player, text);

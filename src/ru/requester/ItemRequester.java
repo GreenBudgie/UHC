@@ -28,11 +28,11 @@ import java.util.List;
 
 public class ItemRequester implements Listener {
 
-	public static final NumericalCases REDSTONE_CASES = new NumericalCases("редстоун", "редстоуна", "редстоуна");
-	public static final NumericalCases LAPIS_CASES = new NumericalCases("лазурит", "лазурита", "лазурита");
+	public static final NumericalCases REDSTONE_CASES = new NumericalCases("СЂРµРґСЃС‚РѕСѓРЅ", "СЂРµРґСЃС‚РѕСѓРЅР°", "СЂРµРґСЃС‚РѕСѓРЅР°");
+	public static final NumericalCases LAPIS_CASES = new NumericalCases("Р»Р°Р·СѓСЂРёС‚", "Р»Р°Р·СѓСЂРёС‚Р°", "Р»Р°Р·СѓСЂРёС‚Р°");
 	public static List<RequestedItem> requestedItems = new ArrayList<>();
 	public static List<RequesterCustomItem> requesterCustomItems = new ArrayList<>();
-	private static String name = ChatColor.DARK_AQUA + "Запросы";
+	private static String name = ChatColor.DARK_AQUA + "Р—Р°РїСЂРѕСЃС‹";
 
 	public static void init() {
 		requesterCustomItems.addAll(Lists
@@ -81,7 +81,7 @@ public class ItemRequester implements Listener {
 				for(Player player : UHC.getInGamePlayers()) {
 					Location l = p.getLocation();
 					player.sendMessage(
-							ChatColor.LIGHT_PURPLE + "Был сделан запрос: " + ChatColor.DARK_AQUA + l.getBlockX() + ChatColor.WHITE + ", " + ChatColor.DARK_AQUA + l
+							ChatColor.LIGHT_PURPLE + "Р‘С‹Р» СЃРґРµР»Р°РЅ Р·Р°РїСЂРѕСЃ: " + ChatColor.DARK_AQUA + l.getBlockX() + ChatColor.WHITE + ", " + ChatColor.DARK_AQUA + l
 									.getBlockZ() + (player == p ?
 									"" :
 									ChatColor.WHITE + " (" + (l.getWorld() == player.getWorld() ?

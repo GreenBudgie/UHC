@@ -6,30 +6,30 @@ import ru.util.MathUtils;
 public enum ThreatStatus {
 
 	SUPPORTING(
-			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Скучные мутаторы... " + ChatColor.RESET + ChatColor.AQUA + "На этот раз всем повезло",
-			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Скучный выбор. " + ChatColor.RESET + ChatColor.AQUA + "Видимо, игра будет простой и долгой",
-			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Слишком легко. " + ChatColor.RESET + ChatColor.AQUA + "Надеюсь, кто-то активирует мутатор посложнее",
-			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Так совсем не интересно. " + ChatColor.RESET + ChatColor.AQUA + "Не мутаторы, а херота",
-			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Мда. " + ChatColor.RESET + ChatColor.AQUA + "Слишком много помощи от мутаторов",
-			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "ок найс мутаторы) " + ChatColor.RESET + ChatColor.AQUA + "будет мегаизи)"
+			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "РЎРєСѓС‡РЅС‹Рµ РјСѓС‚Р°С‚РѕСЂС‹... " + ChatColor.RESET + ChatColor.AQUA + "РќР° СЌС‚РѕС‚ СЂР°Р· РІСЃРµРј РїРѕРІРµР·Р»Рѕ",
+			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "РЎРєСѓС‡РЅС‹Р№ РІС‹Р±РѕСЂ. " + ChatColor.RESET + ChatColor.AQUA + "Р’РёРґРёРјРѕ, РёРіСЂР° Р±СѓРґРµС‚ РїСЂРѕСЃС‚РѕР№ Рё РґРѕР»РіРѕР№",
+			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "РЎР»РёС€РєРѕРј Р»РµРіРєРѕ. " + ChatColor.RESET + ChatColor.AQUA + "РќР°РґРµСЋСЃСЊ, РєС‚Рѕ-С‚Рѕ Р°РєС‚РёРІРёСЂСѓРµС‚ РјСѓС‚Р°С‚РѕСЂ РїРѕСЃР»РѕР¶РЅРµРµ",
+			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "РўР°Рє СЃРѕРІСЃРµРј РЅРµ РёРЅС‚РµСЂРµСЃРЅРѕ. " + ChatColor.RESET + ChatColor.AQUA + "РќРµ РјСѓС‚Р°С‚РѕСЂС‹, Р° С…РµСЂРѕС‚Р°",
+			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "РњРґР°. " + ChatColor.RESET + ChatColor.AQUA + "РЎР»РёС€РєРѕРј РјРЅРѕРіРѕ РїРѕРјРѕС‰Рё РѕС‚ РјСѓС‚Р°С‚РѕСЂРѕРІ",
+			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "РѕРє РЅР°Р№СЃ РјСѓС‚Р°С‚РѕСЂС‹) " + ChatColor.RESET + ChatColor.AQUA + "Р±СѓРґРµС‚ РјРµРіР°РёР·Рё)"
 	),
 	INNOCENT(
-			ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Интересный выбор. " + ChatColor.RESET + ChatColor.GREEN + "Скажем, сбалансированные мутаторы",
-			ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Довольно скучно. " + ChatColor.RESET + ChatColor.GREEN + "Какие-то средние мутаторы",
-			ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Средние мутаторы. " + ChatColor.RESET + ChatColor.GREEN + "Могло бы быть и поинтереснее"
+			ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "РРЅС‚РµСЂРµСЃРЅС‹Р№ РІС‹Р±РѕСЂ. " + ChatColor.RESET + ChatColor.GREEN + "РЎРєР°Р¶РµРј, СЃР±Р°Р»Р°РЅСЃРёСЂРѕРІР°РЅРЅС‹Рµ РјСѓС‚Р°С‚РѕСЂС‹",
+			ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Р”РѕРІРѕР»СЊРЅРѕ СЃРєСѓС‡РЅРѕ. " + ChatColor.RESET + ChatColor.GREEN + "РљР°РєРёРµ-С‚Рѕ СЃСЂРµРґРЅРёРµ РјСѓС‚Р°С‚РѕСЂС‹",
+			ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "РЎСЂРµРґРЅРёРµ РјСѓС‚Р°С‚РѕСЂС‹. " + ChatColor.RESET + ChatColor.GREEN + "РњРѕРіР»Рѕ Р±С‹ Р±С‹С‚СЊ Рё РїРѕРёРЅС‚РµСЂРµСЃРЅРµРµ"
 	),
 	DANGEROUS(
-			ChatColor.DARK_RED + "" + ChatColor.BOLD + "Игра обещает быть интересной! " + ChatColor.RESET + ChatColor.RED + "Классные мутаторы",
-			ChatColor.DARK_RED + "" + ChatColor.BOLD + "Будет весело. " + ChatColor.RESET + ChatColor.RED + "Надеюсь, мутаторы всем понравились",
-			ChatColor.DARK_RED + "" + ChatColor.BOLD + "Отличный выбор! " + ChatColor.RESET + ChatColor.RED + "Игра будет необычной",
-			ChatColor.DARK_RED + "" + ChatColor.BOLD + "А что, хорошие мутаторы. " + ChatColor.RESET + ChatColor.RED + "Скучно не будет точно"
+			ChatColor.DARK_RED + "" + ChatColor.BOLD + "РРіСЂР° РѕР±РµС‰Р°РµС‚ Р±С‹С‚СЊ РёРЅС‚РµСЂРµСЃРЅРѕР№! " + ChatColor.RESET + ChatColor.RED + "РљР»Р°СЃСЃРЅС‹Рµ РјСѓС‚Р°С‚РѕСЂС‹",
+			ChatColor.DARK_RED + "" + ChatColor.BOLD + "Р‘СѓРґРµС‚ РІРµСЃРµР»Рѕ. " + ChatColor.RESET + ChatColor.RED + "РќР°РґРµСЋСЃСЊ, РјСѓС‚Р°С‚РѕСЂС‹ РІСЃРµРј РїРѕРЅСЂР°РІРёР»РёСЃСЊ",
+			ChatColor.DARK_RED + "" + ChatColor.BOLD + "РћС‚Р»РёС‡РЅС‹Р№ РІС‹Р±РѕСЂ! " + ChatColor.RESET + ChatColor.RED + "РРіСЂР° Р±СѓРґРµС‚ РЅРµРѕР±С‹С‡РЅРѕР№",
+			ChatColor.DARK_RED + "" + ChatColor.BOLD + "Рђ С‡С‚Рѕ, С…РѕСЂРѕС€РёРµ РјСѓС‚Р°С‚РѕСЂС‹. " + ChatColor.RESET + ChatColor.RED + "РЎРєСѓС‡РЅРѕ РЅРµ Р±СѓРґРµС‚ С‚РѕС‡РЅРѕ"
 	),
 	CRITICAL(
-			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Ой, что за выбор... " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "Извиняюсь за такие мутаторы",
-			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "АХАХАХАХХАХАХАХА) " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "удачи с такими мутаторами)",
-			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Короткая игра намечается. " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "Все подохнут до арены, отвечаю",
-			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Слишком жестко. " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "Все сдохнут сами, можно не ПВПшиться",
-			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "АЧЕ) " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "КЛАСС МУТАТОРЫ)"
+			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "РћР№, С‡С‚Рѕ Р·Р° РІС‹Р±РѕСЂ... " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "РР·РІРёРЅСЏСЋСЃСЊ Р·Р° С‚Р°РєРёРµ РјСѓС‚Р°С‚РѕСЂС‹",
+			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "РђРҐРђРҐРђРҐРђРҐРҐРђРҐРђРҐРђРҐРђ) " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "СѓРґР°С‡Рё СЃ С‚Р°РєРёРјРё РјСѓС‚Р°С‚РѕСЂР°РјРё)",
+			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "РљРѕСЂРѕС‚РєР°СЏ РёРіСЂР° РЅР°РјРµС‡Р°РµС‚СЃСЏ. " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "Р’СЃРµ РїРѕРґРѕС…РЅСѓС‚ РґРѕ Р°СЂРµРЅС‹, РѕС‚РІРµС‡Р°СЋ",
+			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "РЎР»РёС€РєРѕРј Р¶РµСЃС‚РєРѕ. " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "Р’СЃРµ СЃРґРѕС…РЅСѓС‚ СЃР°РјРё, РјРѕР¶РЅРѕ РЅРµ РџР’РџС€РёС‚СЊСЃСЏ",
+			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "РђР§Р•) " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "РљР›РђРЎРЎ РњРЈРўРђРўРћР Р«)"
 	);
 
 	private String[] messages;

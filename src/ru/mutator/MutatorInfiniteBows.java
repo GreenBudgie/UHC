@@ -24,12 +24,12 @@ public class MutatorInfiniteBows extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Лук Бога";
+		return "Р›СѓРє Р‘РѕРіР°";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Любой скрафченный лук получает чар на Бесконечность";
+		return "Р›СЋР±РѕР№ СЃРєСЂР°С„С‡РµРЅРЅС‹Р№ Р»СѓРє РїРѕР»СѓС‡Р°РµС‚ С‡Р°СЂ РЅР° Р‘РµСЃРєРѕРЅРµС‡РЅРѕСЃС‚СЊ";
 	}
 
 	@EventHandler

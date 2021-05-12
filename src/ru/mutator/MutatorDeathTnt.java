@@ -27,12 +27,12 @@ public class MutatorDeathTnt extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Взрывной Сюрприз";
+		return "Р’Р·СЂС‹РІРЅРѕР№ РЎСЋСЂРїСЂРёР·";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Со всех убитых мобов и игроков будет вылетать динамит вверх и взрываться через 4 секунды";
+		return "РЎРѕ РІСЃРµС… СѓР±РёС‚С‹С… РјРѕР±РѕРІ Рё РёРіСЂРѕРєРѕРІ Р±СѓРґРµС‚ РІС‹Р»РµС‚Р°С‚СЊ РґРёРЅР°РјРёС‚ РІРІРµСЂС… Рё РІР·СЂС‹РІР°С‚СЊСЃСЏ С‡РµСЂРµР· 4 СЃРµРєСѓРЅРґС‹";
 	}
 
 	@EventHandler

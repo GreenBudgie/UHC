@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class CommandPing implements CommandExecutor {
@@ -13,15 +13,15 @@ public class CommandPing implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
 		if(args.length == 0) {
-			p.sendMessage(ChatColor.YELLOW + "Твой пинг: " + ChatColor.GREEN + getPing(p));
+			p.sendMessage(ChatColor.YELLOW + "РўРІРѕР№ РїРёРЅРі: " + ChatColor.GREEN + getPing(p));
 		}
 		if(args.length >= 1) {
 			Player p2 = Bukkit.getPlayer(args[0]);
 			if(p2 != null) {
 				p.sendMessage(
-						ChatColor.YELLOW + "Пинг " + ChatColor.GOLD + p.getName() + ": " + ChatColor.GREEN + getPing(p2));
+						ChatColor.YELLOW + "РџРёРЅРі " + ChatColor.GOLD + p.getName() + ": " + ChatColor.GREEN + getPing(p2));
 			} else {
-				p.sendMessage(ChatColor.RED + "Нет такого игрока");
+				p.sendMessage(ChatColor.RED + "РќРµС‚ С‚Р°РєРѕРіРѕ РёРіСЂРѕРєР°");
 			}
 		}
 		return true;

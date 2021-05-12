@@ -28,12 +28,12 @@ public class MutatorBabyZombies extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Опасные Зомби";
+		return "РћРїР°СЃРЅС‹Рµ Р—РѕРјР±Рё";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Все зомби спавнятся мелкими";
+		return "Р’СЃРµ Р·РѕРјР±Рё СЃРїР°РІРЅСЏС‚СЃСЏ РјРµР»РєРёРјРё";
 	}
 
 	@Override

@@ -81,13 +81,13 @@ public class FightHelper {
 		String deathMessage;
 		if(process == null) {
 			if(killer == null) {
-				deathMessage = ChatColor.GOLD + victim.getName() + ChatColor.RED + " замачили";
+				deathMessage = ChatColor.GOLD + victim.getName() + ChatColor.RED + " Р·Р°РјР°С‡РёР»Рё";
 			} else {
-				deathMessage = ChatColor.GOLD + victim.getKiller().getName() + ChatColor.RED + " замачил " + ChatColor.GOLD + victim.getName();
+				deathMessage = ChatColor.GOLD + victim.getKiller().getName() + ChatColor.RED + " Р·Р°РјР°С‡РёР» " + ChatColor.GOLD + victim.getName();
 			}
 		} else {
 			if(process.killMessage.isEmpty()) {
-				deathMessage = ChatColor.GOLD + process.attacker.getName() + ChatColor.RED + " замачил " + ChatColor.GOLD + victim.getName();
+				deathMessage = ChatColor.GOLD + process.attacker.getName() + ChatColor.RED + " Р·Р°РјР°С‡РёР» " + ChatColor.GOLD + victim.getName();
 			} else {
 				deathMessage = ChatColor.GOLD + process.attacker.getName() + ChatColor.RED + " " + process.killMessage + " " + ChatColor.GOLD + victim.getName();
 			}

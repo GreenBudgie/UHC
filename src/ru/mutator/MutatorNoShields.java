@@ -27,12 +27,12 @@ public class MutatorNoShields extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Беззащитный";
+		return "Р‘РµР·Р·Р°С‰РёС‚РЅС‹Р№";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Щиты больше не скрафтить";
+		return "Р©РёС‚С‹ Р±РѕР»СЊС€Рµ РЅРµ СЃРєСЂР°С„С‚РёС‚СЊ";
 	}
 
 	@EventHandler

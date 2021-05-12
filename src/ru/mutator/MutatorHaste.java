@@ -53,12 +53,12 @@ public class MutatorHaste extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Гипершахтер";
+		return "Р“РёРїРµСЂС€Р°С…С‚РµСЂ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Все игроки становятся буквально быстрее. Выдается Скорость и Спешка II";
+		return "Р’СЃРµ РёРіСЂРѕРєРё СЃС‚Р°РЅРѕРІСЏС‚СЃСЏ Р±СѓРєРІР°Р»СЊРЅРѕ Р±С‹СЃС‚СЂРµРµ. Р’С‹РґР°РµС‚СЃСЏ РЎРєРѕСЂРѕСЃС‚СЊ Рё РЎРїРµС€РєР° II";
 	}
 
 

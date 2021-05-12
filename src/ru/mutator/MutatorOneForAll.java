@@ -29,12 +29,12 @@ public class MutatorOneForAll extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Один На Всех";
+		return "РћРґРёРЅ РќР° Р’СЃРµС…";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Активирует случайные мутаторы, и через некоторое время деактивирует их";
+		return "РђРєС‚РёРІРёСЂСѓРµС‚ СЃР»СѓС‡Р°Р№РЅС‹Рµ РјСѓС‚Р°С‚РѕСЂС‹, Рё С‡РµСЂРµР· РЅРµРєРѕС‚РѕСЂРѕРµ РІСЂРµРјСЏ РґРµР°РєС‚РёРІРёСЂСѓРµС‚ РёС…";
 	}
 
 	@Override
@@ -72,12 +72,12 @@ public class MutatorOneForAll extends Mutator implements Listener {
 						activatedMutator.activate(false, null);
 						timer = MathUtils.randomRange(400, 600);
 						for(Player p : UHC.getInGamePlayers()) {
-							p.sendTitle("", ChatColor.GOLD + "Добавлен мутатор: " + ChatColor.LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
+							p.sendTitle("", ChatColor.GOLD + "Р”РѕР±Р°РІР»РµРЅ РјСѓС‚Р°С‚РѕСЂ: " + ChatColor.LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
 							p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1F);
 						}
 					} else { //FIXME NuLL
 						for(Player p : UHC.getInGamePlayers()) {
-							p.sendTitle("", ChatColor.GOLD + "Деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
+							p.sendTitle("", ChatColor.GOLD + "Р”РµР°РєС‚РёРІРёСЂРѕРІР°РЅ РјСѓС‚Р°С‚РѕСЂ: " + ChatColor.LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
 							p.playSound(p.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1F, 1F);
 						}
 						activatedMutator.deactivate();

@@ -51,12 +51,12 @@ public class MutatorVegetarian extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Вегетарианец";
+		return "Р’РµРіРµС‚Р°СЂРёР°РЅРµС†";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Мясо есть нельзя: наложится эффект отравления";
+		return "РњСЏСЃРѕ РµСЃС‚СЊ РЅРµР»СЊР·СЏ: РЅР°Р»РѕР¶РёС‚СЃСЏ СЌС„С„РµРєС‚ РѕС‚СЂР°РІР»РµРЅРёСЏ";
 	}
 
 	@EventHandler

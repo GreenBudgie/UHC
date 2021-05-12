@@ -12,12 +12,12 @@ public class ArtifactCavedrop extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.RED + "Подземные Дары";
+		return ChatColor.RED + "РџРѕРґР·РµРјРЅС‹Рµ Р”Р°СЂС‹";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Изменяет позицию выпадения следующего кейвдропа и сокращает время его ожидания в 3 раза";
+		return "РР·РјРµРЅСЏРµС‚ РїРѕР·РёС†РёСЋ РІС‹РїР°РґРµРЅРёСЏ СЃР»РµРґСѓСЋС‰РµРіРѕ РєРµР№РІРґСЂРѕРїР° Рё СЃРѕРєСЂР°С‰Р°РµС‚ РІСЂРµРјСЏ РµРіРѕ РѕР¶РёРґР°РЅРёСЏ РІ 3 СЂР°Р·Р°";
 	}
 
 	@Override

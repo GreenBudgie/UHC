@@ -37,7 +37,7 @@ public class CustomItemCreatureHighlighter extends RequesterCustomItem {
 
 	@Override
 	public String getDescription() {
-		return "При использовании подсвечивает всех мобов в радиусе 50 блоков, но не игроков";
+		return "РџСЂРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРё РїРѕРґСЃРІРµС‡РёРІР°РµС‚ РІСЃРµС… РјРѕР±РѕРІ РІ СЂР°РґРёСѓСЃРµ 50 Р±Р»РѕРєРѕРІ, РЅРѕ РЅРµ РёРіСЂРѕРєРѕРІ";
 	}
 
 	@Override

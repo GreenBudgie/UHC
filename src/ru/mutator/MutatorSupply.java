@@ -23,12 +23,12 @@ public class MutatorSupply extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Клад";
+		return "РљР»Р°Рґ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "С неба падает несколько сундуков с рандомным лутом в случайные места на карте";
+		return "РЎ РЅРµР±Р° РїР°РґР°РµС‚ РЅРµСЃРєРѕР»СЊРєРѕ СЃСѓРЅРґСѓРєРѕРІ СЃ СЂР°РЅРґРѕРјРЅС‹Рј Р»СѓС‚РѕРј РІ СЃР»СѓС‡Р°Р№РЅС‹Рµ РјРµСЃС‚Р° РЅР° РєР°СЂС‚Рµ";
 	}
 
 	private Location chooseLocation() {

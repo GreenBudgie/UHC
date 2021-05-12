@@ -21,10 +21,10 @@ public class CommandStat implements CommandExecutor, TabCompleter {
 				for(String p : PlayerStat.getRegisteredPlayerNames()) {
 					if(Lists.newArrayList(PlayerStat.values()).stream().allMatch(stat -> stat.getValue(p) == 0)) {
 						PlayerStat.deleteStats(p);
-						sender.sendMessage(ChatColor.GOLD + p + ChatColor.YELLOW + " удален из статистики");
+						sender.sendMessage(ChatColor.GOLD + p + ChatColor.YELLOW + " СѓРґР°Р»РµРЅ РёР· СЃС‚Р°С‚РёСЃС‚РёРєРё");
 					}
 				}
-				sender.sendMessage(ChatColor.AQUA + "Очистка окончена");
+				sender.sendMessage(ChatColor.AQUA + "РћС‡РёСЃС‚РєР° РѕРєРѕРЅС‡РµРЅР°");
 				PlayerStat.save();
 				return true;
 			}
@@ -35,7 +35,7 @@ public class CommandStat implements CommandExecutor, TabCompleter {
 					if(args[0].equalsIgnoreCase("delete")) {
 						for(String p : players) {
 							PlayerStat.deleteStats(p);
-							sender.sendMessage(ChatColor.GOLD + p + ChatColor.YELLOW + " удален из статистики");
+							sender.sendMessage(ChatColor.GOLD + p + ChatColor.YELLOW + " СѓРґР°Р»РµРЅ РёР· СЃС‚Р°С‚РёСЃС‚РёРєРё");
 						}
 						PlayerStat.save();
 						return true;
@@ -45,14 +45,14 @@ public class CommandStat implements CommandExecutor, TabCompleter {
 							try {
 								stats = args[2].equals("all") ? Lists.newArrayList(PlayerStat.values()) : Lists.newArrayList(PlayerStat.valueOf(args[2]));
 							} catch(Exception e) {
-								sender.sendMessage(ChatColor.RED + "Нет статы " + ChatColor.GOLD + args[2]);
+								sender.sendMessage(ChatColor.RED + "РќРµС‚ СЃС‚Р°С‚С‹ " + ChatColor.GOLD + args[2]);
 								return true;
 							}
 							if(args[0].equalsIgnoreCase("zero")) {
 								for(String p : players) {
 									for(PlayerStat stat : stats) {
 										PlayerStat.zeroStats(p);
-										sender.sendMessage(ChatColor.AQUA + stat.getName() + ChatColor.YELLOW + " сброшен для " + ChatColor.GOLD + p);
+										sender.sendMessage(ChatColor.AQUA + stat.getName() + ChatColor.YELLOW + " СЃР±СЂРѕС€РµРЅ РґР»СЏ " + ChatColor.GOLD + p);
 									}
 								}
 								PlayerStat.save();
@@ -63,7 +63,7 @@ public class CommandStat implements CommandExecutor, TabCompleter {
 								try {
 									c = Integer.valueOf(args[3]);
 								} catch(NumberFormatException e) {
-									sender.sendMessage(ChatColor.RED + "Это не число: " + ChatColor.GOLD + args[3]);
+									sender.sendMessage(ChatColor.RED + "Р­С‚Рѕ РЅРµ С‡РёСЃР»Рѕ: " + ChatColor.GOLD + args[3]);
 									return true;
 								}
 								if(args[0].equalsIgnoreCase("set")) {
@@ -71,7 +71,7 @@ public class CommandStat implements CommandExecutor, TabCompleter {
 										for(PlayerStat stat : stats) {
 											stat.setValue(p, c);
 											sender.sendMessage(
-													ChatColor.AQUA + stat.getName() + ChatColor.YELLOW + " установлены на " + ChatColor.DARK_AQUA + c + ChatColor.YELLOW + " для "
+													ChatColor.AQUA + stat.getName() + ChatColor.YELLOW + " СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹ РЅР° " + ChatColor.DARK_AQUA + c + ChatColor.YELLOW + " РґР»СЏ "
 															+ ChatColor.GOLD + p);
 										}
 									}
@@ -84,7 +84,7 @@ public class CommandStat implements CommandExecutor, TabCompleter {
 											int newVal = stat.getValue(p) + c;
 											stat.setValue(p, newVal);
 											sender.sendMessage(
-													ChatColor.AQUA + stat.getName() + ChatColor.YELLOW + " теперь равны " + ChatColor.DARK_AQUA + newVal + ChatColor.YELLOW + " для "
+													ChatColor.AQUA + stat.getName() + ChatColor.YELLOW + " С‚РµРїРµСЂСЊ СЂР°РІРЅС‹ " + ChatColor.DARK_AQUA + newVal + ChatColor.YELLOW + " РґР»СЏ "
 															+ ChatColor.GOLD + p);
 										}
 									}
@@ -95,7 +95,7 @@ public class CommandStat implements CommandExecutor, TabCompleter {
 						}
 					}
 				} else {
-					sender.sendMessage(ChatColor.RED + "Игрока " + ChatColor.GOLD + args[1] + " не существует");
+					sender.sendMessage(ChatColor.RED + "РРіСЂРѕРєР° " + ChatColor.GOLD + args[1] + " РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
 					return true;
 				}
 			}

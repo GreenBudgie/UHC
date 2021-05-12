@@ -64,8 +64,8 @@ public class WorldManager {
 
 	public static World createMap() {
 		String arrows = ChatColor.DARK_GRAY + "" + ChatColor.BOLD + ">>>";
-		Bukkit.broadcastMessage(arrows + ChatColor.DARK_AQUA + "" + ChatColor.BOLD + " Íà÷èíàåòñÿ ãåíåğàöèÿ ìèğà! " + ChatColor.RESET + ChatColor.GOLD +
-				"Ñåğâåğ ìîæåò çàâèñíóòü íà íåêîòîğîå âğåìÿ. İòî íîğìàëüíî.");
+		Bukkit.broadcastMessage(arrows + ChatColor.DARK_AQUA + "" + ChatColor.BOLD + " ĞĞ°Ñ‡Ğ¸Ğ½Ğ°ĞµÑ‚ÑÑ Ğ³ĞµĞ½ĞµÑ€Ğ°Ñ†Ğ¸Ñ Ğ¼Ğ¸Ñ€Ğ°! " + ChatColor.RESET + ChatColor.GOLD +
+				"Ğ¡ĞµÑ€Ğ²ĞµÑ€ Ğ¼Ğ¾Ğ¶ĞµÑ‚ Ğ·Ğ°Ğ²Ğ¸ÑĞ½ÑƒÑ‚ÑŒ Ğ½Ğ° Ğ½ĞµĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğµ Ğ²Ñ€ĞµĞ¼Ñ. Ğ­Ñ‚Ğ¾ Ğ½Ğ¾Ñ€Ğ¼Ğ°Ğ»ÑŒĞ½Ğ¾.");
 		UHC.generating = true;
 		World map = Bukkit.createWorld(new WorldCreator("CurrentMap"));
 		map.setDifficulty(Difficulty.HARD);
@@ -79,13 +79,13 @@ public class WorldManager {
 		map.setPVP(false);
 		spawnLocation = map.getSpawnLocation().clone();
 		gameMap = map;
-		Bukkit.broadcastMessage(arrows + ChatColor.RESET + ChatColor.GRAY + " Êîïèğîâàíèå àğåíû...");
+		Bukkit.broadcastMessage(arrows + ChatColor.RESET + ChatColor.GRAY + " ĞšĞ¾Ğ¿Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ°Ñ€ĞµĞ½Ñ‹...");
 		if(MathUtils.chance(50)) {
 			tempArena = copyAsTemp(arena);
 		} else {
 			tempArena = copyAsTemp(arena2);
 		}
-		Bukkit.broadcastMessage(arrows + ChatColor.DARK_GREEN + "" + ChatColor.BOLD + " Íîâûé ìèğ ñîçäàí!");
+		Bukkit.broadcastMessage(arrows + ChatColor.DARK_GREEN + "" + ChatColor.BOLD + " ĞĞ¾Ğ²Ñ‹Ğ¹ Ğ¼Ğ¸Ñ€ ÑĞ¾Ğ·Ğ´Ğ°Ğ½!");
 		TaskManager.asyncInvokeLater(() -> UHC.generating = false, 20);
 		return map;
 	}

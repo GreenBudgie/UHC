@@ -41,7 +41,7 @@ public class CustomItemShieldBreaker extends RequesterCustomItem implements List
 
 	@Override
 	public String getDescription() {
-		return "Ломает щит противника с одного удара, если он в этот момент им защищается";
+		return "Р›РѕРјР°РµС‚ С‰РёС‚ РїСЂРѕС‚РёРІРЅРёРєР° СЃ РѕРґРЅРѕРіРѕ СѓРґР°СЂР°, РµСЃР»Рё РѕРЅ РІ СЌС‚РѕС‚ РјРѕРјРµРЅС‚ РёРј Р·Р°С‰РёС‰Р°РµС‚СЃСЏ";
 	}
 
 	@Override

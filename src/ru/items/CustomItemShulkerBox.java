@@ -23,7 +23,7 @@ public class CustomItemShulkerBox extends RequesterCustomItem {
 
 	@Override
 	public String getDescription() {
-		return "Обычный шалкер бокс";
+		return "РћР±С‹С‡РЅС‹Р№ С€Р°Р»РєРµСЂ Р±РѕРєСЃ";
 	}
 
 	@Override

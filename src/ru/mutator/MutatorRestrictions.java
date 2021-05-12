@@ -39,12 +39,12 @@ public class MutatorRestrictions extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Я Вам Запрещаю";
+		return "РЇ Р’Р°Рј Р—Р°РїСЂРµС‰Р°СЋ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Иногда запрещается делать некоторые действия: атаковать, копать, ставить блоки, шифтить и спринтить. Нарушитель получает урон. Джейсон Стэтхэм.";
+		return "РРЅРѕРіРґР° Р·Р°РїСЂРµС‰Р°РµС‚СЃСЏ РґРµР»Р°С‚СЊ РЅРµРєРѕС‚РѕСЂС‹Рµ РґРµР№СЃС‚РІРёСЏ: Р°С‚Р°РєРѕРІР°С‚СЊ, РєРѕРїР°С‚СЊ, СЃС‚Р°РІРёС‚СЊ Р±Р»РѕРєРё, С€РёС„С‚РёС‚СЊ Рё СЃРїСЂРёРЅС‚РёС‚СЊ. РќР°СЂСѓС€РёС‚РµР»СЊ РїРѕР»СѓС‡Р°РµС‚ СѓСЂРѕРЅ. Р”Р¶РµР№СЃРѕРЅ РЎС‚СЌС‚С…СЌРј.";
 	}
 
 	@Override
@@ -84,19 +84,19 @@ public class MutatorRestrictions extends Mutator implements Listener {
 					timeToRestrict--;
 					if(timeToRestrict == 3) {
 						for(Player p : UHC.getInGamePlayers()) {
-							p.sendTitle(ChatColor.RED + "Я", "", 0, 30, 10);
+							p.sendTitle(ChatColor.RED + "РЇ", "", 0, 30, 10);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.1F, 1F);
 						}
 					}
 					if(timeToRestrict == 2) {
 						for(Player p : UHC.getInGamePlayers()) {
-							p.sendTitle(ChatColor.RED + "Я ВАМ", "", 0, 30, 10);
+							p.sendTitle(ChatColor.RED + "РЇ Р’РђРњ", "", 0, 30, 10);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.2F, 1.1F);
 						}
 					}
 					if(timeToRestrict == 1) {
 						for(Player p : UHC.getInGamePlayers()) {
-							p.sendTitle(ChatColor.RED + "Я ВАМ ЗАПРЕЩАЮ", "", 0, 30, 10);
+							p.sendTitle(ChatColor.RED + "РЇ Р’РђРњ Р—РђРџР Р•Р©РђР®", "", 0, 30, 10);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.3F, 1.2F);
 						}
 					}
@@ -104,10 +104,10 @@ public class MutatorRestrictions extends Mutator implements Listener {
 						Restriction restriction = MathUtils.choose(Restriction.values());
 						this.restriction = restriction;
 						bar.removeAll();
-						bar.setTitle(ChatColor.DARK_RED + "Я ВАМ ЗАПРЕЩАЮ: " + ChatColor.RED + restriction.getDescription());
+						bar.setTitle(ChatColor.DARK_RED + "РЇ Р’РђРњ Р—РђРџР Р•Р©РђР®: " + ChatColor.RED + restriction.getDescription());
 						for(Player p : UHC.getInGamePlayers()) {
 							bar.addPlayer(p);
-							p.sendTitle(ChatColor.DARK_RED + "Я ВАМ ЗАПРЕЩАЮ", ChatColor.RED + restriction.getDescription(), 0, 50, 15);
+							p.sendTitle(ChatColor.DARK_RED + "РЇ Р’РђРњ Р—РђРџР Р•Р©РђР®", ChatColor.RED + restriction.getDescription(), 0, 50, 15);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 1F, 0.8F);
 						}
 						bar.setVisible(true);
@@ -119,7 +119,7 @@ public class MutatorRestrictions extends Mutator implements Listener {
 					bar.setProgress(timeToAllow / 20.0);
 					if(timeToAllow <= 0) {
 						for(Player p : UHC.getInGamePlayers()) {
-							p.sendTitle(ChatColor.GREEN + "Я ВАМ РАЗРЕШАЮ", ChatColor.DARK_GREEN + restriction.getDescription(), 0, 50, 15);
+							p.sendTitle(ChatColor.GREEN + "РЇ Р’РђРњ Р РђР—Р Р•РЁРђР®", ChatColor.DARK_GREEN + restriction.getDescription(), 0, 50, 15);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 1F, 0.8F);
 						}
 						restriction = null;
@@ -177,11 +177,11 @@ public class MutatorRestrictions extends Mutator implements Listener {
 
 	private enum Restriction {
 
-		ATTACK("Атаковать"),
-		DIG("Копать"),
-		PLACE("Ставить Блоки"),
-		SHIFT("Шифтить"),
-		SPRINT("Спринтить");
+		ATTACK("РђС‚Р°РєРѕРІР°С‚СЊ"),
+		DIG("РљРѕРїР°С‚СЊ"),
+		PLACE("РЎС‚Р°РІРёС‚СЊ Р‘Р»РѕРєРё"),
+		SHIFT("РЁРёС„С‚РёС‚СЊ"),
+		SPRINT("РЎРїСЂРёРЅС‚РёС‚СЊ");
 
 		private String desc;
 

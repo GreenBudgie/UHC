@@ -20,12 +20,12 @@ public class MutatorKitStart extends ItemBasedMutator {
 
 	@Override
 	public String getName() {
-		return "Стартовый Набор";
+		return "РЎС‚Р°СЂС‚РѕРІС‹Р№ РќР°Р±РѕСЂ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Всем игрокам выдается одинаковый стартовый набор брони и инструментов";
+		return "Р’СЃРµРј РёРіСЂРѕРєР°Рј РІС‹РґР°РµС‚СЃСЏ РѕРґРёРЅР°РєРѕРІС‹Р№ СЃС‚Р°СЂС‚РѕРІС‹Р№ РЅР°Р±РѕСЂ Р±СЂРѕРЅРё Рё РёРЅСЃС‚СЂСѓРјРµРЅС‚РѕРІ";
 	}
 
 	@Override

@@ -40,12 +40,12 @@ public class MutatorStop extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Замри!";
+		return "Р—Р°РјСЂРё!";
 	}
 
 	@Override
 	public String getDescription() {
-		return "При появлении надписи \"Замри...\" нужно срочно перестать двигаться. Любому нарушителю выдается эффект иссушения";
+		return "РџСЂРё РїРѕСЏРІР»РµРЅРёРё РЅР°РґРїРёСЃРё \"Р—Р°РјСЂРё...\" РЅСѓР¶РЅРѕ СЃСЂРѕС‡РЅРѕ РїРµСЂРµСЃС‚Р°С‚СЊ РґРІРёРіР°С‚СЊСЃСЏ. Р›СЋР±РѕРјСѓ РЅР°СЂСѓС€РёС‚РµР»СЋ РІС‹РґР°РµС‚СЃСЏ СЌС„С„РµРєС‚ РёСЃСЃСѓС€РµРЅРёСЏ";
 	}
 
 	private int getRandomCooldown() {
@@ -72,14 +72,14 @@ public class MutatorStop extends Mutator implements Listener {
 				if(TaskManager.isSecUpdated()) {
 					if(!isStopped) {
 						for(Player p : UHC.getInGamePlayers()) {
-							p.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Замри!", "", 0, 100, 0);
+							p.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Р—Р°РјСЂРё!", "", 0, 100, 0);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 1F, 1F);
 						}
 						isStopped = true;
 					} else {
 						if(timeToRemoveStop <= 0) {
 							for(Player p : UHC.getInGamePlayers()) {
-								p.sendTitle(ChatColor.GREEN + "" + ChatColor.BOLD + "Можно идти!", "", 0, 30, 10);
+								p.sendTitle(ChatColor.GREEN + "" + ChatColor.BOLD + "РњРѕР¶РЅРѕ РёРґС‚Рё!", "", 0, 30, 10);
 								p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 1F, 1.5F);
 							}
 							reset();
@@ -104,7 +104,7 @@ public class MutatorStop extends Mutator implements Listener {
 					}
 					for(Player p : UHC.getInGamePlayers()) {
 						String dots = StringUtils.repeat(".", 4 - timeToStop);
-						p.sendTitle(color + "Замри" + dots, color + String.valueOf(timeToStop), 0, 30, 0);
+						p.sendTitle(color + "Р—Р°РјСЂРё" + dots, color + String.valueOf(timeToStop), 0, 30, 0);
 						p.playSound(p.getLocation(), Sound.BLOCK_COMPARATOR_CLICK, (4 - timeToStop) * 0.2F, (4 - timeToStop) * 0.2F + 1F);
 					}
 					timeToStop--;
@@ -123,7 +123,7 @@ public class MutatorStop extends Mutator implements Listener {
 		if(isStopped && e.getTo() != null && UHC.isPlaying(p) && !intruders.contains(p) && !WorldHelper.compareLocations(e.getFrom(), e.getTo())) {
 			intruders.add(p);
 			p.playSound(p.getLocation(), Sound.ENTITY_PHANTOM_DEATH, 1F, 0.7F);
-			p.sendTitle(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Ты пошевелился!", "", 0, 100, 0);
+			p.sendTitle(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "РўС‹ РїРѕС€РµРІРµР»РёР»СЃСЏ!", "", 0, 100, 0);
 			ParticleUtils.createParticlesAround(p, Particle.SMOKE_LARGE, null, 15);
 			p.damage(2);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 100, 1));

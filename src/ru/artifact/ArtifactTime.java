@@ -14,12 +14,12 @@ public class ArtifactTime extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.DARK_GREEN + "Повелитель Времени";
+		return ChatColor.DARK_GREEN + "РџРѕРІРµР»РёС‚РµР»СЊ Р’СЂРµРјРµРЅРё";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Уменьшает время до ДМ или до включения ПВП в полтора раза";
+		return "РЈРјРµРЅСЊС€Р°РµС‚ РІСЂРµРјСЏ РґРѕ Р”Рњ РёР»Рё РґРѕ РІРєР»СЋС‡РµРЅРёСЏ РџР’Рџ РІ РїРѕР»С‚РѕСЂР° СЂР°Р·Р°";
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public class CommandOptMutator implements CommandExecutor, TabCompleter {
 			if(args.length == 1) {
 				if(args[0].equalsIgnoreCase("clear")) {
 					MutatorManager.deactivateMutators();
-					sender.sendMessage(ChatColor.GOLD + "Все мутаторы деактивированы");
+					sender.sendMessage(ChatColor.GOLD + "Р’СЃРµ РјСѓС‚Р°С‚РѕСЂС‹ РґРµР°РєС‚РёРІРёСЂРѕРІР°РЅС‹");
 				}
 				if(args[0].equalsIgnoreCase("new")) {
 					MutatorManager.activateRandomMutator(false, true);
@@ -42,25 +42,25 @@ public class CommandOptMutator implements CommandExecutor, TabCompleter {
 				if(mutator != null) {
 					if(args[0].equalsIgnoreCase("activate")) {
 						if(MutatorManager.isActive(mutator)) {
-							sender.sendMessage(ChatColor.RED + "Данный мутатор уже активен");
+							sender.sendMessage(ChatColor.RED + "Р”Р°РЅРЅС‹Р№ РјСѓС‚Р°С‚РѕСЂ СѓР¶Рµ Р°РєС‚РёРІРµРЅ");
 						} else {
 							mutator.activate(false, null);
 						}
 					}
 					if(args[0].equalsIgnoreCase("deactivate")) {
 						if(!MutatorManager.isActive(mutator)) {
-							sender.sendMessage(ChatColor.RED + "Данный мутатор уже неактивен");
+							sender.sendMessage(ChatColor.RED + "Р”Р°РЅРЅС‹Р№ РјСѓС‚Р°С‚РѕСЂ СѓР¶Рµ РЅРµР°РєС‚РёРІРµРЅ");
 						} else {
-							sender.sendMessage(ChatColor.GOLD + "Деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + mutator.getName());
+							sender.sendMessage(ChatColor.GOLD + "Р”РµР°РєС‚РёРІРёСЂРѕРІР°РЅ РјСѓС‚Р°С‚РѕСЂ: " + ChatColor.LIGHT_PURPLE + mutator.getName());
 							mutator.deactivate();
 						}
 					}
 				} else {
-					sender.sendMessage(ChatColor.RED + "Нет такого мутатора: " + args[1]);
+					sender.sendMessage(ChatColor.RED + "РќРµС‚ С‚Р°РєРѕРіРѕ РјСѓС‚Р°С‚РѕСЂР°: " + args[1]);
 				}
 			}
 		} else {
-			sender.sendMessage(ChatColor.RED + "Игра не идет");
+			sender.sendMessage(ChatColor.RED + "РРіСЂР° РЅРµ РёРґРµС‚");
 		}
 		return true;
 	}

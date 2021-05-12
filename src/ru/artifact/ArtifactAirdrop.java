@@ -11,12 +11,12 @@ public class ArtifactAirdrop extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.DARK_AQUA + "Небесные Дары";
+		return ChatColor.DARK_AQUA + "РќРµР±РµСЃРЅС‹Рµ Р”Р°СЂС‹";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Изменяет позицию выпадения следующего аирдропа и сокращает время его ожидания в 3 раза";
+		return "РР·РјРµРЅСЏРµС‚ РїРѕР·РёС†РёСЋ РІС‹РїР°РґРµРЅРёСЏ СЃР»РµРґСѓСЋС‰РµРіРѕ Р°РёСЂРґСЂРѕРїР° Рё СЃРѕРєСЂР°С‰Р°РµС‚ РІСЂРµРјСЏ РµРіРѕ РѕР¶РёРґР°РЅРёСЏ РІ 3 СЂР°Р·Р°";
 	}
 
 	@Override

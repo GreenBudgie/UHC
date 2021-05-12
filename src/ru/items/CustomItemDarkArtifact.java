@@ -7,7 +7,7 @@ public class CustomItemDarkArtifact extends CustomItem {
 
 	@Override
 	public String getName() {
-		return ChatColor.DARK_RED + "" + ChatColor.BOLD + "Темный Артефакт";
+		return ChatColor.DARK_RED + "" + ChatColor.BOLD + "РўРµРјРЅС‹Р№ РђСЂС‚РµС„Р°РєС‚";
 	}
 
 	@Override

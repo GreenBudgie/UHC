@@ -26,10 +26,10 @@ public class CommandInv implements CommandExecutor, TabCompleter {
 				if(target != null && UHC.isPlaying(target)) {
 					UHC.viewInventory(observer, target);
 				} else {
-					sender.sendMessage(ChatColor.RED + "Нет такого игрока!");
+					sender.sendMessage(ChatColor.RED + "РќРµС‚ С‚Р°РєРѕРіРѕ РёРіСЂРѕРєР°!");
 				}
 			} else {
-				sender.sendMessage(ChatColor.RED + "Нужно указать игрока!");
+				sender.sendMessage(ChatColor.RED + "РќСѓР¶РЅРѕ СѓРєР°Р·Р°С‚СЊ РёРіСЂРѕРєР°!");
 			}
 		}
 		return true;

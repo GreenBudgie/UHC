@@ -18,12 +18,12 @@ public class ArtifactRandom extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.DARK_PURPLE + "Хаос";
+		return ChatColor.DARK_PURPLE + "РҐР°РѕСЃ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Активируется три случайных неконфликтующих артефакта";
+		return "РђРєС‚РёРІРёСЂСѓРµС‚СЃСЏ С‚СЂРё СЃР»СѓС‡Р°Р№РЅС‹С… РЅРµРєРѕРЅС„Р»РёРєС‚СѓСЋС‰РёС… Р°СЂС‚РµС„Р°РєС‚Р°";
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class ArtifactRandom extends Artifact {
 			toAdd.remove(artifact);
 		}
 		if(player != null) {
-			player.sendMessage(ChatColor.YELLOW + "Были активированы артефакты: " + addedInfo);
+			player.sendMessage(ChatColor.YELLOW + "Р…С‹Р»Рё Р°РєС‚РёРІРёСЂРѕРІР°РЅС‹ Р°СЂС‚РµС„Р°РєС‚С‹: " + addedInfo);
 		}
 	}
 

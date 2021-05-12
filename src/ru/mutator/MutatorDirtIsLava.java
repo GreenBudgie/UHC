@@ -21,12 +21,12 @@ public class MutatorDirtIsLava extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Земля - Это Магма";
+		return "Р—РµРјР»СЏ - Р­С‚Рѕ РњР°РіРјР°";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Вся грязь и трава под игроками превращается в магму";
+		return "Р’СЃСЏ РіСЂСЏР·СЊ Рё С‚СЂР°РІР° РїРѕРґ РёРіСЂРѕРєР°РјРё РїСЂРµРІСЂР°С‰Р°РµС‚СЃСЏ РІ РјР°РіРјСѓ";
 	}
 
 	@Override

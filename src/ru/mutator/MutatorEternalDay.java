@@ -18,12 +18,12 @@ public class MutatorEternalDay extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Вечный День";
+		return "Р’РµС‡РЅС‹Р№ Р”РµРЅСЊ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "На протяжении всей игры будет день. Артефакт не поможет!";
+		return "РќР° РїСЂРѕС‚СЏР¶РµРЅРёРё РІСЃРµР№ РёРіСЂС‹ Р±СѓРґРµС‚ РґРµРЅСЊ. РђСЂС‚РµС„Р°РєС‚ РЅРµ РїРѕРјРѕР¶РµС‚!";
 	}
 
 	@Override

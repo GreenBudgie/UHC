@@ -25,12 +25,12 @@ public class MutatorNoDiamonds extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Влад Идет Нахуй";
+		return "Р’Р»Р°Рґ РРґРµС‚ РќР°С…СѓР№";
 	}
 
 	@Override
 	public String getDescription() {
-		return "С алмазной руды теперь будет падать земля вместо алмазов";
+		return "РЎ Р°Р»РјР°Р·РЅРѕР№ СЂСѓРґС‹ С‚РµРїРµСЂСЊ Р±СѓРґРµС‚ РїР°РґР°С‚СЊ Р·РµРјР»СЏ РІРјРµСЃС‚Рѕ Р°Р»РјР°Р·РѕРІ";
 	}
 
 	@Override

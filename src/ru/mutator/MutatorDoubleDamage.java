@@ -27,12 +27,12 @@ public class MutatorDoubleDamage extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Двойной Урон";
+		return "Р”РІРѕР№РЅРѕР№ РЈСЂРѕРЅ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "По игрокам будет проходить двойной урон от любых источников";
+		return "РџРѕ РёРіСЂРѕРєР°Рј Р±СѓРґРµС‚ РїСЂРѕС…РѕРґРёС‚СЊ РґРІРѕР№РЅРѕР№ СѓСЂРѕРЅ РѕС‚ Р»СЋР±С‹С… РёСЃС‚РѕС‡РЅРёРєРѕРІ";
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

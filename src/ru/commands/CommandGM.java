@@ -18,13 +18,13 @@ public class CommandGM implements CommandExecutor {
 			try {
 				int mode = Integer.valueOf(args[0]);
 				if(mode < 0 || mode > 3) {
-					sender.sendMessage(ChatColor.RED + "Ты даун? Такого гейм мода не существует: " + args[0]);
+					sender.sendMessage(ChatColor.RED + "РўС‹ РґР°СѓРЅ? РўР°РєРѕРіРѕ РіРµР№Рј РјРѕРґР° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚: " + args[0]);
 					allGood = false;
 				} else {
 					p.setGameMode(GameMode.getByValue(mode));
 				}
 			} catch(NumberFormatException e) {
-				sender.sendMessage(ChatColor.RED + "Ты даун? Такого гейм мода не существует: " + args[0]);
+				sender.sendMessage(ChatColor.RED + "РўС‹ РґР°СѓРЅ? РўР°РєРѕРіРѕ РіРµР№Рј РјРѕРґР° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚: " + args[0]);
 				allGood = false;
 			}
 		} else {
@@ -46,7 +46,7 @@ public class CommandGM implements CommandExecutor {
 				gm = ChatColor.DARK_AQUA + "Spectator";
 				break;
 			}
-			sender.sendMessage(ChatColor.YELLOW + "Установлен " + gm);
+			sender.sendMessage(ChatColor.YELLOW + "РЈСЃС‚Р°РЅРѕРІР»РµРЅ " + gm);
 		}
 		return true;
 	}

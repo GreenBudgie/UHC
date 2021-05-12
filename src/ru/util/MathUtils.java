@@ -196,7 +196,7 @@ public final class MathUtils {
 	}
 
 	public static boolean isVowel(char c) {
-		return "ÀÅ¨ÈÎÓÛİŞßàå¸èîóûışÿAEIOUaeiou".indexOf(c) != -1;
+		return "Ã€Ã…Â¨ÃˆÃÃ“Ã›ÃÃÃŸÃ Ã¥Â¸Ã¨Ã®Ã³Ã»Ã½Ã¾Ã¿AEIOUaeiou".indexOf(c) != -1;
 	}
 
 	public static List<String> getListOfStringsMatchingLastWord(String[] args, String... possibilities) {

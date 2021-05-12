@@ -13,8 +13,8 @@ import java.util.Map;
 
 public enum PlayerStat {
 
-	POINTS("Очки"), WINS("Победы"), KILLS("Убийства"), GAMES("Игр сыграно"), DUEL_COUNT("Дуэлей сыграно"), DUEL_WINS("Дуэлей выиграно"), ARENA_KILLS(
-			"Убийства на Арене"), ARENA_DEATHS("Смерти на Арене");
+	POINTS("РћС‡РєРё"), WINS("РџРѕР±РµРґС‹"), KILLS("РЈР±РёР№СЃС‚РІР°"), GAMES("РРіСЂ СЃС‹РіСЂР°РЅРѕ"), DUEL_COUNT("Р”СѓСЌР»РµР№ СЃС‹РіСЂР°РЅРѕ"), DUEL_WINS("Р”СѓСЌР»РµР№ РІС‹РёРіСЂР°РЅРѕ"), ARENA_KILLS(
+			"РЈР±РёР№СЃС‚РІР° РЅР° РђСЂРµРЅРµ"), ARENA_DEATHS("РЎРјРµСЂС‚Рё РЅР° РђСЂРµРЅРµ");
 
 	private static File statsFile = new File(UHCPlugin.instance.getDataFolder() + File.separator + "stats.yml");
 	private static YamlConfiguration stats = YamlConfiguration.loadConfiguration(statsFile);

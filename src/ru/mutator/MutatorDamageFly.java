@@ -28,12 +28,12 @@ public class MutatorDamageFly extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Воздушный Побег";
+		return "Р’РѕР·РґСѓС€РЅС‹Р№ РџРѕР±РµРі";
 	}
 
 	@Override
 	public String getDescription() {
-		return "При получении урона ты получаешь эффект левитации на 5 секунд. Аккуратно, ведь при падении с пяти блоков ты снова получишь урон!";
+		return "РџСЂРё РїРѕР»СѓС‡РµРЅРёРё СѓСЂРѕРЅР° С‚С‹ РїРѕР»СѓС‡Р°РµС€СЊ СЌС„С„РµРєС‚ Р»РµРІРёС‚Р°С†РёРё РЅР° 5 СЃРµРєСѓРЅРґ. РђРєРєСѓСЂР°С‚РЅРѕ, РІРµРґСЊ РїСЂРё РїР°РґРµРЅРёРё СЃ РїСЏС‚Рё Р±Р»РѕРєРѕРІ С‚С‹ СЃРЅРѕРІР° РїРѕР»СѓС‡РёС€СЊ СѓСЂРѕРЅ!";
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

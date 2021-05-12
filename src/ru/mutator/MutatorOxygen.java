@@ -35,12 +35,12 @@ public class MutatorOxygen extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Êèñëîðîäíîå Ãîëîäàíèå";
+		return "ÐšÐ¸ÑÐ»Ð¾Ñ€Ð¾Ð´Ð½Ð¾Ðµ Ð“Ð¾Ð»Ð¾Ð´Ð°Ð½Ð¸Ðµ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Òåïåðü ó èãðîêîâ ïîÿâëÿåòñÿ øêàëà êèñëîðîäà. Ïîä çåìëåé è â ãîðàõ êèñëîðîä òðàòèòñÿ. Ïðè ïàäåíèè äî 0 ìîæíî íà÷àòü óìèðàòü!";
+		return "Ð¢ÐµÐ¿ÐµÑ€ÑŒ Ñƒ Ð¸Ð³Ñ€Ð¾ÐºÐ¾Ð² Ð¿Ð¾ÑÐ²Ð»ÑÐµÑ‚ÑÑ ÑˆÐºÐ°Ð»Ð° ÐºÐ¸ÑÐ»Ð¾Ñ€Ð¾Ð´Ð°. ÐŸÐ¾Ð´ Ð·ÐµÐ¼Ð»ÐµÐ¹ Ð¸ Ð² Ð³Ð¾Ñ€Ð°Ñ… ÐºÐ¸ÑÐ»Ð¾Ñ€Ð¾Ð´ Ñ‚Ñ€Ð°Ñ‚Ð¸Ñ‚ÑÑ. ÐŸÑ€Ð¸ Ð¿Ð°Ð´ÐµÐ½Ð¸Ð¸ Ð´Ð¾ 0 Ð¼Ð¾Ð¶Ð½Ð¾ Ð½Ð°Ñ‡Ð°Ñ‚ÑŒ ÑƒÐ¼Ð¸Ñ€Ð°Ñ‚ÑŒ!";
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class MutatorOxygen extends Mutator implements Listener {
 	}
 
 	public void createBar(Player p) {
-		BossBar bar = Bukkit.createBossBar(ChatColor.GRAY + "Êèñëîðîä", BarColor.WHITE, BarStyle.SOLID);
+		BossBar bar = Bukkit.createBossBar(ChatColor.GRAY + "ÐšÐ¸ÑÐ»Ð¾Ñ€Ð¾Ð´", BarColor.WHITE, BarStyle.SOLID);
 		bar.setProgress(1);
 		bar.setColor(BarColor.WHITE);
 		bar.addPlayer(p);
@@ -113,7 +113,7 @@ public class MutatorOxygen extends Mutator implements Listener {
 					} else {
 						info = ChatColor.RED + " " + MathUtils.decimal(change * 10, 1);
 					}
-					bar.setTitle(ChatColor.GRAY + "Êèñëîðîä" + info);
+					bar.setTitle(ChatColor.GRAY + "ÐšÐ¸ÑÐ»Ð¾Ñ€Ð¾Ð´" + info);
 					bar.setProgress(oxygen / 100);
 					if(!bar.isVisible()) bar.setVisible(true);
 					if(oxygen >= 20) {

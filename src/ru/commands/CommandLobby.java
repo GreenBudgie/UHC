@@ -15,7 +15,7 @@ public class CommandLobby implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
 		if(UHC.isPlaying(p)) {
-			p.sendMessage(ChatColor.RED + "Нельзя выйти в лобби во время игры");
+			p.sendMessage(ChatColor.RED + "РќРµР»СЊР·СЏ РІС‹Р№С‚Рё РІ Р»РѕР±Р±Рё РІРѕ РІСЂРµРјСЏ РёРіСЂС‹");
 		} else {
 			p.getInventory().remove(Material.TRIDENT);
 			if(UHC.isInLobby(p)) {

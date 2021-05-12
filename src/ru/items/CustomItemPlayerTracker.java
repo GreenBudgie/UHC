@@ -21,7 +21,7 @@ public class CustomItemPlayerTracker extends RequesterCustomItem {
 
 	@Override
 	public String getDescription() {
-		return "Указывает на ближайшего врага, когда держишь его в руке";
+		return "РЈРєР°Р·С‹РІР°РµС‚ РЅР° Р±Р»РёР¶Р°Р№С€РµРіРѕ РІСЂР°РіР°, РєРѕРіРґР° РґРµСЂР¶РёС€СЊ РµРіРѕ РІ СЂСѓРєРµ";
 	}
 
 	@Override

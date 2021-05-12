@@ -13,12 +13,12 @@ public class ArtifactTimeLeap extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.YELLOW + "Временная Петля";
+		return ChatColor.YELLOW + "Р’СЂРµРјРµРЅРЅР°СЏ РџРµС‚Р»СЏ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Меняет день на ночь или ночь на день";
+		return "РњРµРЅСЏРµС‚ РґРµРЅСЊ РЅР° РЅРѕС‡СЊ РёР»Рё РЅРѕС‡СЊ РЅР° РґРµРЅСЊ";
 	}
 
 	@Override

@@ -24,12 +24,12 @@ public class MutatorKnockback extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Отдача";
+		return "РћС‚РґР°С‡Р°";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Обычные удары далеко откидывают всех живых существ";
+		return "СњР±С‹С‡РЅС‹Рµ СѓРґР°СЂС‹ РґР°Р»РµРєРѕ РѕС‚РєРёРґС‹РІР°СЋС‚ РІСЃРµС… Р¶РёРІС‹С… СЃСѓС‰РµСЃС‚РІ";
 	}
 
 	@Override

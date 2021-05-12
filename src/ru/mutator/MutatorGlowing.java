@@ -20,12 +20,12 @@ public class MutatorGlowing extends EffectBasedMutator {
 
 	@Override
 	public String getName() {
-		return "Сияние";
+		return "РЎРёСЏРЅРёРµ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Все игроки подсвечиваются";
+		return "Р’СЃРµ РёРіСЂРѕРєРё РїРѕРґСЃРІРµС‡РёРІР°СЋС‚СЃСЏ";
 	}
 
 	@Override

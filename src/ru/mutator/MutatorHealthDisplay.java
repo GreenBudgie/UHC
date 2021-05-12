@@ -16,12 +16,12 @@ public class MutatorHealthDisplay extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Отображение Здоровья";
+		return "РћС‚РѕР±СЂР°Р¶РµРЅРёРµ Р—РґРѕСЂРѕРІСЊСЏ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Под никами игроков и в табе выводится количество их здоровья";
+		return "РџРѕРґ РЅРёРєР°РјРё РёРіСЂРѕРєРѕРІ Рё РІ С‚Р°Р±Рµ РІС‹РІРѕРґРёС‚СЃСЏ РєРѕР»РёС‡РµСЃС‚РІРѕ РёС… Р·РґРѕСЂРѕРІСЊСЏ";
 	}
 
 	@Override

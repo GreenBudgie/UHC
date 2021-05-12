@@ -17,12 +17,12 @@ public class ArtifactDisableMutator extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.RED + "Менее Дикая Игра";
+		return ChatColor.RED + "РњРµРЅРµРµ Р”РёРєР°СЏ РРіСЂР°";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Убирает случайный мутатор. Не сработает, если никаких мутаторов не активировано, либо нельзя деактивировать ни один из них.";
+		return "РЈР±РёСЂР°РµС‚ СЃР»СѓС‡Р°Р№РЅС‹Р№ РјСѓС‚Р°С‚РѕСЂ. РќРµ СЃСЂР°Р±РѕС‚Р°РµС‚, РµСЃР»Рё РЅРёРєР°РєРёС… РјСѓС‚Р°С‚РѕСЂРѕРІ РЅРµ Р°РєС‚РёРІРёСЂРѕРІР°РЅРѕ, Р»РёР±Рѕ РЅРµР»СЊР·СЏ РґРµР°РєС‚РёРІРёСЂРѕРІР°С‚СЊ РЅРё РѕРґРёРЅ РёР· РЅРёС….";
 	}
 
 	@Override
@@ -44,11 +44,11 @@ public class ArtifactDisableMutator extends Artifact {
 			}
 			Mutator mutator = MathUtils.choose(mutators);
 			for(Player currentPlayer : UHC.getInGamePlayers()) {
-				currentPlayer.sendMessage(ChatColor.YELLOW + "Был деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + mutator.getName());
+				currentPlayer.sendMessage(ChatColor.YELLOW + "Р‘С‹Р» РґРµР°РєС‚РёРІРёСЂРѕРІР°РЅ РјСѓС‚Р°С‚РѕСЂ: " + ChatColor.LIGHT_PURPLE + mutator.getName());
 			}
 			mutator.deactivate();
 		} else if(player != null) {
-			player.sendMessage(ChatColor.RED + "Невозможно деактивировать ни один мутатор!");
+			player.sendMessage(ChatColor.RED + "РќРµРІРѕР·РјРѕР¶РЅРѕ РґРµР°РєС‚РёРІРёСЂРѕРІР°С‚СЊ РЅРё РѕРґРёРЅ РјСѓС‚Р°С‚РѕСЂ!");
 		}
 	}
 

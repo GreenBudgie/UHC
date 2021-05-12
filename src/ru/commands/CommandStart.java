@@ -16,11 +16,11 @@ public class CommandStart implements CommandExecutor, TabCompleter {
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!sender.isOp()) {
-			sender.sendMessage(ChatColor.RED + "Òîëüêî àäìèí ìîæåò íà÷àòü èãðó");
+			sender.sendMessage(ChatColor.RED + "Ð¢Ð¾Ð»ÑŒÐºÐ¾ Ð°Ð´Ð¼Ð¸Ð½ Ð¼Ð¾Ð¶ÐµÑ‚ Ð½Ð°Ñ‡Ð°Ñ‚ÑŒ Ð¸Ð³Ñ€Ñƒ");
 			return true;
 		}
 		if(UHC.playing) {
-			sender.sendMessage(ChatColor.RED + "Èãðà óæå èäåò");
+			sender.sendMessage(ChatColor.RED + "Ð˜Ð³Ñ€Ð° ÑƒÐ¶Ðµ Ð¸Ð´ÐµÑ‚");
 		} else {
 			if(args.length >= 1 && args[0].equalsIgnoreCase("fast")) UHC.fastStart = 1;
 			UHC.startGame();

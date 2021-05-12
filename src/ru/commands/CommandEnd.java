@@ -11,7 +11,7 @@ public class CommandEnd implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!sender.isOp()) return true;
 		if(!UHC.playing) {
-			sender.sendMessage(ChatColor.RED + "Игра не идет");
+			sender.sendMessage(ChatColor.RED + "РРіСЂР° РЅРµ РёРґРµС‚");
 		} else {
 			UHC.endGame();
 		}

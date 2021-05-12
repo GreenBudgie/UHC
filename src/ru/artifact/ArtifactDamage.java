@@ -17,12 +17,12 @@ public class ArtifactDamage extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.DARK_GRAY + "Злодеяние";
+		return ChatColor.DARK_GRAY + "Р—Р»РѕРґРµСЏРЅРёРµ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Дамажит всех игроков на 2 сердца. Использовавшего игрока дамажит на 2.5 сердца. Умереть нельзя.";
+		return "Р”Р°РјР°Р¶РёС‚ РІСЃРµС… РёРіСЂРѕРєРѕРІ РЅР° 2 СЃРµСЂРґС†Р°. РСЃРїРѕР»СЊР·РѕРІР°РІС€РµРіРѕ РёРіСЂРѕРєР° РґР°РјР°Р¶РёС‚ РЅР° 2.5 СЃРµСЂРґС†Р°. РЈРјРµСЂРµС‚СЊ РЅРµР»СЊР·СЏ.";
 	}
 
 	@Override

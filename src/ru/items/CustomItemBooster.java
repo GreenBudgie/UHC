@@ -32,7 +32,7 @@ public class CustomItemBooster extends RequesterCustomItem {
 
 	@Override
 	public String getDescription() {
-		return "Выдает скорость V на 8 секунд при использовании";
+		return "Р’С‹РґР°РµС‚ СЃРєРѕСЂРѕСЃС‚СЊ V РЅР° 8 СЃРµРєСѓРЅРґ РїСЂРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРё";
 	}
 
 	@Override

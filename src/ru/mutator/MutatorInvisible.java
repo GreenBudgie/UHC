@@ -20,12 +20,12 @@ public class MutatorInvisible extends EffectBasedMutator {
 
 	@Override
 	public String getName() {
-		return "Игра в Прятки";
+		return "РРіСЂР° РІ РџСЂСЏС‚РєРё";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Всем игрокам на всю игру выдается невидимость";
+		return "Р’СЃРµРј РёРіСЂРѕРєР°Рј РЅР° РІСЃСЋ РёРіСЂСѓ РІС‹РґР°РµС‚СЃСЏ РЅРµРІРёРґРёРјРѕСЃС‚СЊ";
 	}
 
 	@Override

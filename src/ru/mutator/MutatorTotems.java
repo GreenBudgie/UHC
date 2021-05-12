@@ -28,12 +28,12 @@ public class MutatorTotems extends ItemBasedMutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Бессмертные";
+		return "Р‘РµСЃСЃРјРµСЂС‚РЅС‹Рµ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Всем игрокам выдается тотем бессмертия, но эффект регенерации от него не такой мощный";
+		return "Р’СЃРµРј РёРіСЂРѕРєР°Рј РІС‹РґР°РµС‚СЃСЏ С‚РѕС‚РµРј Р±РµСЃСЃРјРµСЂС‚РёСЏ, РЅРѕ СЌС„С„РµРєС‚ СЂРµРіРµРЅРµСЂР°С†РёРё РѕС‚ РЅРµРіРѕ РЅРµ С‚Р°РєРѕР№ РјРѕС‰РЅС‹Р№";
 	}
 
 	@Override

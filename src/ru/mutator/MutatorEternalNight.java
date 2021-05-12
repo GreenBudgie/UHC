@@ -22,12 +22,12 @@ public class MutatorEternalNight extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Вечная Ночь";
+		return "Р’РµС‡РЅР°СЏ РќРѕС‡СЊ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "На протяжении всей игры будет ночь. Артефакт не поможет!";
+		return "РќР° РїСЂРѕС‚СЏР¶РµРЅРёРё РІСЃРµР№ РёРіСЂС‹ Р±СѓРґРµС‚ РЅРѕС‡СЊ. РђСЂС‚РµС„Р°РєС‚ РЅРµ РїРѕРјРѕР¶РµС‚!";
 	}
 
 	@Override

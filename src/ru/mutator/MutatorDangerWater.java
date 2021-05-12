@@ -1,7 +1,7 @@
 package ru.mutator;
 
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -21,12 +21,12 @@ public class MutatorDangerWater extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Токсичная Вода";
+		return "РўРѕРєСЃРёС‡РЅР°СЏ Р’РѕРґР°";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Вода накладывает эффект отравления при соприкосновении с ней";
+		return "Р’РѕРґР° РЅР°РєР»Р°РґС‹РІР°РµС‚ СЌС„С„РµРєС‚ РѕС‚СЂР°РІР»РµРЅРёСЏ РїСЂРё СЃРѕРїСЂРёРєРѕСЃРЅРѕРІРµРЅРёРё СЃ РЅРµР№";
 	}
 
 	@Override

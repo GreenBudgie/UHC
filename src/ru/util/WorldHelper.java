@@ -1,11 +1,11 @@
 package ru.util;
 
 import com.google.common.collect.Lists;
-import net.minecraft.server.v1_16_R1.BlockPosition;
+import net.minecraft.server.v1_16_R3.BlockPosition;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
@@ -337,11 +337,11 @@ public class WorldHelper {
 	public static String getEnvironmentName(World.Environment dim) {
 		switch(dim) {
 		case THE_END:
-			return ChatColor.DARK_PURPLE + "Энд";
+			return ChatColor.DARK_PURPLE + "Р­РЅРґ";
 		case NETHER:
-			return ChatColor.RED + "Ад";
+			return ChatColor.RED + "РђРґ";
 		case NORMAL:
-			return ChatColor.GREEN + "Земля";
+			return ChatColor.GREEN + "Р—РµРјР»СЏ";
 		}
 		return null;
 	}
@@ -361,11 +361,11 @@ public class WorldHelper {
 	public static String getEnvironmentNamePrepositional(World.Environment dim, ChatColor c) {
 		switch(dim) {
 		case THE_END:
-			return c + "в " + ChatColor.DARK_PURPLE + "Энде";
+			return c + "РІ " + ChatColor.DARK_PURPLE + "Р­РЅРґРµ";
 		case NETHER:
-			return c + "в " + ChatColor.RED + "Аду";
+			return c + "РІ " + ChatColor.RED + "РђРґСѓ";
 		case NORMAL:
-			return c + "на " + ChatColor.GREEN + "Земле";
+			return c + "РЅР° " + ChatColor.GREEN + "Р—РµРјР»Рµ";
 		}
 		return null;
 	}
@@ -373,14 +373,14 @@ public class WorldHelper {
 	public static World.Environment getEnvironmentFromName(String name) {
 		String name2 = ChatColor.stripColor(name).toLowerCase();
 		switch(name2) {
-		case "энд":
-		case "в энде":
+		case "СЌРЅРґ":
+		case "РІ СЌРЅРґРµ":
 			return World.Environment.THE_END;
-		case "ад":
-		case "в аду":
+		case "Р°Рґ":
+		case "РІ Р°РґСѓ":
 			return World.Environment.NETHER;
-		case "земля":
-		case "на земле":
+		case "Р·РµРјР»СЏ":
+		case "РЅР° Р·РµРјР»Рµ":
 			return World.Environment.NORMAL;
 		}
 		return null;

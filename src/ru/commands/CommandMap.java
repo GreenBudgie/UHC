@@ -24,7 +24,7 @@ public class CommandMap implements CommandExecutor, TabCompleter {
 			}
 			if(args[0].equalsIgnoreCase("create")) {
 				if(WorldManager.hasMap()) {
-					sender.sendMessage(ChatColor.DARK_RED + "Карта уже создана");
+					sender.sendMessage(ChatColor.DARK_RED + "РљР°СЂС‚Р° СѓР¶Рµ СЃРѕР·РґР°РЅР°");
 				} else {
 					WorldManager.createMap();
 				}
@@ -32,15 +32,15 @@ public class CommandMap implements CommandExecutor, TabCompleter {
 			}
 			if(args[0].equalsIgnoreCase("remove")) {
 				if(!WorldManager.hasMap()) {
-					sender.sendMessage(ChatColor.DARK_RED + "Карта и так удалена");
+					sender.sendMessage(ChatColor.DARK_RED + "РљР°СЂС‚Р° Рё С‚Р°Рє СѓРґР°Р»РµРЅР°");
 				} else {
 					WorldManager.removeMap();
-					sender.sendMessage(ChatColor.GREEN + "Карта удалена");
+					sender.sendMessage(ChatColor.GREEN + "РљР°СЂС‚Р° СѓРґР°Р»РµРЅР°");
 				}
 				SignManager.updateSigns();
 			}
 			if(args[0].equalsIgnoreCase("status")) {
-				if(WorldManager.hasMap()) sender.sendMessage(ChatColor.GREEN + "Карта создана"); else sender.sendMessage(ChatColor.RED + "Карта не создана");
+				if(WorldManager.hasMap()) sender.sendMessage(ChatColor.GREEN + "РљР°СЂС‚Р° СЃРѕР·РґР°РЅР°"); else sender.sendMessage(ChatColor.RED + "РљР°СЂС‚Р° РЅРµ СЃРѕР·РґР°РЅР°");
 			}
 			if(args[0].equalsIgnoreCase("keep")) {
 				boolean flag = true;
@@ -48,7 +48,7 @@ public class CommandMap implements CommandExecutor, TabCompleter {
 					flag = args[1].equalsIgnoreCase("true");
 				}
 				WorldManager.keepMap = flag;
-				sender.sendMessage(flag ? (ChatColor.YELLOW + "Теперь после игры карта сохраняется") : (ChatColor.YELLOW + "Теперь после игры карта удаляется"));
+				sender.sendMessage(flag ? (ChatColor.YELLOW + "РўРµРїРµСЂСЊ РїРѕСЃР»Рµ РёРіСЂС‹ РєР°СЂС‚Р° СЃРѕС…СЂР°РЅСЏРµС‚СЃСЏ") : (ChatColor.YELLOW + "РўРµРїРµСЂСЊ РїРѕСЃР»Рµ РёРіСЂС‹ РєР°СЂС‚Р° СѓРґР°Р»СЏРµС‚СЃСЏ"));
 			}
 		}
 		return true;

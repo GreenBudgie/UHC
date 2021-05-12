@@ -26,7 +26,7 @@ public class RequestedItem {
 		this.timeToDrop = 30;
 		info = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
 		hideStand(info);
-		info.setCustomName(ChatColor.AQUA + "Запрос" + ChatColor.GRAY + ": " + item.getItemMeta().getDisplayName());
+		info.setCustomName(ChatColor.AQUA + "Р—Р°РїСЂРѕСЃ" + ChatColor.GRAY + ": " + item.getItemMeta().getDisplayName());
 		timer = (ArmorStand) location.getWorld().spawnEntity(location.clone().add(0, -0.3, 0), EntityType.ARMOR_STAND);
 		hideStand(timer);
 		timer.setCustomName(ChatColor.AQUA + "" + timeToDrop);
@@ -53,7 +53,7 @@ public class RequestedItem {
 			if(!dropping) {
 				dropping = true;
 				timer.remove();
-				info.setCustomName(ChatColor.GREEN + "Предмет прибывает...");
+				info.setCustomName(ChatColor.GREEN + "РџСЂРµРґРјРµС‚ РїСЂРёР±С‹РІР°РµС‚...");
 				location.getWorld().playSound(location, Sound.BLOCK_BEACON_DEACTIVATE, 0.1F, 0.5F);
 			}
 			droppingTimer--;

@@ -23,12 +23,12 @@ public class MutatorPhantomArtifacts extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Фантомные Артефакты";
+		return "Р¤Р°РЅС‚РѕРјРЅС‹Рµ РђСЂС‚РµС„Р°РєС‚С‹";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Иногда будут самостоятельно активироваться случайные артефакты";
+		return "РРЅРѕРіРґР° Р±СѓРґСѓС‚ СЃР°РјРѕСЃС‚РѕСЏС‚РµР»СЊРЅРѕ Р°РєС‚РёРІРёСЂРѕРІР°С‚СЊСЃСЏ СЃР»СѓС‡Р°Р№РЅС‹Рµ Р°СЂС‚РµС„Р°РєС‚С‹";
 	}
 
 	@Override

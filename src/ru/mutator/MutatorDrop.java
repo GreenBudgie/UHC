@@ -17,12 +17,12 @@ public class MutatorDrop extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Больше Дропа!";
+		return "Р‘РѕР»СЊС€Рµ Р”СЂРѕРїР°!";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Аирдроп и кейвдроп спавнятся в два раза чаще";
+		return "РђРёСЂРґСЂРѕРї Рё РєРµР№РІРґСЂРѕРї СЃРїР°РІРЅСЏС‚СЃСЏ РІ РґРІР° СЂР°Р·Р° С‡Р°С‰Рµ";
 	}
 
 	@Override

@@ -64,7 +64,7 @@ public class Landmine {
 					if(secondExplodeTicks <= 0) {
 						done = true;
 						for(Player p : WorldHelper.getPlayersDistance(location, 6).stream().filter(UHC::isPlaying).collect(Collectors.toList())) {
-							FightHelper.setDamager(p, owner, 40, "çàìèíèðîâàë");
+							FightHelper.setDamager(p, owner, 40, "Ð·Ð°Ð¼Ð¸Ð½Ð¸Ñ€Ð¾Ð²Ð°Ð»");
 						}
 						location.getWorld().createExplosion(location, 4);
 					}
@@ -72,7 +72,7 @@ public class Landmine {
 					detonated = true;
 					location.getBlock().setType(Material.AIR);
 					for(Player p : WorldHelper.getPlayersDistance(location, 6).stream().filter(UHC::isPlaying).collect(Collectors.toList())) {
-						FightHelper.setDamager(p, owner, 40, "çàìèíèðîâàë");
+						FightHelper.setDamager(p, owner, 40, "Ð·Ð°Ð¼Ð¸Ð½Ð¸Ñ€Ð¾Ð²Ð°Ð»");
 					}
 					location.getWorld().createExplosion(location, isSurrounded() ? 4 : 2);
 				}

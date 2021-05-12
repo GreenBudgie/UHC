@@ -28,12 +28,12 @@ public class MutatorDamageBound extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Связанные Души";
+		return "РЎРІСЏР·Р°РЅРЅС‹Рµ Р”СѓС€Рё";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Когда кто-то из игроков получает урон, все остальные игроки получают часть от этого урона";
+		return "РљРѕРіРґР° РєС‚Рѕ-С‚Рѕ РёР· РёРіСЂРѕРєРѕРІ РїРѕР»СѓС‡Р°РµС‚ СѓСЂРѕРЅ, РІСЃРµ РѕСЃС‚Р°Р»СЊРЅС‹Рµ РёРіСЂРѕРєРё РїРѕР»СѓС‡Р°СЋС‚ С‡Р°СЃС‚СЊ РѕС‚ СЌС‚РѕРіРѕ СѓСЂРѕРЅР°";
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

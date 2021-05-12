@@ -1,9 +1,7 @@
 package ru.mutator;
 
-import net.minecraft.server.v1_16_R1.PacketPlayOutAdvancements;
 import org.bukkit.GameRule;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
 
@@ -21,12 +19,12 @@ public class MutatorOmniscient extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Всевидящий";
+		return "Р’СЃРµРІРёРґСЏС‰РёР№";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Все знают прогресс других игроков. В чат выводятся полученные достижения; /inv <ник> для просмотра инвентаря";
+		return "Р’СЃРµ Р·РЅР°СЋС‚ РїСЂРѕРіСЂРµСЃСЃ РґСЂСѓРіРёС… РёРіСЂРѕРєРѕРІ. Р’ С‡Р°С‚ РІС‹РІРѕРґСЏС‚СЃСЏ РїРѕР»СѓС‡РµРЅРЅС‹Рµ РґРѕСЃС‚РёР¶РµРЅРёСЏ; /inv <РЅРёРє> РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР° РёРЅРІРµРЅС‚Р°СЂСЏ";
 	}
 
 	@Override

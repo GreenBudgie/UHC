@@ -12,12 +12,12 @@ public class ArtifactMutator extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.DARK_RED + "Преображение Игры";
+		return ChatColor.DARK_RED + "РџСЂРµРѕР±СЂР°Р¶РµРЅРёРµ РРіСЂС‹";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Активирует новый случайный мутатор. Не сработает, если уже активировано 6 мутаторов!";
+		return "РђРєС‚РёРІРёСЂСѓРµС‚ РЅРѕРІС‹Р№ СЃР»СѓС‡Р°Р№РЅС‹Р№ РјСѓС‚Р°С‚РѕСЂ. РќРµ СЃСЂР°Р±РѕС‚Р°РµС‚, РµСЃР»Рё СѓР¶Рµ Р°РєС‚РёРІРёСЂРѕРІР°РЅРѕ 6 РјСѓС‚Р°С‚РѕСЂРѕРІ!";
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class ArtifactMutator extends Artifact {
 			if(player != null) player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.8F, 1F);
 			MutatorManager.activateRandomArtifactMutator();
 		} else if(player != null) {
-			player.sendMessage(ChatColor.RED + "Мутатор не был активирован!");
+			player.sendMessage(ChatColor.RED + "РњСѓС‚Р°С‚РѕСЂ РЅРµ Р±С‹Р» Р°РєС‚РёРІРёСЂРѕРІР°РЅ!");
 		}
 	}
 

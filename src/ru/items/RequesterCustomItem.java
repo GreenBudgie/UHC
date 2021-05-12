@@ -56,13 +56,13 @@ public abstract class RequesterCustomItem extends CustomItem {
 			InventoryHelper.addLore(item, ChatColor.AQUA + "" + lapisPrice + ChatColor.BLUE + " " + ItemRequester.LAPIS_CASES.byNumber(lapisPrice));
 		}
 		if(enoughRedstone && enoughLapis && allowPos) {
-			InventoryHelper.addLore(item, ChatColor.GREEN + "Нажми, чтобы создать запрос");
+			InventoryHelper.addLore(item, ChatColor.GREEN + "РќР°Р¶РјРё, С‡С‚РѕР±С‹ СЃРѕР·РґР°С‚СЊ Р·Р°РїСЂРѕСЃ");
 		} else if(!enoughRedstone) {
-			InventoryHelper.addLore(item, ChatColor.RED + "Недостаточно редстоуна");
+			InventoryHelper.addLore(item, ChatColor.RED + "РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЂРµРґСЃС‚РѕСѓРЅР°");
 		} else if(!enoughLapis) {
-			InventoryHelper.addLore(item, ChatColor.RED + "Недостаточно лазурита");
+			InventoryHelper.addLore(item, ChatColor.RED + "РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ Р»Р°Р·СѓСЂРёС‚Р°");
 		} else {
-			InventoryHelper.addLore(item, ChatColor.RED + "Закрытое помещение");
+			InventoryHelper.addLore(item, ChatColor.RED + "Р—Р°РєСЂС‹С‚РѕРµ РїРѕРјРµС‰РµРЅРёРµ");
 		}
 		return item;
 	}

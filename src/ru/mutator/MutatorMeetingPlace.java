@@ -36,12 +36,12 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Место Сбора";
+		return "РњРµСЃС‚Рѕ РЎР±РѕСЂР°";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Каждые десять минут все игроки должны собраться в центре карты (не обязательно на поверхности), иначе будут убиты";
+		return "РљР°Р¶РґС‹Рµ РґРµСЃСЏС‚СЊ РјРёРЅСѓС‚ РІСЃРµ РёРіСЂРѕРєРё РґРѕР»Р¶РЅС‹ СЃРѕР±СЂР°С‚СЊСЃСЏ РІ С†РµРЅС‚СЂРµ РєР°СЂС‚С‹ (РЅРµ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РЅР° РїРѕРІРµСЂС…РЅРѕСЃС‚Рё), РёРЅР°С‡Рµ Р±СѓРґСѓС‚ СѓР±РёС‚С‹";
 	}
 
 	private String getPos() {
@@ -51,7 +51,7 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 	@Override
 	public void onChoose() {
 		meetingLoc = WorldManager.spawnLocation.clone().add(0, 2, 0);
-		bar = Bukkit.createBossBar(ChatColor.GOLD + "До сбора: " + ChatColor.DARK_AQUA + MathUtils.formatTime(cooldown) + " " + getPos(), BarColor.YELLOW, BarStyle.SEGMENTED_10);
+		bar = Bukkit.createBossBar(ChatColor.GOLD + "Р”Рѕ СЃР±РѕСЂР°: " + ChatColor.DARK_AQUA + MathUtils.formatTime(cooldown) + " " + getPos(), BarColor.YELLOW, BarStyle.SEGMENTED_10);
 		reset();
 	}
 
@@ -94,7 +94,7 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 					if(meetingDelay <= 0) {
 						for(Player p : UHC.getInGamePlayers()) {
 							p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1F);
-							p.sendTitle(ChatColor.GREEN + "Сбор окончен!", "", 10, 30, 10);
+							p.sendTitle(ChatColor.GREEN + "РЎР±РѕСЂ РѕРєРѕРЅС‡РµРЅ!", "", 10, 30, 10);
 						}
 						WorldManager.getGameMap().getWorldBorder().setSize(prevBorderSize, 10);
 						reset();
@@ -102,11 +102,11 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 						if(!isMeeting) {
 							for(Player p : UHC.getInGamePlayers()) {
 								p.playSound(p.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1F, 1F);
-								p.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Все на сбор!", "", 2, 30, 10);
+								p.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Р’СЃРµ РЅР° СЃР±РѕСЂ!", "", 2, 30, 10);
 							}
 							bar.setProgress(0);
 							bar.setColor(BarColor.RED);
-							bar.setTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Сбор!");
+							bar.setTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "РЎР±РѕСЂ!");
 							prevBorderSize = WorldManager.getGameMap().getWorldBorder().getSize();
 							WorldBorder border = WorldManager.getGameMap().getWorldBorder();
 							border.setSize(radius * 2, 5);
@@ -119,7 +119,7 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 						meetingDelay--;
 					}
 				} else {
-					bar.setTitle(ChatColor.GOLD + "До сбора: " + ChatColor.DARK_AQUA + MathUtils.formatTime(cooldown) + " " + getPos());
+					bar.setTitle(ChatColor.GOLD + "Р”Рѕ СЃР±РѕСЂР°: " + ChatColor.DARK_AQUA + MathUtils.formatTime(cooldown) + " " + getPos());
 					bar.setProgress(cooldown / (double) maxCooldown);
 					cooldown--;
 				}

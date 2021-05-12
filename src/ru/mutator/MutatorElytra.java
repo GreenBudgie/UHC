@@ -21,12 +21,12 @@ public class MutatorElytra extends ItemBasedMutator {
 
 	@Override
 	public String getName() {
-		return "Летающие Дебилы";
+		return "Р›РµС‚Р°СЋС‰РёРµ Р”РµР±РёР»С‹";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Всем игрокам выдаются элитры";
+		return "Р’СЃРµРј РёРіСЂРѕРєР°Рј РІС‹РґР°СЋС‚СЃСЏ СЌР»РёС‚СЂС‹";
 	}
 
 	@Override

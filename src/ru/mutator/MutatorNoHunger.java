@@ -26,12 +26,12 @@ public class MutatorNoHunger extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Вечная Сытость";
+		return "Р’РµС‡РЅР°СЏ РЎС‹С‚РѕСЃС‚СЊ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Голод не тратится";
+		return "Р“РѕР»РѕРґ РЅРµ С‚СЂР°С‚РёС‚СЃСЏ";
 	}
 
 	@EventHandler

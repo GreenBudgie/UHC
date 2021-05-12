@@ -86,7 +86,7 @@ public class CustomItemTerraDrill extends RequesterCustomItem implements Listene
 
 	@Override
 	public String getDescription() {
-		return "Копает камень 3x3. Нельзя зачарить и починить.";
+		return "РљРѕРїР°РµС‚ РєР°РјРµРЅСЊ 3x3. РќРµР»СЊР·СЏ Р·Р°С‡Р°СЂРёС‚СЊ Рё РїРѕС‡РёРЅРёС‚СЊ.";
 	}
 
 	@Override

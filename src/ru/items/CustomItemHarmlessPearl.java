@@ -57,7 +57,7 @@ public class CustomItemHarmlessPearl extends RequesterCustomItem implements List
 
 	@Override
 	public String getDescription() {
-		return "Перл, не наносящий урона при телепортации";
+		return "РџРµСЂР», РЅРµ РЅР°РЅРѕСЃСЏС‰РёР№ СѓСЂРѕРЅР° РїСЂРё С‚РµР»РµРїРѕСЂС‚Р°С†РёРё";
 	}
 
 	@Override

@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 
 public class InventoryBuilder {
 
-	public static final String inventoryName = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Мутаторы";
+	public static final String inventoryName = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "РњСѓС‚Р°С‚РѕСЂС‹";
 	private static Set<InventoryBuilder> builders = new HashSet<>();
 
 	//Some inner inventory constants
@@ -146,27 +146,27 @@ public class InventoryBuilder {
 
 	private void placeOptionalItems(Inventory inventory) {
 		ItemStack sortItem = ItemUtils.builder(sort.itemToShow)
-				.withName(ChatColor.GOLD + "Сортировка")
+				.withName(ChatColor.GOLD + "РЎРѕСЂС‚РёСЂРѕРІРєР°")
 				.withLore(ChatColor.YELLOW + "" + ChatColor.BOLD + sort.description)
 				.build();
 		inventory.setItem(SORT_SLOT, sortItem);
 
 		ItemStack filterItem = ItemUtils.builder(filter.itemToShow)
-				.withName(ChatColor.DARK_AQUA + "Фильтр")
+				.withName(ChatColor.DARK_AQUA + "Р¤РёР»СЊС‚СЂ")
 				.withLore(ChatColor.AQUA + "" + ChatColor.BOLD + filter.description)
 				.build();
 		inventory.setItem(FILTER_SLOT, filterItem);
 
 		ItemStack pgNextItem = InventoryHelper.generateHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGVmMzU2YWQyYWE3YjE2NzhhZWNiODgyOTBlNWZhNWEzNDI3ZTVlNDU2ZmY0MmZiNTE1NjkwYzY3NTE3YjgifX19");
-		ItemUtils.setName(pgNextItem, ChatColor.DARK_GREEN + "" + ChatColor.BOLD + ">>> " + ChatColor.AQUA + "След. страница");
+		ItemUtils.setName(pgNextItem, ChatColor.DARK_GREEN + "" + ChatColor.BOLD + ">>> " + ChatColor.AQUA + "РЎР»РµРґ. СЃС‚СЂР°РЅРёС†Р°");
 		inventory.setItem(PAGE_NEXT_SLOT, pgNextItem);
 
 		ItemStack pgPrevItem = InventoryHelper.generateHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmU4YzNjZTJhZWU2Y2YyZmFhZGU3ZGIzN2JiYWU3M2EzNjYyN2FjMTQ3M2ZlZjc1YjQxMGEwYWY5NzY1OWYifX19");
-		ItemUtils.setName(pgPrevItem, ChatColor.GOLD + "" + ChatColor.BOLD + "<<< " + ChatColor.DARK_AQUA + "Пред. страница");
+		ItemUtils.setName(pgPrevItem, ChatColor.GOLD + "" + ChatColor.BOLD + "<<< " + ChatColor.DARK_AQUA + "РџСЂРµРґ. СЃС‚СЂР°РЅРёС†Р°");
 		inventory.setItem(PAGE_PREV_SLOT, pgPrevItem);
 
-		inventory.setItem(RESET_SLOT, ItemUtils.builder(Material.BARRIER).withName(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Сбросить настройки").build());
-		inventory.setItem(RESET_PREFERRED_SLOT, ItemUtils.builder(Material.RED_DYE).withName(ChatColor.RED + "" + ChatColor.BOLD + "Убрать предпочтения").build());
+		inventory.setItem(RESET_SLOT, ItemUtils.builder(Material.BARRIER).withName(ChatColor.DARK_RED + "" + ChatColor.BOLD + "РЎР±СЂРѕСЃРёС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё").build());
+		inventory.setItem(RESET_PREFERRED_SLOT, ItemUtils.builder(Material.RED_DYE).withName(ChatColor.RED + "" + ChatColor.BOLD + "РЈР±СЂР°С‚СЊ РїСЂРµРґРїРѕС‡С‚РµРЅРёСЏ").build());
 	}
 
 	private ItemStack getMutatorItem(Mutator mutator) {
@@ -174,34 +174,34 @@ public class InventoryBuilder {
 				.withName(ChatColor.LIGHT_PURPLE + mutator.getName())
 				.withSplittedLore(ChatColor.YELLOW + mutator.getDescription())
 				.build();
-		if(mutator.canBeHidden()) ItemUtils.addLore(item, ChatColor.GRAY + "" + ChatColor.ITALIC + "Может быть скрыт");
+		if(mutator.canBeHidden()) ItemUtils.addLore(item, ChatColor.GRAY + "" + ChatColor.ITALIC + "РњРѕР¶РµС‚ Р±С‹С‚СЊ СЃРєСЂС‹С‚");
 		if(isOP()) {
 			if(mutator.isActive()) {
 				ItemUtils.addGlow(item);
-				ItemUtils.addLore(item, false, ChatColor.RED + "" + ChatColor.BOLD + "<ДЕАКТИВИРОВАТЬ>");
+				ItemUtils.addLore(item, false, ChatColor.RED + "" + ChatColor.BOLD + "<Р”Р•РђРљРўРР’РР РћР’РђРўР¬>");
 			} else {
-				ItemUtils.addLore(item, false, ChatColor.GREEN + "" + ChatColor.BOLD + "<АКТИВИРОВАТЬ>");
+				ItemUtils.addLore(item, false, ChatColor.GREEN + "" + ChatColor.BOLD + "<РђРљРўРР’РР РћР’РђРўР¬>");
 			}
 		} else {
 			if(mutator.isPreferredBy(player.getName())) {
 				ItemUtils.addGlow(item);
-				ItemUtils.addLore(item, false, ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Предпочитаемый");
+				ItemUtils.addLore(item, false, ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "РџСЂРµРґРїРѕС‡РёС‚Р°РµРјС‹Р№");
 			} else {
-				ItemUtils.addLore(item, false, ChatColor.DARK_AQUA + "<Сделать предпочитаемым>");
+				ItemUtils.addLore(item, false, ChatColor.DARK_AQUA + "<РЎРґРµР»Р°С‚СЊ РїСЂРµРґРїРѕС‡РёС‚Р°РµРјС‹Рј>");
 			}
 			int preferenceCount = MutatorManager.getPlayersWhoPrefersMutator(mutator).size();
 			if(preferenceCount == 0) {
-				ItemUtils.addLore(item, false, ChatColor.GOLD + "Нет предпочтений");
+				ItemUtils.addLore(item, false, ChatColor.GOLD + "РќРµС‚ РїСЂРµРґРїРѕС‡С‚РµРЅРёР№");
 			} else {
-				String prefer = new NumericalCases("Предпочитает ", "Предпочитают ", "Предпочитают ").byNumber(preferenceCount);
-				String player = new NumericalCases(" игрок", " игрока", " игроков").byNumber(preferenceCount);
+				String prefer = new NumericalCases("РџСЂРµРґРїРѕС‡РёС‚Р°РµС‚ ", "РџСЂРµРґРїРѕС‡РёС‚Р°СЋС‚ ", "РџСЂРµРґРїРѕС‡РёС‚Р°СЋС‚ ").byNumber(preferenceCount);
+				String player = new NumericalCases(" РёРіСЂРѕРє", " РёРіСЂРѕРєР°", " РёРіСЂРѕРєРѕРІ").byNumber(preferenceCount);
 				List<Mutator> otherMutators = MutatorManager.getAvailablePreferredMutatorsWeighted();
 				otherMutators.removeIf(m -> mutator == m);
 				double otherSize = otherMutators.size();
 				int percent = (int) ((1 - (otherSize / MutatorManager.getAvailablePreferredMutatorsWeighted().size())) * 100);
 				ItemUtils.addLore(item, false,
 						ChatColor.GOLD + prefer + ChatColor.AQUA + ChatColor.BOLD + preferenceCount + ChatColor.RESET +
-								ChatColor.GOLD + player + ChatColor.GRAY + ", " + ChatColor.GREEN + "шанс " + ChatColor.DARK_GREEN +
+								ChatColor.GOLD + player + ChatColor.GRAY + ", " + ChatColor.GREEN + "С€Р°РЅСЃ " + ChatColor.DARK_GREEN +
 								ChatColor.BOLD + percent + ChatColor.RESET + ChatColor.GRAY + "%");
 			}
 		}
@@ -257,13 +257,13 @@ public class InventoryBuilder {
 				for(Mutator mutator : MutatorManager.mutators) {
 					if(item.getType() == mutator.getItemToShow()) {
 						if(mutator.isActive()) {
-							player.sendMessage(ChatColor.GOLD + "Деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + mutator.getName());
+							player.sendMessage(ChatColor.GOLD + "Р”РµР°РєС‚РёРІРёСЂРѕРІР°РЅ РјСѓС‚Р°С‚РѕСЂ: " + ChatColor.LIGHT_PURPLE + mutator.getName());
 							player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
 							mutator.deactivate();
 							player.closeInventory();
 						} else {
 							if(MutatorManager.doesMutatorConflictsWithActive(mutator)) {
-								player.sendMessage(ChatColor.RED + "Мутатор конфликтует с активными");
+								player.sendMessage(ChatColor.RED + "РњСѓС‚Р°С‚РѕСЂ РєРѕРЅС„Р»РёРєС‚СѓРµС‚ СЃ Р°РєС‚РёРІРЅС‹РјРё");
 								player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
 							} else {
 								player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 1F);
@@ -283,7 +283,7 @@ public class InventoryBuilder {
 							reopenAll();
 						} else {
 							if(MutatorManager.preferredMutators.getOrDefault(player.getName(), new HashSet<>()).size() >= 3) {
-								InventoryHelper.sendActionBarMessage(player, ChatColor.DARK_RED + "" + ChatColor.BOLD + "Нельзя выбрать более трех предпочитаемых мутаторов");
+								InventoryHelper.sendActionBarMessage(player, ChatColor.DARK_RED + "" + ChatColor.BOLD + "РќРµР»СЊР·СЏ РІС‹Р±СЂР°С‚СЊ Р±РѕР»РµРµ С‚СЂРµС… РїСЂРµРґРїРѕС‡РёС‚Р°РµРјС‹С… РјСѓС‚Р°С‚РѕСЂРѕРІ");
 								player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
 							} else {
 								player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 1F);
@@ -333,9 +333,9 @@ public class InventoryBuilder {
 	}
 
 	public enum Sort {
-		DEFAULT("Обычная", Material.COMPARATOR),
-		THREAT("По сложности", Material.CREEPER_HEAD),
-		PERCENT("По проценту предпочтений", Material.PLAYER_HEAD);
+		DEFAULT("РћР±С‹С‡РЅР°СЏ", Material.COMPARATOR),
+		THREAT("РџРѕ СЃР»РѕР¶РЅРѕСЃС‚Рё", Material.CREEPER_HEAD),
+		PERCENT("РџРѕ РїСЂРѕС†РµРЅС‚Сѓ РїСЂРµРґРїРѕС‡С‚РµРЅРёР№", Material.PLAYER_HEAD);
 
 		private String description;
 		private Material itemToShow;
@@ -348,13 +348,13 @@ public class InventoryBuilder {
 	}
 
 	public enum Filter {
-		NONE("Нет", Material.PAPER),
-		PREFERRED_SELF("Предпочитаемые тобой", Material.BOOK),
-		PREFERRED_ALL("Предпочитаемые всеми", Material.WRITABLE_BOOK),
-		THREAT_SUPPORTING("Вспомогательные", Material.LIGHT_BLUE_DYE, ThreatStatus.SUPPORTING),
-		THREAT_INNOCENT("Безобидные", Material.LIME_DYE, ThreatStatus.INNOCENT),
-		THREAT_DANGEROUS("Опасные", Material.RED_DYE, ThreatStatus.DANGEROUS),
-		THREAT_CRITICAL("Дикие", Material.WEEPING_VINES, ThreatStatus.CRITICAL);
+		NONE("РќРµС‚", Material.PAPER),
+		PREFERRED_SELF("РџСЂРµРґРїРѕС‡РёС‚Р°РµРјС‹Рµ С‚РѕР±РѕР№", Material.BOOK),
+		PREFERRED_ALL("РџСЂРµРґРїРѕС‡РёС‚Р°РµРјС‹Рµ РІСЃРµРјРё", Material.WRITABLE_BOOK),
+		THREAT_SUPPORTING("Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ", Material.LIGHT_BLUE_DYE, ThreatStatus.SUPPORTING),
+		THREAT_INNOCENT("Р‘РµР·РѕР±РёРґРЅС‹Рµ", Material.LIME_DYE, ThreatStatus.INNOCENT),
+		THREAT_DANGEROUS("РћРїР°СЃРЅС‹Рµ", Material.RED_DYE, ThreatStatus.DANGEROUS),
+		THREAT_CRITICAL("Р”РёРєРёРµ", Material.WEEPING_VINES, ThreatStatus.CRITICAL);
 
 		private String description;
 		private ThreatStatus boundThreat;

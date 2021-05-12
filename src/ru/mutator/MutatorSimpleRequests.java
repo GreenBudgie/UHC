@@ -16,12 +16,12 @@ public class MutatorSimpleRequests extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Щедрые запросы";
+		return "Р©РµРґСЂС‹Рµ Р·Р°РїСЂРѕСЃС‹";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Всем запросам требуется лишь редстоун";
+		return "Р’СЃРµРј Р·Р°РїСЂРѕСЃР°Рј С‚СЂРµР±СѓРµС‚СЃСЏ Р»РёС€СЊ СЂРµРґСЃС‚РѕСѓРЅ";
 	}
 
 }

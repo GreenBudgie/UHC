@@ -29,12 +29,12 @@ public class MutatorGoodDeath extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Уйти Красиво";
+		return "РЈР№С‚Рё РљСЂР°СЃРёРІРѕ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Когда кто-то из игроков умирает, всем остальным выдается эффект регенерации, восстанавливая 2 сердца";
+		return "РљРѕРіРґР° РєС‚Рѕ-С‚Рѕ РёР· РёРіСЂРѕРєРѕРІ СѓРјРёСЂР°РµС‚, РІСЃРµРј РѕСЃС‚Р°Р»СЊРЅС‹Рј РІС‹РґР°РµС‚СЃСЏ СЌС„С„РµРєС‚ СЂРµРіРµРЅРµСЂР°С†РёРё, РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°СЏ 2 СЃРµСЂРґС†Р°";
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

@@ -28,19 +28,19 @@ public class CustomItemHighlighter extends RequesterCustomItem {
 			Player teammate = UHC.getTeammate(p);
 			if(p.getWorld() == pl.getWorld() && p != pl && (teammate == null || teammate != pl) && p.getLocation().distance(pl.getLocation()) < 128) {
 				pl.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 240, 0));
-				p.sendMessage(ChatColor.AQUA + "Íàéäåí " + ChatColor.GOLD + pl.getName() + ChatColor.YELLOW + " (" + ChatColor.AQUA + (int) p.getLocation()
+				p.sendMessage(ChatColor.AQUA + "ÐÐ°Ð¹Ð´ÐµÐ½ " + ChatColor.GOLD + pl.getName() + ChatColor.YELLOW + " (" + ChatColor.AQUA + (int) p.getLocation()
 						.distance(pl.getLocation()) + ChatColor.YELLOW + ")");
 				found = true;
 			}
 		}
-		if(!found) p.sendMessage(ChatColor.RED + "Â ðàäèóñå 128 áëîêîâ íèêîãî íåò");
+		if(!found) p.sendMessage(ChatColor.RED + "Ð’ Ñ€Ð°Ð´Ð¸ÑƒÑÐµ 128 Ð±Ð»Ð¾ÐºÐ¾Ð² Ð½Ð¸ÐºÐ¾Ð³Ð¾ Ð½ÐµÑ‚");
 		ParticleUtils.createParticlesInsideSphere(p.getLocation(), 3, Particle.END_ROD, Color.WHITE, 35);
 		p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1.5F);
 	}
 
 	@Override
 	public String getDescription() {
-		return "Ïðè èñïîëüçîâàíèè ïîäñâå÷èâàåò âñåõ èãðîêîâ â ðàäèóñå 128 áëîêîâ è âûâîäèò èõ ñïèñîê";
+		return "ÐŸÑ€Ð¸ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ð½Ð¸Ð¸ Ð¿Ð¾Ð´ÑÐ²ÐµÑ‡Ð¸Ð²Ð°ÐµÑ‚ Ð²ÑÐµÑ… Ð¸Ð³Ñ€Ð¾ÐºÐ¾Ð² Ð² Ñ€Ð°Ð´Ð¸ÑƒÑÐµ 128 Ð±Ð»Ð¾ÐºÐ¾Ð² Ð¸ Ð²Ñ‹Ð²Ð¾Ð´Ð¸Ñ‚ Ð¸Ñ… ÑÐ¿Ð¸ÑÐ¾Ðº";
 	}
 
 	@Override

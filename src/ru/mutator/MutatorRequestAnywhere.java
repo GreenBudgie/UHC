@@ -16,12 +16,12 @@ public class MutatorRequestAnywhere extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Прозрачные Блоки";
+		return "РџСЂРѕР·СЂР°С‡РЅС‹Рµ Р‘Р»РѕРєРё";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Запросы можно делать даже под землей";
+		return "Р—Р°РїСЂРѕСЃС‹ РјРѕР¶РЅРѕ РґРµР»Р°С‚СЊ РґР°Р¶Рµ РїРѕРґ Р·РµРјР»РµР№";
 	}
 
 }

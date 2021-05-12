@@ -13,12 +13,12 @@ public class ArtifactHunger extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.LIGHT_PURPLE + "Всемирный Голод";
+		return ChatColor.LIGHT_PURPLE + "Р’СЃРµРјРёСЂРЅС‹Р№ Р“РѕР»РѕРґ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "У всех игроков шкала голода резко падает до 2х единиц";
+		return "РЈ РІСЃРµС… РёРіСЂРѕРєРѕРІ С€РєР°Р»Р° РіРѕР»РѕРґР° СЂРµР·РєРѕ РїР°РґР°РµС‚ РґРѕ 2С… РµРґРёРЅРёС†";
 	}
 
 	@Override

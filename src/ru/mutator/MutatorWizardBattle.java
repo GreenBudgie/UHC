@@ -20,12 +20,12 @@ public class MutatorWizardBattle extends ItemBasedMutator {
 
 	@Override
 	public String getName() {
-		return "Битва Чародеев";
+		return "Р‘РёС‚РІР° Р§Р°СЂРѕРґРµРµРІ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Всем игрокам выдается чарка и стак книжных полок";
+		return "Р’СЃРµРј РёРіСЂРѕРєР°Рј РІС‹РґР°РµС‚СЃСЏ С‡Р°СЂРєР° Рё СЃС‚Р°Рє РєРЅРёР¶РЅС‹С… РїРѕР»РѕРє";
 	}
 
 	@Override

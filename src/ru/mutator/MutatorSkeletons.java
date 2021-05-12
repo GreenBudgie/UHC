@@ -24,12 +24,12 @@ public class MutatorSkeletons extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Обстрел";
+		return "РћР±СЃС‚СЂРµР»";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Скелеты спавнятся чаще других мобов";
+		return "РЎРєРµР»РµС‚С‹ СЃРїР°РІРЅСЏС‚СЃСЏ С‡Р°С‰Рµ РґСЂСѓРіРёС… РјРѕР±РѕРІ";
 	}
 
 	@EventHandler

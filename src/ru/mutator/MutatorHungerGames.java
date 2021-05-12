@@ -20,12 +20,12 @@ public class MutatorHungerGames extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Голодные Игры";
+		return "Р“РѕР»РѕРґРЅС‹Рµ РРіСЂС‹";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Время до начала ПВП сокращается до одной минуты";
+		return "Р’СЂРµРјСЏ РґРѕ РЅР°С‡Р°Р»Р° РџР’Рџ СЃРѕРєСЂР°С‰Р°РµС‚СЃСЏ РґРѕ РѕРґРЅРѕР№ РјРёРЅСѓС‚С‹";
 	}
 
 	@Override

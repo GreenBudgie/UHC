@@ -12,12 +12,12 @@ public class ArtifactTeleport extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.LIGHT_PURPLE + "Переброска";
+		return ChatColor.LIGHT_PURPLE + "РџРµСЂРµР±СЂРѕСЃРєР°";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Телепортирует всех игроков в случайную точку в радиусе 80 блоков";
+		return "РўРµР»РµРїРѕСЂС‚РёСЂСѓРµС‚ РІСЃРµС… РёРіСЂРѕРєРѕРІ РІ СЃР»СѓС‡Р°Р№РЅСѓСЋ С‚РѕС‡РєСѓ РІ СЂР°РґРёСѓСЃРµ 80 Р±Р»РѕРєРѕРІ";
 	}
 
 	@Override

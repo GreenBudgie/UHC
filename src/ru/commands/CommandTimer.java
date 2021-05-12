@@ -19,7 +19,7 @@ public class CommandTimer implements CommandExecutor, TabCompleter {
 		if(!sender.isOp()) return true;
 		Player p = (Player) sender;
 		if(!UHC.state.isInGame()) {
-			sender.sendMessage(ChatColor.RED + "Возможно выполнение только во время OUTBREAK и GAME");
+			sender.sendMessage(ChatColor.RED + "Р’РѕР·РјРѕР¶РЅРѕ РІС‹РїРѕР»РЅРµРЅРёРµ С‚РѕР»СЊРєРѕ РІРѕ РІСЂРµРјСЏ OUTBREAK Рё GAME");
 			return true;
 		}
 		if(args.length == 1) {

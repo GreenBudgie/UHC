@@ -24,12 +24,12 @@ public class MutatorChorusDamage extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Побег от Опасности";
+		return "РџРѕР±РµРі РѕС‚ РћРїР°СЃРЅРѕСЃС‚Рё";
 	}
 
 	@Override
 	public String getDescription() {
-		return "При получении урона ты телепортируешься, как будто съел хорус";
+		return "РџСЂРё РїРѕР»СѓС‡РµРЅРёРё СѓСЂРѕРЅР° С‚С‹ С‚РµР»РµРїРѕСЂС‚РёСЂСѓРµС€СЊСЃСЏ, РєР°Рє Р±СѓРґС‚Рѕ СЃСЉРµР» С…РѕСЂСѓСЃ";
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

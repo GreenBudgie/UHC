@@ -20,12 +20,12 @@ public class MutatorChemistBattle extends ItemBasedMutator {
 
 	@Override
 	public String getName() {
-		return "Битва Алхимиков";
+		return "Р‘РёС‚РІР° РђР»С…РёРјРёРєРѕРІ";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Всем игрокам выдается зельеварка, порошок ифрита и адский нарост";
+		return "Р’СЃРµРј РёРіСЂРѕРєР°Рј РІС‹РґР°РµС‚СЃСЏ Р·РµР»СЊРµРІР°СЂРєР°, РїРѕСЂРѕС€РѕРє РёС„СЂРёС‚Р° Рё Р°РґСЃРєРёР№ РЅР°СЂРѕСЃС‚";
 	}
 
 	@Override

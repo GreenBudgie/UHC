@@ -25,12 +25,12 @@ public class MutatorNoKnockback extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Устойчивый";
+		return "РЈСЃС‚РѕР№С‡РёРІС‹Р№";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Мобы и игроки не получают никакой отдачи от ударов";
+		return "РњРѕР±С‹ Рё РёРіСЂРѕРєРё РЅРµ РїРѕР»СѓС‡Р°СЋС‚ РЅРёРєР°РєРѕР№ РѕС‚РґР°С‡Рё РѕС‚ СѓРґР°СЂРѕРІ";
 	}
 
 	@Override

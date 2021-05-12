@@ -43,7 +43,7 @@ public abstract class Artifact {
 	public void use(@Nullable Player player) {
 		if(player != null) {
 			for(Player receiver : UHC.getInGamePlayers()) {
-				receiver.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " призвал силу артефакта " + ChatColor.BOLD + ChatColor.DARK_RED + getName());
+				receiver.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " РїСЂРёР·РІР°Р» СЃРёР»Сѓ Р°СЂС‚РµС„Р°РєС‚Р° " + ChatColor.BOLD + ChatColor.DARK_RED + getName());
 				if(receiver != player) {
 					receiver.playSound(receiver.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 0.5F, 0.5F);
 				}
@@ -52,7 +52,7 @@ public abstract class Artifact {
 			currentPrice += getPriceIncreaseAmount();
 		} else {
 			for(Player receiver : UHC.getInGamePlayers()) {
-				receiver.sendMessage(ChatColor.YELLOW + "Призвана сила артефакта " + ChatColor.BOLD + ChatColor.DARK_RED + getName());
+				receiver.sendMessage(ChatColor.YELLOW + "РџСЂРёР·РІР°РЅР° СЃРёР»Р° Р°СЂС‚РµС„Р°РєС‚Р° " + ChatColor.BOLD + ChatColor.DARK_RED + getName());
 				receiver.playSound(receiver.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 0.5F, 0.5F);
 			}
 			onUse(null);
@@ -66,7 +66,7 @@ public abstract class Artifact {
 	}
 
 	private String getPriceString() {
-		NumericalCases cases = new NumericalCases("артефакт", "артефакта", "артефактов");
+		NumericalCases cases = new NumericalCases("Р°СЂС‚РµС„Р°РєС‚", "Р°СЂС‚РµС„Р°РєС‚Р°", "Р°СЂС‚РµС„Р°РєС‚РѕРІ");
 		int starting = getStartingPrice();
 		int current = getCurrentPrice();
 		String added = "";
@@ -80,9 +80,9 @@ public abstract class Artifact {
 		ItemStack artifact = getItem();
 		if(ArtifactManager.getArtifactCount(p) >= getCurrentPrice()) {
 			ItemUtils.addGlow(artifact);
-			ItemUtils.addLore(artifact, false, ChatColor.GREEN + "Нажми, чтобы призвать");
+			ItemUtils.addLore(artifact, false, ChatColor.GREEN + "РќР°Р¶РјРё, С‡С‚РѕР±С‹ РїСЂРёР·РІР°С‚СЊ");
 		} else {
-			ItemUtils.addLore(artifact, false, ChatColor.RED + "Недостаточно артефактов");
+			ItemUtils.addLore(artifact, false, ChatColor.RED + "РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ Р°СЂС‚РµС„Р°РєС‚РѕРІ");
 		}
 		return artifact;
 	}

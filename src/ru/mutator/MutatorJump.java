@@ -20,12 +20,12 @@ public class MutatorJump extends EffectBasedMutator {
 
 	@Override
 	public String getName() {
-		return "К Небесам";
+		return "Рљ РќРµР±РµСЃР°Рј";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Всем игрокам на всю игру выдается прыгучесть X";
+		return "Р’СЃРµРј РёРіСЂРѕРєР°Рј РЅР° РІСЃСЋ РёРіСЂСѓ РІС‹РґР°РµС‚СЃСЏ РїСЂС‹РіСѓС‡РµСЃС‚СЊ X";
 	}
 
 	@Override

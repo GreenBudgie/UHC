@@ -34,12 +34,12 @@ public class MutatorOverpoweredMobs extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Сверхсильные Мобы";
+		return "РЎРІРµСЂС…СЃРёР»СЊРЅС‹Рµ РњРѕР±С‹";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Враждебные мобы становятся по-настоящему опасными!";
+		return "Р’СЂР°Р¶РґРµР±РЅС‹Рµ РјРѕР±С‹ СЃС‚Р°РЅРѕРІСЏС‚СЃСЏ РїРѕ-РЅР°СЃС‚РѕСЏС‰РµРјСѓ РѕРїР°СЃРЅС‹РјРё!";
 	}
 
 	@Override

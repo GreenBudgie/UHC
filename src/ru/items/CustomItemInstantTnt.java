@@ -57,7 +57,7 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 					if(owner == p || (teammate != null && teammate == p)) {
 						e.setDamage(e.getDamage() / 4.0);
 					} else {
-						FightHelper.setDamager(p, owner, 40, "взорвал");
+						FightHelper.setDamager(p, owner, 40, "РІР·РѕСЂРІР°Р»");
 					}
 				}
 			}
@@ -66,7 +66,7 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 
 	@Override
 	public String getDescription() {
-		return "Динамит, который взрывается через полторы секунды после установки";
+		return "Р”РёРЅР°РјРёС‚, РєРѕС‚РѕСЂС‹Р№ РІР·СЂС‹РІР°РµС‚СЃВ¤ С‡РµСЂРµР· РїРѕР»С‚РѕСЂС‹ СЃРµРєСѓРЅРґС‹ РїРѕСЃР»Рµ СѓСЃС‚Р°РЅРѕРІРєРё";
 	}
 
 	@Override

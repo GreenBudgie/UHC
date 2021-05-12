@@ -29,12 +29,12 @@ public class MutatorUnexpectedRequests extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Неожиданные Запросы";
+		return "РќРµРѕР¶РёРґР°РЅРЅС‹Рµ Р—Р°РїСЂРѕСЃС‹";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Иногда на карте будут самостоятельно совершаться запросы случайных вещей";
+		return "РРЅРѕРіРґР° РЅР° РєР°СЂС‚Рµ Р±СѓРґСѓС‚ СЃР°РјРѕСЃС‚РѕСЏС‚РµР»СЊРЅРѕ СЃРѕРІРµСЂС€Р°С‚СЊСЃСЏ Р·Р°РїСЂРѕСЃС‹ СЃР»СѓС‡Р°Р№РЅС‹С… РІРµС‰РµР№";
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class MutatorUnexpectedRequests extends Mutator {
 					Location l = getRandomLocation();
 					for(Player player : UHC.getInGamePlayers()) {
 						player.sendMessage(
-								ChatColor.LIGHT_PURPLE + "Был сделан запрос: " + ChatColor.DARK_AQUA + l.getBlockX() + ChatColor.WHITE + ", " + ChatColor.DARK_AQUA + l.getBlockZ()
+								ChatColor.LIGHT_PURPLE + "Р‘С‹Р» СЃРґРµР»Р°РЅ Р·Р°РїСЂРѕСЃ: " + ChatColor.DARK_AQUA + l.getBlockX() + ChatColor.WHITE + ", " + ChatColor.DARK_AQUA + l.getBlockZ()
 										+ (ChatColor.WHITE + " (" + (l.getWorld() == player.getWorld() ?
 										(ChatColor.AQUA + String.valueOf((int) l.distance(player.getLocation()))) :
 										WorldHelper.getEnvironmentNamePrepositional(l.getWorld().getEnvironment(), ChatColor.AQUA)) + ChatColor.WHITE + ")"));

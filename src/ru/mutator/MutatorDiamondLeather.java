@@ -20,12 +20,12 @@ public class MutatorDiamondLeather extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Кожаная Алмазка";
+		return "РљРѕР¶Р°РЅР°СЏ РђР»РјР°Р·РєР°";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Из кожи крафтится алмазная броня";
+		return "РР· РєРѕР¶Рё РєСЂР°С„С‚РёС‚СЃСЏ Р°Р»РјР°Р·РЅР°СЏ Р±СЂРѕРЅСЏ";
 	}
 
 	@Override

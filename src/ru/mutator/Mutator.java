@@ -57,7 +57,7 @@ public abstract class Mutator {
 		if(applyHiding) hide();
 		for(Player p : UHC.getInGamePlayers()) {
 			if(!isHidden && preference != null) {
-				p.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Предпочтение " + ChatColor.GOLD + preference + ChatColor.DARK_GRAY + ":");
+				p.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "РџСЂРµРґРїРѕС‡С‚РµРЅРёРµ " + ChatColor.GOLD + preference + ChatColor.DARK_GRAY + ":");
 			}
 			p.sendMessage(getInfo());
 		}
@@ -85,9 +85,9 @@ public abstract class Mutator {
 
 	public final String getInfo() {
 		if(isHidden) {
-			return ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "Скрытый Мутатор" + ChatColor.DARK_GRAY + "] " + ChatColor.DARK_PURPLE + "Нет информации";
+			return ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "РЎРєСЂС‹С‚С‹Р№ РњСѓС‚Р°С‚РѕСЂ" + ChatColor.DARK_GRAY + "] " + ChatColor.DARK_PURPLE + "РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё";
 		} else {
-			return ChatColor.DARK_GRAY + "[" + ChatColor.RED + "Мутатор" + ChatColor.DARK_GRAY + "] " + ChatColor.LIGHT_PURPLE + getName() + ChatColor.GRAY + ": "
+			return ChatColor.DARK_GRAY + "[" + ChatColor.RED + "РњСѓС‚Р°С‚РѕСЂ" + ChatColor.DARK_GRAY + "] " + ChatColor.LIGHT_PURPLE + getName() + ChatColor.GRAY + ": "
 					+ ChatColor.YELLOW + getDescription();
 		}
 	}
