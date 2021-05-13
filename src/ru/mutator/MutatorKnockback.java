@@ -29,7 +29,7 @@ public class MutatorKnockback extends Mutator implements Listener {
 
 	@Override
 	public String getDescription() {
-		return "ќбычные удары далеко откидывают всех живых существ";
+		return "Обычные удары далеко откидывают всех живых существ";
 	}
 
 	@Override

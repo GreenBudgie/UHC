@@ -11,9 +11,10 @@ import java.util.Arrays;
 
 public class WorldManager {
 
-	public static boolean keepMap = false;
+	public static boolean keepMap = true;
 	public static Location spawnLocation;
-	private static World lobby, gameMap, arena, tempArena, arena2;
+	//TODO Make multiple arenas possible
+	private static World lobby, gameMap, gameMapNether, arena, tempArena, arena2;
 
 	public static void init() {
 		lobby = Bukkit.createWorld(new WorldCreator("Lobby"));
@@ -54,6 +55,10 @@ public class WorldManager {
 			gameMap.setDifficulty(Difficulty.HARD);
 			spawnLocation = gameMap.getSpawnLocation().clone();
 		}
+		if(Bukkit.getWorld("CurrentMapNether") != null) {
+			gameMapNether = Bukkit.createWorld(new WorldCreator("CurrentMapNether"));
+			gameMapNether.setDifficulty(Difficulty.HARD);
+		}
 		if(Bukkit.getWorld("ArenaTemp") != null) {
 			tempArena = Bukkit.createWorld(new WorldCreator("ArenaTemp"));
 		}
@@ -68,17 +73,13 @@ public class WorldManager {
 				"Сервер может зависнуть на некоторое время. Это нормально.");
 		UHC.generating = true;
 		World map = Bukkit.createWorld(new WorldCreator("CurrentMap"));
-		map.setDifficulty(Difficulty.HARD);
-		map.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-		map.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-		map.setGameRule(GameRule.RANDOM_TICK_SPEED, 3);
-		map.setGameRule(GameRule.NATURAL_REGENERATION, false);
-		map.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-		map.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-		map.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
-		map.setPVP(false);
+		setRules(map);
 		spawnLocation = map.getSpawnLocation().clone();
 		gameMap = map;
+		Bukkit.broadcastMessage(arrows + ChatColor.RESET + ChatColor.DARK_RED + " Генерация ада...");
+		World nether = Bukkit.createWorld(new WorldCreator("CurrentMapNether").environment(World.Environment.NETHER));
+		setRules(nether);
+		gameMapNether = nether;
 		Bukkit.broadcastMessage(arrows + ChatColor.RESET + ChatColor.GRAY + " Копирование арены...");
 		if(MathUtils.chance(50)) {
 			tempArena = copyAsTemp(arena);
@@ -88,6 +89,18 @@ public class WorldManager {
 		Bukkit.broadcastMessage(arrows + ChatColor.DARK_GREEN + "" + ChatColor.BOLD + " Новый мир создан!");
 		TaskManager.asyncInvokeLater(() -> UHC.generating = false, 20);
 		return map;
+	}
+
+	private static void setRules(World map) {
+		map.setDifficulty(Difficulty.HARD);
+		map.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+		map.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+		map.setGameRule(GameRule.RANDOM_TICK_SPEED, 3);
+		map.setGameRule(GameRule.NATURAL_REGENERATION, false);
+		map.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+		map.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+		map.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
+		map.setPVP(false);
 	}
 
 	public static void updateBorder() {
@@ -129,6 +142,9 @@ public class WorldManager {
 			Bukkit.unloadWorld(gameMap, false);
 			WorldManager.deleteWorld(gameMap.getWorldFolder());
 			gameMap = null;
+			Bukkit.unloadWorld(gameMapNether, false);
+			WorldManager.deleteWorld(gameMapNether.getWorldFolder());
+			gameMapNether = null;
 			Bukkit.unloadWorld(tempArena, false);
 			WorldManager.deleteTempWorld(tempArena);
 			tempArena = null;
@@ -184,7 +200,7 @@ public class WorldManager {
 	}
 
 	public static boolean hasMap() {
-		return gameMap != null && tempArena != null;
+		return gameMap != null && gameMapNether != null && tempArena != null;
 	}
 
 	public static World getLobby() {
@@ -193,6 +209,10 @@ public class WorldManager {
 
 	public static World getGameMap() {
 		return gameMap;
+	}
+
+	public static World getGameMapNether() {
+		return gameMapNether;
 	}
 
 	public static World getMainArena() {

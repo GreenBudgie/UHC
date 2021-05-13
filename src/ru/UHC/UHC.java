@@ -2,6 +2,7 @@ package ru.UHC;
 
 import com.google.common.collect.Lists;
 import net.minecraft.server.v1_16_R3.MerchantRecipeList;
+import net.minecraft.server.v1_16_R3.PortalTravelAgent;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
@@ -12,6 +13,7 @@ import org.bukkit.block.Lectern;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftVillager;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.*;
@@ -1960,8 +1962,20 @@ public class UHC implements Listener {
 	}
 
 	@EventHandler
-	public void noPortal(PlayerPortalEvent e) {
-		e.setCancelled(true);
+	public void portal(PlayerPortalEvent e) {
+		Player player = e.getPlayer();
+		if(playing && isPlaying(player)) {
+			Location loc = player.getLocation();
+			if(player.getWorld().getEnvironment() == World.Environment.NETHER) {
+				Location newLoc = new Location(WorldManager.getGameMap(), loc.getX() * 8, loc.getY(), loc.getZ() * 8);
+				if(!WorldManager.getGameMap().getWorldBorder().isInside(newLoc)) {
+					newLoc = WorldManager.getGameMap().getSpawnLocation();
+				}
+				e.setTo(newLoc);
+			} else {
+				e.setTo(new Location(WorldManager.getGameMapNether(), loc.getX() / 8, loc.getY(), loc.getZ() / 8));
+			}
+		}
 	}
 
 	@EventHandler

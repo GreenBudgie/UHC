@@ -41,7 +41,6 @@ public class TaskManager {
 			}
 
 		}, 0L, 1L);
-
 	}
 
 	public static boolean ticksPassed(int ticks) {
