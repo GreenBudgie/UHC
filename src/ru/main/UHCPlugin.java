@@ -8,6 +8,7 @@ import ru.UHC.RecipeHandler;
 import ru.UHC.SignManager;
 import ru.UHC.UHC;
 import ru.artifact.ArtifactManager;
+import ru.classes.ClassManager;
 import ru.commands.*;
 import ru.items.CustomItems;
 import ru.items.CustomItemsListener;
@@ -41,6 +42,7 @@ public class UHCPlugin extends JavaPlugin {
 		this.getCommand("optmutator").setExecutor(new CommandOptMutator());
 		this.getCommand("options").setExecutor(new CommandOptions());
 		this.getCommand("inv").setExecutor(new CommandInv());
+		this.getCommand("class").setExecutor(new CommandClass());
 
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new UHC(), this);
@@ -56,6 +58,7 @@ public class UHCPlugin extends JavaPlugin {
 		UHC.init();
 		CustomItems.init();
 		ItemRequester.init();
+		ClassManager.init();
 	}
 
 	public void onDisable() {

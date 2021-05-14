@@ -252,7 +252,7 @@ public class Drops {
 		if(MathUtils.chance(15)) crossbow.addEnchantment(Enchantment.MULTISHOT, 1);
 		drops.add(crossbow);
 		ItemStack trident = new ItemStack(Material.TRIDENT);
-		trident.addEnchantment(Enchantment.DURABILITY, 5);
+		trident.addEnchantment(Enchantment.DURABILITY, 3);
 		trident.addEnchantment(Enchantment.LOYALTY, MathUtils.randomRange(2, 3));
 		if(MathUtils.chance(70)) trident.addEnchantment(Enchantment.IMPALING, MathUtils.randomRange(2, 4));
 		if(MathUtils.chance(40)) trident.addEnchantment(Enchantment.CHANNELING, 1);
