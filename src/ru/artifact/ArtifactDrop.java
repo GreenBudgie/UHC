@@ -5,18 +5,19 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.Player;
-import ru.UHC.Drops;
+import ru.drop.Drop;
+import ru.drop.Drops;
 
-public class ArtifactAirdrop extends Artifact {
+public class ArtifactDrop extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.DARK_AQUA + "Небесные Дары";
+		return ChatColor.DARK_AQUA + "Раздача";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Изменяет позицию выпадения следующего аирдропа и сокращает время его ожидания в 3 раза";
+		return "Изменяет позицию выпадения всех дропов (аирдропа, кейвдропа и незердропа) и сокращает время их ожидания в 3 раза.";
 	}
 
 	@Override
@@ -26,13 +27,15 @@ public class ArtifactAirdrop extends Artifact {
 
 	@Override
 	public float getPriceIncreaseAmount() {
-		return 0;
+		return 1;
 	}
 
 	@Override
 	public void onUse(@Nullable Player player) {
-		Drops.chooseAirdropLocation();
-		Drops.airdropTimer /= 3;
+		for(Drop drop : Drops.DROPS) {
+			drop.setLocation(drop.getRandomLocation());
+			drop.setTimer(drop.getTimer() / 3);
+		}
 		if(player != null) {
 			player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1.5F);
 		}

@@ -1,7 +1,8 @@
 package ru.mutator;
 
 import org.bukkit.Material;
-import ru.UHC.Drops;
+import ru.drop.Drop;
+import ru.drop.Drops;
 
 public class MutatorDrop extends Mutator {
 
@@ -22,13 +23,14 @@ public class MutatorDrop extends Mutator {
 
 	@Override
 	public String getDescription() {
-		return "Аирдроп и кейвдроп спавнятся в два раза чаще";
+		return "Все дропы (аирдроп, кейвдроп и незердроп) спавнятся в два раза чаще";
 	}
 
 	@Override
 	public void onChoose() {
-		Drops.airdropTimer /= 2;
-		Drops.cavedropTimer /= 2;
+		for(Drop drop : Drops.DROPS) {
+			drop.setTimer(drop.getTimer() / 2);
+		}
 	}
 
 	@Override

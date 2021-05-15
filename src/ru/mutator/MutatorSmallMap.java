@@ -2,8 +2,9 @@ package ru.mutator;
 
 import org.bukkit.Material;
 import org.bukkit.WorldBorder;
-import ru.UHC.Drops;
 import ru.UHC.WorldManager;
+import ru.drop.Drop;
+import ru.drop.Drops;
 
 public class MutatorSmallMap extends Mutator {
 
@@ -31,7 +32,9 @@ public class MutatorSmallMap extends Mutator {
 	public void onChoose() {
 		WorldBorder border = WorldManager.getGameMap().getWorldBorder();
 		border.setSize(border.getSize() / 2);
-		Drops.chooseAirdropLocation();
+		for(Drop drop : Drops.DROPS) {
+			drop.setLocation(drop.getRandomLocation());
+		}
 	}
 
 	@Override

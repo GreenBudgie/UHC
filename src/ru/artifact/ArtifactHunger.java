@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import ru.UHC.Drops;
 import ru.UHC.UHC;
 
 import javax.annotation.Nullable;

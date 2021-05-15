@@ -16,7 +16,6 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.UHC;
 import ru.items.CustomItems;
-import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
 import ru.util.InventoryHelper;
 import ru.util.MathUtils;
@@ -34,13 +33,12 @@ public class ArtifactManager implements Listener {
 	public static ArtifactTimeLeap timeLeap = new ArtifactTimeLeap();
 	public static ArtifactTeleport teleport = new ArtifactTeleport();
 	public static ArtifactHealth health = new ArtifactHealth();
-	public static ArtifactAirdrop airdrop = new ArtifactAirdrop();
+	public static ArtifactDrop drop = new ArtifactDrop();
 	public static ArtifactTime time = new ArtifactTime();
 	public static ArtifactMutator mutator = new ArtifactMutator();
 	public static ArtifactDamage damage = new ArtifactDamage();
 	public static ArtifactDisableMutator disableMutator = new ArtifactDisableMutator();
 	public static ArtifactRandom random = new ArtifactRandom();
-	public static ArtifactCavedrop cavedrop = new ArtifactCavedrop();
 	public static ArtifactHunger hunger = new ArtifactHunger();
 
 	private static String name = ChatColor.DARK_RED + "Призвать";

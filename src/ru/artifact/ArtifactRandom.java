@@ -38,7 +38,7 @@ public class ArtifactRandom extends Artifact {
 
 	@Override
 	public void onUse(@Nullable Player player) {
-		List<Artifact> toAdd = Lists.newArrayList(ArtifactManager.timeLeap, ArtifactManager.airdrop, ArtifactManager.cavedrop, ArtifactManager.teleport, ArtifactManager.time,
+		List<Artifact> toAdd = Lists.newArrayList(ArtifactManager.timeLeap, ArtifactManager.drop, ArtifactManager.teleport, ArtifactManager.time,
 				ArtifactManager.hunger);
 		toAdd.add(MathUtils.choose(ArtifactManager.health, ArtifactManager.damage));
 		boolean canAddMutator = false;
@@ -59,7 +59,7 @@ public class ArtifactRandom extends Artifact {
 			toAdd.remove(artifact);
 		}
 		if(player != null) {
-			player.sendMessage(ChatColor.YELLOW + "Ѕыли активированы артефакты: " + addedInfo);
+			player.sendMessage(ChatColor.YELLOW + "Были активированы артефакты: " + addedInfo);
 		}
 	}
 

@@ -2,7 +2,6 @@ package ru.UHC;
 
 import com.google.common.collect.Lists;
 import net.minecraft.server.v1_16_R3.MerchantRecipeList;
-import net.minecraft.server.v1_16_R3.PortalTravelAgent;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
@@ -13,7 +12,6 @@ import org.bukkit.block.Lectern;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftVillager;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.*;
@@ -39,6 +37,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.*;
 import ru.artifact.ArtifactManager;
+import ru.drop.Drop;
 import ru.items.CustomItems;
 import ru.main.UHCPlugin;
 import ru.mutator.ItemBasedMutator;
@@ -47,6 +46,7 @@ import ru.mutator.MutatorManager;
 import ru.pvparena.PvpArena;
 import ru.requester.ItemRequester;
 import ru.requester.RequestedItem;
+import ru.drop.Drops;
 import ru.util.*;
 
 import java.util.*;
@@ -157,31 +157,18 @@ public class UHC implements Listener {
 			info.setScore(c++);
 		}
 		if(state.isInGame()) {
-			String comma = ChatColor.WHITE + ", ";
-			boolean show = state == GameState.PREPARING || state == GameState.VOTE || state == GameState.OUTBREAK;
-			if(Drops.cavedropTimer <= deathmatchTimer || show) {
-				Location cavedropLoc = Drops.cavedropLocation;
-				String cavedropLocInfo =
-						ChatColor.YELLOW + "Корды: " + ChatColor.DARK_AQUA + cavedropLoc.getBlockX() + comma + ChatColor.DARK_AQUA + cavedropLoc.getBlockY() + comma
-								+ ChatColor.DARK_AQUA + cavedropLoc.getBlockZ();
-				Score cavedropLocScore = gameInfo.getScore(ChatColor.DARK_GRAY + "- " + cavedropLocInfo);
-				cavedropLocScore.setScore(c++);
-				Score cavedropTextScore = gameInfo.getScore(
-						ChatColor.RED + "Кейвдроп " + ChatColor.DARK_GRAY + "(" + ChatColor.AQUA + MathUtils.formatTime(Drops.cavedropTimer) + ChatColor.DARK_GRAY
-								+ "):");
-				cavedropTextScore.setScore(c++);
-			}
-			if(Drops.airdropTimer <= deathmatchTimer || show) {
-				Location airdropLoc = Drops.airdropLocation;
-				String airdropLocInfo =
-						ChatColor.YELLOW + "Корды: " + ChatColor.DARK_AQUA + airdropLoc.getBlockX() + comma + ChatColor.DARK_AQUA + airdropLoc.getBlockY() + comma
-								+ ChatColor.DARK_AQUA + airdropLoc.getBlockZ();
-				Score airdropLocScore = gameInfo.getScore(ChatColor.DARK_GRAY + "- " + airdropLocInfo);
-				airdropLocScore.setScore(c++);
-				Score airdropTextScore = gameInfo.getScore(
-						ChatColor.AQUA + "Аирдроп " + ChatColor.DARK_GRAY + "(" + ChatColor.AQUA + MathUtils.formatTime(Drops.airdropTimer) + ChatColor.DARK_GRAY
-								+ "):");
-				airdropTextScore.setScore(c++);
+			final boolean show = state == GameState.PREPARING || state == GameState.VOTE || state == GameState.OUTBREAK;
+			for(Drop drop : new Drop[] {Drops.CAVEDROP, Drops.AIRDROP}) {
+				if(drop.getTimer() <= deathmatchTimer || show) {
+					Score locationScore = gameInfo.getScore(ChatColor.DARK_GRAY + "- " + drop.getCoordinatesInfo());
+					locationScore.setScore(c++);
+					Score textScore = gameInfo.getScore(
+								drop.getName() +
+									ChatColor.DARK_GRAY + " (" +
+									ChatColor.AQUA + MathUtils.formatTime(drop.getTimer()) +
+									ChatColor.DARK_GRAY + "):");
+					textScore.setScore(c++);
+				}
 			}
 		}
 		if(!timerInfo.isEmpty()) {
@@ -356,8 +343,10 @@ public class UHC implements Listener {
 			mutatorCount = MathUtils.chance(30) ? 4 : (MathUtils.chance(65) ? 3 : 2);
 			voteResults.clear();
 			for(Player player : Bukkit.getOnlinePlayers()) {
-				InventoryHelper.sendActionBarMessage(player, ChatColor.GOLD + "" + ChatColor.BOLD + "Игра" + ChatColor.RED + ChatColor.BOLD +
-						" начинается" + ChatColor.GRAY + "!");
+				InventoryHelper.sendActionBarMessage(player,
+						ChatColor.GOLD + "" + ChatColor.BOLD + "Игра" +
+							ChatColor.RED + ChatColor.BOLD + " начинается" +
+							ChatColor.GRAY + "!");
 			}
 			WorldManager.updateBorder();
 			World map = WorldManager.getGameMap();
@@ -365,10 +354,7 @@ public class UHC implements Listener {
 			map.setTime(0);
 			map.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
 			map.setGameRule(GameRule.DO_WEATHER_CYCLE, true);
-			Drops.setupAirdrop();
-			Drops.setupCavedrop();
-			Drops.airdropTimer -= MathUtils.randomRange(0, 30);
-			Drops.cavedropTimer -= MathUtils.randomRange(0, 30);
+			Drops.firstSetup();
 			for(Player p : Bukkit.getOnlinePlayers()) {
 				PvpArena.onArenaLeave(p);
 				if(!isDuo) {
@@ -929,7 +915,7 @@ public class UHC implements Listener {
 						}
 					}
 					if(drop == null) {
-						p.setCompassTarget(Drops.airdropLocation);
+						p.setCompassTarget(Drops.AIRDROP.getLocation());
 					} else {
 						p.setCompassTarget(drop);
 					}
@@ -1689,7 +1675,6 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void entityDeath(EntityDeathEvent e) {
-		/* //FIXME Only to use if nether is present
 		Entity ent = e.getEntity();
 		if(ent.getType() == EntityType.ZOMBIE || ent.getType() == EntityType.ZOMBIE_VILLAGER) {
 			if(e.getDrops().stream().noneMatch(item -> item.getType() == Material.CARROT) && MathUtils.chance(50)) e.getDrops().add(new ItemStack(Material.CARROT));
@@ -1707,8 +1692,6 @@ public class UHC implements Listener {
 		if(ent instanceof WitherSkeleton) {
 			e.getDrops().add(new ItemStack(Material.NETHER_WART));
 		}
-		(
-		*/
 	}
 
 	@EventHandler

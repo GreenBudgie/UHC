@@ -137,6 +137,12 @@ public class WorldManager {
 		return path.delete();
 	}
 
+	public static double getActualMapSize() {
+		if(gameMap != null)
+			return gameMap.getWorldBorder().getSize();
+		return -1;
+	}
+
 	public static void removeMap() {
 		if(hasMap()) {
 			Bukkit.unloadWorld(gameMap, false);
