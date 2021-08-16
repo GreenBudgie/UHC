@@ -35,7 +35,7 @@ public final class MathUtils {
 	}
 
 	public static String formatTime(int seconds) {
-		Date date = new Date((long) (seconds * 1000));
+		Date date = new Date(seconds * 1000L);
 		return (seconds >= 3600 ? String.valueOf((int) Math.floor(seconds / 3600.0)) + ":" : "") + new SimpleDateFormat("mm:ss").format(date);
 	}
 
@@ -43,7 +43,7 @@ public final class MathUtils {
 		if(num < min) {
 			return min;
 		} else {
-			return num > max ? max : num;
+			return Math.min(num, max);
 		}
 	}
 
@@ -51,7 +51,7 @@ public final class MathUtils {
 		if(num < min) {
 			return min;
 		} else {
-			return num > max ? max : num;
+			return Math.min(num, max);
 		}
 	}
 
@@ -72,7 +72,7 @@ public final class MathUtils {
 			throw new IllegalArgumentException("length < 1: " + length);
 		}
 		if(symbols[0] == (char) 0) {
-			Integer symIdx = 0, numIdx = 0, charIdx = 0;
+			int symIdx = 0, numIdx = 0, charIdx = 0;
 			for(int idx = 48; idx <= 57; ++idx) {
 				symbols[symIdx++] = (char) (idx);
 				numbers[numIdx++] = (char) (idx);
@@ -86,11 +86,11 @@ public final class MathUtils {
 				chars[charIdx++] = (char) (idx);
 			}
 		}
-		String returnString = "";
+		StringBuilder returnString = new StringBuilder();
 		for(int idx = 0; idx < length; ++idx) {
-			returnString += symbols[random.nextInt(symbols.length)];
+			returnString.append(symbols[random.nextInt(symbols.length)]);
 		}
-		return returnString;
+		return returnString.toString();
 	}
 
 	public static Location getOutlineLocation(Location l, double r) {
@@ -98,13 +98,13 @@ public final class MathUtils {
 		int rand = MathUtils.randomRange(1, 3);
 		switch(rand) {
 		case 1:
-			x = (double) choose(r, -r);
+			x = choose(r, -r);
 			break;
 		case 2:
-			y = (double) choose(r, -r);
+			y = choose(r, -r);
 			break;
 		case 3:
-			z = (double) choose(r, -r);
+			z = choose(r, -r);
 			break;
 		}
 		if(x != 0) {

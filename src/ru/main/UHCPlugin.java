@@ -1,13 +1,15 @@
 package ru.main;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.UHC.RecipeHandler;
-import ru.UHC.SignManager;
+import ru.lobby.Lobby;
+import ru.lobby.SignManager;
 import ru.UHC.UHC;
 import ru.artifact.ArtifactManager;
 import ru.classes.ClassManager;
@@ -54,11 +56,11 @@ public class UHCPlugin extends JavaPlugin {
 		pm.registerEvents(new PvpArena(), this);
 		InventoryBuilder.registerListener();
 
-		TaskManager.init();
 		UHC.init();
 		CustomItems.init();
 		ItemRequester.init();
 		ClassManager.init();
+		TaskManager.init();
 	}
 	
 	private void registerCommand(String commandName, CommandExecutor executor) {
@@ -83,8 +85,48 @@ public class UHCPlugin extends JavaPlugin {
 		}
 	}
 
+	/**
+	 * Sends an error message to every online OP player
+	 */
+	public static void error(String s) {
+		sendToOps(ChatColor.GRAY + "[" +
+				ChatColor.DARK_RED + ChatColor.BOLD + "ERROR" +
+				ChatColor.RESET + ChatColor.GRAY + "] " +
+				ChatColor.WHITE + s);
+	}
+
+	/**
+	 * Sends a warning message to every online OP player
+	 */
+	public static void warning(String s) {
+		sendToOps(ChatColor.GRAY + "[" +
+				ChatColor.GOLD + ChatColor.BOLD + "WARNING" +
+				ChatColor.RESET + ChatColor.GRAY + "] " +
+				ChatColor.WHITE + s);
+	}
+
+	/**
+	 * Sends an informative message to every online OP player
+	 */
+	public static void info(String s) {
+		sendToOps(ChatColor.GRAY + "[" +
+				ChatColor.WHITE + ChatColor.BOLD + "INFO" +
+				ChatColor.RESET + ChatColor.GRAY + "] " +
+				ChatColor.WHITE + s);
+	}
+
+	public static void sendToOps(String s) {
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			if(player.isOp()) {
+				player.sendMessage(s);
+			}
+		}
+	}
+
 	public static void log(Object s) {
-		Bukkit.broadcastMessage(s.toString());
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			player.sendMessage(s.toString());
+		}
 	}
 
 	public static void log() {

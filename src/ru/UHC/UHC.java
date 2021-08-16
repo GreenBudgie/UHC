@@ -40,6 +40,8 @@ import org.bukkit.scoreboard.*;
 import ru.artifact.ArtifactManager;
 import ru.drop.Drop;
 import ru.items.CustomItems;
+import ru.lobby.Lobby;
+import ru.lobby.SignManager;
 import ru.main.UHCPlugin;
 import ru.mutator.ItemBasedMutator;
 import ru.mutator.Mutator;
@@ -92,7 +94,7 @@ public class UHC implements Listener {
 	public static void init() {
 		WorldManager.init();
 		RecipeHandler.init();
-		SignManager.init();
+		Lobby.init();
 		PvpArena.init();
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			resetPlayer(p);

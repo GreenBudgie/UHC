@@ -1,7 +1,7 @@
 package ru.UHC;
 
 import org.bukkit.*;
-import ru.main.UHCPlugin;
+import ru.lobby.SignManager;
 import ru.util.MathUtils;
 import ru.util.TaskManager;
 

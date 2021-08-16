@@ -21,7 +21,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import ru.UHC.PlayerStat;
-import ru.UHC.SignManager;
+import ru.lobby.SignManager;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
 import ru.util.*;

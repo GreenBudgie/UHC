@@ -1,14 +1,12 @@
 package ru.commands;
 
 import com.google.common.collect.Lists;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
-import ru.UHC.SignManager;
+import ru.lobby.SignManager;
 import ru.UHC.WorldManager;
 import ru.util.MathUtils;
 
