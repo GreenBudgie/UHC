@@ -443,7 +443,7 @@ public class UHC implements Listener {
 			}
 			playing = true;
 			processedPlayers.clear();
-			WorldManager.getArena().setPVP(false);
+			ArenaManager.getCurrentArena().world().setPVP(false);
 			SignManager.updateSigns();
 		} else {
 			Bukkit.broadcastMessage(ChatColor.RED + "Игра уже идет");
@@ -792,7 +792,7 @@ public class UHC implements Listener {
 					arenaTimer = 60 * 10;
 					arenaPvpTimer = 15;
 					for(Player p : getInGamePlayers()) {
-						p.teleport(WorldManager.getArena().getSpawnLocation());
+						p.teleport(ArenaManager.getCurrentArena().world().getSpawnLocation());
 						if(isPlaying(p)) addPoints(p, 5);
 						p.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Дезматч" + ChatColor.GRAY + "!",
 								ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "15" + ChatColor.RESET + ChatColor.GOLD + " секунд до " +
@@ -811,7 +811,7 @@ public class UHC implements Listener {
 					draw();
 				}
 				if(arenaPvpTimer == 0) {
-					WorldManager.getArena().setPVP(true);
+					ArenaManager.getCurrentArena().world().setPVP(true);
 					for(Player p : getInGamePlayers()) {
 						p.sendTitle("", ChatColor.DARK_RED + "" + ChatColor.BOLD + ">>> " + ChatColor.GOLD + ChatColor.BOLD + "ПВП" + ChatColor.RED +
 								ChatColor.BOLD + " Включено!" + ChatColor.DARK_RED + ChatColor.BOLD + " <<<", 0, 35, 15);

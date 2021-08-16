@@ -11,6 +11,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ru.UHC.ArenaManager;
 import ru.UHC.GameState;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
@@ -109,8 +110,9 @@ public class SignManager implements Listener {
 				block.setLine(0, defCol + "Длит. игры:");
 				block.setLine(1, (UHC.gameDuration == 0 ?
 						(ChatColor.DARK_GREEN + "Короткая") :
-						(UHC.gameDuration == 1 ? (ChatColor.DARK_AQUA + "Обычная") : (ChatColor.DARK_RED + "Долгая"))) + defCol + ", " + String
-						.valueOf(UHC.getNoPVPDuration() + UHC.getGameDuration()) + "мин");
+						(UHC.gameDuration == 1 ?
+								(ChatColor.DARK_AQUA + "Обычная") :
+								(ChatColor.DARK_RED + "Долгая"))) + defCol + ", " + (UHC.getNoPVPDuration() + UHC.getGameDuration()) + "мин");
 				block.setLine(2, ChatColor.DARK_AQUA + String.valueOf(UHC.getNoPVPDuration()) + defCol + " минут без пвп");
 				block.setLine(3, ChatColor.DARK_AQUA + String.valueOf(UHC.getGameDuration()) + defCol + " минут до ДМ");
 				break;
@@ -170,11 +172,14 @@ public class SignManager implements Listener {
 				case GAME_START:
 					if(!UHC.playing) {
 						UHC.startGame();
-					} else {
+					}
+					break;
+				case SPECTATE:
+					if(UHC.playing) {
 						UHC.spectators.add(p);
 						UHC.resetPlayer(p);
 						p.setGameMode(GameMode.SPECTATOR);
-						p.teleport(UHC.state == GameState.DEATHMATCH ? WorldManager.getArena().getSpawnLocation() : WorldManager.spawnLocation);
+						p.teleport(UHC.state == GameState.DEATHMATCH ? ArenaManager.getCurrentArena().world().getSpawnLocation() : WorldManager.spawnLocation);
 						UHC.refreshScoreboards();
 						p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
 						if(MutatorManager.isActive(MutatorManager.meetingPlace)) {

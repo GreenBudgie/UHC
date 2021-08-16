@@ -20,7 +20,7 @@ commands:
   usage: /lobby
  arena:
   description: Go to arena
-  usage: /arena
+  usage: /arena <world_name>
  skip:
   description: Skip the current GameState
   usage: /skip
