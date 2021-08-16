@@ -1,10 +1,10 @@
 package ru.lobby;
 
-import org.bukkit.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import ru.UHC.WorldManager;
 import ru.main.UHCPlugin;
 
@@ -43,6 +43,7 @@ public class Lobby {
             UHCPlugin.error("Unable to save lobby.yml");
         }
         SignManager.init();
+        Bukkit.getPluginManager().registerEvents(new LobbyListener(), UHCPlugin.instance);
     }
 
     public static YamlConfiguration getLobbyConfig() {
@@ -52,5 +53,11 @@ public class Lobby {
     public static World getLobby() {
         return WorldManager.getLobby();
     }
+
+    public static boolean isInLobby(Player player) {
+        return getLobby().getPlayers().contains(player);
+    }
+
+
 
 }

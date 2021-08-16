@@ -103,7 +103,7 @@ public class UHC implements Listener {
 		parkourStart = new Location(WorldManager.getLobby(), -1, 4, 21);
 	}
 
-	public static String getColoredUHC() {
+	public static String getUHCLogo() {
 		return ChatColor.RED + "" + ChatColor.BOLD + "U" + ChatColor.GOLD + ChatColor.BOLD + "H" + ChatColor.YELLOW + ChatColor.BOLD + "C";
 	}
 
@@ -132,7 +132,7 @@ public class UHC implements Listener {
 		Scoreboard board = p.getScoreboard();
 		Objective gameInfo = board.getObjective("gameInfo");
 		if(gameInfo != null) gameInfo.unregister();
-		gameInfo = board.registerNewObjective("gameInfo", "dummy", getColoredUHC());
+		gameInfo = board.registerNewObjective("gameInfo", "dummy", getUHCLogo());
 		gameInfo.setDisplaySlot(DisplaySlot.SIDEBAR);
 		int c = 0;
 		if(isDuo && PlayerOptions.SHOW_TEAMS.isActive(p)) {
@@ -267,7 +267,7 @@ public class UHC implements Listener {
 		Scoreboard board = p.getScoreboard();
 		Objective teamInfo = board.getObjective("teamInfo");
 		if(teamInfo != null) teamInfo.unregister();
-		teamInfo = board.registerNewObjective("teamInfo", "dummy", getColoredUHC());
+		teamInfo = board.registerNewObjective("teamInfo", "dummy", getUHCLogo());
 		if(!isDuo) {
 			teamInfo.setDisplaySlot(null);
 			return;
@@ -622,9 +622,9 @@ public class UHC implements Listener {
 				preparingTimer--;
 				if(preparingTimer == 30) {
 					for(Player p : getInGamePlayers()) {
-						p.sendTitle(getColoredUHC() + ChatColor.DARK_GRAY + " aka " + ChatColor.GOLD + "Битва Инвалидов", "", 5, 100, 0);
+						p.sendTitle(getUHCLogo() + ChatColor.DARK_GRAY + " aka " + ChatColor.GOLD + "Битва Инвалидов", "", 5, 100, 0);
 						p.sendMessage(
-								ChatColor.GRAY + "-------- " + getColoredUHC() + ChatColor.DARK_GRAY + " aka " + ChatColor.GOLD + "Битва Инвалидов" + ChatColor.GRAY
+								ChatColor.GRAY + "-------- " + getUHCLogo() + ChatColor.DARK_GRAY + " aka " + ChatColor.GOLD + "Битва Инвалидов" + ChatColor.GRAY
 										+ " --------");
 						p.sendMessage("");
 						p.sendMessage(ChatColor.YELLOW + "Главное - остаться в живых. " + ChatColor.BOLD + "Хп не регенится самостоятельно! " + ChatColor.RESET
@@ -1450,77 +1450,6 @@ public class UHC implements Listener {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	@EventHandler
-	public void lobbyInvClick(InventoryClickEvent e) {
-		Player p = (Player) e.getWhoClicked();
-		InventoryView view = e.getView();
-		Inventory inv = e.getInventory();
-		int slot = e.getRawSlot();
-		ItemStack item = e.getCurrentItem() == null ? new ItemStack(Material.AIR) : e.getCurrentItem();
-		if(view.getTitle().equals(PlayerOptions.invName) && e.getClickedInventory() == view.getTopInventory()) {
-			PlayerOptions option = PlayerOptions.values()[slot];
-			if(option != null) {
-				option.setActive(p, !option.isActive(p));
-				PlayerOptions.openInventory(p);
-			}
-		}
-		if(isInLobby(p) && view.getTitle().equals(ChatColor.GREEN + "Выбор тиммейта")) {
-			if(item.getType() == Material.PLAYER_HEAD && getTeammate(p) == null) {
-				SkullMeta meta = (SkullMeta) item.getItemMeta();
-				Player owner = Bukkit.getPlayerExact(meta.getOwner());
-				if(owner != null && owner.isOnline()) {
-					if(!isInvited(owner, p)) {
-						inviteTeammate(p, owner);
-						updateTeams();
-						p.closeInventory();
-					}
-				} else {
-					p.sendMessage(ChatColor.RED + "Этот человек уже не на серве");
-					p.openInventory(getTeammatesInventory(p));
-				}
-			}
-			if(item.getType() == Material.RED_DYE) {
-				SkullMeta meta = (SkullMeta) inv.getItem(slot + 9).getItemMeta();
-				Player owner = Bukkit.getPlayerExact(meta.getOwner());
-				if(owner != null && owner.isOnline()) {
-					denyInvite(p, owner);
-					p.closeInventory();
-					updateTeams();
-				} else {
-					p.sendMessage(ChatColor.RED + "Этот человек уже не на серве");
-					p.openInventory(getTeammatesInventory(p));
-				}
-			} else if(item.getType() == Material.LIME_DYE) {
-				SkullMeta meta = (SkullMeta) inv.getItem(slot - 9).getItemMeta();
-				Player owner = Bukkit.getPlayerExact(meta.getOwner());
-				if(owner != null && owner.isOnline()) {
-					acceptInvite(p, owner);
-					p.closeInventory();
-					updateTeams();
-				} else {
-					p.sendMessage(ChatColor.RED + "Этот человек уже не на серве");
-					p.openInventory(getTeammatesInventory(p));
-				}
-			}
-			if(item.getType() == Material.BARRIER) {
-				leaveTeam(p);
-				p.closeInventory();
-				updateTeams();
-			}
-			e.setCancelled(true);
-		}
-	}
-
-	@EventHandler
-	public void damage(EntityDamageEvent e) {
-		if(e.getEntity() instanceof Player p) {
-			if(isInLobby(p) && !PvpArena.isOnArena(p)) {
-				e.setCancelled(true);
-			}
-		}
-	}
-
 	@EventHandler
 	public void damageByEntity(EntityDamageByEntityEvent e) {
 		if(e.getEntity() instanceof Player p && e.getDamager() instanceof Player damager) {
@@ -1571,50 +1500,6 @@ public class UHC implements Listener {
 	}
 
 	@EventHandler
-	public void noMinecartCollide(VehicleEntityCollisionEvent e) {
-		if(e.getEntity() instanceof Player p) {
-			if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
-				e.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	public void noMinecartDamage(VehicleDamageEvent e) {
-		if(e.getAttacker() instanceof Player p) {
-			if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
-				e.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	public void noItemFrameInteract(PlayerInteractEntityEvent e) {
-		Player p = e.getPlayer();
-		Entity ent = e.getRightClicked();
-		if(ent instanceof ItemFrame && p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
-			e.setCancelled(true);
-		}
-	}
-
-	@EventHandler
-	public void noLobbyGrief(HangingBreakByEntityEvent e) {
-		if(e.getRemover() instanceof Player p) {
-			if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
-				e.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	public void noFrameItemBreak(EntityDamageByEntityEvent e) {
-		if(e.getEntityType() == EntityType.ITEM_FRAME && e.getDamager() instanceof Player && isInLobby((Player) e.getDamager())
-				&& ((Player) e.getDamager()).getGameMode() != GameMode.CREATIVE) {
-			e.setCancelled(true);
-		}
-	}
-
-	@EventHandler
 	public void preJoin(AsyncPlayerPreLoginEvent e) {
 		if(generating) {
 			e.setKickMessage(ChatColor.GOLD + "Сейчас идет генерация мира, зайди немного позже");
@@ -1628,8 +1513,6 @@ public class UHC implements Listener {
 			e.setCancelled(true);
 		}
 	}
-
-
 
 	@EventHandler
 	public void entityDeath(EntityDeathEvent e) {
@@ -1649,22 +1532,6 @@ public class UHC implements Listener {
 		}
 		if(ent instanceof WitherSkeleton) {
 			e.getDrops().add(new ItemStack(Material.NETHER_WART));
-		}
-	}
-
-	@EventHandler
-	public void allowMusicDisks(PlayerInteractEvent e) {
-		if(e.getPlayer().getWorld() == WorldManager.getLobby() && e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.JUKEBOX
-				&& e.getHand() == EquipmentSlot.HAND && e.getPlayer().getGameMode() == GameMode.ADVENTURE) {
-			Jukebox jukebox = (Jukebox) e.getClickedBlock().getState();
-			if(!jukebox.isPlaying() && jukebox.getRecord().getType() == Material.AIR && e.getItem() != null && e.getItem().getType().isRecord()) {
-				e.setCancelled(true);
-				e.setUseInteractedBlock(Event.Result.DENY);
-				e.setUseItemInHand(Event.Result.DENY);
-				jukebox.setRecord(e.getItem().clone());
-				e.getItem().setAmount(e.getItem().getAmount() - 1);
-				TaskManager.invokeLater(jukebox::update);
-			}
 		}
 	}
 
@@ -1874,28 +1741,34 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void drop(PlayerDropItemEvent e) {
-		if((state == GameState.VOTE || state == GameState.PREPARING) || (isInLobby(e.getPlayer()) && e.getPlayer().getGameMode() != GameMode.CREATIVE)) {
+		if(state == GameState.VOTE || state == GameState.PREPARING) {
 			e.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void swap(PlayerSwapHandItemsEvent e) {
-		if((state == GameState.VOTE || state == GameState.PREPARING)) {
+		if(state == GameState.VOTE || state == GameState.PREPARING) {
 			e.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void emptyBucket(PlayerBucketEmptyEvent e) {
-		if((state == GameState.VOTE || state == GameState.PREPARING)) {
+		if(isPlaying(e.getPlayer()) && state == GameState.DEATHMATCH && !MutatorManager.interactiveArena.isActive()) {
+			e.setCancelled(true);
+		}
+		if(state == GameState.VOTE || state == GameState.PREPARING) {
 			e.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void fillBucket(PlayerBucketFillEvent e) {
-		if((state == GameState.VOTE || state == GameState.PREPARING)) {
+		if(isPlaying(e.getPlayer()) && state == GameState.DEATHMATCH && !MutatorManager.interactiveArena.isActive()) {
+			e.setCancelled(true);
+		}
+		if(state == GameState.VOTE || state == GameState.PREPARING) {
 			e.setCancelled(true);
 		}
 	}
@@ -1920,9 +1793,6 @@ public class UHC implements Listener {
 	@EventHandler
 	public void place(BlockPlaceEvent e) {
 		Player p = e.getPlayer();
-		if(isInLobby(p) && p.getGameMode() != GameMode.CREATIVE) {
-			e.setCancelled(true);
-		}
 		if(isPlaying(p) && (state == GameState.PREPARING || state == GameState.VOTE)) {
 			e.setCancelled(true);
 		}
@@ -1974,38 +1844,6 @@ public class UHC implements Listener {
 			} else {
 				e.setCancelled(true);
 			}
-		}
-	}
-
-	@EventHandler
-	public void lectern(PlayerInteractEvent e) {
-		if(isInLobby(e.getPlayer()) && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			Player player = e.getPlayer();
-			Block block = e.getClickedBlock();
-			if(block.getType() == Material.LECTERN) {
-				if(!e.getPlayer().getInventory().contains(Material.WRITTEN_BOOK)) {
-					Lectern lectern = (Lectern) block.getState();
-					ItemStack book = lectern.getInventory().getItem(0);
-					if(book != null) {
-						player.getInventory().addItem(book);
-					}
-				}
-				e.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	public void bucket(PlayerBucketFillEvent e) {
-		if(isPlaying(e.getPlayer()) && state == GameState.DEATHMATCH && !MutatorManager.interactiveArena.isActive()) {
-			e.setCancelled(true);
-		}
-	}
-
-	@EventHandler
-	public void bucket(PlayerBucketEmptyEvent e) {
-		if(isPlaying(e.getPlayer()) && state == GameState.DEATHMATCH && !MutatorManager.interactiveArena.isActive()) {
-			e.setCancelled(true);
 		}
 	}
 
@@ -2092,29 +1930,6 @@ public class UHC implements Listener {
 				e.setCancelled(true);
 			}
 		}
-		if(state.isInGame() && e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.ENCHANTING_TABLE) {
-			Location l = e.getClickedBlock().getLocation();
-			for(int y = 0; y <= 1; y++) {
-				convert(l.clone().add(2, y, 2));
-				convert(l.clone().add(-2, y, 2));
-				convert(l.clone().add(2, y, -2));
-				convert(l.clone().add(-2, y, -2));
-				for(int i = -1; i <= 1; i++) {
-					convert(l.clone().add(i, y, 2));
-					convert(l.clone().add(i, y, -2));
-					convert(l.clone().add(2, y, i));
-					convert(l.clone().add(-2, y, i));
-				}
-			}
-		}
-	}
-
-	private void convert(Location l) {
-		if(l.getBlock().getType() == Material.QUARTZ_BLOCK) {
-			ParticleUtils.createParticlesOutline(l.getBlock(), Particle.FLAME, null, 5);
-			l.getWorld().playSound(l, Sound.BLOCK_WOOD_BREAK, 0.1F, 1F);
-			l.getBlock().setType(Material.BOOKSHELF);
-		}
 	}
 
 	@EventHandler
@@ -2133,15 +1948,6 @@ public class UHC implements Listener {
 	}
 
 	@EventHandler
-	public void noFoodLoss(FoodLevelChangeEvent e) {
-		Player p = (Player) e.getEntity();
-		if(isInLobby(p) && e.getFoodLevel() < 20) {
-			p.setFoodLevel(20);
-			e.setCancelled(true);
-		}
-	}
-
-	@EventHandler
 	public void move(PlayerMoveEvent e) {
 		Player p = e.getPlayer();
 		if(state.isPreGame() && isPlaying(p) && !WorldHelper.compareLocations(e.getFrom(), e.getTo())) {
@@ -2150,14 +1956,6 @@ public class UHC implements Listener {
 		if(isSpectator(p)) {
 			if(e.getTo().getY() <= 0) {
 				e.setCancelled(true);
-			}
-		}
-		if(isInLobby(p)) {
-			if(e.getTo().getY() <= 0) {
-				p.teleport(WorldManager.getLobby().getSpawnLocation());
-			}
-			if(p.getFireTicks() > 0 && !PvpArena.isOnArena(p)) {
-				teleportToParkour(p);
 			}
 		}
 	}
