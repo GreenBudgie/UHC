@@ -9,9 +9,6 @@ commands:
  gm:
   description: Fast gamemode switch
   usage: /gm [0-3]
- ping:
-  description: Посмотреть пинг
-  usage: /ping [player]
  start:
   description: Start game
   usage: /start

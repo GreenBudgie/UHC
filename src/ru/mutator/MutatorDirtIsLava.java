@@ -34,6 +34,7 @@ public class MutatorDirtIsLava extends Mutator implements Listener {
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void update() {
 		if(UHC.state.isInGame()) {
@@ -42,7 +43,7 @@ public class MutatorDirtIsLava extends Mutator implements Listener {
 				Block block = player.getWorld().getBlockAt(l.getBlockX(), (int) (l.getY() - 0.1), l.getBlockZ());
 				Material blockType = block.getType();
 				if(player.isOnGround() && (blockType == Material.DIRT || blockType == Material.COARSE_DIRT || blockType == Material.GRASS_BLOCK
-						|| blockType == Material.GRASS_PATH || blockType == Material.FARMLAND || blockType == Material.PODZOL)) {
+						|| blockType == Material.DIRT_PATH || blockType == Material.FARMLAND || blockType == Material.PODZOL)) {
 					block.setType(Material.MAGMA_BLOCK);
 				}
 			}

@@ -1,6 +1,5 @@
 package ru.mutator;
 
-import io.netty.util.internal.MathUtil;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
@@ -10,15 +9,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import ru.UHC.WorldManager;
-import ru.util.ItemUtils;
 import ru.util.MathUtils;
 import ru.util.WorldHelper;
-
-import java.util.function.Consumer;
 
 public class MutatorOverpoweredMobs extends Mutator implements Listener {
 
@@ -73,9 +67,8 @@ public class MutatorOverpoweredMobs extends Mutator implements Listener {
 					entity.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0));
 				}
 			}
-			if(entity instanceof Zombie) {
-				Zombie zombie = (Zombie) entity;
-				if(MathUtils.chance(50)) zombie.setBaby(true);
+			if(entity instanceof Zombie zombie) {
+				if(MathUtils.chance(50)) zombie.setBaby();
 				EntityEquipment equipment = entity.getEquipment();
 				if(equipment != null && MathUtils.chance(50)) {
 					ItemStack sword = new ItemStack(MathUtils.chance(70) ? Material.STONE_SWORD : Material.IRON_SWORD);

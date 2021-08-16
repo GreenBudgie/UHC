@@ -1,16 +1,15 @@
 package ru.util;
 
 import com.google.common.collect.Lists;
-import net.minecraft.server.v1_16_R3.BlockPosition;
+import net.minecraft.core.BlockPosition;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.NumberConversions;
-import ru.main.UHCPlugin;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,27 +19,7 @@ import java.util.Random;
 public class WorldHelper {
 
 	public static boolean isDay(World w) {
-		return w.getEnvironment() == World.Environment.NORMAL ? w.getTime() >= 0 && w.getTime() <= 12000 : false;
-	}
-
-	public static boolean isInEnvironment(Player p, World.Environment d) {
-		return p.getWorld().getEnvironment() == d;
-	}
-
-	public static boolean isInAnotherEnvironment(Player y, Player a) {
-		return y.getWorld().getEnvironment() != a.getWorld().getEnvironment();
-	}
-
-	public static boolean isInAnotherEnvironment(Location c, Location a) {
-		return c.getWorld().getEnvironment() != a.getWorld().getEnvironment();
-	}
-
-	public static boolean isInSameEnvironment(Player p, Player p2) {
-		return p.getWorld().getEnvironment() == p2.getWorld().getEnvironment();
-	}
-
-	public static boolean isInSameEnvironment(Location l1, Location l2) {
-		return l1.getWorld().getEnvironment() == l2.getWorld().getEnvironment();
+		return w.getEnvironment() == World.Environment.NORMAL && w.getTime() >= 0 && w.getTime() <= 12000;
 	}
 
 	public static BlockPosition toBlockPos(Location l) {
@@ -73,7 +52,7 @@ public class WorldHelper {
 	}
 
 	public static List<Block> getBlocksArea(Location l, int d) {
-		List<Block> blocks = new ArrayList<Block>();
+		List<Block> blocks = new ArrayList<>();
 		for(int x = -d; x <= d; x++) {
 			for(int y = -d; y <= d; y++) {
 				for(int z = -d; z <= d; z++) {
@@ -93,8 +72,8 @@ public class WorldHelper {
 	}
 
 	public static List<Block> getCertainBlocks(List<Block> blocks, Material... materials) {
-		List<Block> blocks2 = new ArrayList<Block>();
-		List<Material> list = Lists.<Material>newArrayList(materials);
+		List<Block> blocks2 = new ArrayList<>();
+		List<Material> list = Lists.newArrayList(materials);
 		for(Block b : blocks) {
 			if(list.contains(b.getType())) blocks2.add(b);
 		}
@@ -102,7 +81,7 @@ public class WorldHelper {
 	}
 
 	public static List<Block> getCuboidAroundNoDown(Location l) {
-		List<Block> blocks = new ArrayList<Block>();
+		List<Block> blocks = new ArrayList<>();
 		for(int x = -1; x <= 1; x++) {
 			for(int y = 0; y <= 1; y++) {
 				for(int z = -1; z <= 1; z++) {
@@ -114,7 +93,7 @@ public class WorldHelper {
 	}
 
 	public static List<Block> getCuboidAround(Location l) {
-		List<Block> blocks = new ArrayList<Block>();
+		List<Block> blocks = new ArrayList<>();
 		for(int x = -1; x <= 1; x++) {
 			for(int y = -1; y <= 1; y++) {
 				for(int z = -1; z <= 1; z++) {
@@ -127,7 +106,7 @@ public class WorldHelper {
 
 	public static List<Block> getBlocksAround(Location l) {
 		Location[] l2 = {l.clone().add(0, 1, 0), l.clone().add(0, -1, 0), l.clone().add(1, 0, 0), l.clone().add(-1, 0, 0), l.clone().add(0, 0, 1), l.clone().add(0, 0, -1)};
-		List<Block> blocks = new ArrayList<Block>();
+		List<Block> blocks = new ArrayList<>();
 		for(Location l3 : l2) {
 			blocks.add(l3.getBlock());
 		}
@@ -136,7 +115,7 @@ public class WorldHelper {
 
 	public static List<Block> getBlocksAroundNoDown(Location l) {
 		Location[] l2 = {l.clone().add(0, 1, 0), l.clone().add(1, 0, 0), l.clone().add(-1, 0, 0), l.clone().add(0, 0, 1), l.clone().add(0, 0, -1)};
-		List<Block> blocks = new ArrayList<Block>();
+		List<Block> blocks = new ArrayList<>();
 		for(Location l3 : l2) {
 			blocks.add(l3.getBlock());
 		}
@@ -150,12 +129,11 @@ public class WorldHelper {
 	}
 
 	public static List<Material> getBlockTypesAround(Location l) {
-		List<Material> list = new ArrayList<Material>();
+		List<Material> list = new ArrayList<>();
 		getBlocksAround(l).forEach(block -> list.add(block.getType()));
 		return list;
 	}
 
-	@SuppressWarnings("deprecation")
 	public static void fill(Material m, Location s, Location e, boolean replace) {
 		int x1 = s.getBlockX();
 		int y1 = s.getBlockY();
@@ -232,7 +210,6 @@ public class WorldHelper {
 							}
 							break forY;
 						}
-						break forZ;
 					}
 
 					if(!filled) {
@@ -257,9 +234,9 @@ public class WorldHelper {
 	public static LookDirection getLookDirection(Player p) {
 		float yaw = p.getLocation().getYaw();
 		if(yaw <= 45 || yaw >= 315) return LookDirection.PosZ;
-		if(yaw <= 135 && yaw >= 45) return LookDirection.NegX;
-		if(yaw <= 225 && yaw >= 135) return LookDirection.NegZ;
-		if(yaw <= 315 && yaw >= 225) return LookDirection.PosX;
+		if(yaw <= 135) return LookDirection.NegX;
+		if(yaw <= 225) return LookDirection.NegZ;
+		if(yaw <= 315) return LookDirection.PosX;
 		return null;
 	}
 
@@ -269,7 +246,7 @@ public class WorldHelper {
 
 	public static LivingEntity getTarget(Player player, int range) {
 		List<Entity> nearbyE = player.getNearbyEntities(range, range, range);
-		ArrayList<LivingEntity> livingE = new ArrayList<LivingEntity>();
+		ArrayList<LivingEntity> livingE = new ArrayList<>();
 
 		for(Entity e : nearbyE) {
 			if(e instanceof LivingEntity) {
@@ -304,7 +281,7 @@ public class WorldHelper {
 	}
 
 	public static List<Player> getPlayersInEnvironment(World.Environment dim) {
-		List<Player> list = new ArrayList<Player>();
+		List<Player> list = new ArrayList<>();
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			if(p.getWorld().getEnvironment() == dim) list.add(p);
 		}
@@ -330,60 +307,44 @@ public class WorldHelper {
 		if(l1.getBlockX() != l2.getBlockX()) return false;
 		if(l1.getBlockY() != l2.getBlockY()) return false;
 		if(l1.getBlockZ() != l2.getBlockZ()) return false;
-		if(l1.getWorld() != l2.getWorld()) return false;
-		return true;
+		return l1.getWorld() == l2.getWorld();
 	}
 
 	public static String getEnvironmentName(World.Environment dim) {
-		switch(dim) {
-		case THE_END:
-			return ChatColor.DARK_PURPLE + "Энд";
-		case NETHER:
-			return ChatColor.RED + "Ад";
-		case NORMAL:
-			return ChatColor.GREEN + "Земля";
-		}
-		return null;
+		return switch (dim) {
+			case THE_END -> ChatColor.DARK_PURPLE + "Энд";
+			case NETHER -> ChatColor.RED + "Ад";
+			case NORMAL -> ChatColor.GREEN + "Земля";
+			default -> null;
+		};
 	}
 
 	public static ChatColor getEnvironmentColor(World.Environment dim) {
-		switch(dim) {
-		case THE_END:
-			return ChatColor.DARK_PURPLE;
-		case NETHER:
-			return ChatColor.RED;
-		case NORMAL:
-			return ChatColor.GREEN;
-		}
-		return null;
+		return switch (dim) {
+			case THE_END -> ChatColor.DARK_PURPLE;
+			case NETHER -> ChatColor.RED;
+			case NORMAL -> ChatColor.GREEN;
+			default -> null;
+		};
 	}
 
 	public static String getEnvironmentNamePrepositional(World.Environment dim, ChatColor c) {
-		switch(dim) {
-		case THE_END:
-			return c + "в " + ChatColor.DARK_PURPLE + "Энде";
-		case NETHER:
-			return c + "в " + ChatColor.RED + "Аду";
-		case NORMAL:
-			return c + "на " + ChatColor.GREEN + "Земле";
-		}
-		return null;
+		return switch (dim) {
+			case THE_END -> c + "в " + ChatColor.DARK_PURPLE + "Энде";
+			case NETHER -> c + "в " + ChatColor.RED + "Аду";
+			case NORMAL -> c + "на " + ChatColor.GREEN + "Земле";
+			default -> null;
+		};
 	}
 
 	public static World.Environment getEnvironmentFromName(String name) {
 		String name2 = ChatColor.stripColor(name).toLowerCase();
-		switch(name2) {
-		case "энд":
-		case "в энде":
-			return World.Environment.THE_END;
-		case "ад":
-		case "в аду":
-			return World.Environment.NETHER;
-		case "земля":
-		case "на земле":
-			return World.Environment.NORMAL;
-		}
-		return null;
+		return switch (name2) {
+			case "энд", "в энде" -> World.Environment.THE_END;
+			case "ад", "в аду" -> World.Environment.NETHER;
+			case "земля", "на земле" -> World.Environment.NORMAL;
+			default -> null;
+		};
 	}
 
 	public static void chorusTeleport(LivingEntity e, int range) {
@@ -393,7 +354,7 @@ public class WorldHelper {
 		Random rand = new Random();
 		for(int i = 0; i < range; ++i) {
 			double d3 = x + (rand.nextDouble() - 0.5D) * range;
-			double d4 = MathUtils.clamp(y + (double) (rand.nextInt(range) - (range / 2)), 0.0D, (double) (e.getWorld().getMaxHeight() - 1));
+			double d4 = MathUtils.clamp(y + (double) (rand.nextInt(range) - (range / 2)), 0.0D, e.getWorld().getMaxHeight() - 1);
 			double d5 = z + (rand.nextDouble() - 0.5D) * range;
 			Location tpLoc = new Location(e.getWorld(), d3, d4, d5);
 			if(e.getWorld().getWorldBorder().isInside(tpLoc)) {
@@ -486,7 +447,7 @@ public class WorldHelper {
 
 	public static List<Item> getItemEntitiesAtLocation(Location l) {
 		Collection<Entity> e = l.getWorld().getNearbyEntities(l.clone().add(0.5, 0.5, 0.5), 0.5, 0.5, 0.5);
-		List<Item> item = new ArrayList<Item>();
+		List<Item> item = new ArrayList<>();
 		for(Entity ent : e) {
 			if(ent instanceof Item) {
 				item.add((Item) ent);
@@ -496,13 +457,13 @@ public class WorldHelper {
 	}
 
 	public static List<ItemStack> getItemStacksAtLocation(Location l) {
-		List<ItemStack> list = new ArrayList<ItemStack>();
+		List<ItemStack> list = new ArrayList<>();
 		getItemEntitiesAtLocation(l).forEach(item -> list.add(item.getItemStack()));
 		return list;
 	}
 
 	public static List<Entity> getEntitiesDistance(Location l, double maxDist) {
-		List<Entity> ent = new ArrayList<Entity>();
+		List<Entity> ent = new ArrayList<>();
 		List<Entity> entities = l.getWorld().getEntities();
 		for(Entity e : entities) {
 			if(e.getLocation().distance(l) <= maxDist) {
@@ -513,7 +474,7 @@ public class WorldHelper {
 	}
 
 	public static List<Player> playersNotmeDistance(Player p, double maxDist) {
-		List<Player> pl = new ArrayList<Player>();
+		List<Player> pl = new ArrayList<>();
 		List<Player> players = p.getWorld().getPlayers();
 		for(Player player : players) {
 			if(player != p && player.getLocation().distance(p.getLocation()) <= maxDist) {
@@ -524,7 +485,7 @@ public class WorldHelper {
 	}
 
 	public static List<Player> playersNotme(Player p) {
-		List<Player> pl = new ArrayList<Player>();
+		List<Player> pl = new ArrayList<>();
 		List<Player> players = p.getWorld().getPlayers();
 		for(Player player : players) {
 			if(player != p) pl.add(player);
@@ -533,7 +494,7 @@ public class WorldHelper {
 	}
 
 	public static List<Player> playersNotmeAnyDimension(Player p) {
-		List<Player> pl = new ArrayList<Player>();
+		List<Player> pl = new ArrayList<>();
 		@SuppressWarnings("unchecked") List<Player> players = (List<Player>) Bukkit.getOnlinePlayers();
 		for(Player player : players) {
 			if(player != p) pl.add(player);
@@ -545,18 +506,18 @@ public class WorldHelper {
 		List<Player> pl = l.getWorld().getPlayers();
 		double dist = Double.MAX_VALUE;
 		Player near = null;
-		for(int i = 0; i < pl.size(); i++) {
-			double d = pl.get(i).getLocation().distance(l);
-			if(d < dist) {
+		for (Player player : pl) {
+			double d = player.getLocation().distance(l);
+			if (d < dist) {
 				dist = d;
-				near = pl.get(i);
+				near = player;
 			}
 		}
 		return near;
 	}
 
 	public static List<Player> nearestPlayers(Location l, int dist) {
-		List<Player> list = new ArrayList<Player>();
+		List<Player> list = new ArrayList<>();
 		for(Player p : getPlayersInEnvironment(l.getWorld().getEnvironment())) {
 			if(p.getLocation().distance(l) <= dist) list.add(p);
 		}
@@ -577,10 +538,6 @@ public class WorldHelper {
 		return near;
 	}
 
-	public static boolean isChunkInUse(Location loc) {
-		return loc.getWorld().isChunkInUse(loc.getChunk().getX(), loc.getChunk().getZ());
-	}
-
 	public static boolean canSeeSky(Location l) {
 		return l.getWorld().getHighestBlockYAt(l) <= l.getBlockY();
 	}
@@ -595,7 +552,7 @@ public class WorldHelper {
 
 	public static String getColoredCoordinates(String xyz) {
 		String[] s = xyz.split(" ");
-		return getColoredCoordinates(Integer.valueOf(s[0]), Integer.valueOf(s[1]), Integer.valueOf(s[2]));
+		return getColoredCoordinates(Integer.parseInt(s[0]), Integer.parseInt(s[1]), Integer.parseInt(s[2]));
 	}
 
 	public static List<String> getAllPlayerNames() {
@@ -603,7 +560,7 @@ public class WorldHelper {
 	}
 
 	public static List<String> getAllPlayerNames(Collection<? extends Player> players) {
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		for(Player p : players) {
 			list.add(p.getName());
 		}
@@ -611,19 +568,19 @@ public class WorldHelper {
 	}
 
 	public static String locationAsStringNoWorld(Location l) {
-		return String.valueOf(l.getBlockX()) + " " + String.valueOf(l.getBlockY()) + " " + String.valueOf(l.getBlockZ());
+		return l.getBlockX() + " " + l.getBlockY() + " " + l.getBlockZ();
 	}
 
 	public static String locationAsString(Location l) {
-		return String.valueOf(l.getBlockX()) + " " + String.valueOf(l.getBlockY()) + " " + String.valueOf(l.getBlockZ()) + " " + l.getWorld().getName();
+		return l.getBlockX() + " " + l.getBlockY() + " " + l.getBlockZ() + " " + l.getWorld().getName();
 	}
 
 	public static Location translateToLocation(String str) {
 		String[] l = str.trim().split(" ");
 		if(l.length == 4) {
 			try {
-				return new Location(Bukkit.getWorld(l[3]), Integer.valueOf(l[0]), Integer.valueOf(l[1]), Integer.valueOf(l[2]));
-			} catch(NumberFormatException e) {
+				return new Location(Bukkit.getWorld(l[3]), Integer.parseInt(l[0]), Integer.parseInt(l[1]), Integer.parseInt(l[2]));
+			} catch(NumberFormatException ignored) {
 			}
 		}
 		return null;
@@ -634,9 +591,9 @@ public class WorldHelper {
 		if(coords.length >= 2) {
 			try {
 				boolean f = coords.length == 2;
-				int xc = Integer.valueOf(coords[0]);
-				int yc = f ? yDefault : Integer.valueOf(coords[1]);
-				int zc = Integer.valueOf(coords[f ? 1 : 2]);
+				int xc = Integer.parseInt(coords[0]);
+				int yc = f ? yDefault : Integer.parseInt(coords[1]);
+				int zc = Integer.parseInt(coords[f ? 1 : 2]);
 				return new Location(world, xc, yc, zc);
 			} catch(NumberFormatException e) {
 			}
@@ -653,18 +610,18 @@ public class WorldHelper {
 		if(coords.length >= 2) {
 			try {
 				boolean f = coords.length == 2;
-				int xc = Integer.valueOf(coords[0]);
-				int yc = f ? 64 : Integer.valueOf(coords[1]);
-				int zc = Integer.valueOf(coords[f ? 1 : 2]);
+				int xc = Integer.parseInt(coords[0]);
+				int yc = f ? 64 : Integer.parseInt(coords[1]);
+				int zc = Integer.parseInt(coords[f ? 1 : 2]);
 				return true;
-			} catch(NumberFormatException e) {
+			} catch(NumberFormatException ignored) {
 			}
 		}
 		return false;
 	}
 
 	public static List<Player> getPlayersDistance(Location l, double maxDist) {
-		List<Player> list = new ArrayList<Player>();
+		List<Player> list = new ArrayList<>();
 		for(Player p : l.getWorld().getPlayers()) {
 			if(l.distance(p.getLocation()) <= maxDist) {
 				list.add(p);
@@ -674,7 +631,7 @@ public class WorldHelper {
 	}
 
 	public static List<Material> getUnbreakable() {
-		List<Material> list = new ArrayList<Material>();
+		List<Material> list = new ArrayList<>();
 		list.add(Material.BEDROCK);
 		list.add(Material.END_PORTAL_FRAME);
 		list.add(Material.NETHER_PORTAL);
@@ -692,7 +649,7 @@ public class WorldHelper {
 		return getUnbreakable().contains(m);
 	}
 
-	public static enum LookDirection {
+	public enum LookDirection {
 		PosZ,
 		NegZ,
 		PosX,

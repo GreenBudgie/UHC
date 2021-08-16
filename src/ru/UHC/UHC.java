@@ -1,7 +1,8 @@
 package ru.UHC;
 
 import com.google.common.collect.Lists;
-import net.minecraft.server.v1_16_R3.MerchantRecipeList;
+import net.minecraft.world.item.trading.MerchantRecipe;
+import net.minecraft.world.item.trading.MerchantRecipeList;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
@@ -12,8 +13,8 @@ import org.bukkit.block.Lectern;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftVillager;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -372,7 +373,7 @@ public class UHC implements Listener {
 						if(flag) teams.add(new PlayerTeam(p, teammate));
 					} else {
 						teams.add(new PlayerTeam(p));
-						if(teammateChoices.containsKey(p)) teammateChoices.remove(p);
+						teammateChoices.remove(p);
 					}
 				}
 				players.add(p);
@@ -549,17 +550,13 @@ public class UHC implements Listener {
 	}
 
 	private static String getOrderByN(int n) {
-		switch(n) {
-		case 1:
-			return "Первый";
-		case 2:
-			return "Второй";
-		case 3:
-			return "Третий";
-		case 4:
-			return "Четвертый";
-		}
-		return "";
+		return switch (n) {
+			case 1 -> "Первый";
+			case 2 -> "Второй";
+			case 3 -> "Третий";
+			case 4 -> "Четвертый";
+			default -> "";
+		};
 	}
 
 	private static void mutatorInvSwitchEffect(int n, int startTime) {
@@ -636,18 +633,12 @@ public class UHC implements Listener {
 					}
 				}
 				if(preparingTimer <= 3 && preparingTimer > 0) {
-					ChatColor c = ChatColor.DARK_AQUA;
-					switch(preparingTimer) {
-					case 3:
-						c = ChatColor.RED;
-						break;
-					case 2:
-						c = ChatColor.GOLD;
-						break;
-					case 1:
-						c = ChatColor.YELLOW;
-						break;
-					}
+					ChatColor c = switch (preparingTimer) {
+						case 3 -> ChatColor.RED;
+						case 2 -> ChatColor.GOLD;
+						case 1 -> ChatColor.YELLOW;
+						default -> ChatColor.DARK_AQUA;
+					};
 					for(Player p : getInGamePlayers()) {
 						p.playSound(p.getLocation(), Sound.BLOCK_COMPARATOR_CLICK, 0.5F, 0.9F + (float) (preparingTimer * 0.1));
 						p.sendTitle(c + "" + ChatColor.BOLD + preparingTimer, "", 0, 100, 0);
@@ -1356,64 +1347,35 @@ public class UHC implements Listener {
 
 	public static String getDeathMessage(Player p, EntityDamageEvent.DamageCause cause) {
 		String name = ChatColor.GOLD + p.getName() + ChatColor.RED + " ";
-		switch(cause) {
-		case CONTACT:
-			name += "умер от кактуса, серьезно?"; break;
-		case ENTITY_ATTACK:
-			name += "погиб"; break;
-		case ENTITY_SWEEP_ATTACK:
-			name += "умер от свайпа, бля..."; break;
-		case PROJECTILE:
-			name += "застрелили"; break;
-		case SUFFOCATION:
-			name += "задохнулся в стене"; break;
-		case FALL:
-			name += "позорно разбился"; break;
-		case FIRE:
-		case FIRE_TICK:
-			name += "сгорел"; break;
-		case MELTING:
-			name += "расплавился"; break;
-		case LAVA:
-			name += "трагически сгорел в лаве"; break;
-		case DROWNING:
-			name += "позорно захлебнулся"; break;
-		case BLOCK_EXPLOSION:
-			name += "взорвался"; break;
-		case ENTITY_EXPLOSION:
-			name += "взорвался"; break;
-		case VOID:
-			name += "выпал из мира"; break;
-		case LIGHTNING:
-			name += "может купить лотерейный билет"; break;
-		case SUICIDE:
-			name += "суициднулся"; break;
-		case STARVATION:
-			name += "умер от голода"; break;
-		case POISON:
-			name += "отравился"; break;
-		case MAGIC:
-			name += "взорвался"; break;
-		case WITHER:
-			name += "высох"; break;
-		case FALLING_BLOCK:
-			name += "расплющился"; break;
-		case THORNS:
-			name += "напал на жесткого челика с чаром на шипы"; break;
-		case DRAGON_BREATH:
-			name += "хз как но умер от дракона"; break;
-		case CUSTOM:
-			name += "умер"; break;
-		case FLY_INTO_WALL:
-			name += "влетел в стену"; break;
-		case HOT_FLOOR:
-			name += "поджарился на магме"; break;
-		case CRAMMING:
-			name += "раздавили мобы"; break;
-		case DRYOUT:
-			name += "высох"; break;
-		default:
-			name += "странно умер";
+		switch (cause) {
+			case CONTACT -> name += "умер от кактуса, серьезно?";
+			case ENTITY_ATTACK -> name += "погиб";
+			case ENTITY_SWEEP_ATTACK -> name += "умер от свайпа, бля...";
+			case PROJECTILE -> name += "застрелили";
+			case SUFFOCATION -> name += "задохнулся в стене";
+			case FALL -> name += "позорно разбился";
+			case FIRE, FIRE_TICK -> name += "сгорел";
+			case MELTING -> name += "расплавился";
+			case LAVA -> name += "трагически сгорел в лаве";
+			case DROWNING -> name += "позорно захлебнулся";
+			case BLOCK_EXPLOSION -> name += "взорвался";
+			case ENTITY_EXPLOSION -> name += "взорвался";
+			case VOID -> name += "выпал из мира";
+			case LIGHTNING -> name += "может купить лотерейный билет";
+			case SUICIDE -> name += "суициднулся";
+			case STARVATION -> name += "умер от голода";
+			case POISON -> name += "отравился";
+			case MAGIC -> name += "взорвался";
+			case WITHER -> name += "высох";
+			case FALLING_BLOCK -> name += "расплющился";
+			case THORNS -> name += "напал на жесткого челика с чаром на шипы";
+			case DRAGON_BREATH -> name += "хз как но умер от дракона";
+			case CUSTOM -> name += "умер";
+			case FLY_INTO_WALL -> name += "влетел в стену";
+			case HOT_FLOOR -> name += "поджарился на магме";
+			case CRAMMING -> name += "раздавили мобы";
+			case DRYOUT -> name += "высох";
+			default -> name += "странно умер";
 		}
 		return FightHelper.padCrosses(name);
 	}
@@ -1550,8 +1512,7 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void damage(EntityDamageEvent e) {
-		if(e.getEntity() instanceof Player) {
-			Player p = (Player) e.getEntity();
+		if(e.getEntity() instanceof Player p) {
 			if(isInLobby(p) && !PvpArena.isOnArena(p)) {
 				e.setCancelled(true);
 			}
@@ -1560,9 +1521,7 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void damageByEntity(EntityDamageByEntityEvent e) {
-		if(e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
-			Player p = (Player) e.getEntity();
-			Player damager = (Player) e.getDamager();
+		if(e.getEntity() instanceof Player p && e.getDamager() instanceof Player damager) {
 			if(isTeammates(p, damager) && !isInLobby(p)) e.setCancelled(true);
 		}
 	}
@@ -1579,14 +1538,14 @@ public class UHC implements Listener {
 					PotionEffect regen = p.getPotionEffect(PotionEffectType.REGENERATION);
 					if(regen != null) {
 						p.addPotionEffect(new PotionEffect(regen.getType(), regen.getDuration(), regen.getAmplifier() / 2, regen.isAmbient(), regen.hasParticles(),
-								regen.hasIcon()), true);
+								regen.hasIcon()));
 					}
 
 					PotionEffect absorp = p.getPotionEffect(PotionEffectType.ABSORPTION);
 					if(absorp != null) {
 						p.addPotionEffect(
 								new PotionEffect(absorp.getType(), absorp.getDuration() / 2, absorp.getAmplifier() / 2, absorp.isAmbient(), absorp.hasParticles(),
-										absorp.hasIcon()), true);
+										absorp.hasIcon()));
 					}
 
 				});
@@ -1600,7 +1559,7 @@ public class UHC implements Listener {
 						PotionEffect regen = p.getPotionEffect(PotionEffectType.REGENERATION);
 						if(regen != null) {
 							p.addPotionEffect(new PotionEffect(regen.getType(), (int) (regen.getDuration() / 1.5), regen.getAmplifier(), regen.isAmbient(),
-									regen.hasParticles(), regen.hasIcon()), true);
+									regen.hasParticles(), regen.hasIcon()));
 						}
 
 					});
@@ -1611,8 +1570,7 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void noMinecartCollide(VehicleEntityCollisionEvent e) {
-		if(e.getEntity() instanceof Player) {
-			Player p = (Player) e.getEntity();
+		if(e.getEntity() instanceof Player p) {
 			if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
 				e.setCancelled(true);
 			}
@@ -1621,8 +1579,7 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void noMinecartDamage(VehicleDamageEvent e) {
-		if(e.getAttacker() instanceof Player) {
-			Player p = (Player) e.getAttacker();
+		if(e.getAttacker() instanceof Player p) {
 			if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
 				e.setCancelled(true);
 			}
@@ -1640,8 +1597,7 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void noLobbyGrief(HangingBreakByEntityEvent e) {
-		if(e.getRemover() instanceof Player) {
-			Player p = (Player) e.getRemover();
+		if(e.getRemover() instanceof Player p) {
 			if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
 				e.setCancelled(true);
 			}
@@ -1699,8 +1655,7 @@ public class UHC implements Listener {
 		if(e.getPlayer().getWorld() == WorldManager.getLobby() && e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.JUKEBOX
 				&& e.getHand() == EquipmentSlot.HAND && e.getPlayer().getGameMode() == GameMode.ADVENTURE) {
 			Jukebox jukebox = (Jukebox) e.getClickedBlock().getState();
-			if(!jukebox.isPlaying() && (jukebox.getRecord() == null || jukebox.getRecord().getType() == Material.AIR) && e.getItem() != null && e.getItem().getType()
-					.isRecord()) {
+			if(!jukebox.isPlaying() && jukebox.getRecord().getType() == Material.AIR && e.getItem() != null && e.getItem().getType().isRecord()) {
 				e.setCancelled(true);
 				e.setUseInteractedBlock(Event.Result.DENY);
 				e.setUseItemInHand(Event.Result.DENY);
@@ -1769,8 +1724,7 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void pickup(EntityPickupItemEvent e) {
-		if(e.getEntity() instanceof Player) {
-			Player p = (Player) e.getEntity();
+		if(e.getEntity() instanceof Player p) {
 			Player teammate = getTeammate(p);
 			ItemStack item = e.getItem().getItemStack();
 			boolean hasVal = InventoryHelper.hasValue(item, "Владелец");
@@ -2063,8 +2017,8 @@ public class UHC implements Listener {
 	@EventHandler
 	public void spectatorOpenInv(PlayerInteractEntityEvent e) {
 		Player p = e.getPlayer();
-		if((state.isInGame() || state == GameState.DEATHMATCH) && e.getHand() == EquipmentSlot.HAND && e.getRightClicked() instanceof Player && isSpectator(p)) {
-			Player clicked = (Player) e.getRightClicked();
+		if((state.isInGame() || state == GameState.DEATHMATCH) &&
+				e.getHand() == EquipmentSlot.HAND && e.getRightClicked() instanceof Player clicked && isSpectator(p)) {
 			if(isPlaying(clicked)) {
 				viewInventory(p, clicked);
 			}
@@ -2078,22 +2032,22 @@ public class UHC implements Listener {
 			if (!(villager instanceof CraftVillager)) {
 				return;
 			}
-			List<net.minecraft.server.v1_16_R3.MerchantRecipe> newRecipes = new ArrayList<>();
+			List<MerchantRecipe> newRecipes = new ArrayList<>();
 			MerchantRecipeList recipes = ((CraftVillager)villager).getHandle().getOffers();
-			Iterator<net.minecraft.server.v1_16_R3.MerchantRecipe> recipeIterator;
+			Iterator<MerchantRecipe> recipeIterator;
 			for(recipeIterator = recipes.iterator(); recipeIterator.hasNext(); ) {
-				net.minecraft.server.v1_16_R3.MerchantRecipe recipe = recipeIterator.next();
-				ItemStack copy = CraftItemStack.asBukkitCopy(recipe.sellingItem);
+				MerchantRecipe recipe = recipeIterator.next();
+				ItemStack copy = CraftItemStack.asBukkitCopy(recipe.getSellingItem());
 				if(copy.getType() == Material.EMERALD) {
 					ItemUtils.setLore(copy, ChatColor.DARK_RED + "" + ChatColor.BOLD + "Без бонусов!");
-					newRecipes.add(new net.minecraft.server.v1_16_R3.MerchantRecipe(
-							recipe.buyingItem1,
-							recipe.buyingItem2,
+					newRecipes.add(new MerchantRecipe(
+							recipe.getBuyItem1(),
+							recipe.getBuyItem2(),
 							CraftItemStack.asNMSCopy(copy),
-							recipe.uses,
-							recipe.maxUses,
-							recipe.xp,
-							recipe.priceMultiplier,
+							recipe.getUses(),
+							recipe.getMaxUses(),
+							recipe.getXp(),
+							recipe.getPriceMultiplier(),
 							recipe.getDemand()
 					));
 					recipeIterator.remove();

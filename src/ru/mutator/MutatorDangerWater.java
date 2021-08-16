@@ -1,7 +1,7 @@
 package ru.mutator;
 
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -35,7 +35,7 @@ public class MutatorDangerWater extends Mutator {
 			if(((CraftPlayer) p).getHandle().isInWater()) {
 				PotionEffect effect = p.getPotionEffect(PotionEffectType.POISON);
 				if(effect == null || effect.getDuration() <= 20) {
-					p.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 70, 0), true);
+					p.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 70, 0));
 				}
 			}
 		}

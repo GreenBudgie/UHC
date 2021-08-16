@@ -5,15 +5,18 @@ import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
-import net.minecraft.server.v1_16_R3.*;
+import net.minecraft.nbt.*;
+import net.minecraft.network.chat.ChatMessageType;
+import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.network.protocol.game.PacketPlayOutChat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.EntityType;
@@ -27,10 +30,8 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import ru.main.UHCPlugin;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -48,6 +49,7 @@ public class InventoryHelper {
 		return null;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static ItemStack generateHeadByName(String owner) {
 		ItemStack head = new ItemStack(Material.PLAYER_HEAD);
 		SkullMeta meta = (SkullMeta) head.getItemMeta();
@@ -56,6 +58,7 @@ public class InventoryHelper {
 		return head;
 	}
 
+	@SuppressWarnings("deprecation")
 	private static boolean injectFieldValue(Class<?> sourceClass, Object instance, String fieldName, Object value) {
 		try {
 			Field field = sourceClass.getDeclaredField(fieldName);
@@ -70,7 +73,7 @@ public class InventoryHelper {
 				}
 			}
 			return true;
-		} catch (Exception e) {
+		} catch (Exception ignored) {
 		}
 		return false;
 	}
@@ -94,7 +97,7 @@ public class InventoryHelper {
 		PotionEffect active = e.getPotionEffect(effect.getType());
 		if(active != null) {
 			boolean flag = active.getAmplifier() > effect.getAmplifier();
-			if(flag || (active.getDuration() > effect.getDuration() && !flag)) {
+			if(flag || active.getDuration() > effect.getDuration()) {
 				return false;
 			}
 			e.removePotionEffect(active.getType());
@@ -167,7 +170,7 @@ public class InventoryHelper {
 	}
 
 	public static List<Material> getAllArmorTypes() {
-		return Lists.<Material>newArrayList(Material.LEATHER_BOOTS, Material.LEATHER_LEGGINGS, Material.LEATHER_CHESTPLATE, Material.LEATHER_HELMET, Material.CHAINMAIL_BOOTS,
+		return Lists.newArrayList(Material.LEATHER_BOOTS, Material.LEATHER_LEGGINGS, Material.LEATHER_CHESTPLATE, Material.LEATHER_HELMET, Material.CHAINMAIL_BOOTS,
 				Material.CHAINMAIL_LEGGINGS, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_HELMET, Material.GOLDEN_BOOTS, Material.GOLDEN_LEGGINGS, Material.GOLDEN_CHESTPLATE,
 				Material.GOLDEN_HELMET, Material.IRON_BOOTS, Material.IRON_LEGGINGS, Material.IRON_CHESTPLATE, Material.IRON_HELMET, Material.DIAMOND_BOOTS,
 				Material.DIAMOND_LEGGINGS, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_HELMET);
@@ -180,14 +183,14 @@ public class InventoryHelper {
 	public static boolean isBeaconEffect(PotionEffectType ef) {
 		PotionEffectType[] beacon = {PotionEffectType.SPEED, PotionEffectType.FAST_DIGGING, PotionEffectType.DAMAGE_RESISTANCE, PotionEffectType.JUMP,
 				PotionEffectType.INCREASE_DAMAGE, PotionEffectType.REGENERATION};
-		return Lists.<PotionEffectType>newArrayList(beacon).contains(ef);
+		return Lists.newArrayList(beacon).contains(ef);
 	}
 
 	public static boolean isBadEffect(PotionEffectType ef) {
 		PotionEffectType[] bad = {PotionEffectType.SLOW, PotionEffectType.BLINDNESS, PotionEffectType.CONFUSION, PotionEffectType.GLOWING, PotionEffectType.HARM,
 				PotionEffectType.HUNGER, PotionEffectType.LEVITATION, PotionEffectType.POISON, PotionEffectType.SLOW_DIGGING, PotionEffectType.UNLUCK, PotionEffectType.WEAKNESS,
 				PotionEffectType.WITHER};
-		return Lists.<PotionEffectType>newArrayList(bad).contains(ef);
+		return Lists.newArrayList(bad).contains(ef);
 	}
 
 	public static boolean isGoodEffect(PotionEffectType ef) {
@@ -195,109 +198,59 @@ public class InventoryHelper {
 	}
 
 	public static Material getSpawnEggFromEntity(EntityType type) {
-		switch(type) {
-		case ELDER_GUARDIAN:
-			return Material.ELDER_GUARDIAN_SPAWN_EGG;
-		case WITHER_SKELETON:
-			return Material.WITHER_SKELETON_SPAWN_EGG;
-		case STRAY:
-			return Material.STRAY_SPAWN_EGG;
-		case HUSK:
-			return Material.HUSK_SPAWN_EGG;
-		case ZOMBIE_VILLAGER:
-			return Material.ZOMBIE_VILLAGER_SPAWN_EGG;
-		case SKELETON_HORSE:
-			return Material.SKELETON_HORSE_SPAWN_EGG;
-		case ZOMBIE_HORSE:
-			return Material.ZOMBIE_HORSE_SPAWN_EGG;
-		case DONKEY:
-			return Material.DONKEY_SPAWN_EGG;
-		case MULE:
-			return Material.MULE_SPAWN_EGG;
-		case EVOKER:
-			return Material.EVOKER_SPAWN_EGG;
-		case VEX:
-			return Material.VEX_SPAWN_EGG;
-		case VINDICATOR:
-			return Material.VINDICATOR_SPAWN_EGG;
-		case CREEPER:
-			return Material.CREEPER_SPAWN_EGG;
-		case SKELETON:
-			return Material.SKELETON_SPAWN_EGG;
-		case SPIDER:
-			return Material.SPIDER_SPAWN_EGG;
-		case ZOMBIE:
-			return Material.ZOMBIE_SPAWN_EGG;
-		case SLIME:
-			return Material.SLIME_SPAWN_EGG;
-		case GHAST:
-			return Material.GHAST_SPAWN_EGG;
-		case ENDERMAN:
-			return Material.ENDERMAN_SPAWN_EGG;
-		case CAVE_SPIDER:
-			return Material.CAVE_SPIDER_SPAWN_EGG;
-		case SILVERFISH:
-			return Material.SILVERFISH_SPAWN_EGG;
-		case BLAZE:
-			return Material.BLAZE_SPAWN_EGG;
-		case MAGMA_CUBE:
-			return Material.MAGMA_CUBE_SPAWN_EGG;
-		case BAT:
-			return Material.BAT_SPAWN_EGG;
-		case WITCH:
-			return Material.WITCH_SPAWN_EGG;
-		case ENDERMITE:
-			return Material.ENDERMITE_SPAWN_EGG;
-		case GUARDIAN:
-			return Material.GUARDIAN_SPAWN_EGG;
-		case SHULKER:
-			return Material.SHULKER_SPAWN_EGG;
-		case PIG:
-			return Material.PIG_SPAWN_EGG;
-		case SHEEP:
-			return Material.SHEEP_SPAWN_EGG;
-		case COW:
-			return Material.COW_SPAWN_EGG;
-		case CHICKEN:
-			return Material.CHICKEN_SPAWN_EGG;
-		case SQUID:
-			return Material.SQUID_SPAWN_EGG;
-		case WOLF:
-			return Material.WOLF_SPAWN_EGG;
-		case MUSHROOM_COW:
-			return Material.MOOSHROOM_SPAWN_EGG;
-		case OCELOT:
-			return Material.OCELOT_SPAWN_EGG;
-		case HORSE:
-			return Material.HORSE_SPAWN_EGG;
-		case RABBIT:
-			return Material.RABBIT_SPAWN_EGG;
-		case POLAR_BEAR:
-			return Material.POLAR_BEAR_SPAWN_EGG;
-		case LLAMA:
-			return Material.LLAMA_SPAWN_EGG;
-		case PARROT:
-			return Material.PARROT_SPAWN_EGG;
-		case VILLAGER:
-			return Material.VILLAGER_SPAWN_EGG;
-		case TURTLE:
-			return Material.TURTLE_SPAWN_EGG;
-		case PHANTOM:
-			return Material.PHANTOM_SPAWN_EGG;
-		case COD:
-			return Material.COD_SPAWN_EGG;
-		case SALMON:
-			return Material.SALMON_SPAWN_EGG;
-		case PUFFERFISH:
-			return Material.PUFFERFISH_SPAWN_EGG;
-		case TROPICAL_FISH:
-			return Material.TROPICAL_FISH_SPAWN_EGG;
-		case DROWNED:
-			return Material.DROWNED_SPAWN_EGG;
-		case DOLPHIN:
-			return Material.DOLPHIN_SPAWN_EGG;
-		}
-		return null;
+		return switch (type) {
+			case ELDER_GUARDIAN -> Material.ELDER_GUARDIAN_SPAWN_EGG;
+			case WITHER_SKELETON -> Material.WITHER_SKELETON_SPAWN_EGG;
+			case STRAY -> Material.STRAY_SPAWN_EGG;
+			case HUSK -> Material.HUSK_SPAWN_EGG;
+			case ZOMBIE_VILLAGER -> Material.ZOMBIE_VILLAGER_SPAWN_EGG;
+			case SKELETON_HORSE -> Material.SKELETON_HORSE_SPAWN_EGG;
+			case ZOMBIE_HORSE -> Material.ZOMBIE_HORSE_SPAWN_EGG;
+			case DONKEY -> Material.DONKEY_SPAWN_EGG;
+			case MULE -> Material.MULE_SPAWN_EGG;
+			case EVOKER -> Material.EVOKER_SPAWN_EGG;
+			case VEX -> Material.VEX_SPAWN_EGG;
+			case VINDICATOR -> Material.VINDICATOR_SPAWN_EGG;
+			case CREEPER -> Material.CREEPER_SPAWN_EGG;
+			case SKELETON -> Material.SKELETON_SPAWN_EGG;
+			case SPIDER -> Material.SPIDER_SPAWN_EGG;
+			case ZOMBIE -> Material.ZOMBIE_SPAWN_EGG;
+			case SLIME -> Material.SLIME_SPAWN_EGG;
+			case GHAST -> Material.GHAST_SPAWN_EGG;
+			case ENDERMAN -> Material.ENDERMAN_SPAWN_EGG;
+			case CAVE_SPIDER -> Material.CAVE_SPIDER_SPAWN_EGG;
+			case SILVERFISH -> Material.SILVERFISH_SPAWN_EGG;
+			case BLAZE -> Material.BLAZE_SPAWN_EGG;
+			case MAGMA_CUBE -> Material.MAGMA_CUBE_SPAWN_EGG;
+			case BAT -> Material.BAT_SPAWN_EGG;
+			case WITCH -> Material.WITCH_SPAWN_EGG;
+			case ENDERMITE -> Material.ENDERMITE_SPAWN_EGG;
+			case GUARDIAN -> Material.GUARDIAN_SPAWN_EGG;
+			case SHULKER -> Material.SHULKER_SPAWN_EGG;
+			case PIG -> Material.PIG_SPAWN_EGG;
+			case SHEEP -> Material.SHEEP_SPAWN_EGG;
+			case COW -> Material.COW_SPAWN_EGG;
+			case CHICKEN -> Material.CHICKEN_SPAWN_EGG;
+			case SQUID -> Material.SQUID_SPAWN_EGG;
+			case WOLF -> Material.WOLF_SPAWN_EGG;
+			case MUSHROOM_COW -> Material.MOOSHROOM_SPAWN_EGG;
+			case OCELOT -> Material.OCELOT_SPAWN_EGG;
+			case HORSE -> Material.HORSE_SPAWN_EGG;
+			case RABBIT -> Material.RABBIT_SPAWN_EGG;
+			case POLAR_BEAR -> Material.POLAR_BEAR_SPAWN_EGG;
+			case LLAMA -> Material.LLAMA_SPAWN_EGG;
+			case PARROT -> Material.PARROT_SPAWN_EGG;
+			case VILLAGER -> Material.VILLAGER_SPAWN_EGG;
+			case TURTLE -> Material.TURTLE_SPAWN_EGG;
+			case PHANTOM -> Material.PHANTOM_SPAWN_EGG;
+			case COD -> Material.COD_SPAWN_EGG;
+			case SALMON -> Material.SALMON_SPAWN_EGG;
+			case PUFFERFISH -> Material.PUFFERFISH_SPAWN_EGG;
+			case TROPICAL_FISH -> Material.TROPICAL_FISH_SPAWN_EGG;
+			case DROWNED -> Material.DROWNED_SPAWN_EGG;
+			case DOLPHIN -> Material.DOLPHIN_SPAWN_EGG;
+			default -> null;
+		};
 	}
 
 	public static boolean haveSpace(Inventory inv, Material m) {
@@ -307,18 +260,6 @@ public class InventoryHelper {
 			if(s.getAmount() != s.getType().getMaxStackSize()) return true;
 		}
 		return false;
-	}
-
-	public static int getBurnTime(ItemStack item) {
-		if(item == null || item.getType() == Material.AIR) return 0;
-		try {
-			Method m = TileEntityFurnace.class.getDeclaredMethod("fuelTime");
-			m.setAccessible(true);
-			int time = (int) m.invoke(item);
-			return time;
-		} catch(Exception e) {
-		}
-		return -1;
 	}
 
 	public static ItemStack setUnstackable(ItemStack item) {
@@ -333,8 +274,7 @@ public class InventoryHelper {
 	}
 
 	public static void sendActionBarMessage(Player p, String text) {
-		((CraftPlayer) p).getHandle().playerConnection
-				.sendPacket(new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + text + "\"}"), ChatMessageType.GAME_INFO, p.getUniqueId()));
+		((CraftPlayer) p).getHandle().b.sendPacket(new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + text + "\"}"), ChatMessageType.c, p.getUniqueId()));
 	}
 
 	public static ItemStack addLore(ItemStack item, String... lore) {
@@ -342,9 +282,9 @@ public class InventoryHelper {
 		List<String> itemLore;
 		if(itemMeta.hasLore()) {
 			itemLore = itemMeta.getLore();
-			itemLore.addAll(Lists.<String>newArrayList(lore));
+			itemLore.addAll(Lists.newArrayList(lore));
 		} else {
-			itemLore = Lists.<String>newArrayList(lore);
+			itemLore = Lists.newArrayList(lore);
 		}
 		itemMeta.setLore(itemLore);
 		item.setItemMeta(itemMeta);
@@ -353,13 +293,13 @@ public class InventoryHelper {
 
 	public static ItemStack addLoreStart(ItemStack item, String... lore) {
 		ItemMeta itemMeta = item.getItemMeta();
-		List<String> itemLore = new ArrayList<String>();
+		List<String> itemLore = new ArrayList();
 		if(itemMeta.hasLore()) {
-			List<String> newLore = Lists.<String>newArrayList(lore);
+			List<String> newLore = Lists.newArrayList(lore);
 			itemLore.addAll(newLore);
 			itemLore.addAll(itemMeta.getLore());
 		} else {
-			itemLore = Lists.<String>newArrayList(lore);
+			itemLore = Lists.newArrayList(lore);
 		}
 		itemMeta.setLore(itemLore);
 		item.setItemMeta(itemMeta);
@@ -368,7 +308,7 @@ public class InventoryHelper {
 
 	// Get the item lore or return empty list to prevent NullPointerException
 	public static List<String> getLore(ItemStack item) {
-		return item.getItemMeta().hasLore() ? item.getItemMeta().getLore() : new ArrayList<String>();
+		return item.getItemMeta().hasLore() ? item.getItemMeta().getLore() : new ArrayList<>();
 	}
 
 	public static String getExactLore(ItemStack item, String oldStringStart) {
@@ -431,38 +371,25 @@ public class InventoryHelper {
 	}
 
 	public static String getAttributeName(Attribute att) {
-		switch(att) {
-		case GENERIC_ARMOR:
-			return "generic.armor";
-		case GENERIC_ARMOR_TOUGHNESS:
-			return "generic.armorToughness";
-		case GENERIC_ATTACK_DAMAGE:
-			return "generic.attackDamage";
-		case GENERIC_ATTACK_SPEED:
-			return "generic.attackSpeed";
-		case GENERIC_FLYING_SPEED:
-			return "generic.flyingSpeed";
-		case GENERIC_FOLLOW_RANGE:
-			return "generic.followRange";
-		case GENERIC_KNOCKBACK_RESISTANCE:
-			return "generic.knockbackResistance";
-		case GENERIC_LUCK:
-			return "generic.luck";
-		case GENERIC_MAX_HEALTH:
-			return "generic.maxHealth";
-		case GENERIC_MOVEMENT_SPEED:
-			return "generic.movementSpeed";
-		case HORSE_JUMP_STRENGTH:
-			return "horse.jumpStrength";
-		case ZOMBIE_SPAWN_REINFORCEMENTS:
-			return "zombie.spawnReinforcements";
-		default:
-			return null;
-		}
+		return switch (att) {
+			case GENERIC_ARMOR -> "generic.armor";
+			case GENERIC_ARMOR_TOUGHNESS -> "generic.armorToughness";
+			case GENERIC_ATTACK_DAMAGE -> "generic.attackDamage";
+			case GENERIC_ATTACK_SPEED -> "generic.attackSpeed";
+			case GENERIC_FLYING_SPEED -> "generic.flyingSpeed";
+			case GENERIC_FOLLOW_RANGE -> "generic.followRange";
+			case GENERIC_KNOCKBACK_RESISTANCE -> "generic.knockbackResistance";
+			case GENERIC_LUCK -> "generic.luck";
+			case GENERIC_MAX_HEALTH -> "generic.maxHealth";
+			case GENERIC_MOVEMENT_SPEED -> "generic.movementSpeed";
+			case HORSE_JUMP_STRENGTH -> "horse.jumpStrength";
+			case ZOMBIE_SPAWN_REINFORCEMENTS -> "zombie.spawnReinforcements";
+			default -> null;
+		};
 	}
 
 	public static ItemStack addAttributes(ItemStack item, CustomAttribute... attributes) {
-		net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+		net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
 		NBTTagCompound nbt = (nmsItem.hasTag()) ? nmsItem.getTag() : new NBTTagCompound();
 		NBTTagList modifiers = new NBTTagList();
 		for(CustomAttribute att : attributes) {
@@ -495,14 +422,14 @@ public class InventoryHelper {
 			if(useDurabilityEnchantment && item.getItemMeta().hasEnchant(Enchantment.DURABILITY)) {
 				int level = item.getItemMeta().getEnchantLevel(Enchantment.DURABILITY) + 1;
 				if(isArmor(item.getType())) {
-					if(!MathUtils.chance(60 + (40 / level))) continue;
+					if(!MathUtils.chance(60 + (40.0 / level))) continue;
 				} else {
-					if(!MathUtils.chance(100 / level)) continue;
+					if(!MathUtils.chance(100.0 / level)) continue;
 				}
 			}
 			meta.setDamage(meta.getDamage() + 1);
 		}
-		item.setItemMeta((ItemMeta) meta);
+		item.setItemMeta(meta);
 		if(item.getType().getMaxDurability() <= meta.getDamage()) {
 			item.setAmount(0);
 			return true;
@@ -547,7 +474,7 @@ public class InventoryHelper {
 		for(String s : lore) {
 			if(ChatColor.stripColor(s).startsWith(ChatColor.stripColor(oldStringStart))) {
 				try {
-					return Integer.valueOf(ChatColor.stripColor(s.split(":")[1].trim()));
+					return Integer.parseInt(ChatColor.stripColor(s.split(":")[1].trim()));
 				} catch(Exception e) {
 					return -1;
 				}
@@ -557,7 +484,7 @@ public class InventoryHelper {
 	}
 
 	public static Map<String, String> getValues(ItemStack item) {
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new HashMap<>();
 		List<String> lore = getLore(item);
 		for(String s : lore) {
 			try {
@@ -565,8 +492,7 @@ public class InventoryHelper {
 				if(!ChatColor.stripColor(val[0]).equals("ID")) {
 					map.put(ChatColor.stripColor(val[0]), ChatColor.stripColor(val[1].trim()));
 				}
-			} catch(Exception e) {
-				continue;
+			} catch(Exception ignored) {
 			}
 		}
 		return map;
@@ -581,7 +507,7 @@ public class InventoryHelper {
 
 	public static boolean removeLore(ItemStack item, String oldLoreStart) {
 		List<String> lore = getLore(item);
-		List<String> newLore = new ArrayList<String>();
+		List<String> newLore = new ArrayList<>();
 		boolean flag = false;
 		for(String s : lore) {
 			if(!ChatColor.stripColor(s).startsWith(ChatColor.stripColor(oldLoreStart))) {
@@ -619,22 +545,19 @@ public class InventoryHelper {
 
 	public static ItemStack setLore(ItemStack item, String... lore) {
 		ItemMeta itemMeta = item.getItemMeta();
-		itemMeta.setLore(Lists.<String>newArrayList(lore));
+		itemMeta.setLore(Lists.newArrayList(lore));
 		item.setItemMeta(itemMeta);
 		return item;
 	}
 
 	public static ItemStack addSplittedLore(ItemStack item, int max, String lore) {
-		List<String> list = new ArrayList<String>();
-		for(String s : InventoryHelper.splitLongString(lore, max)) {
-			list.add(s);
-		}
+		List<String> list = new ArrayList<>(InventoryHelper.splitLongString(lore, max));
 		addLore(item, list.toArray(new String[0]));
 		return item;
 	}
 
 	public static ItemStack addSplittedLore(ItemStack item, int max, String lore, ChatColor color) {
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		for(String s : InventoryHelper.splitLongString(lore, max)) {
 			list.add(color + s);
 		}
@@ -762,7 +685,7 @@ public class InventoryHelper {
 
 	public static ItemStack getFirstStackWithAmountOrLeftHand(Player p, Material mat, int min) {
 		ItemStack left = p.getInventory().getItemInOffHand();
-		if(left != null && left.getType() == mat && left.getAmount() >= min) {
+		if(left.getType() == mat && left.getAmount() >= min) {
 			return left;
 		}
 		for(int i = 0; i < p.getInventory().getSize(); i++) {
@@ -803,7 +726,7 @@ public class InventoryHelper {
 
 	public static List<Integer> getSlotsContains(Player p, Material m) {
 		PlayerInventory inv = p.getInventory();
-		List<Integer> r = new ArrayList<Integer>();
+		List<Integer> r = new ArrayList<>();
 		for(int i = 0; i < inv.getSize(); i++) {
 			if(inv.getItem(i) != null) {
 				if(inv.getItem(i).getType() == m) {
@@ -815,7 +738,7 @@ public class InventoryHelper {
 	}
 
 	public static List<ItemStack> getItems(Inventory inv, Material m) {
-		List<ItemStack> list = new ArrayList<ItemStack>();
+		List<ItemStack> list = new ArrayList<>();
 		for(int i = 0; i < inv.getSize(); i++) {
 			if(inv.getItem(i) != null) {
 				if(inv.getItem(i).getType() == m) {
@@ -827,7 +750,7 @@ public class InventoryHelper {
 	}
 
 	public static List<ItemStack> getItemsLimited(Player p, Material m, int max) {
-		List<ItemStack> list = new ArrayList<ItemStack>();
+		List<ItemStack> list = new ArrayList<>();
 		int c = 0;
 		for(ItemStack s : getItems(p.getInventory(), m)) {
 			list.add(s);
@@ -859,7 +782,7 @@ public class InventoryHelper {
 	}
 
 	public static List<ItemStack> getAllStacks(Inventory inv, Material m) {
-		List<ItemStack> list = new ArrayList<ItemStack>();
+		List<ItemStack> list = new ArrayList<>();
 		for(ItemStack s : inv) {
 			if(s != null && s.getType() == m) {
 				list.add(s);
@@ -877,18 +800,8 @@ public class InventoryHelper {
 		return null;
 	}
 
-	public static List<ItemStack> getAllStacks(Inventory inv, Material m, int data) {
-		List<ItemStack> list = new ArrayList<ItemStack>();
-		for(ItemStack s : inv.getContents()) {
-			if(s != null && s.getType() == m && s.getDurability() == data) {
-				list.add(s);
-			}
-		}
-		return list;
-	}
-
 	public static List<ItemStack> getAllStacksWithAmount(Inventory inv, Material m, int min) {
-		List<ItemStack> list = new ArrayList<ItemStack>();
+		List<ItemStack> list = new ArrayList<>();
 		for(ItemStack s : inv.getStorageContents()) {
 			if(s != null && s.getType() == m && s.getAmount() >= min) {
 				list.add(s);
@@ -911,13 +824,13 @@ public class InventoryHelper {
 	public static void placeItemsCenterUnlimited(Inventory inv, List<ItemStack> stacks, int startRow) {
 		int start = (int) Math.round(-(stacks.size() / 2) + 0.5);
 		for(int i = 0; i < stacks.size(); i++) {
-			int h = (startRow * 9) + ((int) i / 9) * 9;
+			int h = (startRow * 9) + (i / 9) * 9;
 			inv.setItem(h + start + i + 3, stacks.get(i));
 		}
 	}
 
 	public static List<String> splitLongString(String str, int max) {
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		int prev = 0;
 		for(int i = 0; i < str.length(); i++) {
 			if(i - prev >= max && str.charAt(i) == ' ') {
@@ -932,7 +845,7 @@ public class InventoryHelper {
 	}
 
 	public static List<String> splitLongString(String str, int max, ChatColor color) {
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		int prev = 0;
 		for(int i = 0; i < str.length(); i++) {
 			if(i - prev >= max && str.charAt(i) == ' ') {
@@ -946,46 +859,17 @@ public class InventoryHelper {
 		return list;
 	}
 
-	public static void removeItemsExact(PlayerInventory inv, Material itemToRemove, List<String> lore, int minCount, int maxCount) {
-		for(ItemStack item : inv.getStorageContents()) {
-			if(item != null) {
-				if(item.getType() != itemToRemove) continue;
-				if(item.getAmount() < minCount || item.getAmount() > maxCount) continue;
-				ItemMeta meta = item.getItemMeta();
-				boolean argHasLore = lore != null && !lore.isEmpty();
-				boolean itemHasLore = meta.hasLore();
-				if(!argHasLore && !itemHasLore) {
-					item.setAmount(0);
-					continue;
-				}
-				if(lore.size() != meta.getLore().size()) continue;
-				for(int i = 0; i < lore.size(); i++) {
-					if(!meta.getLore().get(i).equals(lore.get(i))) continue;
-				}
-				item.setAmount(0);
-			}
-		}
-	}
-
 	public static ChatColor fromBarColor(BarColor color) {
-		switch(color) {
-		case BLUE:
-			return ChatColor.BLUE;
-		case GREEN:
-			return ChatColor.GREEN;
-		case PINK:
-			return ChatColor.LIGHT_PURPLE;
-		case PURPLE:
-			return ChatColor.DARK_PURPLE;
-		case RED:
-			return ChatColor.RED;
-		case WHITE:
-			return ChatColor.WHITE;
-		case YELLOW:
-			return ChatColor.YELLOW;
-		default:
-			return null;
-		}
+		return switch (color) {
+			case BLUE -> ChatColor.BLUE;
+			case GREEN -> ChatColor.GREEN;
+			case PINK -> ChatColor.LIGHT_PURPLE;
+			case PURPLE -> ChatColor.DARK_PURPLE;
+			case RED -> ChatColor.RED;
+			case WHITE -> ChatColor.WHITE;
+			case YELLOW -> ChatColor.YELLOW;
+			default -> null;
+		};
 	}
 
 	public static ChatColor toChatColor(Color c) {
@@ -1082,9 +966,6 @@ public class InventoryHelper {
 		}
 		if(c == ChatColor.DARK_BLUE) {
 			return Color.NAVY;
-		}
-		if(c == ChatColor.DARK_GREEN) {
-			return Color.OLIVE;
 		}
 		if(c == ChatColor.RED) {
 			return Color.RED;

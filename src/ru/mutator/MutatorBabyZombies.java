@@ -43,9 +43,8 @@ public class MutatorBabyZombies extends Mutator implements Listener {
 
 	@EventHandler
 	public void spawn(CreatureSpawnEvent e) {
-		if(e.getEntity() instanceof Zombie) {
-			Zombie zombie = (Zombie) e.getEntity();
-			zombie.setBaby(true);
+		if(e.getEntity() instanceof Zombie zombie) {
+			zombie.setBaby();
 		}
 	}
 

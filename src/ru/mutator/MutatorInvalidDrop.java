@@ -78,7 +78,7 @@ public class MutatorInvalidDrop extends Mutator implements Listener {
 			tier = 3;
 		}
 		if(ent instanceof Zombie) {
-			if(((Zombie) ent).isBaby()) {
+			if(!((Zombie) ent).isAdult()) {
 				tier = 3;
 			}
 		}

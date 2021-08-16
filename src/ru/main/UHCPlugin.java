@@ -1,6 +1,8 @@
 package ru.main;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,7 +15,6 @@ import ru.commands.*;
 import ru.items.CustomItems;
 import ru.items.CustomItemsListener;
 import ru.mutator.InventoryBuilder;
-import ru.mutator.MutatorManager;
 import ru.pvparena.PvpArena;
 import ru.requester.ItemRequester;
 import ru.util.TaskManager;
@@ -24,25 +25,24 @@ public class UHCPlugin extends JavaPlugin {
 
 	public void onEnable() {
 		instance = this;
-		this.getCommand("test").setExecutor(new CommandTest());
-		this.getCommand("gm").setExecutor(new CommandGM());
-		this.getCommand("ping").setExecutor(new CommandPing());
-		this.getCommand("start").setExecutor(new CommandStart());
-		this.getCommand("end").setExecutor(new CommandEnd());
-		this.getCommand("lobby").setExecutor(new CommandLobby());
-		this.getCommand("arena").setExecutor(new CommandArena());
-		this.getCommand("skip").setExecutor(new CommandSkip());
-		this.getCommand("map").setExecutor(new CommandMap());
-		this.getCommand("stat").setExecutor(new CommandStat());
-		this.getCommand("rating").setExecutor(new CommandRating());
-		this.getCommand("drop").setExecutor(new CommandDrop());
-		this.getCommand("customitem").setExecutor(new CommandCustomItem());
-		this.getCommand("timer").setExecutor(new CommandTimer());
-		this.getCommand("mutator").setExecutor(new CommandMutator());
-		this.getCommand("optmutator").setExecutor(new CommandOptMutator());
-		this.getCommand("options").setExecutor(new CommandOptions());
-		this.getCommand("inv").setExecutor(new CommandInv());
-		this.getCommand("class").setExecutor(new CommandClass());
+		registerCommand("test", new CommandTest());
+		registerCommand("gm", new CommandGM());
+		registerCommand("start", new CommandStart());
+		registerCommand("end", new CommandEnd());
+		registerCommand("lobby", new CommandLobby());
+		registerCommand("arena", new CommandArena());
+		registerCommand("skip", new CommandSkip());
+		registerCommand("map", new CommandMap());
+		registerCommand("stat", new CommandStat());
+		registerCommand("rating", new CommandRating());
+		registerCommand("drop", new CommandDrop());
+		registerCommand("customitem", new CommandCustomItem());
+		registerCommand("timer", new CommandTimer());
+		registerCommand("mutator", new CommandMutator());
+		registerCommand("optmutator", new CommandOptMutator());
+		registerCommand("options", new CommandOptions());
+		registerCommand("inv", new CommandInv());
+		registerCommand("class", new CommandClass());
 
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new UHC(), this);
@@ -59,6 +59,11 @@ public class UHCPlugin extends JavaPlugin {
 		CustomItems.init();
 		ItemRequester.init();
 		ClassManager.init();
+	}
+	
+	private void registerCommand(String commandName, CommandExecutor executor) {
+		PluginCommand command = this.getCommand(commandName);
+		if(command != null) command.setExecutor(executor);
 	}
 
 	public void onDisable() {
