@@ -6,6 +6,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import ru.items.CustomItems;
+import ru.main.UHCPlugin;
 import ru.util.InventoryHelper;
 import ru.util.ItemUtils;
 
@@ -16,9 +18,8 @@ public class  CommandTest implements CommandExecutor {
 		if(!sender.isOp()) return true;
 		Player p = (Player) sender;
 		ItemStack item = p.getInventory().getItemInMainHand();
-		ItemStack itemWithValue = ItemUtils.setCustomValue(item, "test", "test111");
-		p.sendMessage(ItemUtils.getCustomValue(itemWithValue, "test"));
-		p.getInventory().setItemInMainHand(itemWithValue);
+		UHCPlugin.log(CustomItems.highlighter.isEquals(item));
+		UHCPlugin.log(ItemUtils.getCustomValue(item, "customitem"));
 		return true;
 	}
 }

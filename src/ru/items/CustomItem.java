@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import ru.main.UHCPlugin;
 import ru.util.InventoryHelper;
+import ru.util.ItemUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,10 @@ public abstract class CustomItem {
 	public abstract String getName();
 
 	public abstract Material getMaterial();
+
+	public String getIdentifier() {
+		return ChatColor.stripColor(getName()).toLowerCase().replaceAll(" ", "_");
+	}
 
 	public void onUseRight(Player p, ItemStack item, PlayerInteractEvent e) {
 	}
@@ -59,17 +64,7 @@ public abstract class CustomItem {
 	}
 
 	public final boolean isEquals(ItemStack item) {
-		if(item == null || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return false;
-		return getName().equals(item.getItemMeta().getDisplayName());
-	}
-
-	private static String a(String s) {
-		char[] arr = s.toCharArray();
-		String str = "";
-		for(char c : arr) {
-			str += " " + c;
-		}
-		return str;
+		return CustomItems.getCustomItem(item) == this;
 	}
 
 	public boolean isGlowing() {
@@ -78,11 +73,12 @@ public abstract class CustomItem {
 
 	public ItemStack getItemStack() {
 		ItemStack item = new ItemStack(getMaterial());
+		item = ItemUtils.setCustomValue(item, "customitem", getIdentifier());
 		if(getName() != null) {
 			InventoryHelper.setName(item, getName());
 		}
 		for(String key : getFields().keySet()) {
-			InventoryHelper.setValue(item, key, getFields().get(key).toString(), false);
+			item = ItemUtils.setCustomValue(item, key, getFields().get(key).toString());
 		}
 		if(!isStackable()) {
 			InventoryHelper.setUnstackable(item);

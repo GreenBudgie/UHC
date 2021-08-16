@@ -125,6 +125,7 @@ public class UHCPlugin extends JavaPlugin {
 
 	public static void log(Object s) {
 		for(Player player : Bukkit.getOnlinePlayers()) {
+			if(s == null) s = "null";
 			player.sendMessage(s.toString());
 		}
 	}

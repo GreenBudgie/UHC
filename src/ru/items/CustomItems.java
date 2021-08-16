@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import ru.main.UHCPlugin;
+import ru.util.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,19 +41,18 @@ public class CustomItems {
 	}
 
 	public static boolean isCustomItem(ItemStack stack) {
-		if(stack != null && stack.hasItemMeta() && stack.getItemMeta().hasDisplayName()) {
-			for(CustomItem item : CustomItems.getItems()) {
-				if(item.isEquals(stack)) {
-					return true;
-				}
-			}
-		}
-		return false;
+		return stack != null && ItemUtils.hasCustomValue(stack, "customitem");
 	}
 
 	public static CustomItem getCustomItem(ItemStack stack) {
+		if(!isCustomItem(stack)) return null;
+		String identifier = ItemUtils.getCustomValue(stack, "customitem");
+		return getByIdentifier(identifier);
+	}
+
+	public static CustomItem getByIdentifier(String identifier) {
 		for(CustomItem item : getItems()) {
-			if(item.isEquals(stack)) {
+			if(item.getIdentifier().equals(identifier)) {
 				return item;
 			}
 		}
