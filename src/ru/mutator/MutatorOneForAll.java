@@ -72,12 +72,12 @@ public class MutatorOneForAll extends Mutator implements Listener {
 						activatedMutator.activate(false, null);
 						timer = MathUtils.randomRange(400, 600);
 						for(Player p : UHC.getInGamePlayers()) {
-							p.sendTitle("", ChatColor.GOLD + "Добавлен мутатор: " + ChatColor.LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
+							p.sendTitle(" ", ChatColor.GOLD + "Добавлен мутатор: " + ChatColor.LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
 							p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1F);
 						}
 					} else { //FIXME NuLL
 						for(Player p : UHC.getInGamePlayers()) {
-							p.sendTitle("", ChatColor.GOLD + "Деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
+							p.sendTitle(" ", ChatColor.GOLD + "Деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
 							p.playSound(p.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1F, 1F);
 						}
 						activatedMutator.deactivate();

@@ -1,15 +1,19 @@
 package ru.util;
 
 import com.google.common.collect.Lists;
+import net.minecraft.nbt.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
+import ru.main.UHCPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,6 +121,66 @@ public class ItemUtils {
 		itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		item.setItemMeta(itemMeta);
 		return item;
+	}
+
+	/**
+	 * Writes a custom string value to item NBT
+	 * Note that this method DOES NOT CHANGE the item stack itself, it creates a new one
+	 * @param item Item to use
+	 * @param name Name of a value
+	 * @param value The value
+	 * @return Changed item
+	 */
+	public static ItemStack setCustomValue(ItemStack item, String name, String value) {
+		name = "custom_" + name;
+		net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+		NBTTagCompound nbt = nmsItem.getOrCreateTag();
+		nbt.setString(name, value);
+		nmsItem.setTag(nbt);
+		return CraftItemStack.asBukkitCopy(nmsItem);
+	}
+
+	/**
+	 * Removes a custom value from item NBT
+	 * Note that this method DOES NOT CHANGE the item stack itself, it creates a new one
+	 * @param item Item to use
+	 * @param name Name of a value to remove
+	 * @return Changed item
+	 */
+	public static ItemStack removeCustomValue(ItemStack item, String name) {
+		name = "custom_" + name;
+		net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+		NBTTagCompound nbt = nmsItem.getOrCreateTag();
+		nbt.remove(name);
+		nmsItem.setTag(nbt);
+		return CraftItemStack.asBukkitCopy(nmsItem);
+	}
+
+	/**
+	 * Checks whether the item has the specified value
+	 * @param item Item to check
+	 * @param name Name of a value
+	 * @return Whether the item has the specified value
+	 */
+	public static boolean hasCustomValue(ItemStack item, String name) {
+		name = "custom_" + name;
+		net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+		NBTTagCompound nbt = nmsItem.getOrCreateTag();
+		return nbt.hasKey(name);
+	}
+
+	/**
+	 * Gets the custom string value by the given name
+	 * @param item item to use
+	 * @param name Custom value name
+	 * @return Custom value by the given name, or null if not present
+	 */
+	@Nullable
+	public static String getCustomValue(ItemStack item, String name) {
+		name = "custom_" + name;
+		net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+		NBTTagCompound nbt = nmsItem.getOrCreateTag();
+		return nbt.hasKey(name) ? nbt.getString(name) : null;
 	}
 
 	public static Builder builder(Material item) {

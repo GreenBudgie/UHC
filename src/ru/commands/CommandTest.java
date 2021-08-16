@@ -1,20 +1,13 @@
 package ru.commands;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
-import org.bukkit.Material;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import ru.mutator.InventoryBuilder;
 import ru.util.InventoryHelper;
-
-import java.lang.reflect.Field;
-import java.util.UUID;
+import ru.util.ItemUtils;
 
 public class  CommandTest implements CommandExecutor {
 
@@ -22,7 +15,10 @@ public class  CommandTest implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!sender.isOp()) return true;
 		Player p = (Player) sender;
-		InventoryBuilder.getBuilder(p).openInventory();
+		ItemStack item = p.getInventory().getItemInMainHand();
+		ItemStack itemWithValue = ItemUtils.setCustomValue(item, "test", "test111");
+		p.sendMessage(ItemUtils.getCustomValue(itemWithValue, "test"));
+		p.getInventory().setItemInMainHand(itemWithValue);
 		return true;
 	}
 }

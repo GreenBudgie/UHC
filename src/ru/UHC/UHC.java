@@ -813,14 +813,14 @@ public class UHC implements Listener {
 				if(arenaPvpTimer == 0) {
 					ArenaManager.getCurrentArena().world().setPVP(true);
 					for(Player p : getInGamePlayers()) {
-						p.sendTitle("", ChatColor.DARK_RED + "" + ChatColor.BOLD + ">>> " + ChatColor.GOLD + ChatColor.BOLD + "ПВП" + ChatColor.RED +
+						p.sendTitle(" ", ChatColor.DARK_RED + "" + ChatColor.BOLD + ">>> " + ChatColor.GOLD + ChatColor.BOLD + "ПВП" + ChatColor.RED +
 								ChatColor.BOLD + " Включено!" + ChatColor.DARK_RED + ChatColor.BOLD + " <<<", 0, 35, 15);
 						p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
 					}
 				}
 				if(arenaPvpTimer <= 3 && arenaPvpTimer > 0) {
 					for(Player p : getInGamePlayers()) {
-						p.sendTitle("", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + arenaPvpTimer, 0, 40, 0);
+						p.sendTitle(" ", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + arenaPvpTimer, 0, 40, 0);
 						p.playSound(p.getLocation(), Sound.BLOCK_COMPARATOR_CLICK, 0.8F, 0.5F + arenaPvpTimer / 3F);
 					}
 				}
@@ -1681,8 +1681,8 @@ public class UHC implements Listener {
 				for(Player pl : getInGamePlayers()) {
 					pl.sendMessage(FightHelper.getDeathMessage(p));
 				}
-				String taunt = ChatColor.DARK_AQUA + " " + MathUtils.choose("тебя унизил", "умнее тебя", "сильнее тебя", "не такой тупой, как кажется",
-						"иногда проявляет себя", "играет в кубики лучше тебя");
+				String taunt = ChatColor.DARK_AQUA + " " + MathUtils.choose("тебя унизил", "умнее тебя", "не такой тупой, как кажется",
+						"иногда проявляет себя", "играет в кубики лучше тебя", "обосрал тебя", "убил тебя", "просто повезло");
 				p.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Тебя замачили!", ChatColor.GOLD + killer.getName() + taunt, 10, 60, 20);
 			} else {
 				boolean golden = state == GameState.OUTBREAK;

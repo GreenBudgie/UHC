@@ -163,7 +163,6 @@ public class WorldManager {
 				}
 			}
 		} catch(IOException e) {
-			UHCPlugin.error("Cannot copy \"" + source.getName() + "\"");
 		}
 	}
 

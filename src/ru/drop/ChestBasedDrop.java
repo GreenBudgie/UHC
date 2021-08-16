@@ -46,7 +46,7 @@ public abstract class ChestBasedDrop extends Drop {
         location.getWorld().playSound(location, Sound.ITEM_FIRECHARGE_USE, 1F, 0.5F);
         ParticleUtils.createParticlesInRange(location, 1.5, Particle.FLAME, null, 40);
         for(Player p : UHC.getInGamePlayers()) {
-            p.sendTitle("", getSpawnMessage(), 5, 40, 20);
+            p.sendTitle(" ", getSpawnMessage(), 5, 40, 20);
             p.sendMessage(getChatDropCoordinatesInfo());
             p.playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.5F, 0.5F);
         }
