@@ -23,6 +23,7 @@ public class Drops {
 
     public static final AirDrop AIRDROP = new AirDrop();
     public static final CaveDrop CAVEDROP = new CaveDrop();
+    public static final NetherDrop NETHERDROP = new NetherDrop();
 
     public static void update() {
         DROPS.forEach(Drop::update);

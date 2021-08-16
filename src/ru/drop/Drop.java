@@ -2,6 +2,7 @@ package ru.drop;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import ru.mutator.MutatorManager;
 
 public abstract class Drop {
@@ -23,6 +24,10 @@ public abstract class Drop {
         if(MutatorManager.isActive(MutatorManager.airdrop))
             timer /= 2;
         location = getRandomLocation();
+    }
+
+    public World.Environment getSpawnEnvironment() {
+        return World.Environment.NORMAL;
     }
 
     public void update() {}
