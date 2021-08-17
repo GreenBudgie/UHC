@@ -57,3 +57,6 @@ commands:
  class:
   description: Установить класс (в лобби), или показать информацию о выбранном классе (в игре)
   usage: /class
+ teammate:
+  description: Формирование команды для игры в режиме дуо
+  usage: /teammate <request/accept/decline/leave> [player]

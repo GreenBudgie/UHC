@@ -5,13 +5,16 @@ import net.minecraft.nbt.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import ru.main.UHCPlugin;
 
@@ -181,6 +184,15 @@ public class ItemUtils {
 		net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
 		NBTTagCompound nbt = nmsItem.getOrCreateTag();
 		return nbt.hasKey(name) ? nbt.getString(name) : null;
+	}
+
+	public static ItemStack getHead(Player player) {
+		ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+		SkullMeta meta = (SkullMeta) head.getItemMeta();
+		if(meta == null) return head;
+		meta.setOwningPlayer(player);
+		head.setItemMeta(meta);
+		return head;
 	}
 
 	public static Builder builder(Material item) {

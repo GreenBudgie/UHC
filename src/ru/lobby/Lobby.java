@@ -44,6 +44,7 @@ public class Lobby {
         }
         SignManager.init();
         Bukkit.getPluginManager().registerEvents(new LobbyListener(), UHCPlugin.instance);
+        Bukkit.getPluginManager().registerEvents(new LobbyTeamBuilder(), UHCPlugin.instance);
     }
 
     public static YamlConfiguration getLobbyConfig() {

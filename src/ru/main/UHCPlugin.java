@@ -45,6 +45,7 @@ public class UHCPlugin extends JavaPlugin {
 		registerCommand("options", new CommandOptions());
 		registerCommand("inv", new CommandInv());
 		registerCommand("class", new CommandClass());
+		registerCommand("teammate", new CommandTeammate());
 
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new UHC(), this);
