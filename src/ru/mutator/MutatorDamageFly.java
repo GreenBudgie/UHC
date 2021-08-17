@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.util.MathUtils;
 
@@ -40,7 +41,7 @@ public class MutatorDamageFly extends Mutator implements Listener {
 	public void damage(EntityDamageEvent e) {
 		if(!e.isCancelled() && e.getFinalDamage() > 0 && e.getEntity() instanceof Player) {
 			Player player = (Player) e.getEntity();
-			if(UHC.isPlaying(player)) {
+			if(PlayerManager.isPlaying(player)) {
 				if(!player.hasPotionEffect(PotionEffectType.LEVITATION)) {
 					player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 100, 0));
 				}

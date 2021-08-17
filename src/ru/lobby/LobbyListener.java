@@ -32,6 +32,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import ru.UHC.PlayerManager;
 import ru.UHC.PlayerOptions;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
@@ -48,7 +49,7 @@ public class LobbyListener implements Listener {
     @SuppressWarnings("deprecation")
     @EventHandler
     public void lobbyInvClick(InventoryClickEvent e) {
-        Player p = (Player) e.getWhoClicked();
+        Player clickedPlayer = (Player) e.getWhoClicked();
         InventoryView view = e.getView();
         Inventory inv = e.getInventory();
         int slot = e.getRawSlot();
@@ -56,57 +57,11 @@ public class LobbyListener implements Listener {
         if(view.getTitle().equals(PlayerOptions.invName) && e.getClickedInventory() == view.getTopInventory()) {
             PlayerOptions option = PlayerOptions.values()[slot];
             if(option != null) {
-                option.setActive(p, !option.isActive(p));
-                PlayerOptions.openInventory(p);
+                option.setActive(clickedPlayer, !option.isActive(clickedPlayer));
+                PlayerOptions.openInventory(clickedPlayer);
             }
-        }
-        if(isInLobby(p) && view.getTitle().equals(ChatColor.GREEN + "Выбор тиммейта")) {
-            if(item.getType() == Material.PLAYER_HEAD && UHC.getTeammate(p) == null) {
-                SkullMeta meta = (SkullMeta) item.getItemMeta();
-                Player owner = Bukkit.getPlayerExact(meta.getOwner());
-                if(owner != null && owner.isOnline()) {
-                    if(!UHC.isInvited(owner, p)) {
-                        UHC.inviteTeammate(p, owner);
-                        UHC.updateTeams();
-                        p.closeInventory();
-                    }
-                } else {
-                    p.sendMessage(ChatColor.RED + "Этот человек уже не на серве");
-                    p.openInventory(UHC.getTeammatesInventory(p));
-                }
-            }
-            if(item.getType() == Material.RED_DYE) {
-                SkullMeta meta = (SkullMeta) inv.getItem(slot + 9).getItemMeta();
-                Player owner = Bukkit.getPlayerExact(meta.getOwner());
-                if(owner != null && owner.isOnline()) {
-                    UHC.denyInvite(p, owner);
-                    p.closeInventory();
-                    UHC.updateTeams();
-                } else {
-                    p.sendMessage(ChatColor.RED + "Этот человек уже не на серве");
-                    p.openInventory(UHC.getTeammatesInventory(p));
-                }
-            } else if(item.getType() == Material.LIME_DYE) {
-                SkullMeta meta = (SkullMeta) inv.getItem(slot - 9).getItemMeta();
-                Player owner = Bukkit.getPlayerExact(meta.getOwner());
-                if(owner != null && owner.isOnline()) {
-                    UHC.acceptInvite(p, owner);
-                    p.closeInventory();
-                    UHC.updateTeams();
-                } else {
-                    p.sendMessage(ChatColor.RED + "Этот человек уже не на серве");
-                    p.openInventory(UHC.getTeammatesInventory(p));
-                }
-            }
-            if(item.getType() == Material.BARRIER) {
-                UHC.leaveTeam(p);
-                p.closeInventory();
-                UHC.updateTeams();
-            }
-            e.setCancelled(true);
         }
     }
-
 
     @EventHandler
     public void noDamage(EntityDamageEvent e) {

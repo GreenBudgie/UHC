@@ -412,6 +412,11 @@ public class ItemUtils {
 			return this;
 		}
 
+		public Builder withGlow(boolean glow) {
+			if(glow) addGlow(item);
+			return this;
+		}
+
 		public Builder withEnchantments(Enchant... enchantments) {
 			addEnchantments(item, enchantments);
 			return this;

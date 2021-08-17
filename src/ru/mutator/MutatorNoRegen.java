@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 
 public class MutatorNoRegen extends Mutator implements Listener {
@@ -37,7 +38,7 @@ public class MutatorNoRegen extends Mutator implements Listener {
 
 	@Override
 	public void update() {
-		for(Player p : UHC.players) {
+		for(Player p : PlayerManager.getAliveOnlinePlayers()) {
 			if(p.hasPotionEffect(PotionEffectType.REGENERATION)) {
 				p.removePotionEffect(PotionEffectType.REGENERATION);
 			}

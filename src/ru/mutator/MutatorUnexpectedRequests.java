@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import ru.UHC.GameState;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
 import ru.requester.ItemRequester;
@@ -62,7 +63,7 @@ public class MutatorUnexpectedRequests extends Mutator {
 					timeToNextRequest--;
 				} else {
 					Location l = getRandomLocation();
-					for(Player player : UHC.getInGamePlayers()) {
+					for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
 						player.sendMessage(
 								ChatColor.LIGHT_PURPLE + "Был сделан запрос: " + ChatColor.DARK_AQUA + l.getBlockX() + ChatColor.WHITE + ", " + ChatColor.DARK_AQUA + l.getBlockZ()
 										+ (ChatColor.WHITE + " (" + (l.getWorld() == player.getWorld() ?

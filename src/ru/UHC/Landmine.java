@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 
 public class Landmine {
 
-	private Player owner;
-	private Location location;
+	private final Player owner;
+	private final Location location;
 	private final int maxFuseTicks = 30;
 	private int fuseTicks = maxFuseTicks;
 	private int secondExplodeTicks = 4;
@@ -42,9 +42,9 @@ public class Landmine {
 	public void update() {
 		if(done) return;
 		if(!triggered) {
-			Player teammate = UHC.getTeammate(owner);
-			for(Player p : UHC.players) {
-				if((p != owner && (teammate == null || teammate != p)) && location.getWorld() == p.getWorld() && p.getLocation().distance(location) <= range) {
+			Player teammate = PlayerManager.getTeammate(owner);
+			for(Player player : PlayerManager.getAliveOnlinePlayers()) {
+				if((player != owner && (teammate == null || teammate != player)) && location.getWorld() == player.getWorld() && player.getLocation().distance(location) <= range) {
 					triggered = true;
 					break;
 				}
@@ -53,7 +53,7 @@ public class Landmine {
 				ParticleUtils.createParticle(location.clone().add(0.5, 0.8, 0.5), Particle.SMOKE_NORMAL, null);
 			}
 		} else {
-			if(signalTicks.indexOf(fuseTicks) != -1) {
+			if(signalTicks.contains(fuseTicks)) {
 				location.getWorld().playSound(location, Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1F, 2 - ((float) fuseTicks / (float) maxFuseTicks));
 				ParticleUtils.createParticle(location.clone().add(0.5, 0.8, 0.5), Particle.FLAME, null);
 			}
@@ -63,7 +63,7 @@ public class Landmine {
 					secondExplodeTicks--;
 					if(secondExplodeTicks <= 0) {
 						done = true;
-						for(Player p : WorldHelper.getPlayersDistance(location, 6).stream().filter(UHC::isPlaying).collect(Collectors.toList())) {
+						for(Player p : WorldHelper.getPlayersDistance(location, 6).stream().filter(PlayerManager::isPlaying).collect(Collectors.toList())) {
 							FightHelper.setDamager(p, owner, 40, "заминировал");
 						}
 						location.getWorld().createExplosion(location, 4);
@@ -71,7 +71,7 @@ public class Landmine {
 				} else {
 					detonated = true;
 					location.getBlock().setType(Material.AIR);
-					for(Player p : WorldHelper.getPlayersDistance(location, 6).stream().filter(UHC::isPlaying).collect(Collectors.toList())) {
+					for(Player p : WorldHelper.getPlayersDistance(location, 6).stream().filter(PlayerManager::isPlaying).collect(Collectors.toList())) {
 						FightHelper.setDamager(p, owner, 40, "заминировал");
 					}
 					location.getWorld().createExplosion(location, isSurrounded() ? 4 : 2);

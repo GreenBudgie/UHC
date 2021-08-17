@@ -3,6 +3,7 @@ package ru.mutator;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public abstract class ItemBasedMutator extends Mutator {
 	public void onChoose() {
 		if(UHC.state.isInGame()) {
 			List<ItemStack> items = getItemsToAdd();
-			for(Player p : UHC.players) {
+			for(Player p : PlayerManager.getAliveOnlinePlayers()) {
 				Map<Integer, ItemStack> notEnoughSpace = p.getInventory().addItem(items.toArray(new ItemStack[0]));
 				for(ItemStack item : notEnoughSpace.values()) {
 					Item drop = p.getWorld().dropItem(p.getLocation(), item);

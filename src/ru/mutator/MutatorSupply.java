@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.loot.LootTables;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
 import ru.util.MathUtils;
@@ -45,7 +46,7 @@ public class MutatorSupply extends Mutator {
 
 	@Override
 	public void onChoose() {
-		for(int i = 0; i < UHC.players.size() * 2; i++) {
+		for(int i = 0; i < PlayerManager.getAliveOnlinePlayers().size() * 2; i++) {
 			Location loc = chooseLocation();
 			StorageMinecart minecart = (StorageMinecart) loc.getWorld().spawnEntity(loc, EntityType.MINECART_CHEST);
 			minecart.setLootTable(getRandomLootTable().getLootTable());

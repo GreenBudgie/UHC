@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 
 public class MutatorDirtIsLava extends Mutator implements Listener {
@@ -38,7 +39,7 @@ public class MutatorDirtIsLava extends Mutator implements Listener {
 	@Override
 	public void update() {
 		if(UHC.state.isInGame()) {
-			for(Player player : UHC.players) {
+			for(Player player : PlayerManager.getAliveOnlinePlayers()) {
 				Location l = player.getLocation();
 				Block block = player.getWorld().getBlockAt(l.getBlockX(), (int) (l.getY() - 0.1), l.getBlockZ());
 				Material blockType = block.getType();

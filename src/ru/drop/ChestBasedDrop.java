@@ -9,6 +9,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
@@ -45,7 +46,7 @@ public abstract class ChestBasedDrop extends Drop {
         }
         location.getWorld().playSound(location, Sound.ITEM_FIRECHARGE_USE, 1F, 0.5F);
         ParticleUtils.createParticlesInRange(location, 1.5, Particle.FLAME, null, 40);
-        for(Player p : UHC.getInGamePlayers()) {
+        for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
             p.sendTitle(" ", getSpawnMessage(), 5, 40, 20);
             p.sendMessage(getChatDropCoordinatesInfo());
             p.playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.5F, 0.5F);

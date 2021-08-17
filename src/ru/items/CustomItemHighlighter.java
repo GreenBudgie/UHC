@@ -6,6 +6,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
@@ -20,22 +21,26 @@ public class CustomItemHighlighter extends RequesterCustomItem {
 		return Material.FEATHER;
 	}
 
+	//TODO Highlight offline players
 	@Override
-	public void onUseRight(Player p, ItemStack item, PlayerInteractEvent e) {
+	public void onUseRight(Player user, ItemStack item, PlayerInteractEvent e) {
 		item.setAmount(item.getAmount() - 1);
 		boolean found = false;
-		for(Player pl : UHC.players) {
-			Player teammate = UHC.getTeammate(p);
-			if(p.getWorld() == pl.getWorld() && p != pl && (teammate == null || teammate != pl) && p.getLocation().distance(pl.getLocation()) < 128) {
-				pl.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 240, 0));
-				p.sendMessage(ChatColor.AQUA + "Найден " + ChatColor.GOLD + pl.getName() + ChatColor.YELLOW + " (" + ChatColor.AQUA + (int) p.getLocation()
-						.distance(pl.getLocation()) + ChatColor.YELLOW + ")");
+		Player teammate = PlayerManager.getTeammate(user);
+		for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
+			if(user.getWorld() == currentPlayer.getWorld() &&
+					user != currentPlayer &&
+					(teammate == null || teammate != currentPlayer) &&
+					user.getLocation().distance(currentPlayer.getLocation()) < 128) {
+				currentPlayer.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 240, 0));
+				user.sendMessage(ChatColor.AQUA + "Найден " + ChatColor.GOLD + currentPlayer.getName() + ChatColor.YELLOW + " (" + ChatColor.AQUA + (int) user.getLocation()
+						.distance(currentPlayer.getLocation()) + ChatColor.YELLOW + ")");
 				found = true;
 			}
 		}
-		if(!found) p.sendMessage(ChatColor.RED + "В радиусе 128 блоков никого нет");
-		ParticleUtils.createParticlesInsideSphere(p.getLocation(), 3, Particle.END_ROD, Color.WHITE, 35);
-		p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1.5F);
+		if(!found) user.sendMessage(ChatColor.RED + "В радиусе 128 блоков никого нет");
+		ParticleUtils.createParticlesInsideSphere(user.getLocation(), 3, Particle.END_ROD, Color.WHITE, 35);
+		user.playSound(user.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1.5F);
 	}
 
 	@Override

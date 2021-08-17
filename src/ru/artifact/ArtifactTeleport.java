@@ -3,6 +3,7 @@ package ru.artifact;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.util.WorldHelper;
 
@@ -30,9 +31,10 @@ public class ArtifactTeleport extends Artifact {
 		return 0;
 	}
 
+	//TODO OFFLINE PLAYERS!!!!!
 	@Override
 	public void onUse(@Nullable Player player) {
-		for(Player currentPlayer : UHC.players) {
+		for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
 			WorldHelper.chorusTeleport(currentPlayer, 80);
 		}
 	}

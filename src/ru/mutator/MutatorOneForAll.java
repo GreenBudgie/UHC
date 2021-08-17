@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.util.MathUtils;
 import ru.util.TaskManager;
@@ -71,12 +72,12 @@ public class MutatorOneForAll extends Mutator implements Listener {
 						activatedMutator = MathUtils.choose(mutators);
 						activatedMutator.activate(false, null);
 						timer = MathUtils.randomRange(400, 600);
-						for(Player p : UHC.getInGamePlayers()) {
+						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 							p.sendTitle(" ", ChatColor.GOLD + "Добавлен мутатор: " + ChatColor.LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
 							p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1F);
 						}
 					} else { //FIXME NuLL
-						for(Player p : UHC.getInGamePlayers()) {
+						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 							p.sendTitle(" ", ChatColor.GOLD + "Деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
 							p.playSound(p.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1F, 1F);
 						}

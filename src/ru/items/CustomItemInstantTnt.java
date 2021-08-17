@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import ru.UHC.FightHelper;
 import ru.UHC.GameState;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.main.UHCPlugin;
 import ru.util.ParticleUtils;
@@ -53,7 +54,7 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 			if(tnt.hasMetadata("owner")) {
 				Player owner = (Player) tnt.getMetadata("owner").get(0).value();
 				if(owner != null) {
-					Player teammate = UHC.getTeammate(owner);
+					Player teammate = PlayerManager.getTeammate(owner);
 					if(owner == p || (teammate != null && teammate == p)) {
 						e.setDamage(e.getDamage() / 4.0);
 					} else {

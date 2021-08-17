@@ -11,10 +11,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import ru.UHC.ArenaManager;
-import ru.UHC.GameState;
-import ru.UHC.UHC;
-import ru.UHC.WorldManager;
+import ru.UHC.*;
 import ru.main.UHCPlugin;
 import ru.mutator.MutatorManager;
 import ru.pvparena.PvpArena;
@@ -161,12 +158,13 @@ public class SignManager implements Listener {
 
 	@EventHandler
 	public void signClick(PlayerInteractEvent e) {
-		Player p = e.getPlayer();
+		Player clickedPlayer = e.getPlayer();
 		if(!UHC.generating && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Block b = e.getClickedBlock();
 			LobbySign sign = getSignAt(b.getLocation());
-			if(sign != null && (!UHC.playing || sign.type() == SignType.GAME_START) && (p.isOp() || (UHC.playing && sign.type() == SignType.GAME_START) || sign.type()
-					.canAnyoneUse())) {
+			if(sign != null &&
+					(!UHC.playing || sign.type().canUseWhilePlaying()) &&
+					(clickedPlayer.isOp() || sign.type().canAnyoneUse())) {
 				b.getWorld().playSound(b.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 0.05F, 1.5F);
 				switch(sign.type()) {
 				case GAME_START:
@@ -176,22 +174,19 @@ public class SignManager implements Listener {
 					break;
 				case SPECTATE:
 					if(UHC.playing) {
-						UHC.spectators.add(p);
-						UHC.resetPlayer(p);
-						p.setGameMode(GameMode.SPECTATOR);
-						p.teleport(UHC.state == GameState.DEATHMATCH ? ArenaManager.getCurrentArena().world().getSpawnLocation() : WorldManager.spawnLocation);
+						PlayerManager.addSpectator(clickedPlayer);
+						clickedPlayer.teleport(WorldManager.spawnLocation);
 						UHC.refreshScoreboards();
-						p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
 						if(MutatorManager.isActive(MutatorManager.meetingPlace)) {
-							MutatorManager.meetingPlace.bar.addPlayer(p);
+							MutatorManager.meetingPlace.bar.addPlayer(clickedPlayer);
 						}
-						for(Player pl : UHC.getInGamePlayers()) {
-							pl.sendMessage(ChatColor.GOLD + p.getName() + ChatColor.AQUA + " присоединился к наблюдателям");
+						for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+							inGamePlayer.sendMessage(ChatColor.GOLD + clickedPlayer.getName() + ChatColor.AQUA + " присоединился к наблюдателям");
 						}
 					}
 					break;
 				case MAP_GENERATE:
-					if(!WorldManager.hasMap() || p.isSneaking()) {
+					if(!WorldManager.hasMap() || clickedPlayer.isSneaking()) {
 						WorldManager.regenMap();
 					}
 					break;
@@ -210,38 +205,25 @@ public class SignManager implements Listener {
 					UHC.isDuo = !UHC.isDuo;
 					List<Player> players = WorldManager.getLobby().getPlayers();
 					players.forEach(Player::closeInventory);
-					if(UHC.isDuo) {
-						for(Player pl : players) {
-							pl.getInventory().setItem(4, UHC.getTeammateChooseItem());
-							UHC.updateLobbyScoreboard(pl);
-						}
-					} else {
-						for(Player pl : players) {
-							UHC.leaveTeam(pl);
-							InventoryHelper.getItems(pl.getInventory(), Material.REDSTONE).forEach(item -> item.setAmount(0));
-							InventoryHelper.getItems(pl.getInventory(), Material.PLAYER_HEAD).forEach(item -> item.setAmount(0));
-							UHC.updateLobbyScoreboard(pl);
-						}
+					for(Player player : players) {
+						UHC.updateLobbyScoreboard(player);
 					}
 					break;
 				case RETURN_LOBBY:
-					InventoryHelper.removeItemsExcept(p.getInventory(), Material.REDSTONE, Material.PLAYER_HEAD);
-					if(UHC.isDuo) {
-						UHC.updateInventoryTeamItemFor(p);
-					}
-					p.teleport(WorldManager.getLobby().getSpawnLocation());
+					InventoryHelper.removeItemsExcept(clickedPlayer.getInventory(), Material.REDSTONE, Material.PLAYER_HEAD);
+					clickedPlayer.teleport(WorldManager.getLobby().getSpawnLocation());
 					break;
 				case ARENA_NEXT_KIT:
 					PvpArena.killsToNextKit = 8;
 					PvpArena.currentKit = PvpArena.getRandomKit();
 					String text = ChatColor.GREEN + "Новый набор: " + ChatColor.LIGHT_PURPLE + PvpArena.currentKit.getName();
-					InventoryHelper.sendActionBarMessage(p, text);
+					InventoryHelper.sendActionBarMessage(clickedPlayer, text);
 					for(Player player : PvpArena.onArena) {
 						InventoryHelper.sendActionBarMessage(player, text);
 					}
 					break;
 				case ARENA_TP:
-					p.teleport(PvpArena.arenaSpawnLocation);
+					clickedPlayer.teleport(PvpArena.arenaSpawnLocation);
 					break;
 				case GAME_FAST_START:
 					UHC.fastStart = UHC.fastStart == 2 ? 0 : UHC.fastStart + 1;

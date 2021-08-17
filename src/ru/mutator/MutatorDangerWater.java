@@ -5,6 +5,7 @@ import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 
 public class MutatorDangerWater extends Mutator {
@@ -31,7 +32,7 @@ public class MutatorDangerWater extends Mutator {
 
 	@Override
 	public void update() {
-		for(Player p : UHC.players) {
+		for(Player p : PlayerManager.getAliveOnlinePlayers()) {
 			if(((CraftPlayer) p).getHandle().isInWater()) {
 				PotionEffect effect = p.getPotionEffect(PotionEffectType.POISON);
 				if(effect == null || effect.getDuration() <= 20) {

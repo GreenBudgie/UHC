@@ -17,6 +17,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.util.MathUtils;
 import ru.util.TaskManager;
@@ -83,19 +84,19 @@ public class MutatorRestrictions extends Mutator implements Listener {
 				if(restriction == null) {
 					timeToRestrict--;
 					if(timeToRestrict == 3) {
-						for(Player p : UHC.getInGamePlayers()) {
+						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 							p.sendTitle(ChatColor.RED + "Я", "", 0, 30, 10);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.1F, 1F);
 						}
 					}
 					if(timeToRestrict == 2) {
-						for(Player p : UHC.getInGamePlayers()) {
+						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 							p.sendTitle(ChatColor.RED + "Я ВАМ", "", 0, 30, 10);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.2F, 1.1F);
 						}
 					}
 					if(timeToRestrict == 1) {
-						for(Player p : UHC.getInGamePlayers()) {
+						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 							p.sendTitle(ChatColor.RED + "Я ВАМ ЗАПРЕЩАЮ", "", 0, 30, 10);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.3F, 1.2F);
 						}
@@ -105,7 +106,7 @@ public class MutatorRestrictions extends Mutator implements Listener {
 						this.restriction = restriction;
 						bar.removeAll();
 						bar.setTitle(ChatColor.DARK_RED + "Я ВАМ ЗАПРЕЩАЮ: " + ChatColor.RED + restriction.getDescription());
-						for(Player p : UHC.getInGamePlayers()) {
+						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 							bar.addPlayer(p);
 							p.sendTitle(ChatColor.DARK_RED + "Я ВАМ ЗАПРЕЩАЮ", ChatColor.RED + restriction.getDescription(), 0, 50, 15);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 1F, 0.8F);
@@ -118,7 +119,7 @@ public class MutatorRestrictions extends Mutator implements Listener {
 					timeToAllow--;
 					bar.setProgress(timeToAllow / 20.0);
 					if(timeToAllow <= 0) {
-						for(Player p : UHC.getInGamePlayers()) {
+						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 							p.sendTitle(ChatColor.GREEN + "Я ВАМ РАЗРЕШАЮ", ChatColor.DARK_GREEN + restriction.getDescription(), 0, 50, 15);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 1F, 0.8F);
 						}
@@ -138,28 +139,28 @@ public class MutatorRestrictions extends Mutator implements Listener {
 
 	@EventHandler
 	public void place(BlockPlaceEvent e) {
-		if(restriction == Restriction.PLACE && UHC.isPlaying(e.getPlayer())) {
+		if(restriction == Restriction.PLACE && PlayerManager.isPlaying(e.getPlayer())) {
 			punishInterrupter(e.getPlayer());
 		}
 	}
 
 	@EventHandler
 	public void breakBlock(BlockBreakEvent e) {
-		if(restriction == Restriction.DIG && UHC.isPlaying(e.getPlayer())) {
+		if(restriction == Restriction.DIG && PlayerManager.isPlaying(e.getPlayer())) {
 			punishInterrupter(e.getPlayer());
 		}
 	}
 
 	@EventHandler
 	public void shift(PlayerToggleSneakEvent e) {
-		if(restriction == Restriction.SHIFT && UHC.isPlaying(e.getPlayer()) && e.isSneaking()) {
+		if(restriction == Restriction.SHIFT && PlayerManager.isPlaying(e.getPlayer()) && e.isSneaking()) {
 			punishInterrupter(e.getPlayer());
 		}
 	}
 
 	@EventHandler
 	public void sprint(PlayerToggleSprintEvent e) {
-		if(restriction == Restriction.SPRINT && UHC.isPlaying(e.getPlayer()) && e.isSprinting()) {
+		if(restriction == Restriction.SPRINT && PlayerManager.isPlaying(e.getPlayer()) && e.isSprinting()) {
 			punishInterrupter(e.getPlayer());
 		}
 	}
@@ -169,7 +170,7 @@ public class MutatorRestrictions extends Mutator implements Listener {
 		if(restriction == Restriction.ATTACK && e.getEntity() instanceof LivingEntity && e.getDamager() instanceof Player && !e.isCancelled()
 				&& e.getFinalDamage() > 0 && !e.getEntity().isInvulnerable()) {
 			Player damager = (Player) e.getDamager();
-			if(UHC.isPlaying(damager)) {
+			if(PlayerManager.isPlaying(damager)) {
 				punishInterrupter(damager);
 			}
 		}

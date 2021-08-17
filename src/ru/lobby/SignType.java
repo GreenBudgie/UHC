@@ -7,5 +7,8 @@ public enum SignType {
 	public boolean canAnyoneUse() {
 		return this == RETURN_LOBBY || this == ARENA_TP;
 	}
+	public boolean canUseWhilePlaying() {
+		return this == SPECTATE || this == RETURN_LOBBY || this == ARENA_TP || this == ARENA_NEXT_KIT;
+	}
 
 }

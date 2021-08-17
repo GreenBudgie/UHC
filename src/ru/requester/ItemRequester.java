@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.items.CustomItem;
 import ru.items.CustomItems;
@@ -62,36 +63,37 @@ public class ItemRequester implements Listener {
 		InventoryHelper.removeItemsLimited(p, Material.LAPIS_LAZULI, lapis);
 	}
 
-	public static void request(Player p, ItemStack item) {
+	public static void request(Player requester, ItemStack item) {
 		CustomItem customItem = CustomItems.getCustomItem(item);
 		if(customItem instanceof RequesterCustomItem) {
 			RequesterCustomItem requesterItem = (RequesterCustomItem) customItem;
-			if(requesterItem.canRequest(p)) {
-				p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ILLUSIONER_CAST_SPELL, 1F, 0.5F);
+			if(requesterItem.canRequest(requester)) {
+				requester.getWorld().playSound(requester.getLocation(), Sound.ENTITY_ILLUSIONER_CAST_SPELL, 1F, 0.5F);
 				if(!MutatorManager.requestAnywhere.isActive()) {
-					Firework firework = (Firework) p.getWorld().spawnEntity(p.getLocation(), EntityType.FIREWORK);
+					Firework firework = (Firework) requester.getWorld().spawnEntity(requester.getLocation(), EntityType.FIREWORK);
 					FireworkMeta meta = firework.getFireworkMeta();
 					meta.setPower(2);
 					meta.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(Color.RED).withFade(Color.BLACK).build());
 					firework.setFireworkMeta(meta);
 				}
-				ParticleUtils.createParticlesInsideSphere(p.getLocation(), 3, Particle.TOTEM, null, 30);
+				ParticleUtils.createParticlesInsideSphere(requester.getLocation(), 3, Particle.TOTEM, null, 30);
 				int lapisPrice = MutatorManager.simpleRequests.isActive() ? 0 : requesterItem.getLapisPrice();
-				removeMaterials(p, requesterItem.getRedstonePrice(), lapisPrice);
-				for(Player player : UHC.getInGamePlayers()) {
-					Location l = p.getLocation();
-					player.sendMessage(
-							ChatColor.LIGHT_PURPLE + "Был сделан запрос: " + ChatColor.DARK_AQUA + l.getBlockX() + ChatColor.WHITE + ", " + ChatColor.DARK_AQUA + l
-									.getBlockZ() + (player == p ?
-									"" :
-									ChatColor.WHITE + " (" + (l.getWorld() == player.getWorld() ?
-											(ChatColor.AQUA + String.valueOf((int) l.distance(player.getLocation()))) :
-											WorldHelper.getEnvironmentNamePrepositional(l.getWorld().getEnvironment(), ChatColor.AQUA)) + ChatColor.WHITE + ")"));
+				removeMaterials(requester, requesterItem.getRedstonePrice(), lapisPrice);
+				for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+					Location requesterLocation = requester.getLocation();
+					inGamePlayer.sendMessage(
+							ChatColor.LIGHT_PURPLE + "Был сделан запрос: " +
+									ChatColor.DARK_AQUA + requesterLocation.getBlockX() +
+									ChatColor.WHITE + ", " + ChatColor.DARK_AQUA +
+									requesterLocation.getBlockZ() +
+									(inGamePlayer == requester ? "" : ChatColor.WHITE + " (" + (requesterLocation.getWorld() == inGamePlayer.getWorld() ?
+											(ChatColor.AQUA + String.valueOf((int) requesterLocation.distance(inGamePlayer.getLocation()))) :
+											WorldHelper.getEnvironmentNamePrepositional(requesterLocation.getWorld().getEnvironment(), ChatColor.AQUA)) + ChatColor.WHITE + ")"));
 				}
-				requestedItems.add(new RequestedItem(p.getLocation(), requesterItem.getItemStack()));
-				p.closeInventory();
+				requestedItems.add(new RequestedItem(requester.getLocation(), requesterItem.getItemStack()));
+				requester.closeInventory();
 			} else {
-				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
+				requester.playSound(requester.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
 			}
 		}
 	}
@@ -107,7 +109,7 @@ public class ItemRequester implements Listener {
 	public void openInv(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		ItemStack item = e.getItem();
-		if(UHC.isPlaying(p) && UHC.state.isInGame() && item != null && item.getType() == Material.REDSTONE && (e.getAction() == Action.RIGHT_CLICK_BLOCK
+		if(PlayerManager.isPlaying(p) && UHC.state.isInGame() && item != null && item.getType() == Material.REDSTONE && (e.getAction() == Action.RIGHT_CLICK_BLOCK
 				|| e.getAction() == Action.RIGHT_CLICK_AIR)) {
 			openRequesterInventory(p);
 			p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.5F);

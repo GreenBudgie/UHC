@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
@@ -28,7 +29,7 @@ public class CustomItemShieldBreaker extends RequesterCustomItem implements List
 		if(e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
 			Player attacker = (Player) e.getDamager();
 			Player victim = (Player) e.getEntity();
-			if(!UHC.isTeammates(attacker, victim) && victim.isBlocking() && isEquals(attacker.getInventory().getItemInMainHand())) {
+			if(!PlayerManager.isTeammates(attacker, victim) && victim.isBlocking() && isEquals(attacker.getInventory().getItemInMainHand())) {
 				ItemStack main = victim.getInventory().getItemInMainHand();
 				ItemStack off = victim.getInventory().getItemInOffHand();
 				if(off.getType() == Material.SHIELD) off.setAmount(0);

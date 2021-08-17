@@ -6,6 +6,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.Listener;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
 import ru.util.MathUtils;
@@ -45,7 +46,7 @@ public class MutatorApocalypse extends Mutator implements Listener {
 	}
 
 	private Location getRandomLocation() {
-		Player target = MathUtils.choose(UHC.players);
+		Player target = MathUtils.choose(PlayerManager.getAliveOnlinePlayers());
 		int x = target.getLocation().getBlockX() + MathUtils.randomRange(-15, 15);
 		int z = target.getLocation().getBlockZ() + MathUtils.randomRange(-15, 15);
 		int y = WorldManager.getGameMap().getMaxHeight() - 1;

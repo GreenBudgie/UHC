@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.GameState;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.util.MathUtils;
 import ru.util.TaskManager;
@@ -45,7 +46,7 @@ public class MutatorOxygen extends Mutator implements Listener {
 
 	@Override
 	public void onChoose() {
-		for(Player p : UHC.players) {
+		for(Player p : PlayerManager.getAliveOnlinePlayers()) {
 			oxygen.put(p, 100.0);
 			createBar(p);
 		}
@@ -102,7 +103,7 @@ public class MutatorOxygen extends Mutator implements Listener {
 	public void update() {
 		if(TaskManager.isSecUpdated()) {
 			if(UHC.state.isInGame()) {
-				for(Player p : UHC.players) {
+				for(Player p : PlayerManager.getAliveOnlinePlayers()) {
 					double change = getChange(p);
 					double oxygen = MathUtils.clamp(getOxygen(p) + change, 0, 100);
 					this.oxygen.replace(p, oxygen);
@@ -127,7 +128,7 @@ public class MutatorOxygen extends Mutator implements Listener {
 					}
 				}
 			} else {
-				for(Player p : UHC.players) {
+				for(Player p : PlayerManager.getAliveOnlinePlayers()) {
 					BossBar bar = getBar(p);
 					bar.setVisible(false);
 				}

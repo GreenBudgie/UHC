@@ -5,6 +5,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
 import ru.main.UHCPlugin;
@@ -36,7 +37,7 @@ public class AirDrop extends Drop {
         location.getWorld().playSound(location, Sound.ENTITY_ITEM_PICKUP, 1F, 0.5F);
         location.getWorld().playSound(location, Sound.BLOCK_WOOL_BREAK, 1.5F, 0.5F);
         ParticleUtils.createParticlesInsideSphere(location, 3, Particle.REDSTONE, Color.WHITE, 40);
-        for(Player p : UHC.getInGamePlayers()) {
+        for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
             p.sendTitle(" ", getSpawnMessage(), 10, 40, 20);
             p.sendMessage(getChatDropCoordinatesInfo());
             p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_ELYTRA, 0.5F, 1.5F);

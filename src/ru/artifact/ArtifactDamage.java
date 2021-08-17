@@ -8,6 +8,7 @@ import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
@@ -35,9 +36,10 @@ public class ArtifactDamage extends Artifact {
 		return 1;
 	}
 
+	//TODO Think about offline players
 	@Override
 	public void onUse(@Nullable Player player) {
-		for(Player currentPlayer : UHC.players) {
+		for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
 			boolean doMaxDamage = player == null || player == currentPlayer;
 			double damage = MathUtils.clamp(doMaxDamage ? 5 : 4, 0, currentPlayer.getHealth() - 1);
 			currentPlayer.damage(damage);

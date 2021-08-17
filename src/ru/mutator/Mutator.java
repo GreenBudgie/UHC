@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.main.UHCPlugin;
 import ru.util.MathUtils;
@@ -55,7 +56,7 @@ public abstract class Mutator {
 	public final void activate(boolean applyHiding, String preference) {
 		MutatorManager.activeMutators.add(this);
 		if(applyHiding) hide();
-		for(Player p : UHC.getInGamePlayers()) {
+		for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 			if(!isHidden && preference != null) {
 				p.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Предпочтение " + ChatColor.GOLD + preference + ChatColor.DARK_GRAY + ":");
 			}

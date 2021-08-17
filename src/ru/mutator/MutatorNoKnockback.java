@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.util.TaskManager;
 
@@ -44,7 +45,7 @@ public class MutatorNoKnockback extends Mutator implements Listener {
 			if(e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
 				Player p1 = (Player) e.getDamager();
 				Player p2 = (Player) e.getEntity();
-				if(UHC.isTeammates(p1, p2)) return;
+				if(PlayerManager.isTeammates(p1, p2)) return;
 			}
 			TaskManager.invokeLater(() -> e.getEntity().setVelocity(new Vector(0, 0, 0)));
 		}

@@ -9,6 +9,7 @@ import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.util.TaskManager;
 
@@ -49,7 +50,7 @@ public class MutatorTotems extends ItemBasedMutator implements Listener {
 	@EventHandler
 	public void resurrect(EntityResurrectEvent e) {
 		if(!e.isCancelled() && e.getEntity() instanceof Player p) {
-			if(UHC.isPlaying(p)) {
+			if(PlayerManager.isPlaying(p)) {
 				TaskManager.invokeLater(() -> {
 
 					PotionEffect regen = p.getPotionEffect(PotionEffectType.REGENERATION);

@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.util.ItemUtils;
 import ru.util.NumericalCases;
@@ -42,7 +43,7 @@ public abstract class Artifact {
 
 	public void use(@Nullable Player player) {
 		if(player != null) {
-			for(Player receiver : UHC.getInGamePlayers()) {
+			for(Player receiver : PlayerManager.getInGamePlayersAndSpectators()) {
 				receiver.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " призвал силу артефакта " + ChatColor.BOLD + ChatColor.DARK_RED + getName());
 				if(receiver != player) {
 					receiver.playSound(receiver.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 0.5F, 0.5F);
@@ -51,7 +52,7 @@ public abstract class Artifact {
 			onUse(player);
 			currentPrice += getPriceIncreaseAmount();
 		} else {
-			for(Player receiver : UHC.getInGamePlayers()) {
+			for(Player receiver : PlayerManager.getInGamePlayersAndSpectators()) {
 				receiver.sendMessage(ChatColor.YELLOW + "Призвана сила артефакта " + ChatColor.BOLD + ChatColor.DARK_RED + getName());
 				receiver.playSound(receiver.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 0.5F, 0.5F);
 			}

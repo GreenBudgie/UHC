@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
@@ -71,14 +72,14 @@ public class MutatorStop extends Mutator implements Listener {
 			if(timeToStop <= 0) {
 				if(TaskManager.isSecUpdated()) {
 					if(!isStopped) {
-						for(Player p : UHC.getInGamePlayers()) {
+						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 							p.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Замри!", "", 0, 100, 0);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 1F, 1F);
 						}
 						isStopped = true;
 					} else {
 						if(timeToRemoveStop <= 0) {
-							for(Player p : UHC.getInGamePlayers()) {
+							for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 								p.sendTitle(ChatColor.GREEN + "" + ChatColor.BOLD + "Можно идти!", "", 0, 30, 10);
 								p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 1F, 1.5F);
 							}
@@ -102,7 +103,7 @@ public class MutatorStop extends Mutator implements Listener {
 						color = ChatColor.WHITE;
 						break;
 					}
-					for(Player p : UHC.getInGamePlayers()) {
+					for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 						String dots = StringUtils.repeat(".", 4 - timeToStop);
 						p.sendTitle(color + "Замри" + dots, color + String.valueOf(timeToStop), 0, 30, 0);
 						p.playSound(p.getLocation(), Sound.BLOCK_COMPARATOR_CLICK, (4 - timeToStop) * 0.2F, (4 - timeToStop) * 0.2F + 1F);
@@ -120,7 +121,7 @@ public class MutatorStop extends Mutator implements Listener {
 	@EventHandler
 	public void handleMove(PlayerMoveEvent e) {
 		Player p = e.getPlayer();
-		if(isStopped && e.getTo() != null && UHC.isPlaying(p) && !intruders.contains(p) && !WorldHelper.compareLocations(e.getFrom(), e.getTo())) {
+		if(isStopped && e.getTo() != null && PlayerManager.isPlaying(p) && !intruders.contains(p) && !WorldHelper.compareLocations(e.getFrom(), e.getTo())) {
 			intruders.add(p);
 			p.playSound(p.getLocation(), Sound.ENTITY_PHANTOM_DEATH, 1F, 0.7F);
 			p.sendTitle(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Ты пошевелился!", "", 0, 100, 0);

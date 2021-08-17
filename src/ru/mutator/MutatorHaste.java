@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 
 public class MutatorHaste extends Mutator {
@@ -15,7 +16,7 @@ public class MutatorHaste extends Mutator {
 
 	@Override
 	public void onChoose() {
-		for(Player p : UHC.players) {
+		for(Player p : PlayerManager.getAliveOnlinePlayers()) {
 			p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 999999, 1, false, false));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 999999, 1, false, false));
 		}
@@ -23,7 +24,7 @@ public class MutatorHaste extends Mutator {
 
 	@Override
 	public void onDeactivate() {
-		for(Player p : UHC.players) {
+		for(Player p : PlayerManager.getAliveOnlinePlayers()) {
 			p.removePotionEffect(PotionEffectType.FAST_DIGGING);
 			p.removePotionEffect(PotionEffectType.SPEED);
 		}
@@ -31,7 +32,7 @@ public class MutatorHaste extends Mutator {
 
 	@Override
 	public void update() {
-		for(Player p : UHC.players) {
+		for(Player p : PlayerManager.getAliveOnlinePlayers()) {
 			if(!p.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
 				p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 999999, 1, false, false));
 			}

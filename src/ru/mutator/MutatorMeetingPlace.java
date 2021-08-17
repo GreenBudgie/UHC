@@ -6,6 +6,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
 import ru.util.MathUtils;
@@ -75,7 +76,7 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 		isMeeting = false;
 		bar.setProgress(1);
 		bar.setColor(BarColor.YELLOW);
-		for(Player p : UHC.getInGamePlayers()) {
+		for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 			bar.addPlayer(p);
 		}
 		bar.setVisible(true);
@@ -92,7 +93,7 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 			if(UHC.state.isInGame()) {
 				if(cooldown <= 0) {
 					if(meetingDelay <= 0) {
-						for(Player p : UHC.getInGamePlayers()) {
+						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 							p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1F);
 							p.sendTitle(ChatColor.GREEN + "Сбор окончен!", "", 10, 30, 10);
 						}
@@ -100,7 +101,7 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 						reset();
 					} else {
 						if(!isMeeting) {
-							for(Player p : UHC.getInGamePlayers()) {
+							for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 								p.playSound(p.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1F, 1F);
 								p.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Все на сбор!", "", 2, 30, 10);
 							}

@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.items.CustomItems;
 import ru.mutator.MutatorManager;
@@ -41,13 +42,13 @@ public class ArtifactManager implements Listener {
 	public static ArtifactRandom random = new ArtifactRandom();
 	public static ArtifactHunger hunger = new ArtifactHunger();
 
-	private static String name = ChatColor.DARK_RED + "Призвать";
+	private static String inventoryName = ChatColor.DARK_RED + "Призвать";
 
 	public static void openArtifactInventory(Player p) {
 		NumericalCases cases = new NumericalCases("артефакт", "артефакта", "артефактов");
 		int count = getArtifactCount(p);
 		Inventory inv = Bukkit.createInventory(p, 18,
-				name + ChatColor.DARK_GRAY + " (" + ChatColor.YELLOW + count + ChatColor.RED + " " + cases.byNumber(count) + ChatColor.DARK_GRAY + ")");
+				inventoryName + ChatColor.DARK_GRAY + " (" + ChatColor.YELLOW + count + ChatColor.RED + " " + cases.byNumber(count) + ChatColor.DARK_GRAY + ")");
 		List<Artifact> sorted = Lists.newArrayList(artifacts);
 		sorted.sort(Comparator.comparingInt(Artifact::getCurrentPrice));
 		for(Artifact artifact : sorted) {
@@ -74,10 +75,12 @@ public class ArtifactManager implements Listener {
 
 	@EventHandler
 	public void click(PlayerInteractEvent e) {
-		Player p = e.getPlayer();
+		Player player = e.getPlayer();
 		ItemStack item = e.getItem();
-		if(UHC.isPlaying(p) && UHC.state.isInGame() && CustomItems.darkArtifact.isEquals(item) && (e.getAction() == Action.RIGHT_CLICK_BLOCK
-				|| e.getAction() == Action.RIGHT_CLICK_AIR)) {
+		if(PlayerManager.isPlaying(player) &&
+				UHC.state.isInGame() &&
+				CustomItems.darkArtifact.isEquals(item) &&
+				(e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR)) {
 			openArtifactInventory(e.getPlayer());
 			e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.5F);
 			e.setCancelled(true);
@@ -93,7 +96,7 @@ public class ArtifactManager implements Listener {
 	@EventHandler
 	public void invClick(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
-		if(e.getView().getTitle().startsWith(name)) {
+		if(e.getView().getTitle().startsWith(inventoryName)) {
 			if(e.getClickedInventory() != null && e.getClickedInventory() == e.getView().getTopInventory()) {
 				ItemStack item = e.getCurrentItem();
 				if(item != null) {
@@ -102,10 +105,10 @@ public class ArtifactManager implements Listener {
 							if(getArtifactCount(p) >= artifact.getCurrentPrice()) {
 								artifact.use(p);
 								//Reopening other players' inventories to reset prices
-								for(Player player : UHC.players) {
+								for(Player player : PlayerManager.getAliveOnlinePlayers()) {
 									if(player != p) {
 										InventoryView openInv = player.getOpenInventory();
-										if(openInv.getTitle().startsWith(name)) {
+										if(openInv.getTitle().startsWith(inventoryName)) {
 											player.closeInventory();
 											openArtifactInventory(player);
 										}

@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
@@ -43,7 +44,7 @@ public class ArtifactDisableMutator extends Artifact {
 				player.playSound(player.getLocation(), Sound.ITEM_TOTEM_USE, 0.8F, 1.2F);
 			}
 			Mutator mutator = MathUtils.choose(mutators);
-			for(Player currentPlayer : UHC.getInGamePlayers()) {
+			for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 				currentPlayer.sendMessage(ChatColor.YELLOW + "Был деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + mutator.getName());
 			}
 			mutator.deactivate();
