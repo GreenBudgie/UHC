@@ -39,7 +39,7 @@ public class PlayerTeam {
 	}
 
 	public boolean contains(Player p) {
-		return player1.getPlayer() == p || player2.getPlayer() == p;
+		return player1.getPlayer() == p || (player2 != null && player2.getPlayer() == p);
 	}
 
 	public boolean isDual() {
@@ -50,8 +50,7 @@ public class PlayerTeam {
 	 * Checks whether the current team has at least one member alive, even if he is not on server
 	 */
 	public boolean isAlive() {
-		if(!player1.isAlive()) return false;
-		return player2 == null || player2.isAlive();
+		return player1.isAlive() || (player2 != null && player2.isAlive());
 	}
 
 	public int size() {

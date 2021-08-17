@@ -3,24 +3,17 @@ package ru.UHC;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import ru.lobby.Lobby;
 import ru.main.UHCPlugin;
-import ru.util.InventoryHelper;
 import ru.util.ItemUtils;
 import ru.util.MathUtils;
+import ru.util.ParticleUtils;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class UHCPlayer {
 
@@ -52,30 +45,57 @@ public class UHCPlayer {
             } else if(UHC.state == GameState.ENDING) {
                 moveToSpectators();
             } else {
+                for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
+                    player.sendMessage(ChatColor.GOLD + nickname + ChatColor.RED + " вышел из игры");
+                }
                 state = State.LEFT_AND_ALIVE;
                 createGhost();
                 saveInventory();
             }
         }
+        player = null;
     }
 
-    public void rejoin() {
+    public void rejoin(Player joinedPlayer) {
+        this.player = joinedPlayer;
+        if(ghost != null) {
+            player.teleport(ghost.getLocation());
+            ghost.remove();
+            ghost = null;
+        }
+        if(state == State.LEFT_AND_ALIVE) {
+            state = State.PLAYING;
+            for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
+                player.sendMessage(ChatColor.GOLD + nickname + ChatColor.DARK_GREEN + " вернулся в игру");
+            }
+        } else if(state == State.LEFT_AND_DEAD) {
+            moveToSpectators();
+            for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
+                player.sendMessage(ChatColor.GOLD + nickname + ChatColor.DARK_GREEN + " вернулся в игру, к сожалению, мертвым");
+            }
+        }
+    }
 
+    public void damageGhost(Player damager) {
+        if(state == State.LEFT_AND_ALIVE) {
+            ghostKiller = damager;
+            kill();
+        }
     }
 
     private void createGhost() {
         ArmorStand stand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
-        stand.setCustomName(ChatColor.GOLD + this.nickname);
+        stand.setCustomName(ChatColor.AQUA + this.nickname);
         stand.setCustomNameVisible(true);
         stand.setGravity(false);
         stand.setBasePlate(false);
+        stand.setArms(true);
         stand.getEquipment().setHelmet(ItemUtils.getHead(player));
         stand.getEquipment().setChestplate(player.getInventory().getChestplate());
         stand.getEquipment().setLeggings(player.getInventory().getLeggings());
         stand.getEquipment().setBoots(player.getInventory().getBoots());
         stand.getEquipment().setItemInMainHand(player.getInventory().getItemInMainHand());
         stand.getEquipment().setItemInOffHand(player.getInventory().getItemInOffHand());
-        stand.setMetadata("uhc_player_ghost", new FixedMetadataValue(UHCPlugin.instance, this.nickname));
         this.ghost = stand;
     }
 
@@ -96,8 +116,6 @@ public class UHCPlayer {
      * Called when a player or its ghost dies
      */
     public void initiateDeath() {
-        moveToSpectators();
-        dropInventory();
         dropBonusItemOnDeath();
         showDeathMessage();
 
@@ -110,7 +128,7 @@ public class UHCPlayer {
                     ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "третье" :
                     ChatColor.AQUA + "" + ChatColor.BOLD + "второе";
             String info = ChatColor.YELLOW + "Ты занял " + place + ChatColor.RESET + ChatColor.YELLOW + " место!";
-            player.sendMessage(info);
+            sendMessage(info);
             if(teammate != null) {
                 teammate.sendMessage(info);
             }
@@ -130,7 +148,7 @@ public class UHCPlayer {
     private void dropInventory() {
         Location location = getLocation();
         if(location == null) return;
-        Set<ItemStack> itemsToDrop = new HashSet<>();
+        List<ItemStack> itemsToDrop = new ArrayList<>();
         if(player != null) {
             itemsToDrop.addAll(Arrays.asList(player.getInventory().getContents()));
         } else {
@@ -146,13 +164,12 @@ public class UHCPlayer {
     }
 
     private void dropBonusItemOnDeath() {
+        Location location = getLocation();
         Player killer = getKiller();
         if(killer != null) {
-            player.getWorld().dropItem(player.getLocation(), UHC.getBonusShell());
+            location.getWorld().dropItem(location, UHC.getBonusShell());
             return;
         }
-        Location location = getLocation();
-        if(location == null) return;
         boolean golden = UHC.state == GameState.OUTBREAK;
         ItemStack apple = ItemUtils.
                 builder(golden ? Material.GOLDEN_APPLE : Material.APPLE).
@@ -223,6 +240,7 @@ public class UHCPlayer {
      * Called when a player dies while playing
      */
     public void deathInGame() {
+        moveToSpectators();
         initiateDeath();
     }
 
@@ -230,6 +248,13 @@ public class UHCPlayer {
      * Called when a player's ghost 'dies' while player is not on server
      */
     public void deathWhileLeft() {
+        state = State.LEFT_AND_DEAD;
+        if(ghost != null) {
+            ParticleUtils.createParticlesAround(ghost, Particle.REDSTONE, Color.fromRGB(100, 0, 0), 20);
+            ghost.getWorld().playSound(ghost.getLocation(), Sound.ENTITY_PLAYER_DEATH, 1, 1);
+            ghost.remove();
+        }
+        dropInventory();
         initiateDeath();
     }
 

@@ -15,6 +15,7 @@ import org.bukkit.craftbukkit.v1_17_R1.entity.CraftVillager;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -300,6 +301,9 @@ public class UHC implements Listener {
 				resetPlayer(inGamePlayer);
 				inGamePlayer.setGameMode(GameMode.ADVENTURE);
 				inGamePlayer.teleport(WorldManager.getLobby().getSpawnLocation());
+			}
+			for(UHCPlayer uplayer : PlayerManager.getPlayers()) {
+				if(uplayer.getGhost() != null) uplayer.getGhost().remove();
 			}
 			voteBar.removeAll();
 			voteBar.setVisible(false);
@@ -816,8 +820,10 @@ public class UHC implements Listener {
 			Drops.update();
 		}
 		if(TaskManager.isSecUpdated() && playing) {
+			for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+				updateGameScoreboard(inGamePlayer);
+			}
 			for(Player onlinePlayer : PlayerManager.getAliveOnlinePlayers()) {
-				updateGameScoreboard(onlinePlayer);
 				Player teammate = PlayerManager.getTeammate(onlinePlayer);
 				String teammateInfo = "";
 				if(teammate != null && PlayerManager.isPlaying(teammate)) {
@@ -1385,6 +1391,37 @@ public class UHC implements Listener {
 	}
 
 	@EventHandler
+	public void ghostStandInteract(PlayerArmorStandManipulateEvent e) {
+		ArmorStand stand = e.getRightClicked();
+		UHCPlayer player = PlayerManager.getPlayerFromGhost(stand);
+		if(player != null) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void ghostStandPlayerDamage(EntityDamageByEntityEvent e) {
+		if(e.getEntity() instanceof ArmorStand stand && e.getDamager() instanceof Player damager) {
+			UHCPlayer damagedPlayer = PlayerManager.getPlayerFromGhost(stand);
+			if(damagedPlayer != null) {
+				damagedPlayer.damageGhost(damager);
+				e.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void ghostStandAnyDamage(EntityDamageEvent e) {
+		if(e.getEntity() instanceof ArmorStand stand) {
+			UHCPlayer damagedPlayer = PlayerManager.getPlayerFromGhost(stand);
+			if(damagedPlayer != null) {
+				damagedPlayer.damageGhost(null);
+				e.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler
 	public void quit(PlayerQuitEvent e) {
 		e.setQuitMessage(null);
 		Player player = e.getPlayer();
@@ -1413,28 +1450,35 @@ public class UHC implements Listener {
 		}
 	}
 
+
 	@EventHandler
 	public void join(PlayerJoinEvent e) {
 		e.setJoinMessage(null);
-		Player p = e.getPlayer();
-		p.setGameMode(GameMode.ADVENTURE);
-		resetPlayer(p);
-		PlayerStat.defaultStats(p);
-		giveAllRecipes(p);
-		String msg = ChatColor.GREEN + "" + ChatColor.BOLD + "+ " + ChatColor.RESET + ChatColor.GOLD + p.getName() + ChatColor.YELLOW + " присоединился";
-		for(Player pl : WorldManager.getLobby().getPlayers()) {
-			pl.sendMessage(msg);
-		}
-		p.sendMessage(msg);
-		if(!isInLobby(p)) p.teleport(WorldManager.getLobby().getSpawnLocation());
-		if(playing) {
+		Player player = e.getPlayer();
+		UHCPlayer uplayer = PlayerManager.asUHCPlayer(player);
+		if(uplayer != null && !uplayer.isSpectator()) {
+			uplayer.rejoin(player);
 			refreshGameScoreboardLater();
-			p.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Сейчас идет игра! " + ChatColor.RESET + ChatColor.AQUA
-					+ "За игрой можно наблюдать, нажав по табличке на стене.");
 		} else {
-			if(MutatorManager.getAvailablePreferences().getOrDefault(p.getName(), new HashSet<>()).isEmpty()) {
-				p.sendMessage(ChatColor.GOLD + "Проголосуй за " + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "мутаторы" + ChatColor.RESET + ChatColor.GOLD +
-						"! Команда: " + ChatColor.YELLOW + ChatColor.BOLD + "/mutator");
+			player.setGameMode(GameMode.ADVENTURE);
+			resetPlayer(player);
+			PlayerStat.defaultStats(player);
+			giveAllRecipes(player);
+			String msg = ChatColor.GREEN + "" + ChatColor.BOLD + "+ " + ChatColor.RESET + ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " присоединился";
+			for(Player pl : WorldManager.getLobby().getPlayers()) {
+				pl.sendMessage(msg);
+			}
+			player.sendMessage(msg);
+			if(!isInLobby(player)) player.teleport(WorldManager.getLobby().getSpawnLocation());
+			if(playing) {
+				refreshGameScoreboardLater();
+				player.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Сейчас идет игра! " + ChatColor.RESET + ChatColor.AQUA
+						+ "За игрой можно наблюдать, нажав по табличке на стене.");
+			} else {
+				if(MutatorManager.getAvailablePreferences().getOrDefault(player.getName(), new HashSet<>()).isEmpty()) {
+					player.sendMessage(ChatColor.GOLD + "Проголосуй за " + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "мутаторы" + ChatColor.RESET + ChatColor.GOLD +
+							"! Команда: " + ChatColor.YELLOW + ChatColor.BOLD + "/mutator");
+				}
 			}
 		}
 		refreshLobbyScoreboardLater();

@@ -80,7 +80,6 @@ public class ArenaManager {
                 } else {
                     arenas.add(arena);
                 }
-                UHCPlugin.info("\"" + file.getName() + "\" successfully created");
             }
         }
     }

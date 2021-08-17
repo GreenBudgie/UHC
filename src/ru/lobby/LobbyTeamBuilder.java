@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import ru.UHC.UHC;
 import ru.UHC.WorldManager;
 import ru.main.UHCPlugin;
 import ru.util.InventoryHelper;
@@ -53,7 +54,6 @@ public class LobbyTeamBuilder implements Listener {
             if(item != null) {
                 if(item.getType() == Material.PLAYER_HEAD && !ItemUtils.hasCustomValue(item, "teammate")) {
                     SkullMeta meta = (SkullMeta) item.getItemMeta();
-                    UHCPlugin.log(meta.getOwningPlayer());
                     if(meta != null && meta.getOwningPlayer() != null && meta.getOwningPlayer().getPlayer() != null) {
                         Player clickedPlayer = meta.getOwningPlayer().getPlayer();
                         makeRequest(player, clickedPlayer);
@@ -96,7 +96,6 @@ public class LobbyTeamBuilder implements Listener {
     @EventHandler
     public void updateOnQuit(PlayerQuitEvent event) {
         disbandTeam(event.getPlayer());
-        reopenInventories();
     }
 
     @EventHandler
@@ -235,6 +234,7 @@ public class LobbyTeamBuilder implements Listener {
                             request.sender() == receiver);
             reopenInventory(toAccept);
             reopenInventory(receiver);
+            UHC.refreshLobbyScoreboard();
         }
     }
 
@@ -284,6 +284,7 @@ public class LobbyTeamBuilder implements Listener {
         }
         teams.removeIf(team -> team.player1() == member || team.player2() == member);
         reopenInventories();
+        UHC.refreshLobbyScoreboard();
     }
 
     public static boolean isTeammates(Player player1, Player player2) {

@@ -2,11 +2,10 @@ package ru.UHC;
 
 import com.google.common.collect.Lists;
 import org.bukkit.GameMode;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import ru.lobby.Lobby;
 import ru.lobby.LobbyTeamBuilder;
 
 import java.util.ArrayList;
@@ -15,9 +14,9 @@ import java.util.Objects;
 
 public class PlayerManager {
 
-    private static List<UHCPlayer> players = new ArrayList<>();
-    private static List<PlayerTeam> teams = new ArrayList<>();
-    private static List<Player> spectators = new ArrayList<>();
+    private static final List<UHCPlayer> players = new ArrayList<>();
+    private static final List<PlayerTeam> teams = new ArrayList<>();
+    private static final List<Player> spectators = new ArrayList<>();
 
     public static UHCPlayer registerPlayer(Player player) {
         UHCPlayer uplayer = new UHCPlayer(player);
@@ -61,7 +60,7 @@ public class PlayerManager {
 
     public static UHCPlayer asUHCPlayer(Player player) {
         for(UHCPlayer uplayer : players) {
-            if(uplayer.getPlayer() == player) return uplayer;
+            if(uplayer.getPlayer() == player || uplayer.getNickname().equals(player.getName())) return uplayer;
         }
         return null;
     }
@@ -129,6 +128,13 @@ public class PlayerManager {
      */
     public static List<Player> getSpectators() {
         return spectators;
+    }
+
+    public static UHCPlayer getPlayerFromGhost(ArmorStand ghost) {
+        for(UHCPlayer uplayer : getPlayers()) {
+            if(uplayer.getGhost() == ghost) return uplayer;
+        }
+        return null;
     }
 
     public static Player getTeammate(Player player) {
