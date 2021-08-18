@@ -70,8 +70,8 @@ public class PlayerSummary implements ConfigurationSerializable {
         return item;
     }
 
-    @Nullable
     public String formatDeathState() {
+        if(deathState == null) return ChatColor.DARK_AQUA + "Судьба неизвестна";
         return switch(deathState) {
             case PREPARING, VOTE -> ChatColor.AQUA + "Вышел до начала игры";
             case OUTBREAK -> ChatColor.AQUA + "Погиб до начала ПВП";

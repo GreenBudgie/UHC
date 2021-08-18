@@ -17,6 +17,7 @@ import ru.items.CustomItems;
 import ru.items.CustomItemsListener;
 import ru.mutator.InventoryBuilderMutator;
 import ru.pvparena.PvpArena;
+import ru.rating.InventoryBuilderRating;
 import ru.rating.Rating;
 import ru.requester.ItemRequester;
 import ru.util.TaskManager;
@@ -56,6 +57,7 @@ public class UHCPlugin extends JavaPlugin {
 		pm.registerEvents(new ArtifactManager(), this);
 		pm.registerEvents(new PvpArena(), this);
 		InventoryBuilderMutator.registerListener();
+		InventoryBuilderRating.registerListener();
 
 		UHC.init();
 		CustomItems.init();
@@ -86,7 +88,6 @@ public class UHCPlugin extends JavaPlugin {
 		if(!PvpArena.isOpen) {
 			PvpArena.openArena();
 		}
-		Rating.save();
 	}
 
 	/**

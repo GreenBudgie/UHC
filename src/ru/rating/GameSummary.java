@@ -57,6 +57,7 @@ public class GameSummary implements ConfigurationSerializable {
                         formatWinners(),
                         formatDuration(),
                         formatPlayerNumber()).
+                withValue("date", String.valueOf(getDate().getTime())).
                 build();
     }
 
@@ -122,6 +123,20 @@ public class GameSummary implements ConfigurationSerializable {
     public String formatTitle() {
         String formattedDate = new SimpleDateFormat("dd.MM.yy HH:mm").format(getDate());
         return ChatColor.AQUA + "Игра от " + ChatColor.DARK_AQUA + formattedDate;
+    }
+
+    public boolean hasWon(String playerName) {
+        for(PlayerSummary summary : getWinnersSummaries()) {
+            if(summary.getPlayerName().equals(playerName)) return true;
+        }
+        return false;
+    }
+
+    public boolean hasParticipated(String playerName) {
+        for(PlayerSummary summary : playerSummaries) {
+            if(summary.getPlayerName().equals(playerName)) return true;
+        }
+        return false;
     }
 
     public List<PlayerSummary> getWinnersSummaries() {

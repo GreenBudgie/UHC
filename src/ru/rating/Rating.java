@@ -23,6 +23,13 @@ public class Rating {
         }
     }
 
+    public static GameSummary getSummaryByDate(long dateMillis) {
+        for(GameSummary summary : gameSummaries) {
+            if(summary.getDate().getTime() == dateMillis) return summary;
+        }
+        return null;
+    }
+
     public static List<GameSummary> getGameSummaries() {
         return gameSummaries;
     }

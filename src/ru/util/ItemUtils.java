@@ -435,6 +435,11 @@ public class ItemUtils {
 			return this;
 		}
 
+		public Builder withValue(String name, String value) {
+			item = setCustomValue(item, name, value);
+			return this;
+		}
+
 		public ItemStack build() {
 			return item;
 		}

@@ -297,33 +297,27 @@ public class InventoryBuilderMutator {
 		} else {
 			boolean reopen = true;
 			switch(slot) {
-			case RESET_SLOT:
-				sort = Sort.DEFAULT;
-				filter = Filter.NONE;
-				resetPage();
-				break;
-			case RESET_PREFERRED_SLOT:
-				MutatorManager.clearPreferences(player.getName());
-				break;
-			case SORT_SLOT:
-				int sortIndex = sort.ordinal() + 1;
-				if(sortIndex >= Sort.values().length) sortIndex = 0;
-				sort = Sort.values()[sortIndex];
-				resetPage();
-				break;
-			case FILTER_SLOT:
-				int filterIndex = filter.ordinal() + 1;
-				if(filterIndex >= Filter.values().length) filterIndex = 0;
-				filter = Filter.values()[filterIndex];
-				resetPage();
-				break;
-			case PAGE_PREV_SLOT:
-				nextPage();
-				break;
-			case PAGE_NEXT_SLOT:
-				prevPage();
-				break;
-			default: reopen = false;
+				case RESET_SLOT -> {
+					sort = Sort.DEFAULT;
+					filter = Filter.NONE;
+					resetPage();
+				}
+				case RESET_PREFERRED_SLOT -> MutatorManager.clearPreferences(player.getName());
+				case SORT_SLOT -> {
+					int sortIndex = sort.ordinal() + 1;
+					if(sortIndex >= Sort.values().length) sortIndex = 0;
+					sort = Sort.values()[sortIndex];
+					resetPage();
+				}
+				case FILTER_SLOT -> {
+					int filterIndex = filter.ordinal() + 1;
+					if(filterIndex >= Filter.values().length) filterIndex = 0;
+					filter = Filter.values()[filterIndex];
+					resetPage();
+				}
+				case PAGE_PREV_SLOT -> nextPage();
+				case PAGE_NEXT_SLOT -> prevPage();
+				default -> reopen = false;
 			}
 			if(reopen) {
 				openInventory();
