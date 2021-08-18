@@ -2,10 +2,7 @@ package ru.util;
 
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.*;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
@@ -186,13 +183,19 @@ public class ItemUtils {
 		return nbt.hasKey(name) ? nbt.getString(name) : null;
 	}
 
-	public static ItemStack getHead(Player player) {
+	public static ItemStack getHead(OfflinePlayer player) {
 		ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+		if(player == null) return head;
 		SkullMeta meta = (SkullMeta) head.getItemMeta();
 		if(meta == null) return head;
 		meta.setOwningPlayer(player);
 		head.setItemMeta(meta);
 		return head;
+	}
+
+	@SuppressWarnings("deprecation")
+	public static ItemStack getHead(String playerName) {
+		return getHead(Bukkit.getOfflinePlayer(playerName));
 	}
 
 	public static Builder builder(Material item) {

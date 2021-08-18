@@ -128,31 +128,7 @@ public class UHC implements Listener {
 		if(gameInfo != null) gameInfo.unregister();
 		gameInfo = board.registerNewObjective("gameInfo", "dummy", getUHCLogo());
 		gameInfo.setDisplaySlot(DisplaySlot.SIDEBAR);
-		int c = 0; //FIXME Rewrite
-		/*if(isDuo && PlayerOptions.SHOW_TEAMS.isActive(player)) {
-			for(PlayerTeam playerTeam : PlayerManager.getTeams()) {
-				UHCPlayer uplayer = playerTeam.getPlayer1();
-				UHCPlayer uteammate = uplayer.getTeammate();
-				String s;
-				String me = (pl == player ? ChatColor.GREEN : ChatColor.GOLD) + (isPlaying(pl) ? "" : ChatColor.DARK_RED + "" + ChatColor.STRIKETHROUGH) + pl.getName();
-				if(uteammate != null) {
-					String mate =
-							((teammate == player) ? ChatColor.GREEN : ChatColor.GOLD) + (isPlaying(teammate) ? "" : ChatColor.DARK_RED + "" + ChatColor.STRIKETHROUGH)
-									+ teammate.getName();
-					String finalString = ChatColor.DARK_GRAY + "- " + me + ChatColor.WHITE + " / " + mate;
-					String[] trimmed = trimTeam(me, mate, finalString.length());
-					me = trimmed[0];
-					mate = trimmed[1];
-					s = ChatColor.DARK_GRAY + "- " + me + ChatColor.WHITE + " / " + mate;
-				} else {
-					s = ChatColor.DARK_GRAY + "- " + me;
-				}
-				Score team = gameInfo.getScore(s);
-				team.setScore(c++);
-			}
-			Score info = gameInfo.getScore(ChatColor.YELLOW + "Тимы:");
-			info.setScore(c++);
-		}*/
+		int c = 0;
 		if(state.isInGame()) {
 			final boolean show = state == GameState.PREPARING || state == GameState.VOTE || state == GameState.OUTBREAK;
 			for(Drop drop : new Drop[] {Drops.CAVEDROP, Drops.AIRDROP}) {
@@ -434,14 +410,6 @@ public class UHC implements Listener {
 		if(stats) {
 			stat.setValue(playerName, stat.getValue(playerName) + value);
 		}
-	}
-
-	public static void hidePlayer(Player p) {
-		Bukkit.getOnlinePlayers().forEach(pl -> pl.hidePlayer(UHCPlugin.instance, p));
-	}
-
-	public static void showPlayer(Player p) {
-		Bukkit.getOnlinePlayers().forEach(pl -> pl.showPlayer(UHCPlugin.instance, p));
 	}
 
 	public static int getNoPVPDuration() {
@@ -760,6 +728,11 @@ public class UHC implements Listener {
 								ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "15" + ChatColor.RESET + ChatColor.GOLD + " секунд до " +
 										ChatColor.DARK_RED + ChatColor.BOLD + "ПВП" + ChatColor.GRAY + "!",
 								10, 60, 30);
+					}
+					for(UHCPlayer offlinePlayer : PlayerManager.getAlivePlayers()) {
+						if(!offlinePlayer.isOnline()) {
+							offlinePlayer.teleport(ArenaManager.getCurrentArena().world().getSpawnLocation());
+						}
 					}
 				}
 			}

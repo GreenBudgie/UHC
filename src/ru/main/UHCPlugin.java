@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.UHC.RecipeHandler;
-import ru.lobby.Lobby;
 import ru.lobby.SignManager;
 import ru.UHC.UHC;
 import ru.artifact.ArtifactManager;
@@ -16,8 +15,9 @@ import ru.classes.ClassManager;
 import ru.commands.*;
 import ru.items.CustomItems;
 import ru.items.CustomItemsListener;
-import ru.mutator.InventoryBuilder;
+import ru.mutator.InventoryBuilderMutator;
 import ru.pvparena.PvpArena;
+import ru.rating.Rating;
 import ru.requester.ItemRequester;
 import ru.util.TaskManager;
 
@@ -55,12 +55,14 @@ public class UHCPlugin extends JavaPlugin {
 		pm.registerEvents(new ItemRequester(), this);
 		pm.registerEvents(new ArtifactManager(), this);
 		pm.registerEvents(new PvpArena(), this);
-		InventoryBuilder.registerListener();
+		InventoryBuilderMutator.registerListener();
 
 		UHC.init();
 		CustomItems.init();
 		ItemRequester.init();
 		ClassManager.init();
+		Rating.init();
+
 		TaskManager.init();
 	}
 	
@@ -84,6 +86,7 @@ public class UHCPlugin extends JavaPlugin {
 		if(!PvpArena.isOpen) {
 			PvpArena.openArena();
 		}
+		Rating.save();
 	}
 
 	/**

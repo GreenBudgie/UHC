@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.UHC.GameState;
 import ru.UHC.UHC;
-import ru.mutator.InventoryBuilder;
+import ru.mutator.InventoryBuilderMutator;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
 
@@ -22,7 +22,7 @@ public class CommandMutator implements CommandExecutor {
 				player.sendMessage(mutator.getInfo());
 			}
 		} else {
-			InventoryBuilder builder = InventoryBuilder.getBuilder(player);
+			InventoryBuilderMutator builder = InventoryBuilderMutator.getBuilder(player);
 			builder.setOP(false);
 			builder.openInventory();
 		}

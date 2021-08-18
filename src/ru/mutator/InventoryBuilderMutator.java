@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import ru.main.UHCPlugin;
 import ru.util.InventoryHelper;
 import ru.util.ItemUtils;
@@ -23,10 +22,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-public class InventoryBuilder {
+public class InventoryBuilderMutator {
 
 	public static final String inventoryName = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Мутаторы";
-	private static Set<InventoryBuilder> builders = new HashSet<>();
+	private static Set<InventoryBuilderMutator> builders = new HashSet<>();
 
 	//Some inner inventory constants
 	private static final int MUTATOR_ROWS = 4;
@@ -51,9 +50,9 @@ public class InventoryBuilder {
 
 			@EventHandler
 			public void inventoryClick(InventoryClickEvent event) {
-				if(InventoryBuilder.checkInventory(event.getView().getTitle()) && event.getCurrentItem() != null) {
+				if(InventoryBuilderMutator.checkInventory(event.getView().getTitle()) && event.getCurrentItem() != null) {
 					Player player = (Player) event.getWhoClicked();
-					InventoryBuilder builder = InventoryBuilder.getBuilder(player);
+					InventoryBuilderMutator builder = InventoryBuilderMutator.getBuilder(player);
 					builder.handleClick(event);
 					event.setCancelled(true);
 				}
@@ -72,8 +71,8 @@ public class InventoryBuilder {
 		return title.startsWith(inventoryName);
 	}
 
-	private static Set<InventoryBuilder> getOpenedInventories() {
-		Set<InventoryBuilder> viewers = new HashSet<>();
+	private static Set<InventoryBuilderMutator> getOpenedInventories() {
+		Set<InventoryBuilderMutator> viewers = new HashSet<>();
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			if(checkInventory(player.getOpenInventory().getTitle())) viewers.add(getBuilder(player));
 		}
@@ -81,18 +80,18 @@ public class InventoryBuilder {
 	}
 
 	public static void reopenAll() {
-		getOpenedInventories().forEach(InventoryBuilder::openInventory);
+		getOpenedInventories().forEach(InventoryBuilderMutator::openInventory);
 	}
 
-	public static InventoryBuilder getBuilder(Player player) {
-		InventoryBuilder builder = builders.stream().filter(b -> b.player == player).findFirst().orElse(null);
+	public static InventoryBuilderMutator getBuilder(Player player) {
+		InventoryBuilderMutator builder = builders.stream().filter(b -> b.player == player).findFirst().orElse(null);
 		if(builder != null) return builder;
-		InventoryBuilder newBuilder = new InventoryBuilder(player);
+		InventoryBuilderMutator newBuilder = new InventoryBuilderMutator(player);
 		builders.add(newBuilder);
 		return newBuilder;
 	}
 
-	public InventoryBuilder(Player player) {
+	public InventoryBuilderMutator(Player player) {
 		this.player = player;
 	}
 

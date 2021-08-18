@@ -7,9 +7,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import ru.UHC.UHC;
-import ru.mutator.InventoryBuilder;
+import ru.mutator.InventoryBuilderMutator;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
 import ru.util.MathUtils;
@@ -24,7 +23,7 @@ public class CommandOptMutator implements CommandExecutor, TabCompleter {
 		if(UHC.playing) {
 			if(args.length == 0) {
 				Player p = (Player) sender;
-				InventoryBuilder builder = InventoryBuilder.getBuilder(p);
+				InventoryBuilderMutator builder = InventoryBuilderMutator.getBuilder(p);
 				builder.setOP(true);
 				builder.openInventory();
 			}
