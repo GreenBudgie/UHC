@@ -104,6 +104,7 @@ public class LobbyTeamBuilder implements Listener {
     }
 
     public static void openRequestAcceptInventory(Player player) {
+        if(UHC.playing) return;
         List<Player> incomingRequests = getIncomingRequests(player);
         int inventorySize = (((incomingRequests.size() - 1) / 9) + 1) * 9 + 9;
         Inventory inventory = Bukkit.createInventory(player, inventorySize, requestAcceptInventoryName);
@@ -129,6 +130,7 @@ public class LobbyTeamBuilder implements Listener {
     }
 
     public static void openRequestSendInventory(Player player) {
+        if(UHC.playing) return;
         List<Player> players = Lobby.getLobby().getPlayers();
         players.removeIf(currentPlayer -> currentPlayer == player || hasActiveRequestTo(player, currentPlayer));
         int inventorySize = (((players.size() - 1) / 9) + 1) * 9 + 9;
@@ -185,6 +187,7 @@ public class LobbyTeamBuilder implements Listener {
     }
 
     public static void makeRequest(Player sender, Player receiver) {
+        if(UHC.playing) return;
         if(!hasActiveRequestTo(sender, receiver)) {
             requests.add(new Request(sender, receiver));
             sender.sendMessage(PREFIX +
@@ -215,6 +218,7 @@ public class LobbyTeamBuilder implements Listener {
     }
 
     public static void acceptIncomingRequest(Player receiver, Player toAccept) {
+        if(UHC.playing) return;
         if(hasActiveRequestTo(toAccept, receiver)) {
             receiver.sendMessage(PREFIX +
                     ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "Теперь ты союзник с " +
@@ -239,6 +243,7 @@ public class LobbyTeamBuilder implements Listener {
     }
 
     public static void declineIncomingRequest(Player receiver, Player toDecline) {
+        if(UHC.playing) return;
         if(hasActiveRequestTo(toDecline, receiver)) {
             receiver.sendMessage(PREFIX +
                     ChatColor.YELLOW + "Запрос от " +
@@ -267,6 +272,7 @@ public class LobbyTeamBuilder implements Listener {
     }
 
     public static void disbandTeam(Player member) {
+        if(UHC.playing) return;
         for(Team team : teams) {
             if(team.player1() == member || team.player2() == member) {
                 team.player1().sendMessage(PREFIX +

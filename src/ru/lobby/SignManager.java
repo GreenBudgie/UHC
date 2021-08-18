@@ -144,13 +144,17 @@ public class SignManager implements Listener {
 				block.setLine(3, UHC.fastStart == 0 ? "" : (UHC.fastStart == 2 ? (ChatColor.DARK_AQUA + "С мутаторами") : (ChatColor.DARK_RED + "Без мутаторов")));
 				break;
 			case SPECTATE:
-
 				if(!UHC.playing) {
 					block.setLine(1, ChatColor.GRAY + "<Наблюдать>");
 					block.setLine(2, ChatColor.DARK_RED + "Игра не идет");
 				} else {
 					block.setLine(1, ChatColor.GRAY + "<" + ChatColor.AQUA + "Наблюдать" + ChatColor.GRAY + ">");
 				}
+				break;
+			case TEAMMATE_SELECT:
+				block.setLine(1, ChatColor.GRAY + "<" + ChatColor.LIGHT_PURPLE + "Выбрать");
+				block.setLine(2, ChatColor.LIGHT_PURPLE + "тиммейта" + ChatColor.GRAY + ">");
+				block.setLine(3, ChatColor.YELLOW + "/teammate");
 			}
 			block.update();
 		}
@@ -172,6 +176,10 @@ public class SignManager implements Listener {
 						UHC.startGame();
 					}
 					break;
+				case TEAMMATE_SELECT:
+					if(!UHC.playing) {
+						LobbyTeamBuilder.openRequestSendInventory(clickedPlayer);
+					}
 				case SPECTATE:
 					if(UHC.playing) {
 						PlayerManager.addSpectator(clickedPlayer);

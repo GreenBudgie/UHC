@@ -807,6 +807,9 @@ public class UHC implements Listener {
 		if(playing) {
 			FightHelper.update();
 			ItemRequester.updateItems();
+			for(UHCPlayer uplayer : PlayerManager.getPlayers()) {
+				uplayer.update();
+			}
 			if(state.isInGame()) {
 				for(Landmine mine : landmines) {
 					mine.update();
@@ -937,9 +940,6 @@ public class UHC implements Listener {
 			endGame();
 		}
 		if(aliveTeams.size() == 1) {
-			for(Player p : PlayerManager.getAliveOnlinePlayers()) {
-				increaseGames(p);
-			}
 			PlayerTeam team = aliveTeams.get(0);
 			win(team);
 		}
@@ -1402,17 +1402,26 @@ public class UHC implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void ghostStandPlayerDamage(EntityDamageByEntityEvent e) {
 		if(e.getEntity() instanceof ArmorStand stand && e.getDamager() instanceof Player damager) {
+			UHCPlayer udamager = PlayerManager.asUHCPlayer(damager);
 			UHCPlayer damagedPlayer = PlayerManager.getPlayerFromGhost(stand);
 			if(damagedPlayer != null) {
-				damagedPlayer.damageGhost(damager);
 				e.setCancelled(true);
+				UHCPlayer damagedPlayerTeammate = damagedPlayer.getTeammate();
+				if(damagedPlayerTeammate != null &&
+						udamager != null &&
+						damagedPlayerTeammate != udamager &&
+						stand.getWorld().getPVP()) {
+					damagedPlayer.damageGhost(damager);
+				}
 			}
 		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void ghostStandAnyDamage(EntityDamageEvent e) {
-		if(e.getEntity() instanceof ArmorStand stand) {
+		if(e.getEntity() instanceof ArmorStand stand &&
+				e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK &&
+				e.getCause() != EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) {
 			UHCPlayer damagedPlayer = PlayerManager.getPlayerFromGhost(stand);
 			if(damagedPlayer != null) {
 				damagedPlayer.damageGhost(null);
@@ -1450,7 +1459,6 @@ public class UHC implements Listener {
 		}
 	}
 
-
 	@EventHandler
 	public void join(PlayerJoinEvent e) {
 		e.setJoinMessage(null);
@@ -1460,6 +1468,7 @@ public class UHC implements Listener {
 			uplayer.rejoin(player);
 			refreshGameScoreboardLater();
 		} else {
+			if(!isInLobby(player)) player.teleport(WorldManager.getLobby().getSpawnLocation());
 			player.setGameMode(GameMode.ADVENTURE);
 			resetPlayer(player);
 			PlayerStat.defaultStats(player);
@@ -1468,17 +1477,10 @@ public class UHC implements Listener {
 			for(Player pl : WorldManager.getLobby().getPlayers()) {
 				pl.sendMessage(msg);
 			}
-			player.sendMessage(msg);
-			if(!isInLobby(player)) player.teleport(WorldManager.getLobby().getSpawnLocation());
 			if(playing) {
 				refreshGameScoreboardLater();
 				player.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Сейчас идет игра! " + ChatColor.RESET + ChatColor.AQUA
 						+ "За игрой можно наблюдать, нажав по табличке на стене.");
-			} else {
-				if(MutatorManager.getAvailablePreferences().getOrDefault(player.getName(), new HashSet<>()).isEmpty()) {
-					player.sendMessage(ChatColor.GOLD + "Проголосуй за " + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "мутаторы" + ChatColor.RESET + ChatColor.GOLD +
-							"! Команда: " + ChatColor.YELLOW + ChatColor.BOLD + "/mutator");
-				}
 			}
 		}
 		refreshLobbyScoreboardLater();

@@ -6,14 +6,12 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
 import ru.lobby.Lobby;
-import ru.main.UHCPlugin;
-import ru.util.ItemUtils;
-import ru.util.MathUtils;
-import ru.util.ParticleUtils;
+import ru.util.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class UHCPlayer {
 
@@ -25,6 +23,10 @@ public class UHCPlayer {
     private UHCPlayer teammate = null;
 
     private Player ghostKiller;
+    private final int maxTimeToRejoin = 3 * 60; //FIXME
+    private int timeToRejoin = 0;
+    private boolean deadByTime = false;
+    private int leavesRemaining = 3;
 
     public UHCPlayer(Player player) {
         this.player = player;
@@ -42,15 +44,37 @@ public class UHCPlayer {
                                     ChatColor.RED + " вылетел с серва"));
                 }
                 moveToSpectators();
+                if(PlayerManager.getAlivePlayers().size() <= 0) {
+                    UHC.endGame();
+                }
             } else if(UHC.state == GameState.ENDING) {
                 moveToSpectators();
             } else {
                 for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
                     player.sendMessage(ChatColor.GOLD + nickname + ChatColor.RED + " вышел из игры");
                 }
-                state = State.LEFT_AND_ALIVE;
-                createGhost();
-                saveInventory();
+                if(!player.isOnGround()) {
+                    int playerY = player.getLocation().getBlockY();
+                    int highestY = player.getWorld().getHighestBlockYAt(player.getLocation());
+                    int differenceY = (playerY - highestY) + (int) player.getFallDistance();
+                    if(differenceY >= 7) {
+                        player.setLastDamageCause(new EntityDamageEvent(player, EntityDamageEvent.DamageCause.FALL, 100));
+                        kill();
+                        state = State.LEFT_AND_DEAD;
+                    }
+                }
+                if(leavesRemaining <= 0) {
+                    kill();
+                    state = State.LEFT_AND_DEAD;
+                } else {
+                    if(state == State.PLAYING) {
+                        leavesRemaining--;
+                        timeToRejoin = maxTimeToRejoin;
+                        state = State.LEFT_AND_ALIVE;
+                        createGhost();
+                        saveInventory();
+                    }
+                }
             }
         }
         player = null;
@@ -68,10 +92,31 @@ public class UHCPlayer {
             for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
                 player.sendMessage(ChatColor.GOLD + nickname + ChatColor.DARK_GREEN + " вернулся в игру");
             }
+            String timesLeft = new NumericalCases("раз", "раза", "раз").byNumber(leavesRemaining);
+            player.sendMessage(ChatColor.GRAY + "- " +
+                            ChatColor.DARK_RED + "Ты можешь перезайти еще " +
+                            ChatColor.DARK_AQUA + ChatColor.BOLD + leavesRemaining + " " +
+                            ChatColor.RESET + ChatColor.DARK_RED + timesLeft +
+                            ChatColor.GRAY + "!");
         } else if(state == State.LEFT_AND_DEAD) {
             moveToSpectators();
             for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
                 player.sendMessage(ChatColor.GOLD + nickname + ChatColor.DARK_GREEN + " вернулся в игру, к сожалению, мертвым");
+            }
+        }
+    }
+
+    public void update() {
+        if(TaskManager.isSecUpdated()) {
+            if(state == State.LEFT_AND_ALIVE) {
+                timeToRejoin--;
+                if(timeToRejoin == 60 && ghost != null) {
+                    ghost.setCustomNameVisible(true);
+                }
+                if(timeToRejoin <= 0) {
+                    deadByTime = true;
+                    kill();
+                }
             }
         }
     }
@@ -86,7 +131,7 @@ public class UHCPlayer {
     private void createGhost() {
         ArmorStand stand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
         stand.setCustomName(ChatColor.AQUA + this.nickname);
-        stand.setCustomNameVisible(true);
+        stand.setCustomNameVisible(false);
         stand.setGravity(false);
         stand.setBasePlate(false);
         stand.setArms(true);
@@ -181,6 +226,18 @@ public class UHCPlayer {
     }
 
     private void showDeathMessage() {
+        if(deadByTime) {
+            for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+                inGamePlayer.sendMessage(FightHelper.padCrosses(ChatColor.GOLD + nickname + ChatColor.RED + " не успел вернуться в игру"));
+            }
+            return;
+        }
+        if(leavesRemaining == 0) {
+            for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+                inGamePlayer.sendMessage(FightHelper.padCrosses(ChatColor.GOLD + nickname + ChatColor.RED + " слишком часто ливал"));
+            }
+            return;
+        }
         Player killer = getKiller();
         if(killer != null) {
             if(player != null) {
@@ -211,7 +268,7 @@ public class UHCPlayer {
                 for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
                     String deathMessage = FightHelper.padCrosses(
                             ChatColor.GOLD + this.nickname +
-                                    ChatColor.RED + " погиб, не находять на сервере");
+                                    ChatColor.RED + " погиб, не находясь на сервере");
                     inGamePlayer.sendMessage(deathMessage);
                 }
             }

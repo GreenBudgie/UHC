@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import ru.UHC.ArenaManager;
+import ru.UHC.UHC;
 import ru.lobby.Lobby;
 import ru.lobby.LobbyTeamBuilder;
 import ru.util.MathUtils;
@@ -18,6 +19,7 @@ import java.util.List;
 public class CommandTeammate implements CommandExecutor, TabCompleter {
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if(UHC.playing) return true;
 		if(sender instanceof Player player) {
 			if(args.length == 0) {
 				LobbyTeamBuilder.openRequestSendInventory(player);
