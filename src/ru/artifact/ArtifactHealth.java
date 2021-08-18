@@ -9,6 +9,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
+import ru.UHC.UHCPlayer;
+import ru.main.UHCPlugin;
 import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
@@ -36,14 +38,18 @@ public class ArtifactHealth extends Artifact {
 		return 1;
 	}
 
-	//TODO Think about offline players
 	@Override
 	public void onUse(@Nullable Player player) {
-		for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
-			boolean applyMaxHeal = player == null || player == currentPlayer;
-			currentPlayer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, applyMaxHeal ? 50 : 38, 2));
-			ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.HEART, null, 15);
-			currentPlayer.playSound(currentPlayer.getLocation(), Sound.ENTITY_VILLAGER_YES, 1F, 1F);
+		for(UHCPlayer uhcCurrentPlayer : PlayerManager.getAlivePlayers()) {
+			if(uhcCurrentPlayer.isOnline()) {
+				Player currentPlayer = uhcCurrentPlayer.getPlayer();
+				boolean applyMaxHeal = player != null && player != currentPlayer;
+				currentPlayer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, applyMaxHeal ? 50 : 38, 2));
+				ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.HEART, null, 15);
+				currentPlayer.playSound(currentPlayer.getLocation(), Sound.ENTITY_VILLAGER_YES, 1F, 1F);
+			} else {
+				uhcCurrentPlayer.addOfflineHealth(4);
+			}
 		}
 	}
 

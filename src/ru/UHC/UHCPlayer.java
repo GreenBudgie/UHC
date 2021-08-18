@@ -23,10 +23,12 @@ public class UHCPlayer {
     private UHCPlayer teammate = null;
 
     private Player ghostKiller;
-    private final int maxTimeToRejoin = 3 * 60; //FIXME
+    private final int maxTimeToRejoin = 3 * 60;
     private int timeToRejoin = 0;
     private boolean deadByTime = false;
     private int leavesRemaining = 3;
+
+    private double offlineHealth;
 
     public UHCPlayer(Player player) {
         this.player = player;
@@ -71,6 +73,7 @@ public class UHCPlayer {
                         leavesRemaining--;
                         timeToRejoin = maxTimeToRejoin;
                         state = State.LEFT_AND_ALIVE;
+                        offlineHealth = player.getHealth();
                         createGhost();
                         saveInventory();
                     }
@@ -92,6 +95,7 @@ public class UHCPlayer {
             for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
                 player.sendMessage(ChatColor.GOLD + nickname + ChatColor.DARK_GREEN + " вернулся в игру");
             }
+            player.setHealth(offlineHealth);
             String timesLeft = new NumericalCases("раз", "раза", "раз").byNumber(leavesRemaining);
             player.sendMessage(ChatColor.GRAY + "- " +
                             ChatColor.DARK_RED + "Ты можешь перезайти еще " +
@@ -291,6 +295,49 @@ public class UHCPlayer {
         if(player != null) return player.getLocation();
         if(ghost != null) return ghost.getLocation();
         return null;
+    }
+
+    /**
+     * Changes the offline health level of the player.
+     * Changed offline health will be given to rejoined player.
+     * If offline health reaches 0, player dies immediately.
+     */
+    public void setOfflineHealth(double value) {
+        if(state == State.LEFT_AND_ALIVE) {
+            offlineHealth = value;
+            if(offlineHealth >= 20) offlineHealth = 20;
+            if(offlineHealth <= 0) kill();
+        }
+    }
+
+    /**
+     * Changes the offline health level of the player.
+     * Changed offline health will be given to rejoined player.
+     * If offline health reaches 0, player dies immediately.
+     * @param value May be negative to reduce health
+     */
+    public void addOfflineHealth(double value) {
+       setOfflineHealth(offlineHealth + value);
+    }
+
+    /**
+     * Gets the offline health value.
+     * This value is set when the player leaves the game.
+     * Can be changed via game events: artifacts, mutators, etc.
+     */
+    public double getOfflineHealth() {
+        return offlineHealth;
+    }
+
+    /**
+     * Teleports the current player or its ghost to specified location
+     */
+    public void teleport(Location location) {
+        if(player != null) {
+            player.teleport(location);
+        } else if(ghost != null) {
+            ghost.teleport(location);
+        }
     }
 
     /**

@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
+import ru.UHC.UHCPlayer;
 import ru.util.WorldHelper;
 
 import javax.annotation.Nullable;
@@ -31,11 +32,16 @@ public class ArtifactTeleport extends Artifact {
 		return 0;
 	}
 
-	//TODO OFFLINE PLAYERS!!!!!
 	@Override
 	public void onUse(@Nullable Player player) {
-		for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
-			WorldHelper.chorusTeleport(currentPlayer, 80);
+		for(UHCPlayer uhcCurrentPlayer : PlayerManager.getAlivePlayers()) {
+			if(uhcCurrentPlayer.isOnline()) {
+				WorldHelper.chorusTeleport(uhcCurrentPlayer.getPlayer(), 80);
+			} else {
+				if(uhcCurrentPlayer.getGhost() != null) {
+					WorldHelper.chorusTeleport(uhcCurrentPlayer.getGhost(), 80);
+				}
+			}
 		}
 	}
 

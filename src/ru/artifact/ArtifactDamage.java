@@ -10,6 +10,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
+import ru.UHC.UHCPlayer;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
@@ -36,15 +37,20 @@ public class ArtifactDamage extends Artifact {
 		return 1;
 	}
 
-	//TODO Think about offline players
 	@Override
 	public void onUse(@Nullable Player player) {
-		for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
-			boolean doMaxDamage = player == null || player == currentPlayer;
-			double damage = MathUtils.clamp(doMaxDamage ? 5 : 4, 0, currentPlayer.getHealth() - 1);
-			currentPlayer.damage(damage);
-			currentPlayer.playSound(currentPlayer.getLocation(), Sound.ENTITY_VILLAGER_NO, 1F, 0.5F);
-			ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.SMOKE_LARGE, null, 15);
+		for(UHCPlayer uhcCurrentPlayer : PlayerManager.getAlivePlayers()) {
+			if(uhcCurrentPlayer.isOnline()) {
+				Player currentPlayer = uhcCurrentPlayer.getPlayer();
+				boolean doMaxDamage = player == null || player == currentPlayer;
+				double damage = MathUtils.clamp(doMaxDamage ? 5 : 4, 0, currentPlayer.getHealth() - 1);
+				currentPlayer.damage(damage);
+				currentPlayer.playSound(currentPlayer.getLocation(), Sound.ENTITY_VILLAGER_NO, 1F, 0.5F);
+				ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.SMOKE_LARGE, null, 15);
+			} else {
+				double damage = MathUtils.clamp(4, 0, uhcCurrentPlayer.getOfflineHealth() - 1);
+				uhcCurrentPlayer.addOfflineHealth(-damage);
+			}
 		}
 	}
 

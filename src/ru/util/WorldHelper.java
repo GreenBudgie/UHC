@@ -359,8 +359,6 @@ public class WorldHelper {
 			Location tpLoc = new Location(e.getWorld(), d3, d4, d5);
 			if(e.getWorld().getWorldBorder().isInside(tpLoc)) {
 				if(((CraftLivingEntity) e).getHandle().a(d3, d4, d5, false)) {
-					ParticleUtils.createLine(e.getLocation().clone().add(0, e.getHeight() / 2, 0), new Location(e.getWorld(), x, y + e.getHeight() / 2, z),
-							Particle.REDSTONE, 3, Color.PURPLE);
 					e.getWorld().playSound(e.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
 					e.getWorld().playSound(new Location(e.getWorld(), x, y, z), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
 					break;
