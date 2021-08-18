@@ -35,10 +35,9 @@ public class MutatorChorusDamage extends Mutator implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void eat(EntityDamageEvent e) {
-		if(!e.isCancelled() && e.getFinalDamage() > 0 && e.getEntity() instanceof Player) {
-			Player p = (Player) e.getEntity();
-			if(PlayerManager.isPlaying(p) && !p.isInvulnerable() && p.getNoDamageTicks() <= 0) {
-				WorldHelper.chorusTeleport(p, 16);
+		if(!e.isCancelled() && e.getFinalDamage() > 0 && e.getEntity() instanceof Player player) {
+			if(PlayerManager.isPlaying(player) && !player.isInvulnerable() && player.getNoDamageTicks() <= 0) {
+				WorldHelper.chorusTeleport(player, 16);
 			}
 		}
 	}

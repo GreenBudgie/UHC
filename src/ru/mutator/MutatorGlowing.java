@@ -39,6 +39,11 @@ public class MutatorGlowing extends EffectBasedMutator {
 	}
 
 	@Override
+	public boolean applyToOfflinePlayerGhosts() {
+		return true;
+	}
+
+	@Override
 	public PotionEffectType getEffect() {
 		return PotionEffectType.GLOWING;
 	}

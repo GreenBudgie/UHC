@@ -38,18 +38,10 @@ public class MutatorDiamondLeather extends Mutator implements Listener {
 		if(e.getRecipe() != null) {
 			ItemStack result = e.getRecipe().getResult();
 			switch(result.getType()) {
-			case LEATHER_HELMET:
-				e.getInventory().setResult(new ItemStack(Material.DIAMOND_HELMET));
-				break;
-			case LEATHER_CHESTPLATE:
-				e.getInventory().setResult(new ItemStack(Material.DIAMOND_CHESTPLATE));
-				break;
-			case LEATHER_LEGGINGS:
-				e.getInventory().setResult(new ItemStack(Material.DIAMOND_LEGGINGS));
-				break;
-			case LEATHER_BOOTS:
-				e.getInventory().setResult(new ItemStack(Material.DIAMOND_BOOTS));
-				break;
+				case LEATHER_HELMET -> e.getInventory().setResult(new ItemStack(Material.DIAMOND_HELMET));
+				case LEATHER_CHESTPLATE -> e.getInventory().setResult(new ItemStack(Material.DIAMOND_CHESTPLATE));
+				case LEATHER_LEGGINGS -> e.getInventory().setResult(new ItemStack(Material.DIAMOND_LEGGINGS));
+				case LEATHER_BOOTS -> e.getInventory().setResult(new ItemStack(Material.DIAMOND_BOOTS));
 			}
 		}
 	}

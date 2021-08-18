@@ -67,7 +67,6 @@ public class MutatorManager {
 	public static MutatorSkeletons skeletons = new MutatorSkeletons();
 	public static MutatorInteractiveArena interactiveArena = new MutatorInteractiveArena();
 	public static MutatorLessHealth lessHealth = new MutatorLessHealth();
-	public static MutatorOxygen oxygen = new MutatorOxygen();
 	public static MutatorDiamondLeather diamondLeather = new MutatorDiamondLeather();
 	public static MutatorApocalypse apocalypse = new MutatorApocalypse();
 	public static MutatorOneForAll oneForAll = new MutatorOneForAll();

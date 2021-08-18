@@ -8,6 +8,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
+import ru.UHC.UHCPlayer;
 import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
@@ -21,20 +22,31 @@ public class CustomItemHighlighter extends RequesterCustomItem {
 		return Material.FEATHER;
 	}
 
-	//TODO Highlight offline players
 	@Override
 	public void onUseRight(Player user, ItemStack item, PlayerInteractEvent e) {
 		item.setAmount(item.getAmount() - 1);
 		boolean found = false;
-		Player teammate = PlayerManager.getTeammate(user);
-		for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
-			if(user.getWorld() == currentPlayer.getWorld() &&
-					user != currentPlayer &&
-					(teammate == null || teammate != currentPlayer) &&
-					user.getLocation().distance(currentPlayer.getLocation()) < 128) {
-				currentPlayer.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 240, 0));
-				user.sendMessage(ChatColor.AQUA + "Найден " + ChatColor.GOLD + currentPlayer.getName() + ChatColor.YELLOW + " (" + ChatColor.AQUA + (int) user.getLocation()
-						.distance(currentPlayer.getLocation()) + ChatColor.YELLOW + ")");
+		UHCPlayer uhcUser = PlayerManager.asUHCPlayer(user);
+		UHCPlayer uhcTeammate = uhcUser.getTeammate();
+		for(UHCPlayer uhcCurrentPlayer : PlayerManager.getAlivePlayers()) {
+			Location currentLocation = uhcCurrentPlayer.getLocation();
+			if(currentLocation == null) continue;
+			if(user.getWorld() == currentLocation.getWorld() &&
+					uhcUser != uhcCurrentPlayer &&
+					(uhcTeammate == null || uhcTeammate != uhcCurrentPlayer) &&
+					user.getLocation().distance(currentLocation) < 128) {
+				if(uhcCurrentPlayer.isOnline()) {
+					uhcCurrentPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 240, 0));
+				} else {
+					if(uhcCurrentPlayer.getGhost() != null) {
+						uhcCurrentPlayer.getGhost().addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 240, 0));
+					}
+				}
+				user.sendMessage(ChatColor.AQUA + "Найден " +
+						ChatColor.GOLD + uhcCurrentPlayer.getNickname() +
+						ChatColor.GRAY + " (" +
+						ChatColor.AQUA + (int) user.getLocation().distance(currentLocation) +
+						ChatColor.GRAY + ")");
 				found = true;
 			}
 		}

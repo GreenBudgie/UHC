@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
+import ru.UHC.UHCPlayer;
 import ru.util.MathUtils;
 
 import java.util.List;
@@ -39,18 +40,25 @@ public class MutatorDamageBound extends Mutator implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void damage(EntityDamageEvent e) {
-		if(!e.isCancelled() && e.getCause() != EntityDamageEvent.DamageCause.CUSTOM && e.getEntity() instanceof Player) {
-			Player damager = (Player) e.getEntity();
+		if(!e.isCancelled() && e.getCause() != EntityDamageEvent.DamageCause.CUSTOM && e.getEntity() instanceof Player damager) {
 			if(PlayerManager.isPlaying(damager)) {
-				List<Player> playersCopy = Lists.newArrayList(PlayerManager.getAliveOnlinePlayers());
+				List<UHCPlayer> playersCopy = Lists.newArrayList(PlayerManager.getAlivePlayers());
 				double finalDamage = Math.min(e.getFinalDamage(), damager.getHealth());
-				for(Player victim : playersCopy) {
-					if(damager != victim) {
-						if(victim.getHealth() > 1) {
-							double damage = finalDamage / (MathUtils.clamp(PlayerManager.getAliveOnlinePlayers().size(), 8, 20) * 1.5);
-							damage = Math.min(damage, maxDamage);
-							if(damage > victim.getHealth() - 1) damage = victim.getHealth() - 1;
-							victim.damage(damage);
+				double damage = finalDamage / (MathUtils.clamp(PlayerManager.getAlivePlayers().size(), 8, 20) * 1.5);
+				damage = Math.min(damage, maxDamage);
+				for(UHCPlayer uhcVictim : playersCopy) {
+					if(uhcVictim.isOnline()) {
+						Player victim = uhcVictim.getPlayer();
+						if(damager != victim) {
+							if(victim.getHealth() > 1) {
+								if(damage > victim.getHealth() - 1) damage = victim.getHealth() - 1;
+								victim.damage(damage);
+							}
+						}
+					} else {
+						if(uhcVictim.getOfflineHealth() > 1) {
+							if(damage > uhcVictim.getOfflineHealth() - 1) damage = uhcVictim.getOfflineHealth() - 1;
+							uhcVictim.addOfflineHealth(-damage);
 						}
 					}
 				}

@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.lobby.Lobby;
+import ru.mutator.Mutator;
+import ru.mutator.MutatorManager;
 import ru.util.*;
 
 import java.util.ArrayList;
@@ -55,19 +57,20 @@ public class UHCPlayer {
                 for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
                     player.sendMessage(ChatColor.GOLD + nickname + ChatColor.RED + " вышел из игры");
                 }
+                for(Mutator mutator : MutatorManager.activeMutators) {
+                    mutator.onPlayerLeave(player);
+                }
                 if(!player.isOnGround()) {
                     int playerY = player.getLocation().getBlockY();
                     int highestY = player.getWorld().getHighestBlockYAt(player.getLocation());
                     int differenceY = (playerY - highestY) + (int) player.getFallDistance();
                     if(differenceY >= 7) {
                         player.setLastDamageCause(new EntityDamageEvent(player, EntityDamageEvent.DamageCause.FALL, 100));
-                        kill();
-                        state = State.LEFT_AND_DEAD;
+                        killOnLeave();
                     }
                 }
                 if(leavesRemaining <= 0) {
-                    kill();
-                    state = State.LEFT_AND_DEAD;
+                    killOnLeave();
                 } else {
                     if(state == State.PLAYING) {
                         leavesRemaining--;
@@ -96,6 +99,9 @@ public class UHCPlayer {
                 player.sendMessage(ChatColor.GOLD + nickname + ChatColor.DARK_GREEN + " вернулся в игру");
             }
             player.setHealth(offlineHealth);
+            for(Mutator mutator : MutatorManager.activeMutators) {
+                mutator.onPlayerRejoin(player);
+            }
             String timesLeft = new NumericalCases("раз", "раза", "раз").byNumber(leavesRemaining);
             player.sendMessage(ChatColor.GRAY + "- " +
                             ChatColor.DARK_RED + "Ты можешь перезайти еще " +
@@ -152,6 +158,11 @@ public class UHCPlayer {
         savedInventory = player.getInventory().getContents();
     }
 
+    public void killOnLeave() {
+        kill();
+        state = State.LEFT_AND_DEAD;
+    }
+
     public void kill() {
         if(state == State.SPECTATING) return;
         if(player != null) {
@@ -167,6 +178,11 @@ public class UHCPlayer {
     public void initiateDeath() {
         dropBonusItemOnDeath();
         showDeathMessage();
+
+        //Send event to mutators
+        for(Mutator mutator : MutatorManager.activeMutators) {
+            mutator.onPlayerDeath(this);
+        }
 
         //Announce the place to players
         UHCPlayer teammate = getTeammate();

@@ -42,9 +42,7 @@ public class MutatorNoKnockback extends Mutator implements Listener {
 	@EventHandler
 	public void attack(EntityDamageByEntityEvent e) {
 		if(e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity) {
-			if(e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
-				Player p1 = (Player) e.getDamager();
-				Player p2 = (Player) e.getEntity();
+			if(e.getEntity() instanceof Player p2 && e.getDamager() instanceof Player p1) {
 				if(PlayerManager.isTeammates(p1, p2)) return;
 			}
 			TaskManager.invokeLater(() -> e.getEntity().setVelocity(new Vector(0, 0, 0)));

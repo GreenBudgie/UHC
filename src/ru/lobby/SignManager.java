@@ -185,9 +185,6 @@ public class SignManager implements Listener {
 						PlayerManager.addSpectator(clickedPlayer);
 						clickedPlayer.teleport(WorldManager.spawnLocation);
 						UHC.refreshScoreboards();
-						if(MutatorManager.isActive(MutatorManager.meetingPlace)) {
-							MutatorManager.meetingPlace.bar.addPlayer(clickedPlayer);
-						}
 						for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 							inGamePlayer.sendMessage(ChatColor.GOLD + clickedPlayer.getName() + ChatColor.AQUA + " присоединился к наблюдателям");
 						}

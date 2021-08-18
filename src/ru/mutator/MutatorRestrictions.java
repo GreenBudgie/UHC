@@ -45,7 +45,7 @@ public class MutatorRestrictions extends Mutator implements Listener {
 
 	@Override
 	public String getDescription() {
-		return "Иногда запрещается делать некоторые действия: атаковать, копать, ставить блоки, шифтить и спринтить. Нарушитель получает урон. Джейсон Стэтхэм.";
+		return "Иногда запрещается делать некоторые действия: атаковать, копать, ставить блоки, шифтить и спринтить. Нарушитель получает урон.";
 	}
 
 	@Override
@@ -135,6 +135,26 @@ public class MutatorRestrictions extends Mutator implements Listener {
 				bar.setVisible(false);
 			}
 		}
+	}
+
+	@Override
+	public void onPlayerLeave(Player player) {
+		bar.removePlayer(player);
+	}
+
+	@Override
+	public void onPlayerRejoin(Player player) {
+		bar.addPlayer(player);
+	}
+
+	@Override
+	public void onSpectatorJoinFromLobby(Player player) {
+		bar.addPlayer(player);
+	}
+
+	@Override
+	public void onSpectatorLeave(Player player) {
+		bar.removePlayer(player);
 	}
 
 	@EventHandler

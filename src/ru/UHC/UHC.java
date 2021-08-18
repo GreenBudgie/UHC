@@ -1444,11 +1444,8 @@ public class UHC implements Listener {
 				UHCPlayer uplayer = PlayerManager.asUHCPlayer(player);
 				uplayer.leave();
 			}
-			if(MutatorManager.isActive(MutatorManager.meetingPlace)) {
-				MutatorManager.meetingPlace.bar.removePlayer(player);
-			}
-			if(MutatorManager.isActive(MutatorManager.oxygen)) {
-				MutatorManager.oxygen.unregister(player);
+			for(Mutator mutator : MutatorManager.activeMutators) {
+				mutator.onSpectatorLeave(player);
 			}
 		} else {
 			for(Player pl : WorldManager.getLobby().getPlayers()) {

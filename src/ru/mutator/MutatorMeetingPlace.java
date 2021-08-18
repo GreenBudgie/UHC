@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
+import ru.UHC.UHCPlayer;
 import ru.UHC.WorldManager;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
@@ -18,7 +19,7 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 
 	private Location meetingLoc;
 	public BossBar bar;
-	private final int maxCooldown = 10; //FIXME 600
+	private final int maxCooldown = 600;
 	private int cooldown = maxCooldown;
 	private int meetingDelay = 10;
 	private boolean isMeeting = false;
@@ -88,6 +89,26 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 	}
 
 	@Override
+	public void onPlayerLeave(Player player) {
+		bar.removePlayer(player);
+	}
+
+	@Override
+	public void onPlayerRejoin(Player player) {
+		bar.addPlayer(player);
+	}
+
+	@Override
+	public void onSpectatorJoinFromLobby(Player player) {
+		bar.addPlayer(player);
+	}
+
+	@Override
+	public void onSpectatorLeave(Player player) {
+		bar.removePlayer(player);
+	}
+
+	@Override
 	public void update() {
 		if(TaskManager.isSecUpdated()) {
 			if(UHC.state.isInGame()) {
@@ -118,6 +139,15 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 							isMeeting = true;
 						}
 						meetingDelay--;
+						for(UHCPlayer uhcPlayer : PlayerManager.getAlivePlayers()) {
+							if(!uhcPlayer.isOnline()) {
+								Location location = uhcPlayer.getLocation();
+								if(location != null) {
+									WorldBorder border = WorldManager.getGameMap().getWorldBorder();
+									if(!border.isInside(location)) uhcPlayer.killOnLeave();
+								}
+							}
+						}
 					}
 				} else {
 					bar.setTitle(ChatColor.GOLD + "До сбора: " + ChatColor.DARK_AQUA + MathUtils.formatTime(cooldown) + " " + getPos());

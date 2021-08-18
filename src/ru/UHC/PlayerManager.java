@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.lobby.LobbyTeamBuilder;
+import ru.mutator.Mutator;
+import ru.mutator.MutatorManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +71,9 @@ public class PlayerManager {
         UHC.resetPlayer(spectator);
         spectator.setGameMode(GameMode.ADVENTURE);
         getSpectators().remove(spectator);
+        for(Mutator mutator : MutatorManager.activeMutators) {
+            mutator.onSpectatorLeave(spectator);
+        }
     }
 
     public static void addSpectator(Player player) {
@@ -76,6 +81,9 @@ public class PlayerManager {
         player.setGameMode(GameMode.SPECTATOR);
         player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
         getSpectators().add(player);
+        for(Mutator mutator : MutatorManager.activeMutators) {
+            mutator.onSpectatorJoinFromLobby(player);
+        }
     }
 
     /**
