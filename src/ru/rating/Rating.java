@@ -17,6 +17,29 @@ public class Rating {
     private static final List<GameSummary> gameSummaries = new ArrayList<>();
     private static final List<PlayerRatingSummary> ratingSummaries = new ArrayList<>();
 
+    private static GameSummary currentGameSummary;
+
+    public static GameSummary setupCurrentGameSummary() {
+        currentGameSummary = new GameSummary();
+        return currentGameSummary;
+    }
+
+    public static GameSummary getCurrentGameSummary() {
+        return currentGameSummary;
+    }
+
+    public static void dismissCurrentGameSummary() {
+        currentGameSummary = null;
+    }
+
+    public static void saveCurrentGameSummary() {
+        if(currentGameSummary != null) {
+            currentGameSummary.postSetup();
+            saveGameSummary(currentGameSummary);
+            currentGameSummary = null;
+        }
+    }
+
     /**
      * Loads game summaries from config file and replaces the current contents.
      * In general, this method is only invoked once the plugin starts.

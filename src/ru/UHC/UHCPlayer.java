@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.lobby.Lobby;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
+import ru.rating.PlayerSummary;
 import ru.util.*;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class UHCPlayer {
     private ArmorStand ghost = null;
     private ItemStack[] savedInventory = null;
     private UHCPlayer teammate = null;
+    private PlayerSummary summary;
 
     private Player ghostKiller;
     private final int maxTimeToRejoin = 3 * 60;
@@ -179,6 +181,17 @@ public class UHCPlayer {
         dropBonusItemOnDeath();
         showDeathMessage();
 
+        //Update rating
+        summary.setDeathState(UHC.state);
+        Player killer = getKiller();
+        if(killer != null) {
+            summary.setKillerName(killer.getName());
+            UHCPlayer uhcKiller = PlayerManager.asUHCPlayer(killer);
+            if(uhcKiller != null) {
+                uhcKiller.getSummary().increaseKills();
+            }
+        }
+
         //Send event to mutators
         for(Mutator mutator : MutatorManager.activeMutators) {
             mutator.onPlayerDeath(this);
@@ -187,12 +200,14 @@ public class UHCPlayer {
         //Announce the place to players
         UHCPlayer teammate = getTeammate();
         PlayerTeam team = PlayerManager.getTeamWithMember(this);
-        int remainingTeams = PlayerManager.getAliveTeams().size();
-        if(remainingTeams <= 2 && remainingTeams >= 1 && !team.isAlive()) {
-            String place = remainingTeams == 2 ?
+        int aliveTeams = PlayerManager.getAliveTeams().size();
+        int winningPlace = aliveTeams + 1;
+        if(aliveTeams <= 2 && aliveTeams >= 1 && !team.isAlive()) {
+            summary.setWinningPlace(winningPlace);
+            String placeText = winningPlace == 3 ?
                     ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "третье" :
                     ChatColor.AQUA + "" + ChatColor.BOLD + "второе";
-            String info = ChatColor.YELLOW + "Ты занял " + place + ChatColor.RESET + ChatColor.YELLOW + " место!";
+            String info = ChatColor.YELLOW + "Ты занял " + placeText + ChatColor.RESET + ChatColor.YELLOW + " место!";
             sendMessage(info);
             if(teammate != null) {
                 teammate.sendMessage(info);
@@ -293,6 +308,14 @@ public class UHCPlayer {
                 }
             }
         }
+    }
+
+    public PlayerSummary getSummary() {
+        return summary;
+    }
+
+    public void setSummary(PlayerSummary summary) {
+        this.summary = summary;
     }
 
     public Player getKiller() {
@@ -458,6 +481,7 @@ public class UHCPlayer {
     }
 
     public void setTeammate(UHCPlayer teammate) {
+        this.summary.setTeammateName(teammate.getNickname());
         this.teammate = teammate;
     }
 

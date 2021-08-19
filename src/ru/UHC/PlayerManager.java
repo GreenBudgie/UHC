@@ -9,6 +9,9 @@ import org.bukkit.potion.PotionEffectType;
 import ru.lobby.LobbyTeamBuilder;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
+import ru.rating.GameSummary;
+import ru.rating.PlayerSummary;
+import ru.rating.Rating;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +46,9 @@ public class PlayerManager {
         } else {
             teams.add(new PlayerTeam(uplayer));
         }
+        GameSummary gameSummary = Rating.getCurrentGameSummary();
+        PlayerSummary playerSummary = gameSummary.addPlayerSummary(player.getName());
+        uplayer.setSummary(playerSummary);
         return uplayer;
     }
 

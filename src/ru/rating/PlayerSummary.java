@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.GameState;
+import ru.UHC.UHC;
 import ru.main.UHCPlugin;
 import ru.util.ItemUtils;
 
@@ -60,6 +61,7 @@ public class PlayerSummary implements ConfigurationSerializable {
             return;
         }
         gamePerformance = (getRawGamePerformance() - lowestRawPerformance) / denominator;
+
     }
 
     protected double getRawGamePerformance() {
@@ -93,6 +95,7 @@ public class PlayerSummary implements ConfigurationSerializable {
      */
     protected double getGameKillsPerformanceFactor() {
         int allKills = getGameSummary().getGameKillsNumber();
+        if(allKills == 0) return 0;
         return getGameKills() / (double) allKills;
     }
 
@@ -109,6 +112,7 @@ public class PlayerSummary implements ConfigurationSerializable {
      */
     protected double getDeathmatchKillsPerformanceFactor() {
         int allKills = getGameSummary().getDeathmatchKillsNumber();
+        if(allKills == 0) return 0;
         return getDeathmatchKills() / (double) allKills;
     }
 
@@ -125,6 +129,7 @@ public class PlayerSummary implements ConfigurationSerializable {
      */
     protected double getPlacePerformanceFactor() {
         int players = getGameSummary().getPlayerNumber();
+        if(players == 0) return 0;
         return 1 - ((getWinningPlace() - 1) / (double) players);
     }
 
@@ -134,7 +139,7 @@ public class PlayerSummary implements ConfigurationSerializable {
         serialized.put("playerName", getPlayerName());
         serialized.put("winningPlace", getWinningPlace());
         serialized.put("gameKills", getGameKills());
-        serialized.put("deathmatchKills", getGameKills());
+        serialized.put("deathmatchKills", getDeathmatchKills());
         if(getKillerName() != null) serialized.put("killerName", getKillerName());
         if(getTeammateName() != null) serialized.put("teammateName", getTeammateName());
         if(getDeathState() != null) serialized.put("deathState", getDeathState().name());
@@ -167,7 +172,7 @@ public class PlayerSummary implements ConfigurationSerializable {
         if(getTeammateName() != null) builder.withLore(formatTeammateName());
         if(getKillerName() != null) builder.withLore(formatKiller());
         builder.withLore(formatOverallKills(), formatGameKills(), formatDeathmatchKills());
-        builder.withLore(formatDeathState());
+        if(getDeathState() != null) builder.withLore(formatDeathState());
         representingItem = builder.build();
     }
 
@@ -183,13 +188,13 @@ public class PlayerSummary implements ConfigurationSerializable {
     }
 
     public String formatDeathState() {
-        if(deathState == null) return ChatColor.DARK_GRAY + "Судьба неизвестна";
+        if(deathState == null) return null;
         return switch(deathState) {
-            case PREPARING, VOTE -> ChatColor.DARK_GRAY + "Вышел до начала игры";
-            case OUTBREAK -> ChatColor.DARK_GRAY + "Погиб до начала ПВП";
-            case GAME -> ChatColor.DARK_GRAY + "Погиб во время игры";
-            case DEATHMATCH -> ChatColor.DARK_GRAY + "Погиб на арене";
-            default -> ChatColor.DARK_GRAY + "Судьба неизвестна";
+            case PREPARING, VOTE -> ChatColor.GRAY + "Вышел до начала игры";
+            case OUTBREAK -> ChatColor.GRAY + "Погиб до начала ПВП";
+            case GAME -> ChatColor.GRAY + "Погиб во время игры";
+            case DEATHMATCH -> ChatColor.GRAY + "Погиб на арене";
+            default -> ChatColor.GRAY + "Судьба неизвестна";
         };
     }
 
@@ -273,6 +278,17 @@ public class PlayerSummary implements ConfigurationSerializable {
 
     public void increaseDeathmatchKills() {
         this.deathmatchKills++;
+    }
+
+    /**
+     * Increases kill count based on current game state
+     */
+    public void increaseKills() {
+        if(UHC.state == GameState.DEATHMATCH) {
+            increaseDeathmatchKills();
+        } else {
+            increaseGameKills();
+        }
     }
 
     public int getDeathmatchKills() {

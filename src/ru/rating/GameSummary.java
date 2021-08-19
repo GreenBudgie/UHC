@@ -12,6 +12,7 @@ import ru.util.NumericalCases;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class GameSummary implements ConfigurationSerializable {
 
@@ -101,9 +102,19 @@ public class GameSummary implements ConfigurationSerializable {
         return summary;
     }
 
-    /**
-     * Any constructor must call this method
-     */
+    public PlayerSummary addPlayerSummary(String playerName) {
+        PlayerSummary summary = new PlayerSummary(this, playerName);
+        playerSummaries.add(summary);
+        return summary;
+    }
+
+    public void calculateAndSetDuration() {
+        Date currentDate = new Date();
+        long differenceMillis = currentDate.getTime() - date.getTime();
+        int durationMinutes = (int)TimeUnit.MINUTES.convert(differenceMillis, TimeUnit.MILLISECONDS);
+        setDurationMinutes(durationMinutes);
+    }
+
     protected void postSetup() {
         for(PlayerSummary summary : getPlayerSummaries()) {
             summary.postSetup();

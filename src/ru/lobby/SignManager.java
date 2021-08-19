@@ -9,11 +9,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import ru.UHC.*;
 import ru.main.UHCPlugin;
-import ru.mutator.MutatorManager;
 import ru.pvparena.PvpArena;
 import ru.util.InventoryHelper;
 import ru.util.WorldHelper;
@@ -113,9 +110,9 @@ public class SignManager implements Listener {
 				block.setLine(2, ChatColor.DARK_AQUA + String.valueOf(UHC.getNoPVPDuration()) + defCol + " минут без пвп");
 				block.setLine(3, ChatColor.DARK_AQUA + String.valueOf(UHC.getGameDuration()) + defCol + " минут до ДМ");
 				break;
-			case GAME_STATS:
-				block.setLine(1, defCol + "Статистика:");
-				block.setLine(2, UHC.stats ? (ChatColor.DARK_GREEN + "Включена") : (ChatColor.DARK_RED + "Отключена"));
+			case GAME_RATING:
+				block.setLine(1, defCol + "Тип игры:");
+				block.setLine(2, UHC.isRatingGame ? (ChatColor.DARK_GREEN + "Рейтинговая") : (ChatColor.DARK_RED + "Тестовая"));
 				break;
 			case GAME_DUO:
 				block.setLine(1, defCol + "Режим:");
@@ -203,8 +200,8 @@ public class SignManager implements Listener {
 					if(UHC.gameDuration >= 2) UHC.gameDuration = 0;
 					else UHC.gameDuration++;
 					break;
-				case GAME_STATS:
-					UHC.stats = !UHC.stats;
+				case GAME_RATING:
+					UHC.isRatingGame = !UHC.isRatingGame;
 					break;
 				case GAME_DUO:
 					UHC.isDuo = !UHC.isDuo;

@@ -36,7 +36,6 @@ public class UHCPlugin extends JavaPlugin {
 		registerCommand("arena", new CommandArena());
 		registerCommand("skip", new CommandSkip());
 		registerCommand("map", new CommandMap());
-		registerCommand("stat", new CommandStat());
 		registerCommand("rating", new CommandRating());
 		registerCommand("drop", new CommandDrop());
 		registerCommand("customitem", new CommandCustomItem());

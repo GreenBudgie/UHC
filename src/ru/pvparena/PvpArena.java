@@ -20,7 +20,6 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-import ru.UHC.PlayerStat;
 import ru.lobby.SignManager;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
@@ -243,8 +242,6 @@ public class PvpArena implements Listener {
 			p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 0.5F, 1F);
 			heal(p);
 		}
-		PlayerStat.DUEL_COUNT.increaseValue(p1, 1);
-		PlayerStat.DUEL_COUNT.increaseValue(p2, 1);
 	}
 
 	public static void endDuel(Player winner, Player loser) {
@@ -261,7 +258,6 @@ public class PvpArena implements Listener {
 		meta.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(Color.GREEN).withFlicker().build());
 		firework.setFireworkMeta(meta);
 		openArena();
-		PlayerStat.DUEL_WINS.increaseValue(winner, 1);
 		isDuel = false;
 	}
 
@@ -428,14 +424,12 @@ public class PvpArena implements Listener {
 								.sendActionBarMessage(player, ChatColor.GOLD + "В следующий раз будет выдан новый набор: " + ChatColor.LIGHT_PURPLE + currentKit.getName());
 					}
 				}
-				PlayerStat.ARENA_DEATHS.increaseValue(p, 1);
 				Player killer = p.getKiller();
 				if(killer != null) {
 					heal(killer);
 					removeKit(killer);
 					currentKit.give(killer);
 					killer.playSound(killer.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.8F, 1F);
-					PlayerStat.ARENA_KILLS.increaseValue(killer, 1);
 				}
 				for(Arrow arrow : p.getWorld().getEntitiesByClass(Arrow.class)) {
 					if(arrow.isInBlock()) {

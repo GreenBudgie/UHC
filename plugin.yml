@@ -27,12 +27,9 @@ commands:
  map:
   description: Actions with map
   usage: /map <regen/create/remove/status>
- stat:
-  description: Change stats
-  usage: /stat <delete/set/add/zero>
  rating:
   description: Посмотреть рейтинг
-  usage: /rating [player]
+  usage: /rating
  drop:
   description: Drops debug
   usage: /drop <air/cave> <reset/drop/changeloc>

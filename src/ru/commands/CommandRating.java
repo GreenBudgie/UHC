@@ -1,19 +1,10 @@
 package ru.commands;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import ru.UHC.PlayerStat;
-import ru.mutator.InventoryBuilderMutator;
 import ru.rating.InventoryBuilderRating;
-import ru.util.MathUtils;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class CommandRating implements CommandExecutor {
 

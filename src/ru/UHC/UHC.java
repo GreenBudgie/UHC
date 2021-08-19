@@ -41,11 +41,12 @@ import ru.items.CustomItems;
 import ru.lobby.Lobby;
 import ru.lobby.LobbyTeamBuilder;
 import ru.lobby.SignManager;
-import ru.main.UHCPlugin;
 import ru.mutator.ItemBasedMutator;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
 import ru.pvparena.PvpArena;
+import ru.rating.GameSummary;
+import ru.rating.Rating;
 import ru.requester.ItemRequester;
 import ru.requester.RequestedItem;
 import ru.util.*;
@@ -72,7 +73,7 @@ public class UHC implements Listener {
 	public static int mapSize = 1;
 	public static int gameDuration = 1;
 	public static boolean generating = false;
-	public static boolean stats = true;
+	public static boolean isRatingGame = true;
 	public static Location parkourStart;
 	public static String timerInfo = "";
 	public static List<Landmine> landmines = new ArrayList<>();
@@ -82,7 +83,6 @@ public class UHC implements Listener {
 	public static List<TerraTracer> tracers = new ArrayList<>();
 	private static int mutatorCount = 0;
 	private static Mutator prevMutator = null;
-	private static Player lastLeft = null;
 	private static BossBar voteBar = Bukkit.createBossBar("", BarColor.RED, BarStyle.SOLID);
 
 	public static void init() {
@@ -273,6 +273,8 @@ public class UHC implements Listener {
 
 	public static void endGame() {
 		if(playing) {
+			Rating.getCurrentGameSummary().calculateAndSetDuration();
+			Rating.saveCurrentGameSummary();
 			for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 				resetPlayer(inGamePlayer);
 				inGamePlayer.setGameMode(GameMode.ADVENTURE);
@@ -292,7 +294,7 @@ public class UHC implements Listener {
 			MutatorManager.deactivateMutators();
 			mapSize = 1;
 			gameDuration = 1;
-			stats = true;
+			isRatingGame = true;
 			glassPlates.forEach(location -> location.getBlock().setType(Material.AIR));
 			if(!WorldManager.keepMap && !state.isPreGame()) WorldManager.removeMap();
 			state = GameState.STOPPED;
@@ -326,6 +328,11 @@ public class UHC implements Listener {
 			map.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
 			map.setGameRule(GameRule.DO_WEATHER_CYCLE, true);
 			Drops.firstSetup();
+
+			GameSummary summary = Rating.setupCurrentGameSummary();
+			summary.setRatingGame(isRatingGame);
+			summary.setDuo(isDuo);
+
 			for(Player player : Bukkit.getOnlinePlayers()) {
 				PvpArena.onArenaLeave(player);
 				PlayerManager.registerPlayer(player);
@@ -385,30 +392,6 @@ public class UHC implements Listener {
 			SignManager.updateSigns();
 		} else {
 			Bukkit.broadcastMessage(ChatColor.RED + "Игра уже идет");
-		}
-	}
-
-	public static void addPoints(String playerName, int points) {
-		increaseStat(playerName, PlayerStat.POINTS, points);
-	}
-
-	public static void addPoints(Player p, int points) {
-		increaseStat(p.getName(), PlayerStat.POINTS, points);
-		if(p.isOnline() && stats) {
-			String pointStr = new NumericalCases("очко)", "очка", "очков").byNumber(points);
-			p.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "| " + ChatColor.RESET + ChatColor.DARK_GREEN + "+" + ChatColor.GREEN + ChatColor.BOLD + points +
-					ChatColor.RESET + " " + ChatColor.LIGHT_PURPLE + pointStr + ChatColor.DARK_GRAY + " (" + ChatColor.GRAY + "всего " + ChatColor.DARK_AQUA + ChatColor.BOLD +
-					PlayerStat.POINTS.getValue(p) + ChatColor.RESET + ChatColor.DARK_GRAY + ")" + ChatColor.BOLD + " |");
-		}
-	}
-
-	public static void increaseStat(Player p, PlayerStat stat, int value) {
-		increaseStat(p.getName(), stat, value);
-	}
-
-	public static void increaseStat(String playerName, PlayerStat stat, int value) {
-		if(stats) {
-			stat.setValue(playerName, stat.getValue(playerName) + value);
 		}
 	}
 
@@ -723,7 +706,6 @@ public class UHC implements Listener {
 					arenaPvpTimer = 15;
 					for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 						inGamePlayer.teleport(ArenaManager.getCurrentArena().world().getSpawnLocation());
-						if(PlayerManager.isPlaying(inGamePlayer)) addPoints(inGamePlayer, 5);
 						inGamePlayer.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Дезматч" + ChatColor.GRAY + "!",
 								ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "15" + ChatColor.RESET + ChatColor.GOLD + " секунд до " +
 										ChatColor.DARK_RED + ChatColor.BOLD + "ПВП" + ChatColor.GRAY + "!",
@@ -925,13 +907,6 @@ public class UHC implements Listener {
 		}
 		UHCPlayer uplayer1 = team.getPlayer1();
 		UHCPlayer uplayer2 = team.getPlayer2();
-		//FIXME Return rating
-			/*addPoints(uplayer1, uplayer2 == null ? 50 : 35);
-			increaseStat(uplayer1, PlayerStat.WINS, 1);
-			if(uplayer2 != null) {
-				addPoints(uplayer2, 35);
-				increaseStat(uplayer2, PlayerStat.WINS, 1);
-			}*/
 		if(uplayer2 != null) {
 			String names = ChatColor.GOLD + uplayer1.getNickname() + ChatColor.YELLOW + " и " + ChatColor.GOLD + uplayer2.getNickname();
 			for(Player p : Bukkit.getOnlinePlayers()) {
@@ -945,6 +920,7 @@ public class UHC implements Listener {
 			}
 		}
 		for(UHCPlayer uhcWinner : team.getPlayers()) {
+			uhcWinner.getSummary().setWinningPlace(1);
 			if(uhcWinner.isInGame()) {
 				Player winner = uhcWinner.getPlayer();
 				winner.setGameMode(GameMode.SPECTATOR);
@@ -973,8 +949,6 @@ public class UHC implements Listener {
 			}
 		}
 	}
-
-	//TODO Do not forget to refresh scoreboards, unregister oxygen and meeting place bar
 
 	public static void recalculateTimeOnPlayerDeath() {
 		int aliveTeams = PlayerManager.getAliveTeams().size();
@@ -1017,13 +991,6 @@ public class UHC implements Listener {
 		p.setNoDamageTicks(0);
 		p.setExp(0);
 		p.setLevel(0);
-	}
-
-	public static void increaseGames(Player p) {
-		if(!state.isPreGame() && !processedPlayers.contains(p)) {
-			increaseStat(p, PlayerStat.GAMES, 1);
-			processedPlayers.add(p);
-		}
 	}
 
 	public static void endPreparing() {
@@ -1380,9 +1347,8 @@ public class UHC implements Listener {
 			if(damagedPlayer != null) {
 				e.setCancelled(true);
 				UHCPlayer damagedPlayerTeammate = damagedPlayer.getTeammate();
-				if(damagedPlayerTeammate != null &&
-						udamager != null &&
-						damagedPlayerTeammate != udamager &&
+				if(udamager != null &&
+						(damagedPlayerTeammate == null || damagedPlayerTeammate != udamager) &&
 						stand.getWorld().getPVP()) {
 					damagedPlayer.damageGhost(damager);
 				}
@@ -1441,7 +1407,6 @@ public class UHC implements Listener {
 			if(!isInLobby(player)) player.teleport(WorldManager.getLobby().getSpawnLocation());
 			player.setGameMode(GameMode.ADVENTURE);
 			resetPlayer(player);
-			PlayerStat.defaultStats(player);
 			giveAllRecipes(player);
 			String msg = ChatColor.GREEN + "" + ChatColor.BOLD + "+ " + ChatColor.RESET + ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " присоединился";
 			for(Player pl : WorldManager.getLobby().getPlayers()) {
