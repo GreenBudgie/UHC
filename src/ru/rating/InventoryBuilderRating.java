@@ -28,20 +28,23 @@ public class InventoryBuilderRating {
     private static final int LINE_ROW = SUMMARY_ROWS;
     private static final int OPTION_ROW = SUMMARY_ROWS + 2;
     private static final int INV_SIZE = OPTION_ROW * 9;
-    private static final int FILTER_SLOT = INV_SIZE - 7;
+    private static final int FILTER_SORT_SLOT = INV_SIZE - 6;
     private static final int PAGE_NEXT_SLOT = INV_SIZE - 1;
     private static final int PAGE_PREV_SLOT = INV_SIZE - 2;
-    private static final int CANCEL_SLOT = INV_SIZE - 9;
+    private static final int CANCEL_SLOT = INV_SIZE - 8;
     private static final int RATING_SLOT = INV_SIZE - 5;
+    private static final int CHANGE_TYPE_SLOT = INV_SIZE - 9;
     //OP
     private static final int ADD_RANDOM_SUMMARY_SLOT = INV_SIZE - 3;
     private static final int CONFIG_RELOAD_SLOT = INV_SIZE - 4;
-    private static final int CONFIG_SAVE_SLOT = INV_SIZE - 8;
+    private static final int CONFIG_SAVE_SLOT = INV_SIZE - 7;
 
     private Player player;
+    private Sort sort = Sort.PLACE;
     private Filter filter = Filter.NONE;
     private boolean op = false;
     private int page = 1; //Starting from 1, not 0
+    private boolean watchingGames = false;
     private GameSummary watchingGameSummary = null;
 
     public static void registerListener() {
@@ -71,10 +74,10 @@ public class InventoryBuilderRating {
         ItemStack item = event.getCurrentItem();
         boolean clickedSummary = slot < SUMMARY_ROWS * 9;
         if(clickedSummary) {
-            if(watchingGameSummary == null) {
+            if(watchingGames && watchingGameSummary == null) {
                 if(ItemUtils.hasCustomValue(item, "date")) {
                     long dateMillis = Long.parseLong(ItemUtils.getCustomValue(item, "date"));
-                    GameSummary summary = Rating.getSummaryByDate(dateMillis);
+                    GameSummary summary = Rating.getGameSummaryByDate(dateMillis);
                     if(summary != null) {
                         if(isOp() && event.isRightClick()) {
                             Rating.getGameSummaries().remove(summary);
@@ -93,10 +96,16 @@ public class InventoryBuilderRating {
                         watchingGameSummary = null;
                         page = 1;
                     }
-                    case FILTER_SLOT -> {
-                        int filterIndex = filter.ordinal() + 1;
-                        if(filterIndex >= Filter.values().length) filterIndex = 0;
-                        filter = Filter.values()[filterIndex];
+                    case FILTER_SORT_SLOT -> {
+                        if(watchingGames) {
+                            int filterIndex = filter.ordinal() + 1;
+                            if(filterIndex >= Filter.values().length) filterIndex = 0;
+                            filter = Filter.values()[filterIndex];
+                        } else {
+                            int sortIndex = sort.ordinal() + 1;
+                            if(sortIndex >= Sort.values().length) sortIndex = 0;
+                            sort = Sort.values()[sortIndex];
+                        }
                     }
                     case PAGE_NEXT_SLOT -> nextPage();
                     case PAGE_PREV_SLOT -> prevPage();
@@ -110,6 +119,7 @@ public class InventoryBuilderRating {
                             } else {
                                 Rating.getGameSummaries().add(GameSummary.generateRandomSummary(minPlayers, maxPlayers));
                             }
+                            Rating.updateRatingSummaries();
                         }
                     }
                     case CONFIG_RELOAD_SLOT -> {
@@ -124,6 +134,10 @@ public class InventoryBuilderRating {
                             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1);
                             InventoryHelper.sendActionBarMessage(player, ChatColor.RED + "Config file has been updated");
                         }
+                    }
+                    case CHANGE_TYPE_SLOT -> {
+                        watchingGames = !watchingGames;
+                        page = 1;
                     }
                 }
                 openInventory();
@@ -195,14 +209,36 @@ public class InventoryBuilderRating {
     }
 
     private void placeOptionalItems(Inventory inventory) {
-        if(watchingGameSummary != null) {
+        PlayerRatingSummary ratingSummary = Rating.getRatingSummaryByName(player.getName());
+        if(ratingSummary != null) {
+            inventory.setItem(RATING_SLOT, ratingSummary.getRepresentingItem());
+        } else {
+            inventory.setItem(RATING_SLOT, ItemUtils.builder(Material.PAPER).
+                            withName(ChatColor.GOLD + player.getName()).
+                            withLore(ChatColor.GRAY + "Тебя пока нет в рейтинге").
+                            build());
+        }
+        if(watchingGames) {
+            inventory.setItem(CHANGE_TYPE_SLOT,
+                    ItemUtils.builder(Material.PLAYER_HEAD).withName(ChatColor.GRAY + "> Показать игроков <").build());
+        } else {
+            inventory.setItem(CHANGE_TYPE_SLOT,
+                    ItemUtils.builder(Material.BOOK).withName(ChatColor.GRAY + "> Показать игры <").build());
+        }
+        if(!watchingGames) {
+            ItemStack sortItem = ItemUtils.builder(sort.itemToShow)
+                    .withName(ChatColor.GOLD + "Сортировка")
+                    .withLore(ChatColor.YELLOW + "" + ChatColor.BOLD + sort.description)
+                    .build();
+            inventory.setItem(FILTER_SORT_SLOT, sortItem);
+        } else if(watchingGameSummary != null) {
             inventory.setItem(CANCEL_SLOT, ItemUtils.builder(Material.BARRIER).withName(ChatColor.RED + "" + ChatColor.BOLD + "Назад").build());
         } else {
             ItemStack filterItem = ItemUtils.builder(filter.itemToShow)
                     .withName(ChatColor.DARK_AQUA + "Фильтр")
                     .withLore(ChatColor.AQUA + "" + ChatColor.BOLD + filter.description)
                     .build();
-            inventory.setItem(FILTER_SLOT, filterItem);
+            inventory.setItem(FILTER_SORT_SLOT, filterItem);
 
             if(isOp()) {
                 ItemStack randomSummaryItem = ItemUtils.builder(Material.KNOWLEDGE_BOOK)
@@ -243,6 +279,15 @@ public class InventoryBuilderRating {
 
     public List<ItemStack> getCurrentInventoryItems() {
         List<ItemStack> items = new ArrayList<>();
+        if(!watchingGames) {
+            List<PlayerRatingSummary> summaries = Lists.newArrayList(Rating.getRatingSummaries());
+            sort(summaries);
+            for(PlayerRatingSummary summary : summaries) {
+                ItemStack representingItem = summary.getRepresentingItem();
+                items.add(representingItem);
+            }
+            return items;
+        }
         if(watchingGameSummary == null) {
             List<GameSummary> summaries = Lists.newArrayList(Rating.getGameSummaries());
 
@@ -271,7 +316,16 @@ public class InventoryBuilderRating {
         return items;
     }
 
-    public void filter(List<GameSummary> summaries) {
+    private void sort(List<PlayerRatingSummary> summaries) {
+        switch(sort) {
+            case PLACE -> summaries.sort(Comparator.comparingInt(PlayerRatingSummary::getRatingPlace));
+            case WINRATE -> summaries.sort(Comparator.comparingDouble(PlayerRatingSummary::getWinRate).reversed());
+            case GAMES -> summaries.sort(Comparator.comparingInt(PlayerRatingSummary::getGamesPlayed).reversed());
+            case KILLS -> summaries.sort(Comparator.comparingInt(PlayerRatingSummary::getOverallKills).reversed());
+        }
+    }
+
+    private void filter(List<GameSummary> summaries) {
         if(filter == Filter.NONE) return;
         if(filter == Filter.PARTICIPANT) {
             summaries.removeIf(summary -> !summary.hasParticipated(player.getName()));
@@ -285,7 +339,22 @@ public class InventoryBuilderRating {
         return ChatColor.DARK_GREEN + "" + ChatColor.BOLD + page + ChatColor.DARK_GRAY + " / " + ChatColor.DARK_GREEN + pages;
     }
 
-    public enum Filter {
+    private enum Sort {
+        PLACE("По месту в рейтинге", Material.COMPARATOR),
+        WINRATE("По винрейту", Material.GOLD_INGOT),
+        GAMES("По количеству игр", Material.GRASS_BLOCK),
+        KILLS("По количеству убийств", Material.IRON_SWORD);
+
+        private String description;
+        private Material itemToShow;
+
+        Sort(String description, Material itemToShow) {
+            this.description = description;
+            this.itemToShow = itemToShow;
+        }
+    }
+
+    private enum Filter {
         NONE("Нет", Material.HOPPER),
         PARTICIPANT("Принято участие", Material.PLAYER_HEAD),
         WINNER("Победа", Material.GOLD_INGOT);

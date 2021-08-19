@@ -47,6 +47,7 @@ public class GameSummary implements ConfigurationSerializable {
         for(Map<?, ?> serializedSummary : summaries) {
             summary.getPlayerSummaries().add(PlayerSummary.deserialize(summary, (Map<String, Object>) serializedSummary));
         }
+        summary.postSetup();
         return summary;
     }
 
@@ -96,7 +97,17 @@ public class GameSummary implements ConfigurationSerializable {
             }
             summary.getPlayerSummaries().add(playerSummary);
         }
+        summary.postSetup();
         return summary;
+    }
+
+    /**
+     * Any constructor must call this method
+     */
+    protected void postSetup() {
+        for(PlayerSummary summary : getPlayerSummaries()) {
+            summary.postSetup();
+        }
     }
 
     public ItemStack getRepresentingItem() {
@@ -104,8 +115,8 @@ public class GameSummary implements ConfigurationSerializable {
                 withName(formatTitle()).
                 withLore(
                         formatIsRatingGame(),
-                        formatIsDuo(),
                         formatWinners(),
+                        formatIsDuo(),
                         formatDuration(),
                         formatPlayerNumber()).
                 withValue("date", String.valueOf(getDate().getTime())).
@@ -114,16 +125,16 @@ public class GameSummary implements ConfigurationSerializable {
 
     public String formatPlayerNumber() {
         String participateText = new NumericalCases(
-                "Принимал",
-                "Принимало",
-                "Принимало").
+                "Участвовал",
+                "Участвовало",
+                "Участвовало").
                 byNumber(getPlayerNumber());
         String humanText = new NumericalCases(
                 "человек",
                 "человека",
                 "человек").
                 byNumber(getPlayerNumber());
-        return ChatColor.GRAY + participateText + " участие " +
+        return ChatColor.GRAY + participateText + " " +
                 ChatColor.DARK_AQUA + ChatColor.BOLD + getPlayerNumber() + " " +
                 ChatColor.RESET + ChatColor.GRAY + humanText;
     }
@@ -157,17 +168,17 @@ public class GameSummary implements ConfigurationSerializable {
 
     public String formatIsDuo() {
         if(isDuo()) {
-            return ChatColor.GOLD + "Режим" + ChatColor.GRAY + ": " + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "Дуо";
+            return ChatColor.GRAY + "Режим: " + ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "Дуо";
         } else {
-            return ChatColor.GOLD + "Режим" + ChatColor.GRAY + ": " + ChatColor.DARK_AQUA + ChatColor.BOLD + "Соло";
+            return ChatColor.GRAY + "Режим: " + ChatColor.DARK_AQUA + ChatColor.BOLD + "Соло";
         }
     }
 
     public String formatIsRatingGame() {
         if(isRatingGame()) {
-            return ChatColor.GREEN + "" + ChatColor.ITALIC + "Рейтинговая игра";
+            return ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "Рейтинговая игра";
         } else {
-            return ChatColor.DARK_GREEN + "" + ChatColor.ITALIC + "Тренировочная игра";
+            return ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + "Тренировочная игра";
         }
     }
 

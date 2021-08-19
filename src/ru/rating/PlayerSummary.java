@@ -4,13 +4,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.GameState;
+import ru.main.UHCPlugin;
 import ru.util.ItemUtils;
-import ru.util.MathUtils;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PlayerSummary implements ConfigurationSerializable {
@@ -24,9 +22,24 @@ public class PlayerSummary implements ConfigurationSerializable {
     private String teammateName = null;
     private GameState deathState = null;
 
+    /**
+     * Game performance must be calculated once after all players are present in game summary
+     */
+    private double gamePerformance = -1;
+    private ItemStack representingItem = null;
+
     public PlayerSummary(GameSummary summary, String playerName) {
         this.playerName = playerName;
         this.gameSummary = summary;
+    }
+
+    public double getGamePerformance() {
+        return gamePerformance;
+    }
+
+    public void postSetup() {
+        calculateGamePerformance();
+        generateRepresentingItem();
     }
 
     /**
@@ -38,12 +51,15 @@ public class PlayerSummary implements ConfigurationSerializable {
      *
      * The worst player will always have the performance value of 0, and the best will have 1.
      */
-    public double getGamePerformance() {
+    public void calculateGamePerformance() {
         double highestRawPerformance = getGameSummary().getHighestRawGamePerformance();
         double lowestRawPerformance = getGameSummary().getLowestRawGamePerformance();
         double denominator = highestRawPerformance - lowestRawPerformance;
-        if(denominator == 0) return 0;
-        return (getRawGamePerformance() - lowestRawPerformance) / denominator;
+        if(denominator == 0) {
+            gamePerformance = 0;
+            return;
+        }
+        gamePerformance = (getRawGamePerformance() - lowestRawPerformance) / denominator;
     }
 
     protected double getRawGamePerformance() {
@@ -52,15 +68,15 @@ public class PlayerSummary implements ConfigurationSerializable {
                 getDeathmatchKillsPerformanceFactorScaled();
     }
 
-    public double getDeathmatchKillsPerformanceFactorScaled() {
+    protected double getDeathmatchKillsPerformanceFactorScaled() {
         return getDeathmatchKillsPerformanceFactor() * getDeathmatchKillsPerformanceScalar();
     }
 
-    public double getGameKillsPerformanceFactorScaled() {
+    protected double getGameKillsPerformanceFactorScaled() {
         return getGameKillsPerformanceFactor() * getGameKillsPerformanceScalar();
     }
 
-    public double getPlacePerformanceFactorScaled() {
+    protected double getPlacePerformanceFactorScaled() {
         return getPlacePerformanceFactor() * getPlacePerformanceScalar();
     }
 
@@ -68,14 +84,14 @@ public class PlayerSummary implements ConfigurationSerializable {
      * Scalar influences how the factor affects overall game performance.
      * In-game kills are more valuable than deathmatch kills, so its scalar is greater.
      */
-    public double getGameKillsPerformanceScalar() {
+    protected double getGameKillsPerformanceScalar() {
         return 1.2;
     }
 
     /**
      * Gets the in-game kills factor, a value from 0 to 1
      */
-    public double getGameKillsPerformanceFactor() {
+    protected double getGameKillsPerformanceFactor() {
         int allKills = getGameSummary().getGameKillsNumber();
         return getGameKills() / (double) allKills;
     }
@@ -84,14 +100,14 @@ public class PlayerSummary implements ConfigurationSerializable {
      * Scalar influences how the factor affects overall game performance.
      * Deathmatch kills are less valuable than in-game kills, so its scalar is smaller.
      */
-    public double getDeathmatchKillsPerformanceScalar() {
+    protected double getDeathmatchKillsPerformanceScalar() {
         return 1;
     }
 
     /**
      * Gets the deathmatch kills factor, a value from 0 to 1
      */
-    public double getDeathmatchKillsPerformanceFactor() {
+    protected double getDeathmatchKillsPerformanceFactor() {
         int allKills = getGameSummary().getDeathmatchKillsNumber();
         return getDeathmatchKills() / (double) allKills;
     }
@@ -100,20 +116,16 @@ public class PlayerSummary implements ConfigurationSerializable {
      * Scalar influences how the factor affects overall game performance.
      * Place is the most valuable factor, so its scalar is the greatest.
      */
-    public double getPlacePerformanceScalar() {
-        return 1.3;
+    protected double getPlacePerformanceScalar() {
+        return 1.4;
     }
 
     /**
      * Gets the place factor, a value from 0 to 1.
      */
-    public double getPlacePerformanceFactor() {
+    protected double getPlacePerformanceFactor() {
         int players = getGameSummary().getPlayerNumber();
         return 1 - ((getWinningPlace() - 1) / (double) players);
-    }
-
-    public int convertPerformanceFactor(double performanceFactor) {
-        return (int) (performanceFactor * 100);
     }
 
     @Override
@@ -148,55 +160,36 @@ public class PlayerSummary implements ConfigurationSerializable {
         return winningPlace == 1;
     }
 
+    public void generateRepresentingItem() {
+        ItemUtils.Builder builder = ItemUtils.builder(ItemUtils.getHead(playerName));
+        builder.withName(formatTitle());
+        builder.withLore(formatWinningPlace(), formatPerformanceResult());
+        if(getTeammateName() != null) builder.withLore(formatTeammateName());
+        if(getKillerName() != null) builder.withLore(formatKiller());
+        builder.withLore(formatOverallKills(), formatGameKills(), formatDeathmatchKills());
+        builder.withLore(formatDeathState());
+        representingItem = builder.build();
+    }
+
     public ItemStack getRepresentingItem() {
-        ItemStack item = ItemUtils.getHead(playerName);
-        ItemUtils.setName(item, formatTitle());
-        ItemUtils.addLore(item, formatWinningPlace());
-        if(getTeammateName() != null) ItemUtils.addLore(item, formatTeammateName());
-        ItemUtils.addLore(item,
-                formatOverallKills(),
-                formatGameKills(),
-                formatDeathmatchKills());
-        if(getKillerName() != null) ItemUtils.addLore(item, formatKiller());
-        ItemUtils.addLore(item, formatDeathState());
-        ItemUtils.addLore(item, formatPerformanceSummary());
-        ItemUtils.addLore(item, formatPerformanceResult());
-        return item;
+        return representingItem;
     }
 
     public String formatPerformanceResult() {
         int performancePercentage = (int) (getGamePerformance() * 100);
-        return ChatColor.GREEN + "Эффективность в игре" +
-                ChatColor.GRAY + ": " +
-                ChatColor.LIGHT_PURPLE + ChatColor.BOLD + performancePercentage +
+        return ChatColor.GRAY + "Эффективность в игре: " +
+                ChatColor.AQUA + ChatColor.BOLD + performancePercentage +
                 ChatColor.RESET + ChatColor.GRAY + "%";
     }
 
-    public String formatPerformanceSummary() {
-        int placeFactor = convertPerformanceFactor(getPlacePerformanceFactorScaled());
-        int gameKillsFactor = convertPerformanceFactor(getGameKillsPerformanceFactorScaled());
-        int deathmatchKillsFactor = convertPerformanceFactor(getDeathmatchKillsPerformanceFactorScaled());
-        int result = placeFactor + gameKillsFactor + deathmatchKillsFactor;
-        return ChatColor.DARK_GREEN + "Итог" +
-                ChatColor.GRAY + ": " +
-                ChatColor.DARK_AQUA + ChatColor.BOLD + placeFactor +
-                ChatColor.RESET + ChatColor.GRAY + " + " +
-                ChatColor.DARK_AQUA + ChatColor.BOLD + gameKillsFactor +
-                ChatColor.RESET + ChatColor.GRAY + " + " +
-                ChatColor.DARK_AQUA + ChatColor.BOLD + deathmatchKillsFactor +
-                ChatColor.RESET + ChatColor.GRAY + " = " +
-                ChatColor.AQUA + ChatColor.BOLD + result +
-                ChatColor.RESET + ChatColor.GRAY + "pts.";
-    }
-
     public String formatDeathState() {
-        if(deathState == null) return ChatColor.DARK_AQUA + "Судьба неизвестна";
+        if(deathState == null) return ChatColor.DARK_GRAY + "Судьба неизвестна";
         return switch(deathState) {
-            case PREPARING, VOTE -> ChatColor.AQUA + "Вышел до начала игры";
-            case OUTBREAK -> ChatColor.AQUA + "Погиб до начала ПВП";
-            case GAME -> ChatColor.AQUA + "Погиб во время игры";
-            case DEATHMATCH -> ChatColor.AQUA + "Погиб на арене";
-            default -> ChatColor.DARK_AQUA + "Судьба неизвестна";
+            case PREPARING, VOTE -> ChatColor.DARK_GRAY + "Вышел до начала игры";
+            case OUTBREAK -> ChatColor.DARK_GRAY + "Погиб до начала ПВП";
+            case GAME -> ChatColor.DARK_GRAY + "Погиб во время игры";
+            case DEATHMATCH -> ChatColor.DARK_GRAY + "Погиб на арене";
+            default -> ChatColor.DARK_GRAY + "Судьба неизвестна";
         };
     }
 
@@ -204,16 +197,14 @@ public class PlayerSummary implements ConfigurationSerializable {
         return ChatColor.GRAY + "- " +
                 ChatColor.RED + "На арене" +
                 ChatColor.GRAY + ": " +
-                ChatColor.DARK_RED + ChatColor.BOLD + getDeathmatchKills() + " " +
-                formatPerformancePoints(getDeathmatchKillsPerformanceFactorScaled());
+                ChatColor.DARK_RED + ChatColor.BOLD + getDeathmatchKills();
     }
 
     public String formatGameKills() {
         return ChatColor.GRAY + "- " +
                 ChatColor.RED + "Во время игры" +
                 ChatColor.GRAY + ": " +
-                ChatColor.DARK_RED + ChatColor.BOLD + getGameKills() + " " +
-                formatPerformancePoints(getGameKillsPerformanceFactorScaled());
+                ChatColor.DARK_RED + ChatColor.BOLD + getGameKills();
     }
 
     public String formatOverallKills() {
@@ -225,19 +216,17 @@ public class PlayerSummary implements ConfigurationSerializable {
     @Nullable
     public String formatKiller() {
         if(getKillerName() == null) return null;
-        return ChatColor.DARK_GREEN + "Погиб из-за " + ChatColor.GOLD + getKillerName();
+        return ChatColor.GRAY + "Погиб из-за " + ChatColor.GOLD + getKillerName();
     }
 
     @Nullable
     public String formatTeammateName() {
         if(getTeammateName() == null) return null;
-        return ChatColor.LIGHT_PURPLE + "Был в команде с " + ChatColor.GOLD + getTeammateName();
+        return ChatColor.GRAY + "Был в команде с " + ChatColor.GOLD + getTeammateName();
     }
 
     public String formatWinningPlace() {
-        String placeText = ChatColor.RESET + "" +
-                ChatColor.DARK_AQUA + " место " +
-                formatPerformancePoints(getPlacePerformanceFactorScaled());
+        String placeText = ChatColor.RESET + "" + ChatColor.DARK_AQUA + " место";
         return switch(winningPlace) {
             case 1 -> ChatColor.YELLOW + "" + ChatColor.BOLD + "Первое" + placeText;
             case 2 -> ChatColor.GRAY + "" + ChatColor.BOLD + "Второе" + placeText;
@@ -248,13 +237,6 @@ public class PlayerSummary implements ConfigurationSerializable {
 
     public String formatTitle() {
         return ChatColor.GOLD + playerName;
-    }
-
-    public String formatPerformancePoints(double performanceFactor) {
-        int scaledPoints = convertPerformanceFactor(performanceFactor);
-        return ChatColor.DARK_GRAY + "+" +
-                ChatColor.DARK_AQUA + ChatColor.BOLD + scaledPoints +
-                ChatColor.RESET + ChatColor.GRAY + "pts.";
     }
 
     public String getPlayerName() {

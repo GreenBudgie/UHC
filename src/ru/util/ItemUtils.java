@@ -16,6 +16,7 @@ import org.bukkit.potion.PotionEffect;
 import ru.main.UHCPlugin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -202,6 +203,10 @@ public class ItemUtils {
 		return new Builder(item);
 	}
 
+	public static Builder builder(ItemStack item) {
+		return new Builder(item);
+	}
+
 	public static PotionBuilder potionBuilder() {
 		return new PotionBuilder();
 	}
@@ -364,67 +369,86 @@ public class ItemUtils {
 	public static class Builder {
 
 		protected ItemStack item;
+		protected ItemMeta meta;
 
 		public Builder(Material type) {
 			item = new ItemStack(type);
+			meta = item.getItemMeta();
 		}
 
 		public Builder(ItemStack item) {
 			this.item = item.clone();
+			meta = item.getItemMeta();
 		}
 
 		public Builder withFlags(ItemFlag... flags) {
-			ItemMeta meta = item.getItemMeta();
 			meta.addItemFlags(flags);
-			item.setItemMeta(meta);
 			return this;
 		}
 
 		public Builder withName(String name) {
-			setName(item, name);
+			meta.setDisplayName(name);
 			return this;
 		}
 
 		public Builder withLore(List<String> lore) {
-			addLore(item, false, lore);
+			List<String> prevLore = meta.getLore();
+			if(prevLore == null) prevLore = new ArrayList<>();
+			prevLore.addAll(lore);
+			meta.setLore(prevLore);
 			return this;
 		}
 
 		public Builder withLore(String... lore) {
-			addLore(item, false, lore);
+			withLore(Arrays.asList(lore));
 			return this;
 		}
 
 		public Builder unbreakable() {
-			setUnbreakable(item);
+			meta.setUnbreakable(true);
 			return this;
 		}
 
 		public Builder withSplittedLore(String lore, int length) {
-			addSplittedLore(item, lore, length);
+			List<String> splitted = splitLongString(lore, length);
+			for(int i = 0; i < splitted.size(); i++) {
+				String str = splitted.get(i);
+				String prevColor = "";
+				if(i > 0) {
+					prevColor = ChatColor.getLastColors(splitted.get(0));
+				}
+				List<String> prevLore = meta.getLore();
+				if(prevLore == null) prevLore = new ArrayList<>();
+				prevLore.add(prevColor + str);
+				meta.setLore(prevLore);
+			}
 			return this;
 		}
 
 		public Builder withSplittedLore(String lore) {
-			addSplittedLore(item, lore);
+			withSplittedLore(lore, 25);
 			return this;
 		}
 
 		public Builder withGlow() {
-			addGlow(item);
+			meta.addEnchant(Enchantment.OXYGEN, 1, true);
+			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			return this;
 		}
 
 		public Builder withGlow(boolean glow) {
-			if(glow) addGlow(item);
+			if(glow) withGlow();
 			return this;
 		}
 
 		public Builder withEnchantments(Enchant... enchantments) {
-			addEnchantments(item, enchantments);
+			for(Enchant enchant : enchantments) {
+				meta.addEnchant(enchant.enchantment, enchant.level, true);
+			}
 			return this;
 		}
 
+		@Deprecated
 		public Builder unstackable() {
 			setUnstackable(item);
 			return this;
@@ -436,11 +460,14 @@ public class ItemUtils {
 		}
 
 		public Builder withValue(String name, String value) {
+			item.setItemMeta(meta);
 			item = setCustomValue(item, name, value);
+			meta = item.getItemMeta();
 			return this;
 		}
 
 		public ItemStack build() {
+			item.setItemMeta(meta);
 			return item;
 		}
 

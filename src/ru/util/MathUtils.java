@@ -158,11 +158,11 @@ public final class MathUtils {
 		return x == (int) x;
 	}
 
-	public static double decimal(double x, int count) {
-		if(count <= 0) return x;
+	public static double decimal(double x, int decimalPlaces) {
+		if(decimalPlaces <= 0) return x;
 		String str[] = Double.toString(x).trim().replace(".", " ").split(" ");
-		if(str[1].length() <= count) return x;
-		String r = str[1].substring(0, count);
+		if(str[1].length() <= decimalPlaces) return x;
+		String r = str[1].substring(0, decimalPlaces);
 		x = Double.parseDouble(str[0] + "." + r);
 		return x;
 	}
