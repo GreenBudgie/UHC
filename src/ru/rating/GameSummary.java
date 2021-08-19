@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.GameState;
 import ru.util.ItemUtils;
@@ -13,8 +12,6 @@ import ru.util.NumericalCases;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class GameSummary implements ConfigurationSerializable {
 
@@ -120,14 +117,14 @@ public class GameSummary implements ConfigurationSerializable {
                 "Принимал",
                 "Принимало",
                 "Принимало").
-                byNumber(getPlayerSummaries().size());
+                byNumber(getPlayerNumber());
         String humanText = new NumericalCases(
                 "человек",
                 "человека",
                 "человек").
-                byNumber(getPlayerSummaries().size());
+                byNumber(getPlayerNumber());
         return ChatColor.GRAY + participateText + " участие " +
-                ChatColor.DARK_AQUA + ChatColor.BOLD + getPlayerSummaries().size() + " " +
+                ChatColor.DARK_AQUA + ChatColor.BOLD + getPlayerNumber() + " " +
                 ChatColor.RESET + ChatColor.GRAY + humanText;
     }
 
@@ -156,7 +153,7 @@ public class GameSummary implements ConfigurationSerializable {
                 ChatColor.YELLOW + " и " +
                 ChatColor.GOLD + winners.get(1).getPlayerName();
         return null;
-     }
+    }
 
     public String formatIsDuo() {
         if(isDuo()) {
@@ -195,6 +192,57 @@ public class GameSummary implements ConfigurationSerializable {
 
     public List<PlayerSummary> getWinnersSummaries() {
         return getPlayerSummaries().stream().filter(PlayerSummary::isWinner).toList();
+    }
+
+    protected double getHighestRawGamePerformance() {
+        double highest = 0;
+        for(PlayerSummary summary : getPlayerSummaries()) {
+            double rawPerformance = summary.getRawGamePerformance();
+            if(rawPerformance > highest) highest = rawPerformance;
+        }
+        return highest;
+    }
+
+    protected double getLowestRawGamePerformance() {
+        double lowest = Double.MAX_VALUE;
+        for(PlayerSummary summary : getPlayerSummaries()) {
+            double rawPerformance = summary.getRawGamePerformance();
+            if(rawPerformance < lowest) lowest = rawPerformance;
+        }
+        return lowest;
+    }
+
+    /**
+     * Gets the complete amount of kills every player have taken throughout the game
+     */
+    public int getOverallKillsNumber() {
+        return getGameKillsNumber() + getDeathmatchKillsNumber();
+    }
+
+    /**
+     * Gets the complete amount of kills every player have taken before deathmatch
+     */
+    public int getGameKillsNumber() {
+        int number = 0;
+        for(PlayerSummary summary : getPlayerSummaries()) {
+            number += summary.getGameKills();
+        }
+        return number;
+    }
+
+    /**
+     * Gets the complete amount of kills every player have taken on deathmatch
+     */
+    public int getDeathmatchKillsNumber() {
+        int number = 0;
+        for(PlayerSummary summary : getPlayerSummaries()) {
+            number += summary.getDeathmatchKills();
+        }
+        return number;
+    }
+
+    public int getPlayerNumber() {
+        return getPlayerSummaries().size();
     }
 
     public Date getDate() {
