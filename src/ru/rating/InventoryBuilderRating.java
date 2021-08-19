@@ -1,8 +1,10 @@
 package ru.rating;
 
+import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,16 +12,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import ru.main.UHCPlugin;
-import ru.mutator.InventoryBuilderMutator;
-import ru.mutator.Mutator;
-import ru.mutator.MutatorManager;
 import ru.util.InventoryHelper;
 import ru.util.ItemUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public class InventoryBuilderRating {
@@ -32,10 +28,15 @@ public class InventoryBuilderRating {
     private static final int LINE_ROW = SUMMARY_ROWS;
     private static final int OPTION_ROW = SUMMARY_ROWS + 2;
     private static final int INV_SIZE = OPTION_ROW * 9;
-    private static final int FILTER_SLOT = INV_SIZE - 5;
+    private static final int FILTER_SLOT = INV_SIZE - 7;
     private static final int PAGE_NEXT_SLOT = INV_SIZE - 1;
     private static final int PAGE_PREV_SLOT = INV_SIZE - 2;
     private static final int CANCEL_SLOT = INV_SIZE - 9;
+    private static final int RATING_SLOT = INV_SIZE - 5;
+    //OP
+    private static final int ADD_RANDOM_SUMMARY_SLOT = INV_SIZE - 3;
+    private static final int CONFIG_RELOAD_SLOT = INV_SIZE - 4;
+    private static final int CONFIG_SAVE_SLOT = INV_SIZE - 8;
 
     private Player player;
     private Filter filter = Filter.NONE;
@@ -75,7 +76,12 @@ public class InventoryBuilderRating {
                     long dateMillis = Long.parseLong(ItemUtils.getCustomValue(item, "date"));
                     GameSummary summary = Rating.getSummaryByDate(dateMillis);
                     if(summary != null) {
-                        watchingGameSummary = summary;
+                        if(isOp() && event.isRightClick()) {
+                            Rating.getGameSummaries().remove(summary);
+                        } else {
+                            watchingGameSummary = summary;
+                            page = 1;
+                        }
                         openInventory();
                     }
                 }
@@ -83,14 +89,42 @@ public class InventoryBuilderRating {
         } else {
             if(item != null && item.getType() != Material.AIR) {
                 switch(slot) {
-                    case CANCEL_SLOT -> watchingGameSummary = null;
+                    case CANCEL_SLOT -> {
+                        watchingGameSummary = null;
+                        page = 1;
+                    }
                     case FILTER_SLOT -> {
                         int filterIndex = filter.ordinal() + 1;
                         if(filterIndex >= Filter.values().length) filterIndex = 0;
                         filter = Filter.values()[filterIndex];
                     }
-                    case PAGE_PREV_SLOT -> nextPage();
-                    case PAGE_NEXT_SLOT -> prevPage();
+                    case PAGE_NEXT_SLOT -> nextPage();
+                    case PAGE_PREV_SLOT -> prevPage();
+                    case ADD_RANDOM_SUMMARY_SLOT -> {
+                        if(player.isOp()) {
+                            int minPlayers = event.isRightClick() ? SUMMARY_ROWS * 9 : 5;
+                            int maxPlayers = event.isRightClick() ? SUMMARY_ROWS * 27 : 12;
+                            if(event.isShiftClick()) {
+                                for(int i = 0; i < 5; i++)
+                                    Rating.getGameSummaries().add(GameSummary.generateRandomSummary(minPlayers, maxPlayers));
+                            } else {
+                                Rating.getGameSummaries().add(GameSummary.generateRandomSummary(minPlayers, maxPlayers));
+                            }
+                        }
+                    }
+                    case CONFIG_RELOAD_SLOT -> {
+                        if(player.isOp()) {
+                            Rating.loadFromConfig();
+                            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 1);
+                        }
+                    }
+                    case CONFIG_SAVE_SLOT -> {
+                        if(player.isOp() && event.isShiftClick()) {
+                            Rating.updateConfig();
+                            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1);
+                            InventoryHelper.sendActionBarMessage(player, ChatColor.RED + "Config file has been updated");
+                        }
+                    }
                 }
                 openInventory();
             }
@@ -103,6 +137,14 @@ public class InventoryBuilderRating {
 
     public void prevPage() {
         if(--page < 1) page = getPages();
+    }
+
+    public void setOp(boolean op) {
+        this.op = op;
+    }
+
+    public boolean isOp() {
+        return op;
     }
 
     public static boolean checkInventory(String title) {
@@ -153,11 +195,38 @@ public class InventoryBuilderRating {
     }
 
     private void placeOptionalItems(Inventory inventory) {
-        ItemStack filterItem = ItemUtils.builder(filter.itemToShow)
-                .withName(ChatColor.DARK_AQUA + "Фильтр")
-                .withLore(ChatColor.AQUA + "" + ChatColor.BOLD + filter.description)
-                .build();
-        inventory.setItem(FILTER_SLOT, filterItem);
+        if(watchingGameSummary != null) {
+            inventory.setItem(CANCEL_SLOT, ItemUtils.builder(Material.BARRIER).withName(ChatColor.RED + "" + ChatColor.BOLD + "Назад").build());
+        } else {
+            ItemStack filterItem = ItemUtils.builder(filter.itemToShow)
+                    .withName(ChatColor.DARK_AQUA + "Фильтр")
+                    .withLore(ChatColor.AQUA + "" + ChatColor.BOLD + filter.description)
+                    .build();
+            inventory.setItem(FILTER_SLOT, filterItem);
+
+            if(isOp()) {
+                ItemStack randomSummaryItem = ItemUtils.builder(Material.KNOWLEDGE_BOOK)
+                        .withName(ChatColor.DARK_GREEN + "Добавить рандомную игру")
+                        .withLore(
+                                ChatColor.GRAY + "ПКМ: очень много игроков",
+                                ChatColor.GRAY + "ШИФТ: добавить сразу 5")
+                        .build();
+                inventory.setItem(ADD_RANDOM_SUMMARY_SLOT, randomSummaryItem);
+
+                ItemStack configReloadItem = ItemUtils.builder(Material.NAME_TAG)
+                        .withName(ChatColor.RED + "Перезагрузить с конфига")
+                        .withSplittedLore(ChatColor.DARK_RED + "ОСТОРОЖНО! НЕ СОХРАНЕННЫЕ В КОНФИГ ДАННЫЕ БУДУТ УДАЛЕНЫ!", 20)
+                        .build();
+                inventory.setItem(CONFIG_RELOAD_SLOT, configReloadItem);
+
+                ItemStack configSaveItem = ItemUtils.builder(Material.MAP)
+                        .withName(ChatColor.DARK_RED + "Сохранить в конфиг")
+                        .withSplittedLore(ChatColor.DARK_RED + "ИСПОЛЬЗОВАТЬ С ОСТОРОЖНОСТЬЮ!")
+                        .withSplittedLore(ChatColor.GRAY + "Для безопасности работает только с шифт-кликом")
+                        .build();
+                inventory.setItem(CONFIG_SAVE_SLOT, configSaveItem);
+            }
+        }
 
         if(getPages() > 1) {
             ItemStack pgNextItem = InventoryHelper.generateHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGVmMzU2YWQyYWE3YjE2NzhhZWNiODgyOTBlNWZhNWEzNDI3ZTVlNDU2ZmY0MmZiNTE1NjkwYzY3NTE3YjgifX19");
@@ -169,19 +238,33 @@ public class InventoryBuilderRating {
             inventory.setItem(PAGE_PREV_SLOT, pgPrevItem);
         }
 
-        if(watchingGameSummary != null) {
-            inventory.setItem(CANCEL_SLOT, ItemUtils.builder(Material.BARRIER).withName(ChatColor.RED + "" + ChatColor.BOLD + "Назад").build());
-        }
+
     }
 
     public List<ItemStack> getCurrentInventoryItems() {
         List<ItemStack> items = new ArrayList<>();
         if(watchingGameSummary == null) {
-            for(GameSummary summary : Rating.getGameSummaries()) {
-                items.add(summary.getRepresentingItem());
+            List<GameSummary> summaries = Lists.newArrayList(Rating.getGameSummaries());
+
+            //Sorting by date
+            Comparator<GameSummary> comparator = Comparator.<GameSummary>comparingLong(summary -> summary.getDate().getTime()).reversed();
+            summaries.sort(comparator);
+
+            filter(summaries);
+            for(GameSummary summary : summaries) {
+                ItemStack representingItem = summary.getRepresentingItem();
+                if(isOp())
+                    ItemUtils.addLore(representingItem, ChatColor.RED + "ПКМ: Удалить");
+                items.add(representingItem);
             }
         } else {
-            for(PlayerSummary summary : watchingGameSummary.getPlayerSummaries()) {
+            List<PlayerSummary> summaries = Lists.newArrayList(watchingGameSummary.getPlayerSummaries());
+
+            //Sorting by place
+            Comparator<PlayerSummary> comparator = Comparator.comparingInt(PlayerSummary::getWinningPlace);
+            summaries.sort(comparator);
+
+            for(PlayerSummary summary : summaries) {
                 items.add(summary.getRepresentingItem());
             }
         }

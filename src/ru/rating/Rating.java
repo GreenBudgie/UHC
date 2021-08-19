@@ -16,7 +16,8 @@ public class Rating {
     private static List<GameSummary> gameSummaries = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
-    public static void init() {
+    public static void loadFromConfig() {
+        gameSummaries.clear();
         List<Map<?, ?>> serializedGameSummaryList = rating.getMapList("summaries");
         for(Map<?, ?> serializedSummary : serializedGameSummaryList) {
             gameSummaries.add(GameSummary.deserialize((Map<String, Object>) serializedSummary));
@@ -35,10 +36,15 @@ public class Rating {
     }
 
     /**
-     * Updates the config by the current gameSummaries list
+     * Updates the config by the current gameSummaries list and saves it to file
      */
     public static void updateConfig() {
-        rating.set("summaries", gameSummaries);
+        List<Map<String, Object>> list = new ArrayList<>();
+        for(GameSummary summary : gameSummaries) {
+            list.add(summary.serialize());
+        }
+        rating.set("summaries", list);
+        save();
     }
 
     public static void save() {

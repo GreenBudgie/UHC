@@ -63,7 +63,7 @@ public class UHCPlugin extends JavaPlugin {
 		CustomItems.init();
 		ItemRequester.init();
 		ClassManager.init();
-		Rating.init();
+		Rating.loadFromConfig();
 
 		TaskManager.init();
 	}

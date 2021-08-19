@@ -1,15 +1,20 @@
 package ru.rating;
 
+import com.google.common.collect.Lists;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import ru.UHC.GameState;
 import ru.util.ItemUtils;
+import ru.util.MathUtils;
 import ru.util.NumericalCases;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class GameSummary implements ConfigurationSerializable {
 
@@ -43,7 +48,56 @@ public class GameSummary implements ConfigurationSerializable {
         summary.setDurationMinutes((int) input.getOrDefault("durationMinutes", 0));
         List<Map<?, ?>> summaries = (List<Map<?, ?>>) input.getOrDefault("players", new ArrayList<>());
         for(Map<?, ?> serializedSummary : summaries) {
-            summary.getPlayerSummaries().add(PlayerSummary.deserialize((Map<String, Object>) serializedSummary));
+            summary.getPlayerSummaries().add(PlayerSummary.deserialize(summary, (Map<String, Object>) serializedSummary));
+        }
+        return summary;
+    }
+
+    /**
+     * Generates new player summary with randomized fields.
+     * For testing purposes
+     */
+    public static GameSummary generateRandomSummary(int minPlayers, int maxPlayers) {
+        GameSummary summary = new GameSummary();
+        summary.setDate(new Date(new Date().getTime() + MathUtils.randomRange(-999999999, 999999999)));
+        summary.setDuo(Math.random() < 0.5);
+        summary.setRatingGame(Math.random() < 0.5);
+        summary.setDurationMinutes(MathUtils.randomRange(20, 80));
+        int playerNumber = MathUtils.randomRange(minPlayers, maxPlayers);
+        List<String> realPlayerNames = Lists.newArrayList(
+                "Forest_engine",
+                "Forest_engine2",
+                "Forest_engine3",
+                "nikki39",
+                "danch");
+        List<Integer> winningPlaces = new ArrayList<>();
+        for(int winningPlace = 1; winningPlace < playerNumber + 1; winningPlace++) {
+            winningPlaces.add(winningPlace);
+        }
+        Collections.shuffle(winningPlaces);
+        for(int i = 0; i < playerNumber; i++) {
+            String playerName;
+            if(realPlayerNames.isEmpty() || Math.random() > (5.0 / playerNumber))
+                playerName = MathUtils.getRandomSequence(8);
+            else
+                playerName = MathUtils.choose(realPlayerNames);
+            realPlayerNames.remove(playerName);
+            PlayerSummary playerSummary = new PlayerSummary(summary, playerName);
+            playerSummary.setGameKills(MathUtils.randomRange(0, 3));
+            playerSummary.setDeathmatchKills(MathUtils.randomRange(0, 5));
+            playerSummary.setDeathState(MathUtils.choose(GameState.values()));
+            Integer winningPlace = MathUtils.choose(winningPlaces);
+            playerSummary.setWinningPlace(winningPlace);
+            winningPlaces.remove(winningPlace);
+            if(Math.random() < 0.5 && !summary.getPlayerSummaries().isEmpty()) {
+                String killerName = MathUtils.choose(summary.getPlayerSummaries()).getPlayerName();
+                playerSummary.setKillerName(killerName);
+            }
+            if(Math.random() < 0.5 && !summary.getPlayerSummaries().isEmpty() && summary.isDuo()) {
+                String teammateName = MathUtils.choose(summary.getPlayerSummaries()).getPlayerName();
+                playerSummary.setTeammateName(teammateName);
+            }
+            summary.getPlayerSummaries().add(playerSummary);
         }
         return summary;
     }

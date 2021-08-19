@@ -5,14 +5,18 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.GameState;
 import ru.util.ItemUtils;
+import ru.util.MathUtils;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PlayerSummary implements ConfigurationSerializable {
 
     private final String playerName;
+    private final GameSummary gameSummary;
     private int winningPlace = 0;
     private int gameKills = 0;
     private int deathmatchKills = 0;
@@ -20,8 +24,9 @@ public class PlayerSummary implements ConfigurationSerializable {
     private String teammateName = null;
     private GameState deathState = null;
 
-    public PlayerSummary(String playerName) {
+    public PlayerSummary(GameSummary summary, String playerName) {
         this.playerName = playerName;
+        this.gameSummary = summary;
     }
 
     @Override
@@ -37,8 +42,8 @@ public class PlayerSummary implements ConfigurationSerializable {
         return serialized;
     }
 
-    public static PlayerSummary deserialize(Map<String, Object> input) {
-        PlayerSummary summary = new PlayerSummary(
+    public static PlayerSummary deserialize(GameSummary gameSummary, Map<String, Object> input) {
+        PlayerSummary summary = new PlayerSummary(gameSummary,
                 (String) input.getOrDefault("playerName", "Unknown player"));
         summary.setWinningPlace((int) input.getOrDefault("winningPlace", 0));
         summary.setGameKills((int) input.getOrDefault("gameKills", 0));
@@ -85,7 +90,7 @@ public class PlayerSummary implements ConfigurationSerializable {
         return ChatColor.GRAY + "- " +
                 ChatColor.RED + "На арене" +
                 ChatColor.GRAY + ": " +
-                ChatColor.DARK_RED + ChatColor.BOLD + getGameKills();
+                ChatColor.DARK_RED + ChatColor.BOLD + getDeathmatchKills();
     }
 
     public String formatGameKills() {
@@ -129,6 +134,10 @@ public class PlayerSummary implements ConfigurationSerializable {
 
     public String getPlayerName() {
         return playerName;
+    }
+
+    public GameSummary getGameSummary() {
+        return gameSummary;
     }
 
     public int getWinningPlace() {
