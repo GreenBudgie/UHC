@@ -77,13 +77,13 @@ public class UHC implements Listener {
 	public static Location parkourStart;
 	public static String timerInfo = "";
 	public static List<Landmine> landmines = new ArrayList<>();
-	public static Set<Player> processedPlayers = new HashSet<>();
 	public static int fastStart = 0; //0 - disabled, 1 - without mutators, 2 - with mutators
-	public static List<Location> glassPlates = new ArrayList<>();
 	public static List<TerraTracer> tracers = new ArrayList<>();
 	private static int mutatorCount = 0;
 	private static Mutator prevMutator = null;
 	private static BossBar voteBar = Bukkit.createBossBar("", BarColor.RED, BarStyle.SOLID);
+	//V 3.0
+	private static Region platformRegion = null;
 
 	public static void init() {
 		WorldManager.init();
@@ -295,7 +295,8 @@ public class UHC implements Listener {
 			mapSize = 1;
 			gameDuration = 1;
 			isRatingGame = true;
-			glassPlates.forEach(location -> location.getBlock().setType(Material.AIR));
+			clearPlatformRegion();
+			platformRegion = null;
 			if(!WorldManager.keepMap && !state.isPreGame()) WorldManager.removeMap();
 			state = GameState.STOPPED;
 			playing = false;
@@ -338,13 +339,13 @@ public class UHC implements Listener {
 				PlayerManager.registerPlayer(player);
 				resetPlayer(player);
 				player.setNoDamageTicks(600);
-				player.setGameMode(GameMode.SURVIVAL);
+				player.setGameMode(GameMode.ADVENTURE);
 				player.getInventory().setItem(3, InventoryHelper.generateItemWithName(Material.LIME_DYE,
 						ChatColor.GREEN + "Карта " + ChatColor.DARK_GREEN + ChatColor.BOLD + "Норм"));
 				player.getInventory().setItem(5, InventoryHelper.generateItemWithName(Material.RED_DYE,
 						ChatColor.RED + "Карта " + ChatColor.DARK_RED + ChatColor.BOLD + "Говно"));
 			}
-			double radius = PlayerManager.getPlayers().size() / 1.5;
+			double radius = PlayerManager.getPlayers().size();
 			double radsPerPlayer = 2 * Math.PI / PlayerManager.getPlayers().size();
 			int spawnHeight = WorldManager.spawnLocation.getWorld().getHighestBlockYAt(WorldManager.spawnLocation) + 16;
 			List<Location> spawnLocations = new ArrayList<>();
@@ -359,7 +360,11 @@ public class UHC implements Listener {
 			for(Location l : spawnLocations) {
 				l.setY(spawnHeight);
 			}
-			glassPlates.clear();
+
+			Location platformCenter = WorldManager.spawnLocation.clone();
+			platformCenter.setY(spawnHeight);
+			createPlatform(platformCenter, radius + 2);
+
 			for(int i = 0; i < PlayerManager.getPlayers().size(); i++) {
 				Player p = PlayerManager.getPlayers().get(i).getPlayer();
 				Location l = spawnLocations.get(i);
@@ -370,8 +375,6 @@ public class UHC implements Listener {
 				Location tpLoc = l.clone().add(0.5, 1, 0.5);
 				tpLoc.setYaw((float) Math.toDegrees(yaw));
 				p.teleport(tpLoc);
-				glassPlates.add(l);
-				l.getBlock().setType(Material.GLASS);
 			}
 			refreshScoreboards();
 			if(UHC.fastStart == 0) {
@@ -384,14 +387,67 @@ public class UHC implements Listener {
 				voteTimer = 20;
 			} else {
 				state = GameState.PREPARING;
-				preparingTimer = 4;
+				preparingTimer = 3;
 			}
 			playing = true;
-			processedPlayers.clear();
 			ArenaManager.getCurrentArena().world().setPVP(false);
 			SignManager.updateSigns();
 		} else {
 			Bukkit.broadcastMessage(ChatColor.RED + "Игра уже идет");
+		}
+	}
+
+	public static void createPlatform(Location center, double radius) {
+		radius += 0.5;
+
+		platformRegion = new Region(center.clone().add(-radius, 0, -radius), center.clone().add(radius, 4, radius));
+		clearPlatformRegion();
+
+		double invRadius = 1 / radius;
+		int ceilRadius = (int) Math.ceil(radius);
+
+		double nextXn = 0;
+		for(int x = 0; x <= ceilRadius; ++x) {
+			final double xn = nextXn;
+			nextXn = (x + 1) * invRadius;
+			double nextZn = 0;
+			for(int z = 0; z <= ceilRadius; ++z) {
+				final double zn = nextZn;
+				nextZn = (z + 1) * invRadius;
+				double distanceSq = (xn * xn) + (zn * zn);
+				if(distanceSq > 1) {
+					continue;
+				}
+				double xBorder = (nextXn * nextXn) + (zn * zn);
+				double zBorder = (xn * xn) + (nextZn * nextZn);
+				int y = 0;
+				Material block = Material.GLASS;
+				if(xBorder > 1 || zBorder > 1 ||
+						(radius > 6 && (xBorder < 0.2 || zBorder < 0.2))) {
+					y = 2;
+					block = Material.BARRIER;
+				}
+
+				center.clone().add(x, y, z).getBlock().setType(block);
+				center.clone().add(x, y, -z).getBlock().setType(block);
+				center.clone().add(-x, y, z).getBlock().setType(block);
+				center.clone().add(-x, y, -z).getBlock().setType(block);
+
+				if(y == 0) {
+					center.clone().add(x, 4, z).getBlock().setType(Material.BARRIER);
+					center.clone().add(x, 4, -z).getBlock().setType(Material.BARRIER);
+					center.clone().add(-x, 4, z).getBlock().setType(Material.BARRIER);
+					center.clone().add(-x, 4, -z).getBlock().setType(Material.BARRIER);
+				}
+			}
+		}
+	}
+
+	private static void clearPlatformRegion() {
+		if(platformRegion != null) {
+			for(Block block : platformRegion.getBlocksInside()) {
+				block.setType(Material.AIR);
+			}
 		}
 	}
 
@@ -432,7 +488,6 @@ public class UHC implements Listener {
 				p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1F, 0.5F);
 				p.getInventory().clear();
 				p.setGameMode(GameMode.SPECTATOR);
-				p.getLocation().clone().add(0, -1, 0).getBlock().setType(Material.AIR);
 			}
 			state = GameState.ENDING;
 			endTimer = 8;
@@ -1003,8 +1058,8 @@ public class UHC implements Listener {
 				}
 			}
 		}
+		clearPlatformRegion();
 		for(Player player : PlayerManager.getAliveOnlinePlayers()) {
-			glassPlates.forEach(location -> location.getBlock().setType(Material.AIR));
 			if(MutatorManager.isActive(MutatorManager.hungerGames)) {
 				player.sendTitle(ChatColor.RED + "" + ChatColor.BOLD + "Игра " + ChatColor.GOLD + ChatColor.BOLD + "началась!",
 						ChatColor.YELLOW + "У тебя " + ChatColor.DARK_RED + ChatColor.BOLD + "ОДНА СУКА МИНУТА" +
@@ -1017,6 +1072,7 @@ public class UHC implements Listener {
 			player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.5F, 1);
 			player.getInventory().clear();
 			player.getActivePotionEffects().forEach(ef -> player.removePotionEffect(ef.getType()));
+			player.setGameMode(GameMode.SURVIVAL);
 			heal(player);
 			if(MutatorManager.lessHealth.isActive()) {
 				player.setHealth(6);
@@ -1042,7 +1098,6 @@ public class UHC implements Listener {
 		p.getWorld().playSound(p.getLocation(), vote ? Sound.ENTITY_VILLAGER_YES : Sound.ENTITY_VILLAGER_NO, 1, 1);
 		p.getInventory().clear();
 		ParticleUtils.createParticlesAround(p, Particle.REDSTONE, vote ? Color.LIME : Color.RED, 20);
-		p.getLocation().clone().add(0, -1, 0).getBlock().setType(vote ? Material.LIME_STAINED_GLASS : Material.RED_STAINED_GLASS);
 		updateVoteBar();
 		if(voteResults.size() == PlayerManager.getPlayers().size()) {
 			endVote();
@@ -1648,9 +1703,6 @@ public class UHC implements Listener {
 	@EventHandler
 	public void move(PlayerMoveEvent e) {
 		Player p = e.getPlayer();
-		if(state.isPreGame() && PlayerManager.isPlaying(p) && !WorldHelper.compareLocations(e.getFrom(), e.getTo())) {
-			e.setCancelled(true);
-		}
 		if(PlayerManager.isSpectator(p)) {
 			if(e.getTo().getY() <= 0) {
 				e.setCancelled(true);
