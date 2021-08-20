@@ -21,8 +21,8 @@ public class ArenaManager {
     public static void init() {
         Map<String, Object> defaultParameters = new HashMap<>();
         defaultParameters.put("name", "Unknown arena");
-        defaultParameters.put("minBorderSize", 16);
-        defaultParameters.put("maxBorderSize", 64);
+        defaultParameters.put("minBorderSize", 10);
+        defaultParameters.put("maxBorderSize", 24);
         for(File file : Bukkit.getWorldContainer().listFiles()) {
             if(file.getName().startsWith("Arena")) {
                 World arenaWorld = Bukkit.createWorld(new WorldCreator(file.getName()));
@@ -62,7 +62,7 @@ public class ArenaManager {
                 }
                 Arena arena;
                 try {
-                    arena = new Arena(arenaWorld, name, minBorderSize, maxBorderSize);
+                    arena = new Arena(arenaWorld, name, maxBorderSize, minBorderSize);
                 } catch(Exception e) {
                     UHCPlugin.error("Unable to setup \"" + file.getName() + "\"");
                     e.printStackTrace();
@@ -110,6 +110,11 @@ public class ArenaManager {
     public static void setupCurrentArena() {
         if(chosenArena == null) {
             currentArena = MathUtils.choose(arenas).cloneAsTemp();
+            WorldBorder arenaBorder = currentArena.world().getWorldBorder();
+            arenaBorder.setDamageBuffer(1);
+            arenaBorder.setWarningDistance(1);
+            arenaBorder.setSize(currentArena.maxBorderSize());
+            arenaBorder.setCenter(currentArena.world().getSpawnLocation());
         } else {
             currentArena = chosenArena.cloneAsTemp();
         }

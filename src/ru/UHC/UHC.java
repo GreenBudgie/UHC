@@ -67,7 +67,6 @@ public class UHC implements Listener {
 	public static int arenaTimer = 0;
 	public static boolean skip = false; //True skips the current GameState
 	public static int endTimer = 0;
-	public static int arenaPvpTimer = 0;
 	//V 2.0
 	public static boolean isDuo = false;
 	public static int mapSize = 1;
@@ -84,6 +83,11 @@ public class UHC implements Listener {
 	private static BossBar voteBar = Bukkit.createBossBar("", BarColor.RED, BarStyle.SOLID);
 	//V 3.0
 	private static Region platformRegion = null;
+
+	private static final int DEATHMATCH_NO_PVP_DURATION = 15; //15 seconds
+	private static final int DEATHMATCH_START_TIMER = 8 * 60; //8 minutes
+	private static final int DEATHMATCH_TIME_UNTIL_ZONE_SHRINK = 3 * 60; //3 minutes
+	private static final int DEATHMATCH_ZONE_SHRINK_DURATION = 2 * 60; //2 minutes
 
 	public static void init() {
 		WorldManager.init();
@@ -757,14 +761,15 @@ public class UHC implements Listener {
 				if(deathmatchTimer == 0 || skip) {
 					skip = false;
 					state = GameState.DEATHMATCH;
-					arenaTimer = 60 * 10;
-					arenaPvpTimer = 15;
+					arenaTimer = DEATHMATCH_START_TIMER;
 					for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 						inGamePlayer.teleport(ArenaManager.getCurrentArena().world().getSpawnLocation());
 						inGamePlayer.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Дезматч" + ChatColor.GRAY + "!",
-								ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "15" + ChatColor.RESET + ChatColor.GOLD + " секунд до " +
-										ChatColor.DARK_RED + ChatColor.BOLD + "ПВП" + ChatColor.GRAY + "!",
-								10, 60, 30);
+								ChatColor.DARK_AQUA + "" + ChatColor.BOLD + DEATHMATCH_NO_PVP_DURATION +
+										ChatColor.RESET + ChatColor.GOLD + " секунд до " +
+										ChatColor.DARK_RED + ChatColor.BOLD + "ПВП" +
+										ChatColor.GRAY + "!",
+								10, 50, 30);
 					}
 					for(UHCPlayer offlinePlayer : PlayerManager.getAlivePlayers()) {
 						if(!offlinePlayer.isOnline()) {
@@ -777,12 +782,26 @@ public class UHC implements Listener {
 		if(state == GameState.DEATHMATCH) {
 			if(TaskManager.isSecUpdated()) {
 				arenaTimer--;
-				arenaPvpTimer--;
 				if(arenaTimer == 0 || skip) {
 					skip = false;
 					draw();
 				}
-				if(arenaPvpTimer == 0) {
+				int timeUntilShrink = DEATHMATCH_TIME_UNTIL_ZONE_SHRINK - (DEATHMATCH_START_TIMER - arenaTimer);
+				//Start border scaling
+				if(timeUntilShrink == 0) {
+					ArenaManager.Arena arena = ArenaManager.getCurrentArena();
+					WorldBorder arenaBorder = arena.world().getWorldBorder();
+					arenaBorder.setSize(arena.minBorderSize(), DEATHMATCH_ZONE_SHRINK_DURATION);
+					for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+						inGamePlayer.playSound(inGamePlayer.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1, 0.8f);
+						inGamePlayer.sendTitle(" ", ChatColor.DARK_RED + "" + ChatColor.BOLD + ">>> " +
+								ChatColor.RED + "Арена сужается" + ChatColor.GRAY + "!" +
+								ChatColor.DARK_RED + ChatColor.BOLD + " <<<",
+								10, 25, 15);
+					}
+				}
+				int timeUntilPvp = DEATHMATCH_NO_PVP_DURATION - (DEATHMATCH_START_TIMER - arenaTimer);
+				if(timeUntilPvp == 0) {
 					ArenaManager.getCurrentArena().world().setPVP(true);
 					for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 						p.sendTitle(" ", ChatColor.DARK_RED + "" + ChatColor.BOLD + ">>> " + ChatColor.GOLD + ChatColor.BOLD + "ПВП" + ChatColor.RED +
@@ -790,17 +809,21 @@ public class UHC implements Listener {
 						p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
 					}
 				}
-				if(arenaPvpTimer <= 3 && arenaPvpTimer > 0) {
+				if(timeUntilPvp <= 3 && timeUntilPvp > 0) {
 					for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
-						p.sendTitle(" ", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + arenaPvpTimer, 0, 40, 0);
-						p.playSound(p.getLocation(), Sound.BLOCK_COMPARATOR_CLICK, 0.8F, 0.5F + arenaPvpTimer / 3F);
+						p.sendTitle(" ", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + timeUntilPvp, 0, 40, 0);
+						p.playSound(p.getLocation(), Sound.BLOCK_COMPARATOR_CLICK, 0.8F, 0.5F + timeUntilPvp / 3F);
 					}
 				}
-				if(arenaPvpTimer > 0) {
+				if(timeUntilPvp > 0) {
 					timerInfo = ChatColor.RED + "" + ChatColor.BOLD + "До" + ChatColor.DARK_RED + ChatColor.BOLD + " ПВП" + ChatColor.GRAY + ": " +
-							ChatColor.DARK_AQUA + ChatColor.BOLD + arenaPvpTimer;
+							ChatColor.DARK_AQUA + ChatColor.BOLD + timeUntilPvp;
+				} else if(timeUntilShrink > 0) {
+					timerInfo = ChatColor.DARK_RED + "" + ChatColor.BOLD + "Сужение арены" + ChatColor.GRAY + ": " +
+							ChatColor.DARK_AQUA + ChatColor.BOLD + MathUtils.formatTime(timeUntilShrink);
 				} else {
-					timerInfo = "";
+					timerInfo = ChatColor.AQUA + "" + ChatColor.BOLD + "Ничья через:" + ChatColor.GRAY + ": " +
+							ChatColor.DARK_AQUA + ChatColor.BOLD + MathUtils.formatTime(arenaTimer);
 				}
 			}
 		}
@@ -940,6 +963,9 @@ public class UHC implements Listener {
 		for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 			inGamePlayer.setGameMode(GameMode.SPECTATOR);
 			inGamePlayer.sendTitle(ChatColor.YELLOW + "Ничья", ChatColor.GOLD + "Видимо, игра затянулась", 10, 60, 20);
+		}
+		for(UHCPlayer uhcAlivePlayer : PlayerManager.getAlivePlayers()) {
+			uhcAlivePlayer.getSummary().setWinningPlace(2);
 		}
 	}
 

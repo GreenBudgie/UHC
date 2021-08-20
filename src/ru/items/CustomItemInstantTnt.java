@@ -13,10 +13,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import ru.UHC.FightHelper;
-import ru.UHC.GameState;
-import ru.UHC.PlayerManager;
-import ru.UHC.UHC;
+import ru.UHC.*;
 import ru.main.UHCPlugin;
 import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
@@ -33,7 +30,12 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 
 	@Override
 	public void onPlace(Player p, Block b, ItemStack item, BlockPlaceEvent e) {
-		if(UHC.state != GameState.ENDING && (UHC.state != GameState.DEATHMATCH || UHC.arenaPvpTimer <= 0)) {
+		boolean canPlace = true;
+		ArenaManager.Arena arena = ArenaManager.getCurrentArena();
+		if(arena != null) {
+			if(!arena.world().getPVP()) canPlace = false;
+		}
+		if(UHC.state != GameState.ENDING && (UHC.state != GameState.DEATHMATCH || canPlace)) {
 			ParticleUtils.createParticlesOutline(b, Particle.REDSTONE, Color.RED, 15);
 			Location center = b.getLocation().clone().add(0.5, 0, 0.5);
 			b.getWorld().playSound(center, Sound.ENTITY_TNT_PRIMED, 1F, 1F);
