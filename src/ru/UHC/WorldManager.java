@@ -85,6 +85,14 @@ public class WorldManager {
 		border.setDamageBuffer(0);
 		border.setDamageAmount(0);
 		border.setCenter(spawnLocation);
+
+		WorldBorder netherBorder = gameMapNether.getWorldBorder();
+		netherBorder.setSize(gameMap.getWorldBorder().getSize() * 3);
+		netherBorder.setWarningTime(0);
+		netherBorder.setWarningDistance(0);
+		netherBorder.setDamageBuffer(0);
+		netherBorder.setDamageAmount(0);
+		netherBorder.setCenter(new Location(gameMapNether, spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ()));
 	}
 
 	public static void regenMap() {

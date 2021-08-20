@@ -1,6 +1,7 @@
 package ru.items;
 
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import ru.mutator.Mutator;
@@ -24,7 +25,10 @@ public abstract class RequesterCustomItem extends CustomItem {
 
 	public boolean canRequest(Player p) {
 		int lapisPrice = MutatorManager.simpleRequests.isActive() ? 0 : getLapisPrice();
-		return (p.getLocation().getBlockY() >= p.getWorld().getHighestBlockYAt(p.getLocation()) || MutatorManager.requestAnywhere.isActive()) && ItemRequester.getRedstone(p) >= getRedstonePrice()
+		return (p.getLocation().getBlockY() >= p.getWorld().getHighestBlockYAt(p.getLocation())
+				|| MutatorManager.requestAnywhere.isActive() ||
+				p.getWorld().getEnvironment() == World.Environment.NETHER)
+				&& ItemRequester.getRedstone(p) >= getRedstonePrice()
 				&& ItemRequester.getLapis(p) >= lapisPrice;
 	}
 

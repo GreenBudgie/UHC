@@ -39,6 +39,7 @@ import ru.drop.Drop;
 import ru.drop.Drops;
 import ru.items.CustomItems;
 import ru.lobby.*;
+import ru.main.UHCPlugin;
 import ru.mutator.ItemBasedMutator;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
@@ -898,20 +899,6 @@ public class UHC implements Listener {
 						showPlayer = true;
 					}
 				}
-				if(!showPlayer) {
-					Location drop = null;
-					for(Item item : currentPlayer.getWorld().getEntitiesByClass(Item.class)) {
-						if(item.hasMetadata("airdrop")) {
-							drop = item.getLocation().clone();
-							break;
-						}
-					}
-					if(drop == null) {
-						currentPlayer.setCompassTarget(Drops.AIRDROP.getLocation());
-					} else {
-						currentPlayer.setCompassTarget(drop);
-					}
-				}
 			}
 		}
 	}
@@ -1329,9 +1316,6 @@ public class UHC implements Listener {
 		if(ent.getType() == EntityType.ZOMBIE || ent.getType() == EntityType.ZOMBIE_VILLAGER) {
 			if(e.getDrops().stream().noneMatch(item -> item.getType() == Material.CARROT) && MathUtils.chance(50)) e.getDrops().add(new ItemStack(Material.CARROT));
 		}
-		if(ent instanceof PigZombie) {
-			if(MathUtils.chance(30)) e.getDrops().add(new ItemStack(Material.GOLD_INGOT, MathUtils.chance(30) ? 2 : 1));
-		}
 		if(ent instanceof Blaze) {
 			if(e.getDrops().stream().noneMatch(item -> item.getType() == Material.BLAZE_ROD)) e.getDrops().add(new ItemStack(Material.BLAZE_ROD));
 		}
@@ -1555,16 +1539,26 @@ public class UHC implements Listener {
 	@EventHandler
 	public void portal(PlayerPortalEvent e) {
 		Player player = e.getPlayer();
-		if(playing && PlayerManager.isPlaying(player)) {
+		if(PlayerManager.isPlaying(player)) {
 			Location loc = player.getLocation();
 			if(player.getWorld().getEnvironment() == World.Environment.NETHER) {
-				Location newLoc = new Location(WorldManager.getGameMap(), loc.getX() * 8, loc.getY(), loc.getZ() * 8);
-				if(!WorldManager.getGameMap().getWorldBorder().isInside(newLoc)) {
-					newLoc = WorldManager.getGameMap().getSpawnLocation();
-				}
+				e.setCreationRadius(16);
+				e.setSearchRadius(16);
+				Location newLoc = new Location(WorldManager.getGameMap(), loc.getX(), loc.getY(), loc.getZ());
+				World map = WorldManager.getGameMap();
+				double maxX = map.getSpawnLocation().getX() + map.getWorldBorder().getSize() / 2 - 1;
+				double minX = map.getSpawnLocation().getX() - map.getWorldBorder().getSize() / 2 + 1;
+				double maxZ = map.getSpawnLocation().getZ() + map.getWorldBorder().getSize() / 2 - 1;
+				double minZ = map.getSpawnLocation().getZ() - map.getWorldBorder().getSize() / 2 + 1;
+				if(newLoc.getX() > maxX) newLoc.setX(maxX);
+				if(newLoc.getX() < minX) newLoc.setX(minX);
+				if(newLoc.getZ() > maxZ) newLoc.setZ(maxZ);
+				if(newLoc.getZ() < minZ) newLoc.setZ(minZ);
 				e.setTo(newLoc);
 			} else {
-				e.setTo(new Location(WorldManager.getGameMapNether(), loc.getX() / 8, loc.getY(), loc.getZ() / 8));
+				Location newLoc = new Location(WorldManager.getGameMapNether(), loc.getX(), loc.getY(), loc.getZ());
+				UHCPlugin.log(WorldManager.getGameMapNether().getWorldBorder().getCenter());
+				e.setTo(newLoc);
 			}
 		}
 	}
