@@ -1,7 +1,5 @@
 package ru.lobby;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -31,14 +29,10 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
-import ru.UHC.PlayerManager;
 import ru.UHC.PlayerOptions;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
-import ru.pvparena.PvpArena;
 import ru.util.TaskManager;
-import ru.util.WorldHelper;
 
 public class LobbyListener implements Listener {
 
@@ -66,7 +60,7 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void noDamage(EntityDamageEvent e) {
         if(e.getEntity() instanceof Player p) {
-            if(isInLobby(p) && !PvpArena.isOnArena(p)) {
+            if(isInLobby(p) && !LobbyGameManager.PVP_ARENA.isOnArena(p)) {
                 e.setCancelled(true);
             }
         }
@@ -187,9 +181,6 @@ public class LobbyListener implements Listener {
         if(isInLobby(p)) {
             if(e.getTo().getY() <= 0) {
                 p.teleport(WorldManager.getLobby().getSpawnLocation());
-            }
-            if(p.getFireTicks() > 0 && !PvpArena.isOnArena(p)) {
-                UHC.teleportToParkour(p);
             }
         }
     }

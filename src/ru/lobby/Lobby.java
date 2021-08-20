@@ -43,11 +43,12 @@ public class Lobby {
             UHCPlugin.error("Unable to save lobby.yml");
         }
         SignManager.init();
+        LobbyGameManager.init();
         Bukkit.getPluginManager().registerEvents(new LobbyListener(), UHCPlugin.instance);
         Bukkit.getPluginManager().registerEvents(new LobbyTeamBuilder(), UHCPlugin.instance);
     }
 
-    public static YamlConfiguration getLobbyConfig() {
+    protected static YamlConfiguration getLobbyConfig() {
         return lobbyConfig;
     }
 

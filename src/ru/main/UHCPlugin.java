@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.UHC.RecipeHandler;
+import ru.lobby.LobbyGameManager;
 import ru.lobby.SignManager;
 import ru.UHC.UHC;
 import ru.artifact.ArtifactManager;
@@ -16,7 +17,7 @@ import ru.commands.*;
 import ru.items.CustomItems;
 import ru.items.CustomItemsListener;
 import ru.mutator.InventoryBuilderMutator;
-import ru.pvparena.PvpArena;
+import ru.lobby.PvpArena;
 import ru.rating.InventoryBuilderRating;
 import ru.rating.Rating;
 import ru.requester.ItemRequester;
@@ -54,7 +55,6 @@ public class UHCPlugin extends JavaPlugin {
 		pm.registerEvents(new CustomItemsListener(), this);
 		pm.registerEvents(new ItemRequester(), this);
 		pm.registerEvents(new ArtifactManager(), this);
-		pm.registerEvents(new PvpArena(), this);
 		InventoryBuilderMutator.registerListener();
 		InventoryBuilderRating.registerListener();
 
@@ -76,16 +76,16 @@ public class UHCPlugin extends JavaPlugin {
 		if(UHC.playing) {
 			UHC.endGame();
 		}
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			p.getInventory().clear();
-			p.updateInventory();
-			if(PvpArena.isOnArena(p)) {
-				p.teleport(PvpArena.arenaSpawnLocation);
-				PvpArena.onArenaLeave(p);
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			player.getInventory().clear();
+			player.updateInventory();
+			if(LobbyGameManager.PVP_ARENA.isOnArena(player)) {
+				player.teleport(LobbyGameManager.PVP_ARENA.getSpawnLocation());
+				LobbyGameManager.PVP_ARENA.onArenaLeave(player);
 			}
 		}
-		if(!PvpArena.isOpen) {
-			PvpArena.openArena();
+		if(!LobbyGameManager.PVP_ARENA.isOpen()) {
+			LobbyGameManager.PVP_ARENA.openArena();
 		}
 	}
 
@@ -127,10 +127,12 @@ public class UHCPlugin extends JavaPlugin {
 		}
 	}
 
-	public static void log(Object s) {
-		for(Player player : Bukkit.getOnlinePlayers()) {
-			if(s == null) s = "null";
-			player.sendMessage(s.toString());
+	public static void log(Object... toLog) {
+		for(Object obj : toLog) {
+			for(Player player : Bukkit.getOnlinePlayers()) {
+				if(obj == null) obj = "null";
+				player.sendMessage(obj.toString());
+			}
 		}
 	}
 

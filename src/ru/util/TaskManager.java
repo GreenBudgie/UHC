@@ -2,8 +2,9 @@ package ru.util;
 
 import org.bukkit.Bukkit;
 import ru.UHC.UHC;
+import ru.lobby.LobbyGameManager;
 import ru.main.UHCPlugin;
-import ru.pvparena.PvpArena;
+import ru.lobby.PvpArena;
 
 public class TaskManager {
 
@@ -19,7 +20,7 @@ public class TaskManager {
 
 			public void run() {
 				UHC.tickGame();
-				PvpArena.update();
+				LobbyGameManager.updateGames();
 				if(tick < 19) {
 					tick++;
 					fullTicks++;

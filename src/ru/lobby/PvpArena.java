@@ -1,8 +1,11 @@
-package ru.pvparena;
+package ru.lobby;
 
 import com.google.common.collect.Lists;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
@@ -20,35 +23,30 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-import ru.lobby.SignManager;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
+import ru.main.UHCPlugin;
 import ru.util.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class PvpArena implements Listener {
+public class PvpArena extends LobbyGame implements Listener {
 
-	public static boolean isOpen = true;
-	public static boolean isDuel = false;
-	public static Player duelingPlayer1 = null, duelingPlayer2 = null;
-	public static Set<Player> onArena = new HashSet<>();
-	public static Location arenaSpawnLocation, duelSpawn1, duelSpawn2, duelInitSpot1, duelInitSpot2;
-	public static List<Kit> kits = new ArrayList<>();
-	public static Kit currentKit = null;
-	public static int killsToNextKit = 8;
+	private boolean isOpen = true;
+	private boolean isDuel = false;
+	private Player duelingPlayer1 = null, duelingPlayer2 = null;
+	private Set<Player> onArena = new HashSet<>();
+	private Location spawnLocation, duelSpawn1, duelSpawn2, duelInitSpot1, duelInitSpot2;
+	private List<Kit> kits = new ArrayList<>();
+	private Kit currentKit = null;
+	private int killsToNextKit = 8;
+	private Region enterRegion, leaveRegion, closeRegion;
 
-	public static void init() {
+	protected PvpArena() {
+		Bukkit.getPluginManager().registerEvents(this, UHCPlugin.instance);
+	}
 
-		arenaSpawnLocation = new Location(WorldManager.getLobby(), -49.5, 7, -23.5, 180, 0);
-		duelSpawn1 = new Location(WorldManager.getLobby(), -35, 7, -45, 90, 0);
-		duelSpawn2 = new Location(WorldManager.getLobby(), -64, 7, -45, -90, 0);
-		duelInitSpot1 = new Location(WorldManager.getLobby(), -45, 7, -23);
-		duelInitSpot2 = new Location(WorldManager.getLobby(), -45, 7, -25);
-
+	protected void postSetup() {
 		Kit oneShotKillKit = new Kit("One-shot-kill");
 		oneShotKillKit.addItem(
 				ItemUtils.builder(Material.DIAMOND_SWORD).withEnchantments(new ItemUtils.Enchant(Enchantment.DAMAGE_ALL, 100)).withFlags(ItemFlag.HIDE_ENCHANTS).build());
@@ -201,7 +199,58 @@ public class PvpArena implements Listener {
 		currentKit = getRandomKit();
 	}
 
-	public static Kit getRandomKit() {
+	@Override
+	public String getConfigName() {
+		return "pvparena";
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void parseConfigOption(String option, Object value) {
+		String[] locationBased = new String[] {
+				"spawnLocation",
+				"duelInitSpot1",
+				"duelInitSpot2",
+				"duelSpawn1",
+				"duelSpawn2"
+		};
+		String[] regionBased = new String[] {
+				"enterRegion",
+				"leaveRegion",
+				"closeRegion"
+		};
+		if(Arrays.asList(locationBased).contains(option)) {
+			String locationStr = (String) value;
+			Location location = WorldHelper.translateToLocation(Lobby.getLobby(), locationStr);
+			if(location == null) {
+				UHCPlugin.warning(option + " is not present in " + getConfigName());
+				return;
+			}
+			location.setWorld(Lobby.getLobby());
+			switch(option) {
+				case "spawnLocation" -> spawnLocation = location;
+				case "duelInitSpot1" -> duelInitSpot1 = location;
+				case "duelInitSpot2" -> duelInitSpot2 = location;
+				case "duelSpawn1" -> duelSpawn1 = location;
+				case "duelSpawn2" -> duelSpawn2 = location;
+			}
+		} else if(Arrays.asList(regionBased).contains(option)) {
+			ConfigurationSection regionSection = (ConfigurationSection) value;
+			Region region = Region.deserialize(regionSection.getValues(false));
+			if(region == null) {
+				UHCPlugin.warning(option + " is not present in " + getConfigName());
+				return;
+			}
+			region.setWorld(Lobby.getLobby());
+			switch(option) {
+				case "enterRegion" -> enterRegion = region;
+				case "leaveRegion" -> leaveRegion = region;
+				case "closeRegion" -> closeRegion = region;
+			}
+		}
+	}
+
+	public Kit getRandomKit() {
 		List<Kit> availableKits = Lists.newArrayList(kits);
 		if(currentKit != null) {
 			availableKits.remove(currentKit);
@@ -209,23 +258,19 @@ public class PvpArena implements Listener {
 		return MathUtils.choose(availableKits);
 	}
 
-	private static List<Player> getLobbyPlayers() {
+	private List<Player> getLobbyPlayers() {
 		return WorldManager.getLobby().getPlayers();
 	}
 
-	public static boolean isDueling(Player p) {
+	public boolean isDueling(Player p) {
 		return isDuel && (duelingPlayer1 == p || duelingPlayer2 == p);
 	}
 
-	public static boolean isOnArena(Player p) {
-		return onArena.contains(p);
+	public boolean isOnArena(Player player) {
+		return onArena.contains(player);
 	}
 
-	public static void removeKit(Player p) {
-		InventoryHelper.removeItemsExcept(p.getInventory(), Material.REDSTONE, Material.PLAYER_HEAD);
-	}
-
-	public static void initDuel(Player p1, Player p2) {
+	public void initDuel(Player p1, Player p2) {
 		currentKit = getRandomKit();
 		duelingPlayer1 = p1;
 		duelingPlayer2 = p2;
@@ -244,7 +289,7 @@ public class PvpArena implements Listener {
 		}
 	}
 
-	public static void endDuel(Player winner, Player loser) {
+	public void endDuel(Player winner, Player loser) {
 		duelingPlayer1 = null;
 		duelingPlayer2 = null;
 		for(Player player : getLobbyPlayers()) {
@@ -261,14 +306,14 @@ public class PvpArena implements Listener {
 		isDuel = false;
 	}
 
-	public static Player getRival(Player p) {
+	public Player getRival(Player p) {
 		if(!isDuel || p == null || duelingPlayer1 == null || duelingPlayer2 == null) return null;
 		if(duelingPlayer1 == p) return duelingPlayer2;
 		if(duelingPlayer2 == p) return duelingPlayer1;
 		return null;
 	}
 
-	public static List<Player> getDuelWaitingPlayers() {
+	public List<Player> getDuelWaitingPlayers() {
 		List<Player> players = new ArrayList<>();
 		for(Player p : getLobbyPlayers()) {
 			if(WorldHelper.compareLocations(p.getLocation(), duelInitSpot1) || WorldHelper.compareLocations(p.getLocation(), duelInitSpot2)) {
@@ -278,51 +323,39 @@ public class PvpArena implements Listener {
 		return players;
 	}
 
-	public static void openArena() {
-		for(int x = -53; x <= -47; x++) {
-			for(int y = 7; y <= 11; y++) {
-				new Location(WorldManager.getLobby(), x, y, -28).getBlock().setType(Material.AIR);
-			}
+	public void openArena() {
+		for(Block block : closeRegion.getBlocksInside()) {
+			block.setType(Material.AIR);
 		}
-		for(int x = -52; x <= -48; x++) {
-			for(int y = 7; y <= 10; y++) {
-				new Location(WorldManager.getLobby(), x, y, -27).getBlock().setType(Material.AIR);
-			}
-		}
-		WorldManager.getLobby().playSound(new Location(WorldManager.getLobby(), -50, 8, -28), Sound.BLOCK_STONE_BREAK, 1F, 1F);
+		WorldManager.getLobby().playSound(closeRegion.getStartLocation(), Sound.BLOCK_WOODEN_TRAPDOOR_OPEN, 1F, 0.6F);
 		isOpen = true;
 	}
 
-	public static void closeArena() {
-		for(int x = -53; x <= -47; x++) {
-			for(int y = 7; y <= 11; y++) {
-				new Location(WorldManager.getLobby(), x, y, -28).getBlock().setType(Material.RED_STAINED_GLASS);
-			}
+	public void closeArena() {
+		for(Block block : closeRegion.getBlocksInside()) {
+			block.setType(Material.SPRUCE_FENCE);
 		}
-		for(int x = -52; x <= -48; x++) {
-			for(int y = 7; y <= 10; y++) {
-				new Location(WorldManager.getLobby(), x, y, -27).getBlock().setType(Material.RED_STAINED_GLASS);
-			}
-		}
-		WorldManager.getLobby().playSound(new Location(WorldManager.getLobby(), -50, 8, -28), Sound.BLOCK_STONE_PLACE, 1F, 1F);
+		WorldManager.getLobby().playSound(closeRegion.getStartLocation(), Sound.BLOCK_WOODEN_TRAPDOOR_CLOSE, 1F, 0.6F);
 		isOpen = false;
 	}
 
 	/**
 	 * Calls when a player leaves an arena in any way: walking out, using /lobby, quitting or dying
 	 */
-	public static void onArenaLeave(Player p) {
+	public void onArenaLeave(Player p) {
 		if(isOnArena(p)) {
 			onArena.remove(p);
-			removeKit(p);
+			p.getInventory().clear();
 			if(isDueling(p)) {
 				Player rival = getRival(p);
 				if(rival != null) {
 					endDuel(rival, p);
 				}
 			} else {
-				InventoryHelper.sendActionBarMessage(p, ChatColor.GOLD + "Ты вышел с арены");
-				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
+				InventoryHelper.sendActionBarMessage(p, ChatColor.GRAY + "> " +
+						ChatColor.GOLD + ChatColor.BOLD + "Ты вышел с арены" +
+						ChatColor.RESET + ChatColor.GRAY + " <");
+				p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_ELYTRA, 0.5F, 0.8F);
 			}
 		}
 	}
@@ -330,16 +363,24 @@ public class PvpArena implements Listener {
 	/**
 	 * Calls when a player enters an arena in any way
 	 */
-	public static void onArenaEnter(Player p) {
+	public void onArenaEnter(Player p) {
 		if(!isOnArena(p)) {
-			currentKit.give(p);
-			InventoryHelper.sendActionBarMessage(p, ChatColor.RED + "Ты зашел на арену");
-			p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 1F);
-			onArena.add(p);
+			if(isDuel) {
+				p.teleport(spawnLocation);
+				InventoryHelper.sendActionBarMessage(p, ChatColor.DARK_RED + "Сейчас идет дуэль");
+				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
+			} else {
+				currentKit.give(p);
+				InventoryHelper.sendActionBarMessage(p, ChatColor.GRAY + "> " +
+						ChatColor.RED + ChatColor.BOLD + "Ты зашел на арену" +
+						ChatColor.RESET + ChatColor.GRAY + " <");
+				p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_CHAIN, 0.5F, 1F);
+				onArena.add(p);
+			}
 		}
 	}
 
-	public static void update() {
+	public void update() {
 		if(TaskManager.isSecUpdated()) {
 			List<Player> waiting = getDuelWaitingPlayers();
 			for(Player p : waiting) {
@@ -356,7 +397,7 @@ public class PvpArena implements Listener {
 				if(onArena.size() <= 1) {
 					if(onArena.size() == 1) {
 						for(Player player : onArena) {
-							player.teleport(arenaSpawnLocation);
+							player.teleport(spawnLocation);
 							onArenaLeave(player);
 						}
 					}
@@ -370,7 +411,39 @@ public class PvpArena implements Listener {
 		}
 	}
 
-	public static void heal(Player p) {
+	public boolean isOpen() {
+		return isOpen;
+	}
+
+	public List<Kit> getKits() {
+		return kits;
+	}
+
+	public Kit getCurrentKit() {
+		return currentKit;
+	}
+
+	public void setCurrentKit(Kit currentKit) {
+		this.currentKit = currentKit;
+	}
+
+	public int getKillsToNextKit() {
+		return killsToNextKit;
+	}
+
+	public void setKillsToNextKit(int killsToNextKit) {
+		this.killsToNextKit = killsToNextKit;
+	}
+
+	public Set<Player> getPlayersOnArena() {
+		return onArena;
+	}
+
+	public Location getSpawnLocation() {
+		return spawnLocation;
+	}
+
+	public void heal(Player p) {
 		p.getActivePotionEffects().forEach(ef -> p.removePotionEffect(ef.getType()));
 		p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
 		p.setHealth(20);
@@ -391,56 +464,54 @@ public class PvpArena implements Listener {
 
 	@EventHandler
 	public void move(PlayerMoveEvent e) {
-		Player p = e.getPlayer();
-		if(UHC.isInLobby(p)) {
-			Location l = e.getTo();
-			int x = l.getBlockX();
-			int y = l.getBlockY();
-			int z = l.getBlockZ();
-			if(isOnArena(p) && x >= -52 && x <= -48 && y >= 7 && y <= 10 && z == -26) {
-				onArenaLeave(p);
+		Player player = e.getPlayer();
+		if(UHC.isInLobby(player)) {
+			Location to = e.getTo();
+			if(isOnArena(player) && leaveRegion.isInside(to)) {
+				onArenaLeave(player);
 			}
-			if(!isOnArena(p) && x >= -52 && x <= -48 && y >= 7 && y <= 10 && z == -28) {
-				onArenaEnter(p);
+			if(!isOnArena(player) && enterRegion.isInside(to)) {
+				onArenaEnter(player);
 			}
 		}
 	}
 
 	@EventHandler
 	public void death(PlayerDeathEvent e) {
-		Player p = e.getEntity();
-		if(UHC.isInLobby(p)) {
-			heal(p);
+		Player player = e.getEntity();
+		if(UHC.isInLobby(player)) {
+			heal(player);
 			e.getDrops().clear();
 			e.setKeepInventory(true);
-			if(isOnArena(p)) {
-				onArenaLeave(p);
+			if(isOnArena(player)) {
+				onArenaLeave(player);
 				killsToNextKit--;
 				if(killsToNextKit <= 0) {
 					killsToNextKit = 8;
 					currentKit = getRandomKit();
-					for(Player player : onArena) {
-						InventoryHelper
-								.sendActionBarMessage(player, ChatColor.GOLD + "В следующий раз будет выдан новый набор: " + ChatColor.LIGHT_PURPLE + currentKit.getName());
+					for(Player currentPlayer : onArena) {
+						InventoryHelper.sendActionBarMessage(currentPlayer,
+										ChatColor.GOLD + "В следующий раз будет выдан новый набор: " +
+												ChatColor.LIGHT_PURPLE + currentKit.getName());
 					}
 				}
-				Player killer = p.getKiller();
+				Player killer = player.getKiller();
 				if(killer != null) {
 					heal(killer);
-					removeKit(killer);
+					killer.getInventory().clear();
 					currentKit.give(killer);
 					killer.playSound(killer.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.8F, 1F);
 				}
-				for(Arrow arrow : p.getWorld().getEntitiesByClass(Arrow.class)) {
+				for(Arrow arrow : player.getWorld().getEntitiesByClass(Arrow.class)) {
 					if(arrow.isInBlock()) {
 						arrow.remove();
 					}
 				}
 				SignManager.updateSigns();
-				p.teleport(arenaSpawnLocation);
-				TaskManager.invokeLater(() -> p.setVelocity(new Vector(0, 0, 0)));
+				player.teleport(spawnLocation);
+				TaskManager.invokeLater(() -> player.setVelocity(new Vector(0, 0, 0)));
 			} else {
-				p.teleport(WorldManager.getLobby().getSpawnLocation());
+				player.teleport(WorldManager.getLobby().getSpawnLocation());
 			}
 		}
 	}

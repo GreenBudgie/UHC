@@ -11,7 +11,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.UHC.*;
 import ru.main.UHCPlugin;
-import ru.pvparena.PvpArena;
 import ru.util.InventoryHelper;
 import ru.util.WorldHelper;
 
@@ -122,17 +121,10 @@ public class SignManager implements Listener {
 					block.setLine(2, ChatColor.DARK_PURPLE + "Дуо");
 				}
 				break;
-			case RETURN_LOBBY:
-				block.setLine(1, defCol + "Назад");
-				break;
-			case ARENA_TP:
-				block.setLine(1, ChatColor.DARK_RED + "Арена");
-				block.setLine(2, ChatColor.DARK_PURPLE + "<Телепорт>");
-				break;
 			case ARENA_NEXT_KIT:
 				block.setLine(0, defCol + "Убийств до");
 				block.setLine(1, defCol + "след. набора:");
-				block.setLine(2, ChatColor.DARK_AQUA + "" + PvpArena.killsToNextKit);
+				block.setLine(2, ChatColor.DARK_AQUA + "" + LobbyGameManager.PVP_ARENA.getKillsToNextKit());
 				block.setLine(3, ChatColor.DARK_GREEN + "<Сменить>");
 				break;
 			case GAME_FAST_START:
@@ -211,21 +203,14 @@ public class SignManager implements Listener {
 						UHC.updateLobbyScoreboard(player);
 					}
 					break;
-				case RETURN_LOBBY:
-					InventoryHelper.removeItemsExcept(clickedPlayer.getInventory(), Material.REDSTONE, Material.PLAYER_HEAD);
-					clickedPlayer.teleport(WorldManager.getLobby().getSpawnLocation());
-					break;
 				case ARENA_NEXT_KIT:
-					PvpArena.killsToNextKit = 8;
-					PvpArena.currentKit = PvpArena.getRandomKit();
-					String text = ChatColor.GREEN + "Новый набор: " + ChatColor.LIGHT_PURPLE + PvpArena.currentKit.getName();
+					LobbyGameManager.PVP_ARENA.setKillsToNextKit(8);
+					LobbyGameManager.PVP_ARENA.setCurrentKit(LobbyGameManager.PVP_ARENA.getRandomKit());
+					String text = ChatColor.GREEN + "Новый набор: " + ChatColor.LIGHT_PURPLE + LobbyGameManager.PVP_ARENA.getCurrentKit().getName();
 					InventoryHelper.sendActionBarMessage(clickedPlayer, text);
-					for(Player player : PvpArena.onArena) {
+					for(Player player : LobbyGameManager.PVP_ARENA.getPlayersOnArena()) {
 						InventoryHelper.sendActionBarMessage(player, text);
 					}
-					break;
-				case ARENA_TP:
-					clickedPlayer.teleport(PvpArena.arenaSpawnLocation);
 					break;
 				case GAME_FAST_START:
 					UHC.fastStart = UHC.fastStart == 2 ? 0 : UHC.fastStart + 1;

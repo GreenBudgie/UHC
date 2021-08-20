@@ -38,13 +38,10 @@ import ru.artifact.ArtifactManager;
 import ru.drop.Drop;
 import ru.drop.Drops;
 import ru.items.CustomItems;
-import ru.lobby.Lobby;
-import ru.lobby.LobbyTeamBuilder;
-import ru.lobby.SignManager;
+import ru.lobby.*;
 import ru.mutator.ItemBasedMutator;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
-import ru.pvparena.PvpArena;
 import ru.rating.GameSummary;
 import ru.rating.Rating;
 import ru.requester.ItemRequester;
@@ -93,7 +90,6 @@ public class UHC implements Listener {
 		WorldManager.init();
 		RecipeHandler.init();
 		Lobby.init();
-		PvpArena.init();
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			resetPlayer(p);
 			createLobbyScoreboard(p);
@@ -339,7 +335,7 @@ public class UHC implements Listener {
 			summary.setDuo(isDuo);
 
 			for(Player player : Bukkit.getOnlinePlayers()) {
-				PvpArena.onArenaLeave(player);
+				LobbyGameManager.PVP_ARENA.onArenaLeave(player);
 				PlayerManager.registerPlayer(player);
 				resetPlayer(player);
 				player.setNoDamageTicks(600);
@@ -1471,7 +1467,6 @@ public class UHC implements Listener {
 			for(Player pl : WorldManager.getLobby().getPlayers()) {
 				pl.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "- " + ChatColor.RESET + ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " отключился");
 			}
-			PvpArena.onArena.remove(player);
 			refreshLobbyScoreboardLater();
 		}
 	}

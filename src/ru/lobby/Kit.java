@@ -1,4 +1,4 @@
-package ru.pvparena;
+package ru.lobby;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
@@ -14,11 +14,11 @@ public class Kit {
 
 	private Map<Integer, ItemStack> itemMap = new HashMap<>();
 	private int n = 0;
-	private String name = "";
+	private final String name;
 
 	public Kit(String name) {
 		this.name = name;
-		PvpArena.kits.add(this);
+		LobbyGameManager.PVP_ARENA.getKits().add(this);
 	}
 
 	public String getName() {

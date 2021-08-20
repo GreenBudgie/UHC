@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.yaml.snakeyaml.Yaml;
 import ru.UHC.UHC;
+import ru.lobby.LobbyGameManager;
 import ru.main.UHCPlugin;
 import ru.rating.GameSummary;
 import ru.rating.PlayerSummary;
@@ -23,7 +24,11 @@ public class  CommandTest implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!sender.isOp()) return true;
 		Player p = (Player) sender;
-		UHC.createPlatform(p.getLocation(), 7);
+		if(LobbyGameManager.PVP_ARENA.isOpen()) {
+			LobbyGameManager.PVP_ARENA.closeArena();
+		} else {
+			LobbyGameManager.PVP_ARENA.openArena();
+		}
 		return true;
 	}
 }

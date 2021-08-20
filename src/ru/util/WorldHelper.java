@@ -565,57 +565,35 @@ public class WorldHelper {
 		return list;
 	}
 
-	public static String locationAsStringNoWorld(Location l) {
-		return l.getBlockX() + " " + l.getBlockY() + " " + l.getBlockZ();
-	}
-
-	public static String locationAsString(Location l) {
-		return l.getBlockX() + " " + l.getBlockY() + " " + l.getBlockZ() + " " + l.getWorld().getName();
-	}
-
-	public static Location translateToLocation(String str) {
-		String[] l = str.trim().split(" ");
-		if(l.length == 4) {
-			try {
-				return new Location(Bukkit.getWorld(l[3]), Integer.parseInt(l[0]), Integer.parseInt(l[1]), Integer.parseInt(l[2]));
-			} catch(NumberFormatException ignored) {
-			}
-		}
-		return null;
-	}
-
-	public static Location translateToLocation(World world, String rawStr, int yDefault) {
-		String[] coords = rawStr.trim().split(" ");
-		if(coords.length >= 2) {
-			try {
-				boolean f = coords.length == 2;
-				int xc = Integer.parseInt(coords[0]);
-				int yc = f ? yDefault : Integer.parseInt(coords[1]);
-				int zc = Integer.parseInt(coords[f ? 1 : 2]);
-				return new Location(world, xc, yc, zc);
-			} catch(NumberFormatException e) {
-			}
-		}
-		return null;
-	}
-
+	/**
+	 * Translates the given string location, using the given world
+	 *
+	 * Raw string can only contain integer coordinates.
+	 * Ex:
+	 * Valid string: 234 -3 23, converts to location with given world, x=234, y=-3, z=23 and default yaw/pitch
+	 * Valid string: 1 2 3 90 180, converts to: x=1, y=2, z=3, yaw=90, pitch=180
+	 * @param world The world to create location in
+	 * @param rawStr String to translate
+	 * @return Translated location, or null if input string is invalid
+	 */
 	public static Location translateToLocation(World world, String rawStr) {
-		return translateToLocation(world, rawStr, 64);
-	}
-
-	public static boolean canTranslateToLocation(String rawStr) {
 		String[] coords = rawStr.trim().split(" ");
-		if(coords.length >= 2) {
-			try {
-				boolean f = coords.length == 2;
-				int xc = Integer.parseInt(coords[0]);
-				int yc = f ? 64 : Integer.parseInt(coords[1]);
-				int zc = Integer.parseInt(coords[f ? 1 : 2]);
-				return true;
-			} catch(NumberFormatException ignored) {
+		try {
+			if(coords.length == 3) {
+				return new Location(world,
+						Integer.parseInt(coords[0]),
+						Integer.parseInt(coords[1]),
+						Integer.parseInt(coords[2]));
+			} else if(coords.length == 5) {
+				return new Location(world,
+						Integer.parseInt(coords[0]),
+						Integer.parseInt(coords[1]),
+						Integer.parseInt(coords[2]),
+						Integer.parseInt(coords[3]),
+						Integer.parseInt(coords[4]));
 			}
-		}
-		return false;
+		} catch(Exception ignored) {}
+		return null;
 	}
 
 	public static List<Player> getPlayersDistance(Location l, double maxDist) {

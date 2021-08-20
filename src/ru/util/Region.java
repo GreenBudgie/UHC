@@ -273,7 +273,7 @@ public class Region implements ConfigurationSerializable {
 	}
 
 	/**
-	 * Validates the worlds in this locations. If the worlds are different or the are null it throws an exception
+	 * Validates the worlds in its locations. If the worlds are different or null it throws an exception
 	 */
 	public void validateWorlds() {
 		if(start.getWorld() == null || end.getWorld() == null || (start.getWorld() != end.getWorld()))
