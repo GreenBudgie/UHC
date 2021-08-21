@@ -52,6 +52,8 @@ public class PlayerManager {
         return uplayer;
     }
 
+
+
     public static PlayerTeam getTeamWithMember(UHCPlayer player) {
         for(PlayerTeam team : teams) {
             if(team.contains(player)) return team;
@@ -69,6 +71,13 @@ public class PlayerManager {
     public static UHCPlayer asUHCPlayer(Player player) {
         for(UHCPlayer uplayer : players) {
             if(uplayer.getPlayer() == player || uplayer.getNickname().equals(player.getName())) return uplayer;
+        }
+        return null;
+    }
+
+    public static UHCPlayer asUHCPlayer(String nickname) {
+        for(UHCPlayer uplayer : players) {
+            if(uplayer.getNickname().equals(nickname)) return uplayer;
         }
         return null;
     }

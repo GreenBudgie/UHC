@@ -26,7 +26,7 @@ public class UHCPlayer {
     private UHCPlayer teammate = null;
     private PlayerSummary summary;
 
-    private Player ghostKiller;
+    private UHCPlayer ghostKiller;
     private final int maxTimeToRejoin = 3 * 60;
     private int timeToRejoin = 0;
     private boolean deadByTime = false;
@@ -135,7 +135,7 @@ public class UHCPlayer {
 
     public void damageGhost(Player damager) {
         if(state == State.LEFT_AND_ALIVE) {
-            ghostKiller = damager;
+            ghostKiller = PlayerManager.asUHCPlayer(damager);
             kill();
         }
     }
@@ -183,13 +183,10 @@ public class UHCPlayer {
 
         //Update rating
         summary.setDeathState(UHC.state);
-        Player killer = getKiller();
+        UHCPlayer killer = getKiller();
         if(killer != null) {
-            summary.setKillerName(killer.getName());
-            UHCPlayer uhcKiller = PlayerManager.asUHCPlayer(killer);
-            if(uhcKiller != null) {
-                uhcKiller.getSummary().increaseKills();
-            }
+            summary.setKillerName(killer.getNickname());
+            killer.getSummary().increaseKills();
         }
 
         //Send event to mutators
@@ -245,7 +242,7 @@ public class UHCPlayer {
 
     private void dropBonusItemOnDeath() {
         Location location = getLocation();
-        Player killer = getKiller();
+        UHCPlayer killer = getKiller();
         if(killer != null) {
             location.getWorld().dropItem(location, UHC.getBonusShell());
             return;
@@ -273,7 +270,7 @@ public class UHCPlayer {
             }
             return;
         }
-        Player killer = getKiller();
+        UHCPlayer killer = getKiller();
         if(killer != null) {
             if(player != null) {
                 for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
@@ -281,11 +278,11 @@ public class UHCPlayer {
                 }
                 String taunt = ChatColor.DARK_AQUA + " " + MathUtils.choose("тебя унизил", "умнее тебя", "не такой тупой, как кажется",
                         "иногда проявляет себя", "играет в кубики лучше тебя", "обосрал тебя", "убил тебя", "просто повезло");
-                player.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Тебя замачили!", ChatColor.GOLD + killer.getName() + taunt, 10, 60, 20);
+                player.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Тебя замачили!", ChatColor.GOLD + killer.getNickname() + taunt, 10, 60, 20);
             } else {
                 for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
                     String deathMessage = FightHelper.padCrosses(
-                            ChatColor.GOLD + killer.getName() +
+                            ChatColor.GOLD + killer.getNickname() +
                             ChatColor.RED + " замачил отлучившегося " +
                             ChatColor.GOLD + this.nickname);
                     inGamePlayer.sendMessage(deathMessage);
@@ -318,9 +315,10 @@ public class UHCPlayer {
         this.summary = summary;
     }
 
-    public Player getKiller() {
-        if(player != null) {
-            return FightHelper.getKiller(player);
+    public UHCPlayer getKiller() {
+        UHCPlayer killer = FightHelper.getKiller(player);
+        if(killer != null) {
+            return killer;
         }
         return ghostKiller;
     }

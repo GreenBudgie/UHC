@@ -78,11 +78,11 @@ public class AirDrop extends Drop {
                 double angle = height * Math.PI * 2;
                 Location l = location.clone().add(
                         Math.sin(angle) * radius,
-                        height - 1,
+                        height,
                         Math.cos(angle) * radius);
                 Location l2 = location.clone().add(
                         Math.sin(angle + Math.PI) * radius,
-                        height - 1,
+                        height,
                         Math.cos(angle + Math.PI) * radius);
                 ParticleUtils.createParticle(l, Particle.CLOUD, null);
                 ParticleUtils.createParticle(l2, Particle.CLOUD, null);

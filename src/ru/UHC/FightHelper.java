@@ -16,9 +16,12 @@ public class FightHelper {
 	 * @param victim The Player
 	 * @return Player's killer
 	 */
-	public static Player getKiller(Player victim) {
-		Player damager = getCustomDamager(victim);
-		return victim.getKiller() == null ? damager : victim.getKiller();
+	public static UHCPlayer getKiller(Player victim) {
+		UHCPlayer uhcDamager = getCustomDamager(victim);
+		Player defaultKiller = victim.getKiller();
+		UHCPlayer uhcDefaultKiller = null;
+		if(defaultKiller != null) uhcDefaultKiller = PlayerManager.asUHCPlayer(defaultKiller);
+		return uhcDefaultKiller == null ? uhcDamager : uhcDefaultKiller;
 	}
 
 	/**
@@ -27,7 +30,7 @@ public class FightHelper {
 	 * @param victim The Player
 	 * @return Player's damager or null
 	 */
-	public static Player getCustomDamager(Player victim) {
+	public static UHCPlayer getCustomDamager(Player victim) {
 		FightProcess process = getProcess(victim);
 		return process == null ? null : process.attacker;
 	}
@@ -40,7 +43,8 @@ public class FightHelper {
 	 * @param ticksToRemove Amount of ticks to remove the information about the damager
 	 */
 	public static void setDamager(Player victim, Player damager, int ticksToRemove) {
-		processes.add(new FightProcess(victim, damager, ticksToRemove));
+		UHCPlayer uhcDamager = PlayerManager.asUHCPlayer(damager);
+		processes.add(new FightProcess(victim, uhcDamager, ticksToRemove));
 	}
 
 	/**
@@ -52,6 +56,15 @@ public class FightHelper {
 	 * @param killMessage   A message to show if a player has been killed
 	 */
 	public static void setDamager(Player victim, Player damager, int ticksToRemove, String killMessage) {
+		UHCPlayer uhcDamager = PlayerManager.asUHCPlayer(damager);
+		processes.add(new FightProcess(victim, uhcDamager, ticksToRemove, killMessage));
+	}
+
+	public static void setDamager(Player victim, UHCPlayer damager, int ticksToRemove) {
+		processes.add(new FightProcess(victim, damager, ticksToRemove));
+	}
+
+	public static void setDamager(Player victim, UHCPlayer damager, int ticksToRemove, String killMessage) {
 		processes.add(new FightProcess(victim, damager, ticksToRemove, killMessage));
 	}
 
@@ -87,9 +100,9 @@ public class FightHelper {
 			}
 		} else {
 			if(process.killMessage.isEmpty()) {
-				deathMessage = ChatColor.GOLD + process.attacker.getName() + ChatColor.RED + " замачил " + ChatColor.GOLD + victim.getName();
+				deathMessage = ChatColor.GOLD + process.attacker.getNickname() + ChatColor.RED + " замачил " + ChatColor.GOLD + victim.getName();
 			} else {
-				deathMessage = ChatColor.GOLD + process.attacker.getName() + ChatColor.RED + " " + process.killMessage + " " + ChatColor.GOLD + victim.getName();
+				deathMessage = ChatColor.GOLD + process.attacker.getNickname() + ChatColor.RED + " " + process.killMessage + " " + ChatColor.GOLD + victim.getName();
 			}
 		}
 		return padCrosses(deathMessage);
@@ -98,15 +111,15 @@ public class FightHelper {
 	private static class FightProcess {
 
 		private Player victim;
-		private Player attacker;
+		private UHCPlayer attacker;
 		private int ticks;
 		private String killMessage = "";
 
-		public FightProcess(Player victim, Player attacker, int ticks) {
+		public FightProcess(Player victim, UHCPlayer attacker, int ticks) {
 			this(victim, attacker, ticks, "");
 		}
 
-		public FightProcess(Player victim, Player attacker, int ticks, String killMessage) {
+		public FightProcess(Player victim, UHCPlayer attacker, int ticks, String killMessage) {
 			this.victim = victim;
 			this.attacker = attacker;
 			this.ticks = ticks;

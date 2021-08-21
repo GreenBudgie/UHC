@@ -52,6 +52,13 @@ public abstract class CustomBlock implements Listener {
     }
 
     /**
+     * Whether to remove the registry if the real block have disappeared for any reason
+     */
+    public boolean removeIfRealBlockNotPresent() {
+        return true;
+    }
+
+    /**
      * Writes the given value to block's metadata.
      */
     public void setData(String name, Object value) {
@@ -138,8 +145,12 @@ public abstract class CustomBlock implements Listener {
      * Called every tick to update the block
      */
     protected final void update() {
-        onUpdate();
-        ticksPassed++;
+        if(removeIfRealBlockNotPresent() && !hasRealBlock()) {
+            remove();
+        } else {
+            onUpdate();
+            ticksPassed++;
+        }
     }
 
     /**

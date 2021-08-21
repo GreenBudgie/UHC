@@ -41,7 +41,7 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 			b.getWorld().playSound(center, Sound.ENTITY_TNT_PRIMED, 1F, 1F);
 			TNTPrimed tnt = (TNTPrimed) b.getWorld().spawnEntity(center, EntityType.PRIMED_TNT);
 			tnt.setFuseTicks(30);
-			tnt.setMetadata("owner", new FixedMetadataValue(UHCPlugin.instance, p));
+			tnt.setMetadata("owner", new FixedMetadataValue(UHCPlugin.instance, p.getName()));
 			b.setType(Material.AIR);
 		} else {
 			e.setCancelled(true);
@@ -50,14 +50,12 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 
 	@EventHandler
 	public void damage(EntityDamageByEntityEvent e) {
-		if(e.getEntity() instanceof Player && e.getDamager() instanceof TNTPrimed) {
-			Player p = (Player) e.getEntity();
-			TNTPrimed tnt = (TNTPrimed) e.getDamager();
+		if(e.getEntity() instanceof Player p && e.getDamager() instanceof TNTPrimed tnt) {
 			if(tnt.hasMetadata("owner")) {
-				Player owner = (Player) tnt.getMetadata("owner").get(0).value();
+				UHCPlayer owner = PlayerManager.asUHCPlayer(tnt.getMetadata("owner").get(0).asString());
 				if(owner != null) {
-					Player teammate = PlayerManager.getTeammate(owner);
-					if(owner == p || (teammate != null && teammate == p)) {
+					UHCPlayer teammate = owner.getTeammate();
+					if(owner.getPlayer() == p || (teammate != null && teammate.getPlayer() == p)) {
 						e.setDamage(e.getDamage() / 4.0);
 					} else {
 						FightHelper.setDamager(p, owner, 40, "взорвал");
@@ -69,7 +67,7 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 
 	@Override
 	public String getDescription() {
-		return "Динамит, который взрываетс¤ через полторы секунды после установки";
+		return "Динамит, который взрывается через полторы секунды после установки";
 	}
 
 	@Override

@@ -10,12 +10,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
-import ru.UHC.FightHelper;
-import ru.UHC.GameState;
-import ru.UHC.PlayerManager;
-import ru.UHC.UHC;
+import ru.UHC.*;
 import ru.items.CustomItem;
 import ru.items.CustomItems;
+import ru.main.UHCPlugin;
 import ru.mutator.MutatorManager;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
@@ -26,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class CustomBlockLandmine extends CustomBlockItem {
 
-	private final Player owner;
+	private final UHCPlayer owner;
 	private final int maxFuseTicks = 30;
 	private int fuseTicks = maxFuseTicks;
 	private int secondExplodeTicks = 4;
@@ -37,7 +35,12 @@ public class CustomBlockLandmine extends CustomBlockItem {
 
 	public CustomBlockLandmine(Location location, Player owner) {
 		super(location);
-		this.owner = owner;
+		this.owner = PlayerManager.asUHCPlayer(owner);
+	}
+
+	@Override
+	public boolean removeIfRealBlockNotPresent() {
+		return false;
 	}
 
 	@Override
@@ -52,10 +55,12 @@ public class CustomBlockLandmine extends CustomBlockItem {
 
 	@Override
 	public void onUpdate() {
+		if(owner == null) return;
 		if(!triggered) {
-			Player teammate = PlayerManager.getTeammate(owner);
+			Player teammate = null;
+			if(owner.getTeammate() != null) teammate = owner.getTeammate().getPlayer();
 			for(Player player : PlayerManager.getAliveOnlinePlayers()) {
-				if((player != owner &&
+				if((player != owner.getPlayer() &&
 						(teammate == null || teammate != player))
 						&& location.getWorld() == player.getWorld()
 						&& player.getLocation().distance(location) <= range) {
