@@ -38,6 +38,8 @@ import ru.artifact.ArtifactManager;
 import ru.block.CustomBlockManager;
 import ru.drop.Drop;
 import ru.drop.Drops;
+import ru.items.BlockHolder;
+import ru.items.CustomItem;
 import ru.items.CustomItems;
 import ru.lobby.Lobby;
 import ru.lobby.LobbyGameManager;
@@ -1561,7 +1563,12 @@ public class UHC implements Listener {
 			e.setCancelled(true);
 		}
 		if(PlayerManager.isPlaying(p) && state == GameState.DEATHMATCH) {
-			if(!CustomItems.tnt.isEquals(e.getItemInHand()) && !MutatorManager.interactiveArena.isActive()) {
+			CustomItem customItem = CustomItems.getCustomItem(e.getItemInHand());
+			boolean canPlaceOnArena = false;
+			if(customItem instanceof BlockHolder holder) {
+				if(holder.canPlaceOnDeathmatch()) canPlaceOnArena = true;
+			}
+			if(!CustomItems.tnt.isEquals(e.getItemInHand()) && !MutatorManager.interactiveArena.isActive() && !canPlaceOnArena) {
 				e.setCancelled(true);
 			}
 		}

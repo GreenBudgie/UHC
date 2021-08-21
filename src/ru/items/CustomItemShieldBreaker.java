@@ -26,9 +26,7 @@ public class CustomItemShieldBreaker extends RequesterCustomItem implements List
 
 	@EventHandler
 	public void attack(EntityDamageByEntityEvent e) {
-		if(e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
-			Player attacker = (Player) e.getDamager();
-			Player victim = (Player) e.getEntity();
+		if(e.getEntity() instanceof Player victim && e.getDamager() instanceof Player attacker) {
 			if(!PlayerManager.isTeammates(attacker, victim) && victim.isBlocking() && isEquals(attacker.getInventory().getItemInMainHand())) {
 				ItemStack main = victim.getInventory().getItemInMainHand();
 				ItemStack off = victim.getInventory().getItemInOffHand();

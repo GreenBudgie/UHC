@@ -27,7 +27,6 @@ import ru.util.TaskManager;
 public class UHCPlugin extends JavaPlugin {
 
 	public static UHCPlugin instance;
-	public static final boolean TEST_MODE = true;
 
 	public void onEnable() {
 		instance = this;
@@ -67,10 +66,6 @@ public class UHCPlugin extends JavaPlugin {
 		Rating.loadFromConfig();
 
 		TaskManager.init();
-
-		if(TEST_MODE) {
-			warning("Test mode is currently enabled");
-		}
 	}
 	
 	private void registerCommand(String commandName, CommandExecutor executor) {
@@ -87,9 +82,6 @@ public class UHCPlugin extends JavaPlugin {
 				player.teleport(LobbyGameManager.PVP_ARENA.getSpawnLocation());
 				LobbyGameManager.PVP_ARENA.onArenaLeave(player);
 			}
-		}
-		if(TEST_MODE) {
-			CustomBlockManager.removeAllBlocks();
 		}
 		if(!LobbyGameManager.PVP_ARENA.isOpen()) {
 			LobbyGameManager.PVP_ARENA.openArena();

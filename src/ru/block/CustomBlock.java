@@ -52,6 +52,13 @@ public abstract class CustomBlock implements Listener {
     }
 
     /**
+     * Whether this block must stay in place even if tried to break by hand or exploded
+     */
+    public boolean isUnbreakable() {
+        return false;
+    }
+
+    /**
      * Whether to remove the registry if the real block have disappeared for any reason
      */
     public boolean removeIfRealBlockNotPresent() {
@@ -191,11 +198,15 @@ public abstract class CustomBlock implements Listener {
     @EventHandler
     public void breakBlock(BlockBreakEvent event) {
         if(equals(event.getBlock())) {
-            event.setDropItems(false);
-            event.setExpToDrop(0);
-            onBreak(event);
-            onDestroy();
-            remove();
+            if(isUnbreakable()) {
+                event.setCancelled(true);
+            } else {
+                event.setDropItems(false);
+                event.setExpToDrop(0);
+                onBreak(event);
+                onDestroy();
+                remove();
+            }
         }
     }
 
@@ -217,15 +228,14 @@ public abstract class CustomBlock implements Listener {
         }
     }
 
-    @EventHandler
-    public void explosion(BlockExplodeEvent event) {
-        if(isExplosionProof()) {
-            event.blockList().removeIf(this::equals);
+    private void handleExplosion(List<Block> blocks) {
+        if(isExplosionProof() || isUnbreakable()) {
+            blocks.removeIf(this::equals);
         } else {
-            if(event.blockList().contains(getBlock())) {
+            if(blocks.stream().anyMatch(this::equals)) {
                 //We need to prevent the block to drop item by default
                 //So, removing it manually:
-                event.blockList().removeIf(this::equals);
+                blocks.removeIf(this::equals);
                 onExplode();
                 onDestroy();
                 remove();
@@ -234,17 +244,13 @@ public abstract class CustomBlock implements Listener {
     }
 
     @EventHandler
+    public void explosion(BlockExplodeEvent event) {
+        handleExplosion(event.blockList());
+    }
+
+    @EventHandler
     public void explosion(EntityExplodeEvent event) {
-        if(isExplosionProof()) {
-            event.blockList().removeIf(this::equals);
-        } else {
-            if(event.blockList().contains(getBlock())) {
-                event.blockList().removeIf(this::equals);
-                onExplode();
-                onDestroy();
-                remove();
-            }
-        }
+        handleExplosion(event.blockList());
     }
 
     @EventHandler

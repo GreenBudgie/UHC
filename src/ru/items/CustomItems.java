@@ -27,6 +27,7 @@ public class CustomItems {
 	public static CustomItemShulkerBox shulkerBox = new CustomItemShulkerBox();
 	public static CustomItemTerraDrill terraDrill = new CustomItemTerraDrill();
 	public static CustomItemInfernalLead infernalLead = new CustomItemInfernalLead();
+	public static CustomItemKnockoutTotem knockoutTotem = new CustomItemKnockoutTotem();
 
 	public static void init() {
 		for(CustomItem item : items) {

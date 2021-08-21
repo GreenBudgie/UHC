@@ -22,7 +22,6 @@ public class TaskManager {
 			public void run() {
 				UHC.tickGame();
 				LobbyGameManager.updateGames();
-				if(UHCPlugin.TEST_MODE && !UHC.playing) CustomBlockManager.updateBlocks();
 				if(tick < 19) {
 					tick++;
 					fullTicks++;
