@@ -49,7 +49,6 @@ public class ItemRequester implements Listener {
 				CustomItems.soulscriber,
 				CustomItems.shieldBreaker,
 				CustomItems.tnt,
-				CustomItems.terraTracer,
 				CustomItems.heavenMembrane,
 				CustomItems.tracker,
 				CustomItems.terraDrill));

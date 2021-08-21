@@ -39,8 +39,10 @@ import ru.block.CustomBlockManager;
 import ru.drop.Drop;
 import ru.drop.Drops;
 import ru.items.CustomItems;
-import ru.lobby.*;
-import ru.main.UHCPlugin;
+import ru.lobby.Lobby;
+import ru.lobby.LobbyGameManager;
+import ru.lobby.LobbyTeamBuilder;
+import ru.lobby.SignManager;
 import ru.mutator.ItemBasedMutator;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
@@ -74,9 +76,7 @@ public class UHC implements Listener {
 	public static boolean isRatingGame = true;
 	public static Location parkourStart;
 	public static String timerInfo = "";
-	public static List<Landmine> landmines = new ArrayList<>();
 	public static int fastStart = 0; //0 - disabled, 1 - without mutators, 2 - with mutators
-	public static List<TerraTracer> tracers = new ArrayList<>();
 	private static int mutatorCount = 0;
 	private static Mutator prevMutator = null;
 	private static BossBar voteBar = Bukkit.createBossBar("", BarColor.RED, BarStyle.SOLID);
@@ -288,8 +288,6 @@ public class UHC implements Listener {
 			voteBar.removeAll();
 			voteBar.setVisible(false);
 			PlayerManager.clear();
-			landmines.clear();
-			tracers.clear();
 			ArtifactManager.resetPrices();
 			ItemRequester.requestedItems.forEach(RequestedItem::deleteStands);
 			ItemRequester.requestedItems.clear();
@@ -840,14 +838,6 @@ public class UHC implements Listener {
 			ItemRequester.updateItems();
 			for(UHCPlayer uplayer : PlayerManager.getPlayers()) {
 				uplayer.update();
-			}
-			if(state.isInGame()) {
-				for(Landmine mine : landmines) {
-					mine.update();
-				}
-				for(TerraTracer tracer : tracers) {
-					tracer.update();
-				}
 			}
 			CustomBlockManager.updateBlocks();
 		}
@@ -1570,17 +1560,6 @@ public class UHC implements Listener {
 		if(PlayerManager.isPlaying(p) && (state == GameState.PREPARING || state == GameState.VOTE)) {
 			e.setCancelled(true);
 		}
-		if(PlayerManager.isPlaying(p) && state.isInGame()) {
-			ItemStack item = e.getItemInHand();
-			if(item.getType() == Material.DIRT) {
-				Block b = e.getBlock();
-				if(landmines.stream().anyMatch(mine -> WorldHelper.compareLocations(b.getLocation().clone().add(0, -1, 0), mine.getLocation()))) {
-					b.setType(Material.GRASS_BLOCK);
-					ParticleUtils.createParticlesOutline(b, Particle.VILLAGER_HAPPY, null, 20);
-					b.getWorld().playSound(b.getLocation(), Sound.BLOCK_CHORUS_FLOWER_GROW, 1F, 1F);
-				}
-			}
-		}
 		if(PlayerManager.isPlaying(p) && state == GameState.DEATHMATCH) {
 			if(!CustomItems.tnt.isEquals(e.getItemInHand()) && !MutatorManager.interactiveArena.isActive()) {
 				e.setCancelled(true);
@@ -1602,13 +1581,6 @@ public class UHC implements Listener {
 								new ItemStack(Material.GOLD_INGOT, MathUtils.randomRange(5, 8)));
 				e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), drop);
 				e.setExpToDrop(e.getExpToDrop() * 5);
-			}
-		}
-		if(state.isInGame() && e.getBlock().getType() == Material.BEACON) {
-			if(tracers.stream().anyMatch(tracer -> WorldHelper.compareLocations(tracer.getLocation(), e.getBlock().getLocation()))) {
-				e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), CustomItems.terraTracer.getItemStack());
-				tracers.removeIf(tracer -> WorldHelper.compareLocations(tracer.getLocation(), e.getBlock().getLocation()));
-				e.setDropItems(false);
 			}
 		}
 		if(PlayerManager.isPlaying(p) && state == GameState.DEATHMATCH) {
@@ -1693,11 +1665,6 @@ public class UHC implements Listener {
 		}
 		if(state == GameState.PREPARING && PlayerManager.isPlaying(p)) {
 			e.setCancelled(true);
-		}
-		if(state.isInGame() && e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.BEACON) {
-			if(tracers.stream().anyMatch(tracer -> WorldHelper.compareLocations(tracer.getLocation(), e.getClickedBlock().getLocation()))) {
-				e.setCancelled(true);
-			}
 		}
 	}
 

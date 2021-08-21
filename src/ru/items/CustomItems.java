@@ -23,7 +23,6 @@ public class CustomItems {
 	public static CustomItemShieldBreaker shieldBreaker = new CustomItemShieldBreaker();
 	public static CustomItemDarkArtifact darkArtifact = new CustomItemDarkArtifact();
 	public static CustomItemHeavenMembrane heavenMembrane = new CustomItemHeavenMembrane();
-	public static CustomItemTerraTracer terraTracer = new CustomItemTerraTracer();
 	public static CustomItemCreatureHighlighter creatureHighlighter = new CustomItemCreatureHighlighter();
 	public static CustomItemShulkerBox shulkerBox = new CustomItemShulkerBox();
 	public static CustomItemTerraDrill terraDrill = new CustomItemTerraDrill();
