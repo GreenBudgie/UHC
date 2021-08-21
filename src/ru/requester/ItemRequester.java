@@ -13,11 +13,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.items.CustomItem;
 import ru.items.CustomItems;
 import ru.items.RequesterCustomItem;
+import ru.main.UHCPlugin;
 import ru.mutator.MutatorManager;
 import ru.util.InventoryHelper;
 import ru.util.NumericalCases;
@@ -36,16 +38,30 @@ public class ItemRequester implements Listener {
 	private static String name = ChatColor.DARK_AQUA + "Запросы";
 
 	public static void init() {
-		requesterCustomItems.addAll(Lists
-				.newArrayList(CustomItems.shulkerBox, CustomItems.highlighter, CustomItems.booster, CustomItems.pearl, CustomItems.creatureHighlighter, CustomItems.landmine,
-						CustomItems.soulscriber, CustomItems.shieldBreaker, CustomItems.tnt, CustomItems.terraTracer, CustomItems.heavenMembrane,
-						CustomItems.tracker, CustomItems.terraDrill));
+		requesterCustomItems.addAll(Lists.newArrayList(
+				CustomItems.shulkerBox,
+				CustomItems.highlighter,
+				CustomItems.creatureHighlighter,
+				CustomItems.booster,
+				CustomItems.pearl,
+				CustomItems.infernalLead,
+				CustomItems.landmine,
+				CustomItems.soulscriber,
+				CustomItems.shieldBreaker,
+				CustomItems.tnt,
+				CustomItems.terraTracer,
+				CustomItems.heavenMembrane,
+				CustomItems.tracker,
+				CustomItems.terraDrill));
 	}
 
 	public static void openRequesterInventory(Player p) {
 		Inventory inv = Bukkit.createInventory(p, 18,
-				name + ChatColor.DARK_GRAY + " (" + ChatColor.RED + getRedstone(p) + ChatColor.DARK_GRAY + " / " + ChatColor.BLUE + getLapis(p) + ChatColor.DARK_GRAY
-						+ ")");
+				name + ChatColor.DARK_GRAY + " (" +
+						ChatColor.RED + getRedstone(p) +
+						ChatColor.DARK_GRAY + " / " +
+						ChatColor.BLUE + getLapis(p) +
+						ChatColor.DARK_GRAY + ")");
 		requesterCustomItems.forEach(item -> inv.addItem(item.getInfoItemStack(p)));
 		p.openInventory(inv);
 	}
@@ -75,6 +91,7 @@ public class ItemRequester implements Listener {
 					meta.setPower(2);
 					meta.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(Color.RED).withFade(Color.BLACK).build());
 					firework.setFireworkMeta(meta);
+					firework.setMetadata("request", new FixedMetadataValue(UHCPlugin.instance, true));
 				}
 				ParticleUtils.createParticlesInsideSphere(requester.getLocation(), 3, Particle.TOTEM, null, 30);
 				int lapisPrice = MutatorManager.simpleRequests.isActive() ? 0 : requesterItem.getLapisPrice();

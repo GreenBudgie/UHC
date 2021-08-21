@@ -51,7 +51,9 @@ public abstract class RequesterCustomItem extends CustomItem {
 		int lapisPrice = MutatorManager.simpleRequests.isActive() ? 0 : getLapisPrice();
 		boolean enoughRedstone = ItemRequester.getRedstone(p) >= getRedstonePrice();
 		boolean enoughLapis = ItemRequester.getLapis(p) >= lapisPrice;
-		boolean allowPos = p.getLocation().getBlockY() >= p.getWorld().getHighestBlockYAt(p.getLocation()) || MutatorManager.requestAnywhere.isActive();
+		boolean allowPos = p.getLocation().getBlockY() >= p.getWorld().getHighestBlockYAt(p.getLocation()) ||
+				MutatorManager.requestAnywhere.isActive() ||
+				p.getWorld().getEnvironment() == World.Environment.NETHER;
 		InventoryHelper.addSplittedLore(item, 25, getDescription(), ChatColor.YELLOW);
 		if(getRedstonePrice() > 0) {
 			InventoryHelper.addLore(item, ChatColor.AQUA + "" + getRedstonePrice() + ChatColor.RED + " " + ItemRequester.REDSTONE_CASES.byNumber(getRedstonePrice()));

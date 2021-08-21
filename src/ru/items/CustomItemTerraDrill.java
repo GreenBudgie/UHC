@@ -24,6 +24,7 @@ import java.util.Set;
 public class CustomItemTerraDrill extends RequesterCustomItem implements Listener {
 
 	private static Map<Player, BlockFace> lastFace = new HashMap<>();
+	private static final Set<Material> rock = Sets.newHashSet(Material.STONE, Material.ANDESITE, Material.DIORITE, Material.GRANITE, Material.TUFF, Material.DEEPSLATE);
 
 	public String getName() {
 		return ChatColor.DARK_RED + "" + ChatColor.BOLD + "Terra Drill";
@@ -36,7 +37,6 @@ public class CustomItemTerraDrill extends RequesterCustomItem implements Listene
 	@Override()
 	public void onBreak(Player p, ItemStack item, BlockBreakEvent e) {
 		Block b = e.getBlock();
-		Set<Material> rock = Sets.newHashSet(Sets.newHashSet(Material.STONE, Material.ANDESITE, Material.DIORITE, Material.GRANITE));
 		if(rock.contains(b.getType()) && !e.isCancelled() && !MutatorManager.strongStone.isActive()) {
 			BlockFace face = lastFace.getOrDefault(p, BlockFace.EAST);
 			Location l = b.getLocation();

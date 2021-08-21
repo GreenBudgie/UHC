@@ -2,6 +2,7 @@ package ru.util;
 
 import org.bukkit.Bukkit;
 import ru.UHC.UHC;
+import ru.block.CustomBlockManager;
 import ru.lobby.LobbyGameManager;
 import ru.main.UHCPlugin;
 import ru.lobby.PvpArena;
@@ -21,6 +22,7 @@ public class TaskManager {
 			public void run() {
 				UHC.tickGame();
 				LobbyGameManager.updateGames();
+				if(UHCPlugin.TEST_MODE && !UHC.playing) CustomBlockManager.updateBlocks();
 				if(tick < 19) {
 					tick++;
 					fullTicks++;

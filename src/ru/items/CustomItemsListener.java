@@ -8,6 +8,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import ru.UHC.GameState;
+import ru.UHC.UHC;
 import ru.main.UHCPlugin;
 
 public class CustomItemsListener implements Listener {
@@ -57,10 +59,23 @@ public class CustomItemsListener implements Listener {
 	@EventHandler
 	public void place(BlockPlaceEvent e) {
 		ItemStack stack = e.getItemInHand();
-		if(stack != null && stack.hasItemMeta() && stack.getItemMeta().hasDisplayName()) {
+		if(stack.hasItemMeta() && stack.getItemMeta().hasDisplayName()) {
 			for(CustomItem item : CustomItems.getItems()) {
 				if(item.isEquals(stack)) {
 					item.onPlace(e.getPlayer(), e.getBlock(), e.getItemInHand(), e);
+					if(item instanceof BlockHolder holder) {
+						boolean toCancel = true;
+						if(UHCPlugin.TEST_MODE ||
+								(UHC.playing && (UHC.state.isInGame() || UHC.state == GameState.DEATHMATCH))) {
+							if(UHCPlugin.TEST_MODE ||
+									UHC.state != GameState.DEATHMATCH ||
+									holder.canPlaceOnDeathmatch()) {
+								holder.placeBlock(e.getBlock().getLocation(), e.getPlayer());
+								toCancel = false;
+							}
+						}
+						if(toCancel) e.setCancelled(true);
+					}
 				}
 			}
 		}

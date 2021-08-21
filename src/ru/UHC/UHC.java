@@ -35,6 +35,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.*;
 import ru.artifact.ArtifactManager;
+import ru.block.CustomBlockManager;
 import ru.drop.Drop;
 import ru.drop.Drops;
 import ru.items.CustomItems;
@@ -92,7 +93,6 @@ public class UHC implements Listener {
 		RecipeHandler.init();
 		Lobby.init();
 		for(Player p : Bukkit.getOnlinePlayers()) {
-			resetPlayer(p);
 			createLobbyScoreboard(p);
 		}
 		parkourStart = new Location(WorldManager.getLobby(), -1, 4, 21);
@@ -284,6 +284,7 @@ public class UHC implements Listener {
 			for(UHCPlayer uplayer : PlayerManager.getPlayers()) {
 				if(uplayer.getGhost() != null) uplayer.getGhost().remove();
 			}
+			CustomBlockManager.removeAllBlocks();
 			voteBar.removeAll();
 			voteBar.setVisible(false);
 			PlayerManager.clear();
@@ -848,6 +849,7 @@ public class UHC implements Listener {
 					tracer.update();
 				}
 			}
+			CustomBlockManager.updateBlocks();
 		}
 		if(playing && state == GameState.GAME || state == GameState.OUTBREAK) {
 			Drops.update();
@@ -1557,7 +1559,6 @@ public class UHC implements Listener {
 				e.setTo(newLoc);
 			} else {
 				Location newLoc = new Location(WorldManager.getGameMapNether(), loc.getX(), loc.getY(), loc.getZ());
-				UHCPlugin.log(WorldManager.getGameMapNether().getWorldBorder().getCenter());
 				e.setTo(newLoc);
 			}
 		}
@@ -1712,6 +1713,15 @@ public class UHC implements Listener {
 	public void tntArena(EntityExplodeEvent e) {
 		if(e.getEntityType() == EntityType.PRIMED_TNT && (state == GameState.DEATHMATCH || state == GameState.ENDING)) {
 			e.blockList().clear();
+		}
+	}
+
+	@EventHandler
+	public void noRocketDamage(EntityDamageByEntityEvent event) {
+		if(event.getDamager() instanceof Firework rocket && event.getEntity() instanceof Player player) {
+			if(PlayerManager.isPlaying(player)) {
+				if(rocket.hasMetadata("request")) event.setCancelled(true);
+			}
 		}
 	}
 

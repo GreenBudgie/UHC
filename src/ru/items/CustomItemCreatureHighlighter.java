@@ -27,7 +27,7 @@ public class CustomItemCreatureHighlighter extends RequesterCustomItem {
 		item.setAmount(item.getAmount() - 1);
 		boolean found = false;
 		for(LivingEntity entity : p.getWorld().getEntitiesByClass(LivingEntity.class)) {
-			if(!(entity instanceof Player) && p.getLocation().distance(entity.getLocation()) < 50) {
+			if(!(entity instanceof Player) && p.getLocation().distance(entity.getLocation()) < 64) {
 				entity.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 240, 0));
 			}
 		}
@@ -37,12 +37,12 @@ public class CustomItemCreatureHighlighter extends RequesterCustomItem {
 
 	@Override
 	public String getDescription() {
-		return "При использовании подсвечивает всех мобов в радиусе 50 блоков, но не игроков";
+		return "При использовании подсвечивает всех мобов в радиусе 64 блоков, но не игроков";
 	}
 
 	@Override
 	public int getRedstonePrice() {
-		return 48;
+		return 32;
 	}
 
 	@Override

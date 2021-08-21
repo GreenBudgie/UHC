@@ -3,6 +3,7 @@ package ru.requester;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
@@ -71,11 +72,13 @@ public class RequestedItem {
 			if(droppingTimer <= 0) {
 				info.remove();
 				Location bottom = l.clone().add(0, -2, 0);
-				bottom.getWorld().dropItemNaturally(location, item);
+				Item droppedItem = bottom.getWorld().dropItemNaturally(location.clone().add(0, -0.7, 0), item);
+				droppedItem.setPickupDelay(0);
+				droppedItem.setGlowing(true);
 				ParticleUtils.createParticlesInsideSphere(bottom, 3, Particle.LAVA, null, 50);
 				ParticleUtils.createParticlesInsideSphere(bottom, 3, Particle.EXPLOSION_LARGE, null, 50);
 				bottom.getWorld().playSound(bottom, Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, 1F, 0.5F);
-				bottom.getWorld().playSound(bottom, Sound.ENTITY_GENERIC_EXPLODE, 1F, 0.4F);
+				bottom.getWorld().playSound(bottom, Sound.ENTITY_GENERIC_EXPLODE, 1F, 0.5F);
 				done = true;
 			}
 		} else {
