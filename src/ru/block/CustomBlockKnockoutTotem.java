@@ -32,7 +32,7 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
     @Override
     public void onCreate() {
         super.onCreate();
-        location.getWorld().playSound(location, Sound.BLOCK_ANVIL_PLACE, 1, 0.5f);
+        location.getWorld().playSound(location, Sound.ENTITY_EVOKER_PREPARE_ATTACK, 1, 0.5f);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
             List<LivingEntity> nearbyEntities = new ArrayList<>();
             List<LivingEntity> entities = location.getWorld().getLivingEntities();
             for(LivingEntity entity : entities) {
-                if(entity.getLocation().distance(centerLocation) <= getEffectRadius()) {
+                if(entity.getLocation().distanceSquared(centerLocation) <= getEffectRadius() * getEffectRadius()) {
                     if(entity instanceof Player player && (!PlayerManager.isPlaying(player) || isImmune(player))) continue;
                     nearbyEntities.add(entity);
                 }
@@ -57,18 +57,18 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
                         playerLocation.getY() - centerLocation.getY(),
                         playerLocation.getZ() - centerLocation.getZ());
                 playerPointer.normalize();
-                playerPointer.multiply(1.4);
+                playerPointer.multiply(1.6);
                 Vector currentVelocity = entity.getVelocity();
                 currentVelocity.add(playerPointer);
                 entity.setVelocity(currentVelocity);
                 ParticleUtils.createParticlesAround(entity, Particle.SMOKE_LARGE, null, 5);
-                entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_FIRECHARGE_USE, 0.5F, 0.7F);
+                entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_FIRECHARGE_USE, 0.5F, 1.5F);
                 if(entity instanceof Player player) {
                     FightHelper.setDamager(player, owner, 40, "убил тотемом");
                 }
             }
-            ParticleUtils.createParticlesInsideSphere(centerLocation, getEffectRadius(), Particle.VILLAGER_ANGRY, null, 20);
-            location.getWorld().playSound(location, Sound.BLOCK_ANVIL_LAND, 0.5F, 0.8F);
+            ParticleUtils.createParticlesOutlineSphere(centerLocation, getEffectRadius() / 3, Particle.SMOKE_LARGE, null, 20);
+            location.getWorld().playSound(location, Sound.BLOCK_ANVIL_LAND, 0.4F, 0.5F);
         }
     }
 

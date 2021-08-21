@@ -28,7 +28,7 @@ public class CustomBlockInfernalLead extends CustomBlockItem {
         World world = location.getWorld();
         int radius = (int) (world.getWorldBorder().getSize() / 3);
         nearestFortress = world.locateNearestStructure(location, StructureType.NETHER_FORTRESS, radius, false);
-        location.getWorld().playSound(location, Sound.BLOCK_END_PORTAL_SPAWN, 0.5F, 1.5F);
+        location.getWorld().playSound(location, Sound.ITEM_TRIDENT_THUNDER, 0.5F, 2F);
         ParticleUtils.createParticlesInsideSphere(centerLocation, 2, Particle.LAVA, null, 20);
     }
 

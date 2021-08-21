@@ -19,7 +19,7 @@ public class CustomItemKnockoutTotem extends RequesterCustomItem implements Bloc
 
 	@Override
 	public String getDescription() {
-		return "Тотем отбрасывания. При установке разбрасывает в стороны всех живых существ и игроков, кроме тебя, в радиусе 6 блоков. Действует 30 секунд.";
+		return "Тотем отбрасывания. При установке разбрасывает в стороны всех живых существ и игроков, кроме тебя и тиммейта, в радиусе 6 блоков. Действует 30 секунд. Одноразовый.";
 	}
 
 	@Override
