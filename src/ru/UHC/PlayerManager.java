@@ -26,6 +26,9 @@ public class PlayerManager {
     public static UHCPlayer registerPlayer(Player player) {
         UHCPlayer uplayer = new UHCPlayer(player);
         players.add(uplayer);
+        GameSummary gameSummary = Rating.getCurrentGameSummary();
+        PlayerSummary playerSummary = gameSummary.addPlayerSummary(player.getName());
+        uplayer.setSummary(playerSummary);
         if(UHC.isDuo) {
             Player teammate = LobbyTeamBuilder.getTeammate(player);
             if(teammate != null) {
@@ -46,9 +49,6 @@ public class PlayerManager {
         } else {
             teams.add(new PlayerTeam(uplayer));
         }
-        GameSummary gameSummary = Rating.getCurrentGameSummary();
-        PlayerSummary playerSummary = gameSummary.addPlayerSummary(player.getName());
-        uplayer.setSummary(playerSummary);
         return uplayer;
     }
 

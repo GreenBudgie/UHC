@@ -307,6 +307,16 @@ public class UHCPlayer {
         }
     }
 
+    /**
+     * Gets the health amount of this player.
+     * If the player is online, it gets from player directly.
+     * If offline, the offline health is returned.
+     */
+    public double getRealOrOfflineHealth() {
+        if(player != null) return player.getHealth();
+        return offlineHealth;
+    }
+
     public PlayerSummary getSummary() {
         return summary;
     }
@@ -321,6 +331,14 @@ public class UHCPlayer {
             return killer;
         }
         return ghostKiller;
+    }
+
+    /**
+     * Compares this UHCPlayer with the given Player.
+     * Nickname comparison.
+     */
+    public boolean compare(Player player) {
+        return this.getNickname().equals(player.getName());
     }
 
     /**

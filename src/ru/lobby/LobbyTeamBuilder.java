@@ -96,6 +96,8 @@ public class LobbyTeamBuilder implements Listener {
     @EventHandler
     public void updateOnQuit(PlayerQuitEvent event) {
         disbandTeam(event.getPlayer());
+        Player player = event.getPlayer();
+        teams.removeIf(team -> team.player1() == player || team.player2() == player);
     }
 
     @EventHandler

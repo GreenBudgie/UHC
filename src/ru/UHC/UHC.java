@@ -84,6 +84,9 @@ public class UHC implements Listener {
 	private static BossBar voteBar = Bukkit.createBossBar("", BarColor.RED, BarStyle.SOLID);
 	//V 3.0
 	private static Region platformRegion = null;
+	private static int scoreboardCurrentTeamIndex;
+	private static int scoreboardTimeUntilNextTeam;
+	private static final int scoreboardMaxTimeUntilNextTeam = 3;
 
 	private static final int DEATHMATCH_NO_PVP_DURATION = 15; //15 seconds
 	private static final int DEATHMATCH_START_TIMER = 8 * 60; //8 minutes
@@ -125,6 +128,14 @@ public class UHC implements Listener {
 		updateGameScoreboard(p);
 	}
 
+	private static String getPrefix(UHCPlayer currentPlayer, Player scoreboardOwner) {
+		String prefix = ChatColor.GOLD + "";
+		if(!currentPlayer.isAlive()) prefix = ChatColor.DARK_RED + "" + ChatColor.STRIKETHROUGH; else
+			if(!currentPlayer.isOnline()) prefix = ChatColor.GRAY + ""; else
+				if(currentPlayer.compare(scoreboardOwner)) prefix = ChatColor.GREEN + "";
+		return prefix;
+	}
+
 	public static void updateGameScoreboard(Player player) {
 		Scoreboard board = player.getScoreboard();
 		Objective gameInfo = board.getObjective("gameInfo");
@@ -134,6 +145,32 @@ public class UHC implements Listener {
 		int c = 0;
 
 		if(!state.isPreGame()) {
+			if(isDuo) {
+				List<PlayerTeam> aliveTeams = PlayerManager.getAliveTeams();
+				if(aliveTeams.size() > 0) {
+					PlayerTeam currentTeam = aliveTeams.get(scoreboardCurrentTeamIndex);
+					String prefix = ChatColor.DARK_GRAY + "[" +
+							ChatColor.WHITE + "" + ChatColor.BOLD + (scoreboardCurrentTeamIndex + 1) +
+							ChatColor.DARK_GRAY + "] ";
+					UHCPlayer player1 = currentTeam.getPlayer1();
+					String player1Prefix = getPrefix(player1, player);
+
+					UHCPlayer player2 = currentTeam.getPlayer2();
+					String teamInfo1 = prefix + player1Prefix + player1.getNickname();
+					String teamInfo2;
+					if(player2 != null) {
+						String player2Prefix = getPrefix(player2, player);
+						teamInfo2 = prefix + player2Prefix + player2.getNickname();
+					} else {
+						teamInfo2 = prefix + ChatColor.GRAY + "Нет тиммейта";
+					}
+					Score teamScore2 = gameInfo.getScore(teamInfo2);
+					teamScore2.setScore(c++);
+					Score teamScore1 = gameInfo.getScore(teamInfo1);
+					teamScore1.setScore(c++);
+				}
+			}
+
 			int aliveTeamsNumber = PlayerManager.getAliveTeams().size();
 			String teamCountInfo = ChatColor.GRAY + "В живых " +
 					ChatColor.WHITE + ChatColor.BOLD + aliveTeamsNumber +
@@ -186,9 +223,9 @@ public class UHC implements Listener {
 		}
 	}
 
-	private static String[] trimTeam(String playerName1, String playerName2, int ln) {
+	private static String[] trimTeam(String playerName1, String playerName2, int ln, final int maxLength) {
 		boolean change1 = false, change2 = false;
-		while(ln >= 40 - (change1 ? 2 : 0) - (change2 ? 2 : 0)) {
+		while(ln >= maxLength - (change1 ? 1 : 0) - (change2 ? 1 : 0)) {
 			if(playerName1.length() > playerName2.length()) {
 				playerName1 = playerName1.substring(0, playerName1.length() - 1);
 				change1 = true;
@@ -198,8 +235,8 @@ public class UHC implements Listener {
 			}
 			ln--;
 		}
-		if(change1) playerName1 += "..";
-		if(change2) playerName2 += "..";
+		if(change1) playerName1 += ".";
+		if(change2) playerName2 += ".";
 		return new String[] {playerName1, playerName2};
 	}
 
@@ -273,7 +310,7 @@ public class UHC implements Listener {
 				String currentTeammateName = ((currentTeammate == player) ? ChatColor.GREEN : ChatColor.GOLD) + currentTeammate.getName();
 				registered.add(currentTeammate);
 				String finalString = ChatColor.DARK_GRAY + "- " + currentPlayerName + ChatColor.WHITE + " / " + currentTeammateName;
-				String[] trimmed = trimTeam(currentPlayerName, currentTeammateName, finalString.length());
+				String[] trimmed = trimTeam(currentPlayerName, currentTeammateName, finalString.length(), 40);
 				currentPlayerName = trimmed[0];
 				currentTeammateName = trimmed[1];
 				s = ChatColor.DARK_GRAY + "- " + currentPlayerName + ChatColor.WHITE + " / " + currentTeammateName;
@@ -393,7 +430,11 @@ public class UHC implements Listener {
 				tpLoc.setYaw((float) Math.toDegrees(yaw));
 				p.teleport(tpLoc);
 			}
+
+			scoreboardCurrentTeamIndex = 0;
+			scoreboardTimeUntilNextTeam = scoreboardMaxTimeUntilNextTeam;
 			refreshScoreboards();
+
 			if(UHC.fastStart == 0) {
 				for(UHCPlayer uplayer : PlayerManager.getPlayers()) {
 					voteBar.addPlayer(uplayer.getPlayer());
@@ -861,32 +902,55 @@ public class UHC implements Listener {
 		if(playing && state == GameState.GAME || state == GameState.OUTBREAK) {
 			Drops.update();
 		}
-		if(TaskManager.isSecUpdated() && playing) {
-			for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
-				updateGameScoreboard(inGamePlayer);
-			}
+		if(TaskManager.ticksPassed(5) && playing) {
 			for(Player onlinePlayer : PlayerManager.getAliveOnlinePlayers()) {
-				Player teammate = PlayerManager.getTeammate(onlinePlayer);
-				String teammateInfo = "";
-				if(teammate != null && PlayerManager.isPlaying(teammate)) {
+				UHCPlayer teammate = PlayerManager.getUHCTeammate(onlinePlayer);
+				if(teammate != null && teammate.isAlive()) {
+					Location teammateLocation = teammate.getLocation();
+					if(teammateLocation == null) continue;
 					String slash = ChatColor.GRAY + " | ";
 					String comma = ChatColor.GRAY + ", ";
-					Location teammateLocation = teammate.getLocation();
-					String dist = (onlinePlayer.getWorld() == teammate.getWorld()) ? (String.valueOf((int) teammateLocation.distance(onlinePlayer.getLocation()))) : ("");
-					String loc = ChatColor.DARK_AQUA + "" + teammateLocation.getBlockX() + comma + ChatColor.DARK_AQUA + teammateLocation.getBlockY() + comma + ChatColor.DARK_AQUA + teammateLocation.getBlockZ()
-							+ ChatColor.DARK_GRAY + " (" + ChatColor.AQUA + dist + ChatColor.DARK_GRAY + ")";
-					teammateInfo =
-							ChatColor.GOLD + teammate.getName() + slash + ChatColor.RED + ((int) Math.round(teammate.getHealth())) + ChatColor.DARK_RED + " \u2764"
-									+ slash + loc + ChatColor.AQUA + " " + getArrow(onlinePlayer.getLocation(), teammateLocation);
-				}
-				if(!teammateInfo.isEmpty()) {
+					String distanceInfo =
+							onlinePlayer.getWorld() == teammateLocation.getWorld() ?
+							String.valueOf(((int) teammateLocation.distance(onlinePlayer.getLocation()))) :
+							(WorldHelper.getEnvironmentNamePrepositional(teammateLocation.getWorld().getEnvironment(), ChatColor.GRAY));
+					String locationInfo =
+							ChatColor.DARK_AQUA + "" + teammateLocation.getBlockX() + comma +
+							ChatColor.DARK_AQUA + teammateLocation.getBlockY() + comma +
+							ChatColor.DARK_AQUA + teammateLocation.getBlockZ() +
+							ChatColor.DARK_GRAY + " (" +
+							ChatColor.AQUA + distanceInfo +
+							ChatColor.DARK_GRAY + ")";
+					String teammateInfo =
+							ChatColor.GOLD + teammate.getNickname() + slash +
+							ChatColor.RED + ((int) Math.round(teammate.getRealOrOfflineHealth())) +
+							ChatColor.DARK_RED + " \u2764" + slash +
+							locationInfo;
+					if(onlinePlayer.getWorld() == teammateLocation.getWorld())
+						teammateInfo += ChatColor.AQUA + " " + getArrow(onlinePlayer.getLocation(), teammateLocation);
 					InventoryHelper.sendActionBarMessage(onlinePlayer, teammateInfo);
 				}
+			}
+		}
+		if(TaskManager.isSecUpdated() && playing) {
+
+			List<PlayerTeam> aliveTeams = PlayerManager.getAliveTeams();
+			if(aliveTeams.size() > 0) {
+				if(scoreboardCurrentTeamIndex >= aliveTeams.size()) scoreboardCurrentTeamIndex = 0;
+				scoreboardTimeUntilNextTeam--;
+				if(scoreboardTimeUntilNextTeam <= 0) {
+					scoreboardCurrentTeamIndex++;
+					if(scoreboardCurrentTeamIndex >= aliveTeams.size()) scoreboardCurrentTeamIndex = 0;
+					scoreboardTimeUntilNextTeam = scoreboardMaxTimeUntilNextTeam;
+				}
+			}
+
+			for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+				updateGameScoreboard(inGamePlayer);
 			}
 			for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
 				ItemStack compassMainHand = currentPlayer.getInventory().getItemInMainHand();
 				ItemStack compassOffHand = currentPlayer.getInventory().getItemInOffHand();
-				boolean showPlayer = false;
 				if(CustomItems.tracker.isEquals(compassMainHand) || CustomItems.tracker.isEquals(compassOffHand)) {
 					List<Player> list =
 							PlayerManager.getAliveOnlinePlayers().stream()
@@ -905,7 +969,6 @@ public class UHC implements Listener {
 					}
 					if(nearest != null) {
 						currentPlayer.setCompassTarget(nearest.getLocation());
-						showPlayer = true;
 					}
 				}
 			}
@@ -913,34 +976,30 @@ public class UHC implements Listener {
 	}
 
 	private static char getArrow(Location l1, Location l2) {
-		int x1 = l1.getBlockX();
-		int z1 = l1.getBlockZ();
-		int x2 = l2.getBlockX();
-		int z2 = l2.getBlockZ();
-		char arrow = '-';
-		double d1 = l1.getYaw();
-		d1 = d1 % 360.0D;
-		double d2 = Math.atan2(z2 - z1, x2 - x1);
-		double d0 = Math.PI - ((d1 - 90.0D) * 0.01745329238474369D - d2);
-		float f = (float) (d0 / (Math.PI * 2D));
-		float res = positiveModulo(f, 1.0F);
-		if(res > 1 || ((res < 0.125 && res >= 0) || (res >= 0.875 && res <= 1))) {
-			arrow = '\u2191'; // forward
-		}
-		if(res >= 0.125 && res < 0.375) {
-			arrow = '\u2192'; // right
-		}
-		if(res >= 0.375 && res < 0.625) {
-			arrow = '\u2193'; // back
-		}
-		if(res >= 0.625 && res < 0.875) {
-			arrow = '\u2190'; // left
+		double x1 = l1.getX();
+		double z1 = l1.getZ();
+		double x2 = l2.getX();
+		double z2 = l2.getZ();
+		double playerLookAngle = l1.getYaw();
+		playerLookAngle = playerLookAngle % 360.0D;
+		double teammateAngle = Math.atan2(z2 - z1, x2 - x1);
+		double finalAngle = (Math.PI - (Math.toRadians(playerLookAngle - 90.0D) - teammateAngle)) % (Math.PI * 2);
+		if(finalAngle < 0) finalAngle = Math.PI / 2 + finalAngle;
+		char[] arrows = new char[] {'\u2191', '\u2B08', '\u2192', '\u2B0A', '\u2193', '\u2B0B', '\u2190', '\u2B09', '\u2191'};
+		double step = Math.PI / 4;
+		double range = Math.PI / 8;
+		char arrow = ' ';
+		for(int i = 0; i < arrows.length; i++) {
+			double currentAngle = i * step;
+			if(inRange(finalAngle, currentAngle - range, currentAngle + range)) {
+				arrow = arrows[i];
+			}
 		}
 		return arrow;
 	}
 
-	private static float positiveModulo(float numerator, float denominator) {
-		return (numerator % denominator + denominator) % denominator;
+	private static boolean inRange(double num, double min, double max) {
+		return num >= min && num <= max;
 	}
 
 	public static int getMapSize() {
