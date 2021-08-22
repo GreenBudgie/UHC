@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.WorldManager;
-import ru.items.CustomItems;
 import ru.util.MathUtils;
 
 import java.util.ArrayList;
@@ -47,13 +46,14 @@ public class NetherDrop extends ChestBasedDrop {
 
     @Override
     public Location getRandomLocation() {
-        int size = ((int) WorldManager.getActualMapSize()) / 2 - 10;
+        int size = ((int) WorldManager.getGameMapNether().getWorldBorder().getSize()) / 4 - 10;
+        Location center = WorldManager.getGameMapNether().getWorldBorder().getCenter();
         int x = MathUtils.randomRange(
-                WorldManager.spawnLocation.getBlockX() - size,
-                WorldManager.spawnLocation.getBlockX() + size);
+                center.getBlockX() - size,
+                center.getBlockX() + size);
         int z = MathUtils.randomRange(
-                WorldManager.spawnLocation.getBlockZ() - size,
-                WorldManager.spawnLocation.getBlockZ() + size);
+                center.getBlockZ() - size,
+                center.getBlockZ() + size);
         int y = MathUtils.randomRange(7, 16);
         return new Location(WorldManager.getGameMapNether(), x, y, z);
     }

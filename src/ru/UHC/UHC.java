@@ -132,9 +132,24 @@ public class UHC implements Listener {
 		gameInfo = board.registerNewObjective("gameInfo", "dummy", getUHCLogo());
 		gameInfo.setDisplaySlot(DisplaySlot.SIDEBAR);
 		int c = 0;
+
+		if(!state.isPreGame()) {
+			int aliveTeamsNumber = PlayerManager.getAliveTeams().size();
+			String teamCountInfo = ChatColor.GRAY + "В живых " +
+					ChatColor.WHITE + ChatColor.BOLD + aliveTeamsNumber +
+					ChatColor.GRAY + " ";
+			if(isDuo) {
+				teamCountInfo += new NumericalCases("команда", "команды", "команд").byNumber(aliveTeamsNumber);
+			} else {
+				teamCountInfo += new NumericalCases("игрок", "игрока", "игроков").byNumber(aliveTeamsNumber);
+			}
+			Score teamCountScore = gameInfo.getScore(teamCountInfo);
+			teamCountScore.setScore(c++);
+		}
+
 		if(state.isInGame()) {
 			final boolean show = state == GameState.PREPARING || state == GameState.VOTE || state == GameState.OUTBREAK;
-			for(Drop drop : new Drop[] {Drops.CAVEDROP, Drops.AIRDROP}) {
+			for(Drop drop : new Drop[] {Drops.NETHERDROP, Drops.CAVEDROP, Drops.AIRDROP}) {
 				if(drop.getTimer() <= deathmatchTimer || show) {
 					Score locationScore = gameInfo.getScore(ChatColor.DARK_GRAY + "- " + drop.getCoordinatesInfo());
 					locationScore.setScore(c++);
@@ -1172,15 +1187,6 @@ public class UHC implements Listener {
 		return FightHelper.padCrosses(name);
 	}
 
-	public static void teleportToParkour(Player p) {
-		Location newLoc = parkourStart.clone();
-		newLoc.setYaw(p.getLocation().getYaw());
-		newLoc.setPitch(p.getLocation().getPitch());
-		p.teleport(newLoc);
-		p.setFireTicks(0);
-		p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_HURT_ON_FIRE, 0.5F, 1.2F);
-	}
-
 	public static ItemStack getBonusShell() {
 		return ItemUtils.builder(Material.SHULKER_SHELL).withGlow().withName(ChatColor.LIGHT_PURPLE + "Сияющий панцирь")
 				.withSplittedLore(ChatColor.GOLD + "Окружи его золотыми слитками и получи 2 золотых яблока").build();
@@ -1469,7 +1475,7 @@ public class UHC implements Listener {
 			if(playing) {
 				refreshGameScoreboardLater();
 				player.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Сейчас идет игра! " + ChatColor.RESET + ChatColor.AQUA
-						+ "За игрой можно наблюдать, нажав по табличке на стене.");
+						+ "За игрой можно наблюдать, кликнув по табличке.");
 			}
 		}
 		refreshLobbyScoreboardLater();

@@ -36,6 +36,10 @@ public class Drops {
         }
     }
 
+    public static List<Drop> getDropList() {
+        return DROPS;
+    }
+
     public static ItemStack getRandomDrop() {
         return MathUtils.choose(getDrops());
     }
@@ -45,7 +49,7 @@ public class Drops {
         drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Potion of Lustiness", Color.FUCHSIA, new PotionEffect(PotionEffectType.HEAL, 1, 1)));
         drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Toxic Vial", Color.GREEN, true, false, new PotionEffect(PotionEffectType.POISON, 240, 0)));
         drops.add(InventoryHelper
-                .generatePotion(ChatColor.WHITE + "Potion of Eyebreaking", Color.GRAY, true, false, new PotionEffect(PotionEffectType.BLINDNESS, 400, 0)));
+                .generatePotion(ChatColor.WHITE + "Sightbreaker Potion", Color.GRAY, true, false, new PotionEffect(PotionEffectType.BLINDNESS, 400, 0)));
         drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Potion of Quickhand", Color.YELLOW, new PotionEffect(PotionEffectType.FAST_DIGGING, 9600, 0)));
         drops.add(InventoryHelper
                 .generatePotion(ChatColor.WHITE + "Potion of Power", Color.fromRGB(100, 0, 0), new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 1200, 0)));

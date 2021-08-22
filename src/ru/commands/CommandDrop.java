@@ -20,15 +20,12 @@ public class CommandDrop implements CommandExecutor, TabCompleter {
 		if(!sender.isOp() || !UHC.playing) return true;
 		Player p = (Player) sender;
 		if(args.length == 2) {
-			Drop drop = null;
-			switch(args[0]) {
-				case "air":
-					drop = Drops.AIRDROP;
-					break;
-				case "cave":
-					drop = Drops.CAVEDROP;
-					break;
-			}
+			Drop drop = switch(args[0]) {
+				case "air" -> Drops.AIRDROP;
+				case "cave" -> Drops.CAVEDROP;
+				case "nether" -> Drops.NETHERDROP;
+				default -> null;
+			};
 			if(drop != null) {
 				if(args[1].equalsIgnoreCase("reset")) {
 					drop.setup();
@@ -55,7 +52,7 @@ public class CommandDrop implements CommandExecutor, TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
 		if(args.length == 1) {
-			return MathUtils.getListOfStringsMatchingLastWord(args, Lists.newArrayList("air", "cave"));
+			return MathUtils.getListOfStringsMatchingLastWord(args, Lists.newArrayList("air", "cave", "nether"));
 		}
 		if(args.length == 2) {
 			return MathUtils.getListOfStringsMatchingLastWord(args, Lists.newArrayList(

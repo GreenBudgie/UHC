@@ -43,6 +43,7 @@ public class FightHelper {
 	 * @param ticksToRemove Amount of ticks to remove the information about the damager
 	 */
 	public static void setDamager(Player victim, Player damager, int ticksToRemove) {
+		if(victim == damager) return;
 		UHCPlayer uhcDamager = PlayerManager.asUHCPlayer(damager);
 		processes.add(new FightProcess(victim, uhcDamager, ticksToRemove));
 	}
@@ -56,15 +57,18 @@ public class FightHelper {
 	 * @param killMessage   A message to show if a player has been killed
 	 */
 	public static void setDamager(Player victim, Player damager, int ticksToRemove, String killMessage) {
+		if(victim == damager) return;
 		UHCPlayer uhcDamager = PlayerManager.asUHCPlayer(damager);
 		processes.add(new FightProcess(victim, uhcDamager, ticksToRemove, killMessage));
 	}
 
 	public static void setDamager(Player victim, UHCPlayer damager, int ticksToRemove) {
+		if(victim == damager.getPlayer()) return;
 		processes.add(new FightProcess(victim, damager, ticksToRemove));
 	}
 
 	public static void setDamager(Player victim, UHCPlayer damager, int ticksToRemove, String killMessage) {
+		if(victim == damager.getPlayer()) return;
 		processes.add(new FightProcess(victim, damager, ticksToRemove, killMessage));
 	}
 
