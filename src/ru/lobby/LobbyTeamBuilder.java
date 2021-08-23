@@ -46,6 +46,14 @@ public class LobbyTeamBuilder implements Listener {
     private static final ItemStack teamDisbandItem =
             ItemUtils.builder(Material.BARRIER).withName(ChatColor.RED + "" + ChatColor.BOLD + "Покинуть команду").build();
 
+    public static int getTeamNumber() {
+        int teamNumber = teams.size();
+        for(Player player : Lobby.getLobby().getPlayers()) {
+            if(!hasTeammate(player)) teamNumber++;
+        }
+        return teamNumber;
+    }
+
     @EventHandler
     public void click(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();

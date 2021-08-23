@@ -10,7 +10,7 @@ public enum ThreatStatus {
 			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Скучный выбор. " + ChatColor.RESET + ChatColor.AQUA + "Видимо, игра будет простой и долгой",
 			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Слишком легко. " + ChatColor.RESET + ChatColor.AQUA + "Надеюсь, кто-то активирует мутатор посложнее",
 			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Так совсем не интересно. " + ChatColor.RESET + ChatColor.AQUA + "Не мутаторы, а херота",
-			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Мда. " + ChatColor.RESET + ChatColor.AQUA + "Слишком много помощи от мутаторов",
+			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Мда. " + ChatColor.RESET + ChatColor.AQUA + "Изи мутаторы)",
 			ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "ок найс мутаторы) " + ChatColor.RESET + ChatColor.AQUA + "будет мегаизи)"
 	),
 	INNOCENT(
@@ -25,10 +25,10 @@ public enum ThreatStatus {
 			ChatColor.DARK_RED + "" + ChatColor.BOLD + "А что, хорошие мутаторы. " + ChatColor.RESET + ChatColor.RED + "Скучно не будет точно"
 	),
 	CRITICAL(
-			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Ой, что за выбор... " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "Извиняюсь за такие мутаторы",
-			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "АХАХАХАХХАХАХАХА) " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "удачи с такими мутаторами)",
-			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Короткая игра намечается. " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "Все подохнут до арены, отвечаю",
-			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Слишком жестко. " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "Все сдохнут сами, можно не ПВПшиться",
+			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Что за выбор... " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "Извиняюсь за такие мутаторы",
+			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "АХАХАХАХХАХАХАХА) " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "Удачи с такими мутаторами)",
+			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Короткая игра намечается. " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "Все подохнут до арены)",
+			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Слишком жестко. " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "Все сдохнут сами) Не пвпштесь)",
 			ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "АЧЕ) " + ChatColor.RESET + ChatColor.LIGHT_PURPLE + "КЛАСС МУТАТОРЫ)"
 	);
 

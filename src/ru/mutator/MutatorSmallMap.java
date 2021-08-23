@@ -1,5 +1,6 @@
 package ru.mutator;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.WorldBorder;
 import ru.UHC.WorldManager;
@@ -30,17 +31,25 @@ public class MutatorSmallMap extends Mutator {
 
 	@Override
 	public void onChoose() {
-		WorldBorder border = WorldManager.getGameMap().getWorldBorder();
-		border.setSize(border.getSize() / 2);
+		WorldBorder overworldBorder = WorldManager.getGameMap().getWorldBorder();
+		WorldBorder netherBorder = WorldManager.getGameMapNether().getWorldBorder();
+		overworldBorder.setSize(overworldBorder.getSize() / 2);
+		netherBorder.setSize(netherBorder.getSize() / 2);
 		for(Drop drop : Drops.DROPS) {
-			drop.setLocation(drop.getRandomLocation());
+			Location dropLocation = drop.getLocation();
+			if(dropLocation == null || dropLocation.getWorld() == null) continue;
+			if(!dropLocation.getWorld().getWorldBorder().isInside(dropLocation)) {
+				drop.setLocation(drop.getRandomLocation());
+			}
 		}
 	}
 
 	@Override
 	public void onDeactivate() {
-		WorldBorder border = WorldManager.getGameMap().getWorldBorder();
-		border.setSize(border.getSize() * 2);
+		WorldBorder overworldBorder = WorldManager.getGameMap().getWorldBorder();
+		WorldBorder netherBorder = WorldManager.getGameMapNether().getWorldBorder();
+		overworldBorder.setSize(overworldBorder.getSize() * 2);
+		netherBorder.setSize(netherBorder.getSize() * 2);
 	}
 
 	@Override

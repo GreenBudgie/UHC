@@ -88,6 +88,11 @@ public class UHC implements Listener {
 	private static int scoreboardTimeUntilNextTeam;
 	private static final int scoreboardMaxTimeUntilNextTeam = 3;
 
+	private static final String UHC_LOGO =
+			ChatColor.RED + "" + ChatColor.BOLD + "U" +
+			ChatColor.GOLD + ChatColor.BOLD + "H" +
+			ChatColor.YELLOW + ChatColor.BOLD + "C";
+
 	private static final int DEATHMATCH_NO_PVP_DURATION = 15; //15 seconds
 	private static final int DEATHMATCH_START_TIMER = 8 * 60; //8 minutes
 	private static final int DEATHMATCH_TIME_UNTIL_ZONE_SHRINK = 3 * 60; //3 minutes
@@ -104,7 +109,7 @@ public class UHC implements Listener {
 	}
 
 	public static String getUHCLogo() {
-		return ChatColor.RED + "" + ChatColor.BOLD + "U" + ChatColor.GOLD + ChatColor.BOLD + "H" + ChatColor.YELLOW + ChatColor.BOLD + "C";
+		return UHC_LOGO;
 	}
 
 	public static void createGameScoreboard(Player p) {
@@ -322,7 +327,22 @@ public class UHC implements Listener {
 			c++;
 			registered.add(currentPlayer);
 		}
-		Score info = teamInfo.getScore(ChatColor.YELLOW + "Тимы:");
+		int teamNumber = LobbyTeamBuilder.getTeamNumber();
+		String teamNumberText1 = new NumericalCases(
+				"Собрана",
+				"Собраны",
+				"Собрано").
+				byNumber(teamNumber);
+		String teamNumberText2 = new NumericalCases(
+				"команда",
+				"команды",
+				"команд").
+				byNumber(teamNumber);
+		Score info = teamInfo.getScore(
+				ChatColor.GRAY + teamNumberText1 + " " +
+				ChatColor.DARK_AQUA + ChatColor.BOLD + teamNumber + " " +
+				ChatColor.GRAY + teamNumberText2 +
+				ChatColor.DARK_GRAY + ":");
 		info.setScore(c);
 	}
 
@@ -1147,7 +1167,14 @@ public class UHC implements Listener {
 						ChatColor.YELLOW + "У тебя " + ChatColor.AQUA + ChatColor.BOLD + getNoPVPDuration() + ChatColor.YELLOW + " минут на развитие без ПВП",
 						10, 60, 30);
 			}
-			player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.5F, 1);
+			if(ArenaManager.doAnnounceArena() || ArenaManager.getChosenArena() != null) {
+				player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "> " +
+						ChatColor.GRAY + "Дезматч будет проходить на арене" +
+						ChatColor.DARK_GRAY + ": " +
+						ChatColor.DARK_GREEN + ArenaManager.getCurrentArena().name() +
+						ChatColor.DARK_GRAY + "" + ChatColor.BOLD + " <");
+			}
+			player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.4F, 1);
 			player.getInventory().clear();
 			player.getActivePotionEffects().forEach(ef -> player.removePotionEffect(ef.getType()));
 			player.setGameMode(GameMode.SURVIVAL);

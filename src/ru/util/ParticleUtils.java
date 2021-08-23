@@ -233,15 +233,9 @@ public class ParticleUtils {
 		double x = 0, y = 0, z = 0;
 		int rand = MathUtils.randomRange(1, 3);
 		switch(rand) {
-		case 1:
-			x = MathUtils.choose(r, -r);
-			break;
-		case 2:
-			y = MathUtils.choose(r, -r);
-			break;
-		case 3:
-			z = MathUtils.choose(r, -r);
-			break;
+			case 1 -> x = MathUtils.choose(r, -r);
+			case 2 -> y = MathUtils.choose(r, -r);
+			case 3 -> z = MathUtils.choose(r, -r);
 		}
 		if(x != 0) {
 			y = MathUtils.randomRangeDouble(-r, r);

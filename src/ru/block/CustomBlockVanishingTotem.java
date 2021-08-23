@@ -44,6 +44,7 @@ public class CustomBlockVanishingTotem extends CustomBlockTotem {
             if(projectile.getShooter() instanceof Player shooter && isImmune(shooter)) continue;
             if(projectile.getLocation().distanceSquared(centerLocation) <= radiusSq) {
                 ParticleUtils.createParticlesAround(projectile, Particle.SMOKE_LARGE, null, 4);
+                ParticleUtils.createLine(centerLocation, projectile.getLocation(), Particle.SMALL_FLAME, 3, null);
                 projectile.getWorld().playSound(projectile.getLocation(), Sound.ENTITY_PHANTOM_HURT, 1, 2);
                 projectile.remove();
             }

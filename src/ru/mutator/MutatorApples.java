@@ -33,7 +33,7 @@ public class MutatorApples extends Mutator implements Listener {
 
 	@Override
 	public String getDescription() {
-		return "Из листвы будут чаще выпадать ¤блоки";
+		return "Из листвы будут чаще выпадать яблоки";
 	}
 
 	@EventHandler

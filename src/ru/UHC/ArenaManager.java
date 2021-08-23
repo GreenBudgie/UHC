@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import ru.main.UHCPlugin;
 import ru.util.MathUtils;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,8 @@ public class ArenaManager {
     private static boolean announceArena = true;
     private static Arena currentArena;
     private static List<Arena> arenas = new ArrayList<>();
+
+    private static boolean needsUpdate = false;
     
     public static void init() {
         Map<String, Object> defaultParameters = new HashMap<>();
@@ -99,6 +102,14 @@ public class ArenaManager {
         world.setPVP(false);
     }
 
+    public static boolean doAnnounceArena() {
+        return announceArena;
+    }
+
+    public static void setAnnounceArena(boolean announce) {
+        announceArena = announce;
+    }
+
     public static void removeCurrentArena() {
         if(currentArena != null) {
             Bukkit.unloadWorld(currentArena.world(), false);
@@ -107,16 +118,41 @@ public class ArenaManager {
         }
     }
 
+    /**
+     * Whether the current arena does not match the chosen arena
+     */
+    public static boolean needsUpdate() {
+        if(needsUpdate) return true;
+        return WorldManager.hasMap() && currentArena != null && chosenArena != null && !currentArena.name().equals(chosenArena.name());
+    }
+
     public static void setupCurrentArena() {
+        removeCurrentArena();
         if(chosenArena == null) {
             currentArena = MathUtils.choose(arenas).cloneAsTemp();
-            WorldBorder arenaBorder = currentArena.world().getWorldBorder();
-            arenaBorder.setDamageBuffer(1);
-            arenaBorder.setWarningDistance(1);
-            arenaBorder.setSize(currentArena.maxBorderSize());
-            arenaBorder.setCenter(currentArena.world().getSpawnLocation());
         } else {
             currentArena = chosenArena.cloneAsTemp();
+        }
+        WorldBorder arenaBorder = currentArena.world().getWorldBorder();
+        arenaBorder.setDamageBuffer(1);
+        arenaBorder.setWarningDistance(1);
+        arenaBorder.setSize(currentArena.maxBorderSize());
+        arenaBorder.setCenter(currentArena.world().getSpawnLocation());
+        needsUpdate = false;
+    }
+
+    public static void switchChosenArena() {
+        int chosenArenaIndex = arenas.indexOf(chosenArena);
+        if(chosenArenaIndex == -1) {
+            chosenArena = arenas.get(0);
+            needsUpdate = false;
+        } else {
+            if(chosenArenaIndex == arenas.size() - 1) {
+                chosenArena = null;
+                needsUpdate = true;
+            } else {
+                chosenArena = arenas.get(chosenArenaIndex + 1);
+            }
         }
     }
 
@@ -127,8 +163,13 @@ public class ArenaManager {
     /**
      * Gets the arena that players chose in the lobby
      */
+    @Nullable
     public static Arena getChosenArena() {
         return chosenArena;
+    }
+
+    public static void setChosenArena(Arena chosenArena) {
+        ArenaManager.chosenArena = chosenArena;
     }
 
     /**
