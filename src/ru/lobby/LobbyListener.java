@@ -24,6 +24,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -40,6 +41,11 @@ public class LobbyListener implements Listener {
 
     public static boolean isInLobby(Player player) {
         return Lobby.isInLobby(player);
+    }
+
+    @EventHandler
+    public void mapInit(MapInitializeEvent e) {
+        UHCPlugin.log(e.getMap());
     }
 
     @SuppressWarnings("deprecation")

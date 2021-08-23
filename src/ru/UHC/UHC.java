@@ -1125,20 +1125,26 @@ public class UHC implements Listener {
 		}
 		int minTime = 600;
 		if(state == GameState.GAME && deathmatchTimer > minTime && (fewPlayers || fewTeams)) {
+			boolean timeChanged = false;
 			if((alivePlayers == 4 || aliveTeams == 3) && reduceTimeOnFewTeams) {
 				deathmatchTimer = (int) Math.max(deathmatchTimer / 1.3, minTime);
 				reduceTimeOnFewTeams = false;
+				timeChanged = true;
 			} else if(alivePlayers == 3) {
 				deathmatchTimer = (int) Math.max(deathmatchTimer / 1.7, minTime);
+				timeChanged = true;
 			} else if(alivePlayers == 2) {
 				deathmatchTimer = minTime;
+				timeChanged = true;
 			}
-			for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
-				player.playSound(player.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 0.5F, 1.2F);
-				String remainInfo = new NumericalCases("остался ", "осталось ", "осталось ").byNumber(alivePlayers);
-				String playerInfo = new NumericalCases(" игрок.", " игрока.", " игроков.").byNumber(alivePlayers);
-				player.sendMessage(ChatColor.GOLD + "В живых " + remainInfo + ChatColor.AQUA + ChatColor.BOLD + alivePlayers +
-						ChatColor.GOLD + playerInfo + ChatColor.RED + ChatColor.BOLD + " Время сокращено!");
+			if(timeChanged) {
+				for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
+					player.playSound(player.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 0.5F, 1.2F);
+					String remainInfo = new NumericalCases("остался ", "осталось ", "осталось ").byNumber(alivePlayers);
+					String playerInfo = new NumericalCases(" игрок.", " игрока.", " игроков.").byNumber(alivePlayers);
+					player.sendMessage(ChatColor.GOLD + "В живых " + remainInfo + ChatColor.AQUA + ChatColor.BOLD + alivePlayers +
+							ChatColor.GOLD + playerInfo + ChatColor.RED + ChatColor.BOLD + " Время сокращено!");
+				}
 			}
 		}
 	}

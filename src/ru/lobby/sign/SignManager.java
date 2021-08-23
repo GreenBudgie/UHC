@@ -11,10 +11,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.UHC.*;
 import ru.lobby.Lobby;
-import ru.lobby.LobbyGameManager;
-import ru.lobby.LobbyTeamBuilder;
 import ru.main.UHCPlugin;
-import ru.util.InventoryHelper;
 import ru.util.WorldHelper;
 
 import java.util.ArrayList;
@@ -37,6 +34,8 @@ public class SignManager implements Listener {
 		new LobbySignSpectate();
 		new LobbySignTeammateSelect();
 		new LobbySignMapGenerate();
+		new LobbySignClassSelect();
+		new LobbySignMutatorSelect();
 	}
 
 	public static void init() {
