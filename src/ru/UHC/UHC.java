@@ -87,6 +87,11 @@ public class UHC implements Listener {
 	private static int scoreboardCurrentTeamIndex;
 	private static int scoreboardTimeUntilNextTeam;
 	private static final int scoreboardMaxTimeUntilNextTeam = 3;
+	/**
+	 * Used to ensure that time reduce will only happen once
+	 * when there is only 3 teams left
+	 */
+	private static boolean reduceTimeOnFewTeams = true;
 
 	private static final String UHC_LOGO =
 			ChatColor.RED + "" + ChatColor.BOLD + "U" +
@@ -387,6 +392,7 @@ public class UHC implements Listener {
 				Bukkit.broadcastMessage(ChatColor.RED + "Карта не сгенерирована!");
 				return;
 			}
+			reduceTimeOnFewTeams = true;
 			resetAllAdvancements();
 			mutatorCount = MathUtils.chance(30) ? 4 : (MathUtils.chance(65) ? 3 : 2);
 			voteResults.clear();
@@ -1117,13 +1123,18 @@ public class UHC implements Listener {
 				inGamePlayer.sendTitle(ChatColor.GOLD + "ПВП Включено!", "", 10, 60, 30);
 			}
 		}
-		int minTime = 420;
+		int minTime = 600;
 		if(state == GameState.GAME && deathmatchTimer > minTime && (fewPlayers || fewTeams)) {
-			if(alivePlayers == 4 || aliveTeams == 3) deathmatchTimer = (int) Math.max(deathmatchTimer / 1.5, minTime);
-			if(alivePlayers == 3) deathmatchTimer = Math.max(deathmatchTimer / 2, minTime);
-			if(alivePlayers == 2) deathmatchTimer = minTime;
+			if((alivePlayers == 4 || aliveTeams == 3) && reduceTimeOnFewTeams) {
+				deathmatchTimer = (int) Math.max(deathmatchTimer / 1.3, minTime);
+				reduceTimeOnFewTeams = false;
+			} else if(alivePlayers == 3) {
+				deathmatchTimer = (int) Math.max(deathmatchTimer / 1.7, minTime);
+			} else if(alivePlayers == 2) {
+				deathmatchTimer = minTime;
+			}
 			for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
-				player.playSound(player.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1F, 1.2F);
+				player.playSound(player.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 0.5F, 1.2F);
 				String remainInfo = new NumericalCases("остался ", "осталось ", "осталось ").byNumber(alivePlayers);
 				String playerInfo = new NumericalCases(" игрок.", " игрока.", " игроков.").byNumber(alivePlayers);
 				player.sendMessage(ChatColor.GOLD + "В живых " + remainInfo + ChatColor.AQUA + ChatColor.BOLD + alivePlayers +
