@@ -12,7 +12,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.PlayerManager;
-import ru.UHC.UHC;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
 import ru.util.TaskManager;
@@ -121,7 +120,7 @@ public class MutatorStop extends Mutator implements Listener {
 	@EventHandler
 	public void handleMove(PlayerMoveEvent e) {
 		Player p = e.getPlayer();
-		if(isStopped && e.getTo() != null && PlayerManager.isPlaying(p) && !intruders.contains(p) && !WorldHelper.compareLocations(e.getFrom(), e.getTo())) {
+		if(isStopped && e.getTo() != null && PlayerManager.isPlaying(p) && !intruders.contains(p) && !WorldHelper.compareIntLocations(e.getFrom(), e.getTo())) {
 			intruders.add(p);
 			p.playSound(p.getLocation(), Sound.ENTITY_PHANTOM_DEATH, 1F, 0.7F);
 			p.sendTitle(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Ты пошевелился!", "", 0, 100, 0);

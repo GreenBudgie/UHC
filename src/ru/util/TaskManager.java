@@ -2,10 +2,8 @@ package ru.util;
 
 import org.bukkit.Bukkit;
 import ru.UHC.UHC;
-import ru.block.CustomBlockManager;
 import ru.lobby.LobbyGameManager;
 import ru.main.UHCPlugin;
-import ru.lobby.PvpArena;
 
 public class TaskManager {
 
@@ -17,31 +15,27 @@ public class TaskManager {
 	public static long fullMinutes = 0;
 
 	public static void init() {
-		UHCPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(UHCPlugin.instance, new Runnable() {
-
-			public void run() {
-				UHC.tickGame();
-				LobbyGameManager.updateGames();
-				if(tick < 19) {
-					tick++;
-					fullTicks++;
+		UHCPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(UHCPlugin.instance, () -> {
+			UHC.tickGame();
+			LobbyGameManager.updateGames();
+			if(tick < 19) {
+				tick++;
+				fullTicks++;
+			} else {
+				tick = 0;
+				if(sec < 59) {
+					sec++;
+					fullSeconds++;
 				} else {
-					tick = 0;
-					if(sec < 59) {
-						sec++;
-						fullSeconds++;
+					sec = 0;
+					if(min < 59) {
+						min++;
+						fullMinutes++;
 					} else {
-						sec = 0;
-						if(min < 59) {
-							min++;
-							fullMinutes++;
-						} else {
-							min = 0;
-						}
+						min = 0;
 					}
 				}
 			}
-
 		}, 0L, 1L);
 	}
 

@@ -1,15 +1,13 @@
 package ru.UHC;
 
 import org.bukkit.*;
-import ru.lobby.SignManager;
+import ru.lobby.sign.SignManager;
 import ru.main.UHCPlugin;
-import ru.util.MathUtils;
 import ru.util.TaskManager;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class WorldManager {
 
@@ -98,7 +96,7 @@ public class WorldManager {
 	public static void regenMap() {
 		removeMap();
 		createMap();
-		SignManager.updateSigns();
+		SignManager.updateTextOnSigns();
 	}
 
 	public static boolean deleteWorld(File path) {

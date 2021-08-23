@@ -303,7 +303,7 @@ public class WorldHelper {
 		return loc.getBlock();
 	}
 
-	public static boolean compareLocations(Location l1, Location l2) {
+	public static boolean compareIntLocations(Location l1, Location l2) {
 		if(l1.getBlockX() != l2.getBlockX()) return false;
 		if(l1.getBlockY() != l2.getBlockY()) return false;
 		if(l1.getBlockZ() != l2.getBlockZ()) return false;

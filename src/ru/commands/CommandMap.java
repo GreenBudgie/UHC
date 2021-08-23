@@ -6,7 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import ru.lobby.SignManager;
+import ru.lobby.sign.SignManager;
 import ru.UHC.WorldManager;
 import ru.util.MathUtils;
 
@@ -26,7 +26,7 @@ public class CommandMap implements CommandExecutor, TabCompleter {
 				} else {
 					WorldManager.createMap();
 				}
-				SignManager.updateSigns();
+				SignManager.updateTextOnSigns();
 			}
 			if(args[0].equalsIgnoreCase("remove")) {
 				if(!WorldManager.hasMap()) {
@@ -35,7 +35,7 @@ public class CommandMap implements CommandExecutor, TabCompleter {
 					WorldManager.removeMap();
 					sender.sendMessage(ChatColor.GREEN + "Карта удалена");
 				}
-				SignManager.updateSigns();
+				SignManager.updateTextOnSigns();
 			}
 			if(args[0].equalsIgnoreCase("status")) {
 				if(WorldManager.hasMap()) sender.sendMessage(ChatColor.GREEN + "Карта создана"); else sender.sendMessage(ChatColor.RED + "Карта не создана");

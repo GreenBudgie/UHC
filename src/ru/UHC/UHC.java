@@ -44,7 +44,7 @@ import ru.items.CustomItems;
 import ru.lobby.Lobby;
 import ru.lobby.LobbyGameManager;
 import ru.lobby.LobbyTeamBuilder;
-import ru.lobby.SignManager;
+import ru.lobby.sign.SignManager;
 import ru.mutator.ItemBasedMutator;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
@@ -354,7 +354,7 @@ public class UHC implements Listener {
 			if(!WorldManager.keepMap && !state.isPreGame()) WorldManager.removeMap();
 			state = GameState.STOPPED;
 			playing = false;
-			SignManager.updateSigns();
+			SignManager.updateTextOnSigns();
 			refreshLobbyScoreboard();
 		} else {
 			Bukkit.broadcastMessage(ChatColor.RED + "Игра не идет");
@@ -449,7 +449,7 @@ public class UHC implements Listener {
 			}
 			playing = true;
 			ArenaManager.getCurrentArena().world().setPVP(false);
-			SignManager.updateSigns();
+			SignManager.updateTextOnSigns();
 		} else {
 			Bukkit.broadcastMessage(ChatColor.RED + "Игра уже идет");
 		}
@@ -633,6 +633,7 @@ public class UHC implements Listener {
 	}
 
 	public static void tickGame() {
+		if(!playing) return;
 		if(state == GameState.VOTE) {
 			if(TaskManager.isSecUpdated()) {
 				voteTimer--;

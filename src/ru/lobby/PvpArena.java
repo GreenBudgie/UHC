@@ -5,7 +5,6 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
@@ -25,6 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
+import ru.lobby.sign.SignManager;
 import ru.main.UHCPlugin;
 import ru.util.*;
 
@@ -316,7 +316,7 @@ public class PvpArena extends LobbyGame implements Listener {
 	public List<Player> getDuelWaitingPlayers() {
 		List<Player> players = new ArrayList<>();
 		for(Player p : getLobbyPlayers()) {
-			if(WorldHelper.compareLocations(p.getLocation(), duelInitSpot1) || WorldHelper.compareLocations(p.getLocation(), duelInitSpot2)) {
+			if(WorldHelper.compareIntLocations(p.getLocation(), duelInitSpot1) || WorldHelper.compareIntLocations(p.getLocation(), duelInitSpot2)) {
 				players.add(p);
 			}
 		}
@@ -507,7 +507,7 @@ public class PvpArena extends LobbyGame implements Listener {
 						arrow.remove();
 					}
 				}
-				SignManager.updateSigns();
+				SignManager.updateTextOnSigns();
 				player.teleport(spawnLocation);
 				TaskManager.invokeLater(() -> player.setVelocity(new Vector(0, 0, 0)));
 			} else {

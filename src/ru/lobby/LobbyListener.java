@@ -11,6 +11,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -32,6 +33,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.UHC.PlayerOptions;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
+import ru.main.UHCPlugin;
 import ru.util.TaskManager;
 
 public class LobbyListener implements Listener {

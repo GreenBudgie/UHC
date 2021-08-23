@@ -6,6 +6,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import ru.UHC.WorldManager;
+import ru.lobby.sign.LobbySign;
+import ru.lobby.sign.SignManager;
 import ru.main.UHCPlugin;
 
 import java.io.File;
@@ -30,10 +32,11 @@ public class Lobby {
             toUpdate = true;
         }
         ConfigurationSection signsSection = lobbyConfig.getConfigurationSection("signs");
-        for(SignType type : SignType.values()) {
-            if(!signsSection.contains(type.name()) || signsSection.getStringList(type.name()).isEmpty()) {
-                UHCPlugin.warning("There are no locations declared for sign type " + type.name());
-                signsSection.set(type.name(), new ArrayList<>());
+        for(LobbySign lobbySign : SignManager.getSigns()) {
+            if(!signsSection.contains(lobbySign.getConfigName()) ||
+                    signsSection.getStringList(lobbySign.getConfigName()).isEmpty()) {
+                UHCPlugin.warning("There are no locations declared for sign type " + lobbySign.getConfigName());
+                signsSection.set(lobbySign.getConfigName(), new ArrayList<>());
                 toUpdate = true;
             }
         }
@@ -48,7 +51,7 @@ public class Lobby {
         Bukkit.getPluginManager().registerEvents(new LobbyTeamBuilder(), UHCPlugin.instance);
     }
 
-    protected static YamlConfiguration getLobbyConfig() {
+    public static YamlConfiguration getLobbyConfig() {
         return lobbyConfig;
     }
 

@@ -192,7 +192,7 @@ public abstract class CustomBlock implements Listener {
      * Returns whether this block represents the given real block
      */
     public boolean equals(Block block) {
-        return WorldHelper.compareLocations(block.getLocation(), location);
+        return WorldHelper.compareIntLocations(block.getLocation(), location);
     }
 
     @EventHandler
