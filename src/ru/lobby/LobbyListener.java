@@ -43,11 +43,6 @@ public class LobbyListener implements Listener {
         return Lobby.isInLobby(player);
     }
 
-    @EventHandler
-    public void mapInit(MapInitializeEvent e) {
-        UHCPlugin.log(e.getMap());
-    }
-
     @SuppressWarnings("deprecation")
     @EventHandler
     public void lobbyInvClick(InventoryClickEvent e) {

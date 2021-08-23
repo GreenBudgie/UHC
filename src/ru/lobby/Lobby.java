@@ -47,6 +47,7 @@ public class Lobby {
         }
         SignManager.init();
         LobbyGameManager.init();
+        LobbyMapPreview.init();
         Bukkit.getPluginManager().registerEvents(new LobbyListener(), UHCPlugin.instance);
         Bukkit.getPluginManager().registerEvents(new LobbyTeamBuilder(), UHCPlugin.instance);
     }

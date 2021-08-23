@@ -1,6 +1,7 @@
 package ru.UHC;
 
 import org.bukkit.*;
+import ru.lobby.LobbyMapPreview;
 import ru.lobby.sign.SignManager;
 import ru.main.UHCPlugin;
 import ru.util.TaskManager;
@@ -47,6 +48,8 @@ public class WorldManager {
 		setRules(map);
 		spawnLocation = map.getSpawnLocation().clone();
 		gameMap = map;
+		Bukkit.broadcastMessage(arrows + ChatColor.RESET + ChatColor.GRAY + " Генерация предпросмотра мира...");
+		LobbyMapPreview.setPreview();
 		Bukkit.broadcastMessage(arrows + ChatColor.RESET + ChatColor.DARK_RED + " Генерация ада...");
 		World nether = Bukkit.createWorld(new WorldCreator("CurrentMapNether").environment(World.Environment.NETHER));
 		setRules(nether);

@@ -15,9 +15,7 @@ public class LobbySignMapGenerate extends LobbySign {
 
     @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
-        if(!WorldManager.hasMap()) {
-            WorldManager.regenMap();
-        }
+        WorldManager.regenMap();
     }
 
     @Override

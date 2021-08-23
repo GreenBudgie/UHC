@@ -403,6 +403,14 @@ public class Region implements ConfigurationSerializable {
 	}
 
 	/**
+	 * Gets the length of the Y-Axis side, in other words the count of blocks at this side
+	 * @return Length of the Y-Axis side
+	 */
+	public int getYSideLength() {
+		return Math.abs(y2 - y1) + 1;
+	}
+
+	/**
 	 * Gets the length of the Z-Axis side, in other words the count of blocks at this side
 	 * @return Length of the Z-Axis side
 	 */
