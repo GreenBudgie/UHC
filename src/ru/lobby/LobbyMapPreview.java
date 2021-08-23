@@ -39,7 +39,7 @@ public class LobbyMapPreview {
             UHCPlugin.warning("Invalid map preview region notation");
             return;
         }
-        if(!previewRegion.isFlat()) {
+        if(previewRegion.is3D()) {
             UHCPlugin.warning("Map preview region is not a flat area");
             return;
         }
@@ -74,7 +74,14 @@ public class LobbyMapPreview {
         }
 
         Location worldCenter = WorldManager.getGameMap().getSpawnLocation();
-        int chunkSize = 128;
+
+        int maxLength = Math.max(xLength, yLength);
+        int chunksToShow = 12; //How many chunks in row to render on the entire preview
+        double chunksPerMap = chunksToShow / (double) maxLength;
+
+        double scaling = (1D / chunksPerMap) * 8;
+
+        int chunkSize = (int) Math.round(128 / scaling);
 
         for(int x = 0; x < xLength; x++) {
             for(int y = 0; y < yLength; y++) {
@@ -105,7 +112,7 @@ public class LobbyMapPreview {
                 int mapXShift = xSign * chunkSize * (x - xLength / 2);
                 int mapYShift = ySign * chunkSize * (y - yLength / 2);
                 Location currentMapCenterLocation = worldCenter.clone().add(mapXShift, 0, mapYShift);
-                ItemStack chunkMap = getMapWithRenderedRegion(currentMapCenterLocation);
+                ItemStack chunkMap = getMapWithRenderedRegion(currentMapCenterLocation, scaling);
                 itemFrame.setItem(chunkMap);
 
             }
@@ -125,12 +132,13 @@ public class LobbyMapPreview {
      * @param center The center of the region
      * @return Map item
      */
-    private static ItemStack getMapWithRenderedRegion(Location center) {
+    private static ItemStack getMapWithRenderedRegion(Location center, double scaling) {
+        double scalingShift = 64 / scaling;
         MapView view = Bukkit.createMap(center.getWorld());
         view.getRenderers().forEach(view::removeRenderer);
-        view.setCenterX(center.getBlockX() - 64);
-        view.setCenterZ(center.getBlockZ() - 64);
-        view.addRenderer(new CustomRenderer());
+        view.setCenterX((int) Math.round(center.getBlockX() - scalingShift));
+        view.setCenterZ((int) Math.round(center.getBlockZ() - scalingShift));
+        view.addRenderer(new CustomRenderer(scaling));
 
         ItemStack item = new ItemStack(Material.FILLED_MAP);
         MapMeta meta = (MapMeta) item.getItemMeta();
@@ -150,14 +158,25 @@ public class LobbyMapPreview {
     private static class CustomRenderer extends org.bukkit.map.MapRenderer {
 
         private boolean needToRender = true;
+        /**
+         * How many blocks to render per map pixel.
+         * Larger values make map
+         */
+        private double scaling;
+
+        protected CustomRenderer(double scaling) {
+            this.scaling = scaling;
+        }
 
         @Override
         public void render(MapView map, MapCanvas canvas, Player player) {
             if(needToRender) {
                 for(int x = 0; x < 128; x++) {
                     for(int z = 0; z < 128; z++) {
-                        int realX = x + map.getCenterX();
-                        int realZ = z + map.getCenterZ();
+                        double scaledX = x / scaling;
+                        double scaledZ = z / scaling;
+                        int realX = (int) Math.round(scaledX + map.getCenterX());
+                        int realZ = (int) Math.round(scaledZ + map.getCenterZ());
                         World world = map.getWorld();
                         if(world != null) {
                             Block block = world.getHighestBlockAt(realX, realZ);
@@ -167,7 +186,7 @@ public class LobbyMapPreview {
                                     NumberConversions.square(blockLocation.getX() - spawnLocation.getX()) +
                                     NumberConversions.square(blockLocation.getZ() - spawnLocation.getZ());
                             byte color;
-                            if(distanceToSpawnSq <= 16) {
+                            if(distanceToSpawnSq <= 16 / scaling) {
                                 color = MapPalette.matchColor(Color.RED);
                             } else {
                                 color = getBlockColor(block);
