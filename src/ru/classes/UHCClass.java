@@ -6,12 +6,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import ru.UHC.UHCPlayer;
 import ru.main.UHCPlugin;
 import ru.util.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public abstract class UHCClass implements Listener {
 
@@ -24,6 +24,8 @@ public abstract class UHCClass implements Listener {
     public abstract String[] getAdvantages();
     public abstract String[] getDisadvantages();
     public abstract Material getItemToShow();
+
+    public void onUpdate(UHCPlayer uhcPlayer) {}
 
     /**
      * Defines a list of items that will be given to a player as the game start
@@ -46,14 +48,14 @@ public abstract class UHCClass implements Listener {
                     ChatColor.DARK_RED + "" + ChatColor.BOLD + "- " +
                             ChatColor.RESET + ChatColor.RED + disadvantage);
         }
-        if(ClassManager.getClass(forPlayer) == this) {
+        if(ClassManager.getClassInLobby(forPlayer) == this) {
             ItemUtils.addGlow(item);
         }
         return item;
     }
 
     public final boolean hasClass(Player player) {
-        return this == ClassManager.getClass(player);
+        return this == ClassManager.getInGameClass(player);
     }
 
 }

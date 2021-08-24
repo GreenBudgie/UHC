@@ -9,6 +9,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import ru.UHC.PlayerManager;
+import ru.UHC.UHCPlayer;
+import ru.lobby.Lobby;
 import ru.main.UHCPlugin;
 import ru.util.ItemUtils;
 
@@ -22,7 +25,7 @@ public class ClassManager implements Listener {
 
     private static final String INV_NAME = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Классы";
     public static final List<UHCClass> classes = new ArrayList<>();
-    public static final Map<String, UHCClass> playerClasses = new HashMap<>();
+    public static final Map<String, UHCClass> lobbyPlayerClasses = new HashMap<>();
 
     public static final ClassArcher ARCHER = new ClassArcher();
 
@@ -31,25 +34,43 @@ public class ClassManager implements Listener {
     }
 
     /**
-     * Gets the player class
-     * @param player The player
-     * @return The player class, or null if he haven't chosen a class
+     * Gets the class that the current player uses in game
+     * @see UHCPlayer#getUHCClass()
+     * @return Player's class, or null if player is not playing or has no selected class
      */
-    @Nullable
-    public static UHCClass getClass(Player player) {
-        return playerClasses.get(player.getName());
+    public static UHCClass getInGameClass(Player player) {
+        UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
+        if(uhcPlayer == null) return null;
+        return uhcPlayer.getUHCClass();
     }
 
-    public static void setClass(Player player, UHCClass uhcClass) {
-        playerClasses.put(player.getName(), uhcClass);
+    /**
+     * Gets the player class that he has chosen in lobby
+     * @param player The player
+     * @return The player class, or null if he hasn't chosen a class
+     */
+    @Nullable
+    public static UHCClass getClassInLobby(Player player) {
+        return lobbyPlayerClasses.get(player.getName());
+    }
+
+    /**
+     * Selects the class while the player is in lobby
+     */
+    public static void selectClassInLobby(Player player, UHCClass uhcClass) {
+        if(!Lobby.isInLobby(player)) return;
+        lobbyPlayerClasses.put(player.getName(), uhcClass);
         player.sendMessage(
                 ChatColor.GRAY + "" + ChatColor.BOLD + "> " +
                 ChatColor.RESET + ChatColor.GREEN + "Установлен класс: " +
                 uhcClass.getName());
     }
 
-    public static void removeClass(Player player) {
-        playerClasses.remove(player.getName());
+    /**
+     * Removes the selected class from the player while he is in lobby
+     */
+    public static void removeClassInLobby(Player player) {
+        lobbyPlayerClasses.remove(player.getName());
         player.sendMessage(
                 ChatColor.GRAY + "" + ChatColor.BOLD + "> " +
                 ChatColor.RESET + ChatColor.DARK_GREEN + "Класс сброшен");
@@ -68,11 +89,13 @@ public class ClassManager implements Listener {
     @EventHandler
     public void invClick(InventoryClickEvent e) {
         if(e.getView().getTitle().equals(INV_NAME)) {
+            Player player = (Player) e.getWhoClicked();
+            if(!Lobby.isInLobby(player)) return;
             e.setCancelled(true);
             ItemStack item = e.getCurrentItem();
             if(item == null) return;
             if(item.getType() == Material.BARRIER) {
-                removeClass((Player) e.getWhoClicked());
+                removeClassInLobby(player);
                 e.getWhoClicked().closeInventory();
                 return;
             }
@@ -85,7 +108,7 @@ public class ClassManager implements Listener {
             }
             if(uhcClass != null) {
                 e.getWhoClicked().closeInventory();
-                setClass((Player) e.getWhoClicked(), uhcClass);
+                selectClassInLobby(player, uhcClass);
             }
         }
     }

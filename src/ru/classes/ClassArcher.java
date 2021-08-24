@@ -39,8 +39,7 @@ public class ClassArcher extends UHCClass implements Listener {
 
     @EventHandler
     public void bowShot(EntityShootBowEvent e) {
-        if(e.getEntity() instanceof Player && e.getBow() != null && e.getBow().getType() == Material.BOW) {
-            Player player = (Player) e.getEntity();
+        if(e.getEntity() instanceof Player player && e.getBow() != null && e.getBow().getType() == Material.BOW) {
             if(hasClass(player)) {
                 player.getWorld().playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1, 2);
                 ParticleUtils.createParticlesAround(player, Particle.SOUL_FIRE_FLAME, null, 10);

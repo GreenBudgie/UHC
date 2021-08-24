@@ -6,6 +6,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ru.classes.ClassManager;
 import ru.lobby.LobbyTeamBuilder;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
@@ -24,32 +25,33 @@ public class PlayerManager {
     private static final List<Player> spectators = new ArrayList<>();
 
     public static UHCPlayer registerPlayer(Player player) {
-        UHCPlayer uplayer = new UHCPlayer(player);
-        players.add(uplayer);
+        UHCPlayer uhcPlayer = new UHCPlayer(player);
+        players.add(uhcPlayer);
+        uhcPlayer.setUHCClass(ClassManager.getClassInLobby(player));
         GameSummary gameSummary = Rating.getCurrentGameSummary();
         PlayerSummary playerSummary = gameSummary.addPlayerSummary(player.getName());
-        uplayer.setSummary(playerSummary);
+        uhcPlayer.setSummary(playerSummary);
         if(UHC.isDuo) {
             Player teammate = LobbyTeamBuilder.getTeammate(player);
             if(teammate != null) {
-                UHCPlayer uteammate = asUHCPlayer(teammate);
-                if(uteammate != null) {
-                    uplayer.setTeammate(uteammate);
-                    uteammate.setTeammate(uplayer);
+                UHCPlayer uhcTeammate = asUHCPlayer(teammate);
+                if(uhcTeammate != null) {
+                    uhcPlayer.setTeammate(uhcTeammate);
+                    uhcTeammate.setTeammate(uhcPlayer);
                 }
                 PlayerTeam teammateTeam = getTeamWithMember(teammate);
                 if(teammateTeam == null) {
-                    teams.add(new PlayerTeam(uplayer));
+                    teams.add(new PlayerTeam(uhcPlayer));
                 } else {
-                    teammateTeam.addTeammate(uplayer);
+                    teammateTeam.addTeammate(uhcPlayer);
                 }
             } else {
-                teams.add(new PlayerTeam(uplayer));
+                teams.add(new PlayerTeam(uhcPlayer));
             }
         } else {
-            teams.add(new PlayerTeam(uplayer));
+            teams.add(new PlayerTeam(uhcPlayer));
         }
-        return uplayer;
+        return uhcPlayer;
     }
 
 

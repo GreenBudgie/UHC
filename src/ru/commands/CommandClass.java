@@ -9,14 +9,13 @@ import ru.UHC.GameState;
 import ru.UHC.UHC;
 import ru.classes.ClassManager;
 import ru.classes.UHCClass;
-import ru.util.ItemUtils;
 
 public class CommandClass implements CommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = (Player) sender;
 		if(UHC.state.isInGame() || UHC.state == GameState.DEATHMATCH) {
-			UHCClass playerClass = ClassManager.getClass(player);
+			UHCClass playerClass = ClassManager.getClassInLobby(player);
 			if(playerClass == null) {
 				player.sendMessage(
 						ChatColor.BOLD + "" + ChatColor.GRAY + "> " +

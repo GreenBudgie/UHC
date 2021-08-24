@@ -6,6 +6,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import ru.classes.UHCClass;
 import ru.lobby.Lobby;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
@@ -25,6 +26,7 @@ public class UHCPlayer {
     private ItemStack[] savedInventory = null;
     private UHCPlayer teammate = null;
     private PlayerSummary summary;
+    private UHCClass uhcClass;
 
     private UHCPlayer ghostKiller;
     private final int maxTimeToRejoin = 3 * 60;
@@ -119,6 +121,9 @@ public class UHCPlayer {
     }
 
     public void update() {
+        if(uhcClass != null) {
+            uhcClass.onUpdate(this);
+        }
         if(TaskManager.isSecUpdated()) {
             if(state == State.LEFT_AND_ALIVE) {
                 timeToRejoin--;
@@ -172,6 +177,14 @@ public class UHCPlayer {
         } else {
             deathWhileLeft();
         }
+    }
+
+    public UHCClass getUHCClass() {
+        return uhcClass;
+    }
+
+    public void setUHCClass(UHCClass uhcClass) {
+        this.uhcClass = uhcClass;
     }
 
     /**
