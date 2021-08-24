@@ -25,6 +25,10 @@ public abstract class UHCClass implements Listener {
     public abstract String[] getDisadvantages();
     public abstract Material getItemToShow();
 
+    public final String getConfigName() {
+        return this.getClass().getSimpleName();
+    }
+
     public void onUpdate(UHCPlayer uhcPlayer) {}
 
     /**
@@ -52,6 +56,10 @@ public abstract class UHCClass implements Listener {
             ItemUtils.addGlow(item);
         }
         return item;
+    }
+
+    public final String getTabPrefix() {
+        return ChatColor.DARK_GRAY + "[" + getName() + ChatColor.DARK_GRAY + "]";
     }
 
     public final boolean hasClass(Player player) {

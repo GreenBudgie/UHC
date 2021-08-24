@@ -14,7 +14,7 @@ public class ClassArcher extends UHCClass implements Listener {
 
     @Override
     public String getName() {
-        return ChatColor.DARK_PURPLE + "Лучник";
+        return ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Лучник";
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.UHC.PlayerOptionHolder;
 import ru.UHC.RecipeHandler;
 import ru.lobby.LobbyGameManager;
 import ru.lobby.sign.SignManager;
@@ -42,7 +43,6 @@ public class UHCPlugin extends JavaPlugin {
 		registerCommand("timer", new CommandTimer());
 		registerCommand("mutator", new CommandMutator());
 		registerCommand("optmutator", new CommandOptMutator());
-		registerCommand("options", new CommandOptions());
 		registerCommand("inv", new CommandInv());
 		registerCommand("class", new CommandClass());
 		registerCommand("teammate", new CommandTeammate());
@@ -84,6 +84,7 @@ public class UHCPlugin extends JavaPlugin {
 		if(!LobbyGameManager.PVP_ARENA.isOpen()) {
 			LobbyGameManager.PVP_ARENA.openArena();
 		}
+		PlayerOptionHolder.saveOptions();
 	}
 
 	/**

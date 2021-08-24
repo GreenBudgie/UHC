@@ -28,8 +28,8 @@ public class LobbySignTeammateSelect extends LobbySign {
 
     @Override
     public void updateText(Sign sign) {
-        sign.setLine(0, ChatColor.DARK_GRAY + "<" + ChatColor.LIGHT_PURPLE + "Выбрать");
-        sign.setLine(1, ChatColor.LIGHT_PURPLE + "тиммейта" + ChatColor.DARK_GRAY + ">");
+        sign.setLine(0, ChatColor.LIGHT_PURPLE + "Выбрать");
+        sign.setLine(1, ChatColor.LIGHT_PURPLE + "тиммейта");
         sign.setLine(2, ChatColor.GRAY + "/teammate");
     }
 

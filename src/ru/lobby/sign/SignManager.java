@@ -37,6 +37,7 @@ public class SignManager implements Listener {
 		new LobbySignClassSelect();
 		new LobbySignMutatorSelect();
 		new LobbySignMapPreview();
+		new LobbySignShowRating();
 	}
 
 	public static void init() {

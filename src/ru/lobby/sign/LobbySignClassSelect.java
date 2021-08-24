@@ -31,8 +31,8 @@ public class LobbySignClassSelect extends LobbySign {
 
     @Override
     public void updateText(Sign sign) {
-        sign.setLine(0, ChatColor.DARK_GRAY + "<" + ChatColor.DARK_GREEN + "Выбрать");
-        sign.setLine(1, ChatColor.DARK_GREEN + "класс" + ChatColor.DARK_GRAY + ">");
+        sign.setLine(0, ChatColor.DARK_GREEN + "Выбрать");
+        sign.setLine(1, ChatColor.DARK_GREEN + "класс");
         sign.setLine(2, ChatColor.GRAY + "/class");
     }
 

@@ -2,18 +2,21 @@ package ru.UHC;
 
 import com.google.common.collect.Lists;
 import org.bukkit.GameMode;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.classes.ClassManager;
 import ru.lobby.LobbyTeamBuilder;
+import ru.main.UHCPlugin;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
 import ru.rating.GameSummary;
 import ru.rating.PlayerSummary;
 import ru.rating.Rating;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -53,8 +56,6 @@ public class PlayerManager {
         }
         return uhcPlayer;
     }
-
-
 
     public static PlayerTeam getTeamWithMember(UHCPlayer player) {
         for(PlayerTeam team : teams) {

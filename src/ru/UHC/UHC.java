@@ -36,6 +36,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.*;
 import ru.artifact.ArtifactManager;
 import ru.block.CustomBlockManager;
+import ru.classes.ClassManager;
+import ru.classes.UHCClass;
 import ru.drop.Drop;
 import ru.drop.Drops;
 import ru.items.BlockHolder;
@@ -303,52 +305,58 @@ public class UHC implements Listener {
 		Objective teamInfo = board.getObjective("teamInfo");
 		if(teamInfo != null) teamInfo.unregister();
 		teamInfo = board.registerNewObjective("teamInfo", "dummy", getUHCLogo());
-		if(!isDuo) {
-			teamInfo.setDisplaySlot(null);
-			return;
-		} else {
-			teamInfo.setDisplaySlot(DisplaySlot.SIDEBAR);
-		}
-		List<Player> registered = new ArrayList<>();
+		teamInfo.setDisplaySlot(DisplaySlot.SIDEBAR);
 		int c = 0;
-		for(Player currentPlayer : WorldManager.getLobby().getPlayers()) {
-			Player currentTeammate = LobbyTeamBuilder.getTeammate(currentPlayer);
-			String s;
-			String currentPlayerName = (currentPlayer == player ? ChatColor.GREEN : ChatColor.GOLD) + currentPlayer.getName();
-			if(currentTeammate != null) {
-				if(registered.contains(currentTeammate)) continue;
-				String currentTeammateName = ((currentTeammate == player) ? ChatColor.GREEN : ChatColor.GOLD) + currentTeammate.getName();
-				registered.add(currentTeammate);
-				String finalString = ChatColor.DARK_GRAY + "- " + currentPlayerName + ChatColor.WHITE + " / " + currentTeammateName;
-				String[] trimmed = trimTeam(currentPlayerName, currentTeammateName, finalString.length(), 40);
-				currentPlayerName = trimmed[0];
-				currentTeammateName = trimmed[1];
-				s = ChatColor.DARK_GRAY + "- " + currentPlayerName + ChatColor.WHITE + " / " + currentTeammateName;
-			} else {
-				s = ChatColor.DARK_GRAY + "- " + currentPlayerName;
+		if(isDuo) {
+			List<Player> registered = new ArrayList<>();
+			for(Player currentPlayer : WorldManager.getLobby().getPlayers()) {
+				Player currentTeammate = LobbyTeamBuilder.getTeammate(currentPlayer);
+				String s;
+				String currentPlayerName = (currentPlayer == player ? ChatColor.GREEN : ChatColor.GOLD) + currentPlayer.getName();
+				if(currentTeammate != null) {
+					if(registered.contains(currentTeammate)) continue;
+					String currentTeammateName = ((currentTeammate == player) ? ChatColor.GREEN : ChatColor.GOLD) + currentTeammate.getName();
+					registered.add(currentTeammate);
+					String finalString = ChatColor.DARK_GRAY + "- " + currentPlayerName + ChatColor.WHITE + " / " + currentTeammateName;
+					String[] trimmed = trimTeam(currentPlayerName, currentTeammateName, finalString.length(), 40);
+					currentPlayerName = trimmed[0];
+					currentTeammateName = trimmed[1];
+					s = ChatColor.DARK_GRAY + "- " + currentPlayerName + ChatColor.WHITE + " / " + currentTeammateName;
+				} else {
+					s = ChatColor.DARK_GRAY + "- " + currentPlayerName;
+				}
+				Score team = teamInfo.getScore(s);
+				team.setScore(c);
+				c++;
+				registered.add(currentPlayer);
 			}
-			Score team = teamInfo.getScore(s);
-			team.setScore(c);
-			c++;
-			registered.add(currentPlayer);
+			int teamNumber = LobbyTeamBuilder.getTeamNumber();
+			String teamNumberText1 = new NumericalCases(
+					"Собрана",
+					"Собраны",
+					"Собрано").
+					byNumber(teamNumber);
+			String teamNumberText2 = new NumericalCases(
+					"команда",
+					"команды",
+					"команд").
+					byNumber(teamNumber);
+			Score teamNumberInfo = teamInfo.getScore(
+					ChatColor.GRAY + teamNumberText1 + " " +
+							ChatColor.DARK_AQUA + ChatColor.BOLD + teamNumber + " " +
+							ChatColor.GRAY + teamNumberText2 +
+							ChatColor.DARK_GRAY + ":");
+			teamNumberInfo.setScore(c++);
 		}
-		int teamNumber = LobbyTeamBuilder.getTeamNumber();
-		String teamNumberText1 = new NumericalCases(
-				"Собрана",
-				"Собраны",
-				"Собрано").
-				byNumber(teamNumber);
-		String teamNumberText2 = new NumericalCases(
-				"команда",
-				"команды",
-				"команд").
-				byNumber(teamNumber);
-		Score info = teamInfo.getScore(
-				ChatColor.GRAY + teamNumberText1 + " " +
-				ChatColor.DARK_AQUA + ChatColor.BOLD + teamNumber + " " +
-				ChatColor.GRAY + teamNumberText2 +
-				ChatColor.DARK_GRAY + ":");
-		info.setScore(c);
+
+		UHCClass selectedClass = ClassManager.getClassInLobby(player);
+		if(selectedClass != null) {
+			Score classInfo = teamInfo.getScore(
+						ChatColor.GRAY + "Класс" +
+							ChatColor.DARK_GRAY + ": " +
+							selectedClass.getName());
+			classInfo.setScore(c);
+		}
 	}
 
 	public static void endGame() {
@@ -360,8 +368,9 @@ public class UHC implements Listener {
 				inGamePlayer.setGameMode(GameMode.ADVENTURE);
 				inGamePlayer.teleport(WorldManager.getLobby().getSpawnLocation());
 			}
-			for(UHCPlayer uplayer : PlayerManager.getPlayers()) {
-				if(uplayer.getGhost() != null) uplayer.getGhost().remove();
+			for(UHCPlayer uhcPlayer : PlayerManager.getPlayers()) {
+				if(uhcPlayer.getGhost() != null) uhcPlayer.getGhost().remove();
+				uhcPlayer.removeTabPrefix();
 			}
 			CustomBlockManager.removeAllBlocks();
 			voteBar.removeAll();
@@ -1460,9 +1469,8 @@ public class UHC implements Listener {
 		e.setCancelled(true);
 		Player sender = e.getPlayer();
 		String mes = e.getMessage();
-		boolean onlyLocal = PlayerOptions.ONLY_LOCAL.isActive(sender) && PlayerManager.isInGame(sender);
-		boolean local = mes.startsWith(".") || onlyLocal;
-		if(local && !onlyLocal) mes = mes.substring(1);
+		boolean local = mes.startsWith(".");
+		if(local) mes = mes.substring(1);
 		String suffix = ChatColor.GOLD + sender.getName() + ChatColor.WHITE + ": " + mes;
 		String prefix = ChatColor.LIGHT_PURPLE + "<Локально> ";
 		for(Player receiver : Bukkit.getOnlinePlayers()) {
@@ -1568,6 +1576,7 @@ public class UHC implements Listener {
 			uplayer.rejoin(player);
 			refreshGameScoreboardLater();
 		} else {
+			player.setPlayerListFooter(null);
 			if(!isInLobby(player)) player.teleport(WorldManager.getLobby().getSpawnLocation());
 			player.setGameMode(GameMode.ADVENTURE);
 			resetPlayer(player);

@@ -45,9 +45,6 @@ commands:
  optmutator:
   description: Mutator debug
   usage: /optmutator <activate/deactivate/clear/new> [name]
- options:
-  description: Показать меню настроек
-  usage: /options
  inv:
   description: Показать инвентарь игрока; работает только с мутатором Всевидящий
   usage: /inv <ник>

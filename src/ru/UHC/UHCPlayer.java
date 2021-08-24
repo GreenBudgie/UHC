@@ -99,6 +99,7 @@ public class UHCPlayer {
         }
         if(state == State.LEFT_AND_ALIVE) {
             state = State.PLAYING;
+            setTabPrefix();
             for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
                 player.sendMessage(ChatColor.GOLD + nickname + ChatColor.DARK_GREEN + " вернулся в игру");
             }
@@ -117,6 +118,16 @@ public class UHCPlayer {
             for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
                 player.sendMessage(ChatColor.GOLD + nickname + ChatColor.DARK_GREEN + " вернулся в игру, к сожалению, мертвым");
             }
+        }
+    }
+
+    public void removeTabPrefix() {
+        player.setPlayerListName(null);
+    }
+
+    public void setTabPrefix() {
+        if(isAliveAndOnline() && uhcClass != null) {
+            player.setPlayerListName(uhcClass.getTabPrefix() + ChatColor.AQUA + " " + player.getName());
         }
     }
 
@@ -185,6 +196,11 @@ public class UHCPlayer {
 
     public void setUHCClass(UHCClass uhcClass) {
         this.uhcClass = uhcClass;
+        if(uhcClass != null) {
+            setTabPrefix();
+        } else {
+            removeTabPrefix();
+        }
     }
 
     /**
@@ -193,6 +209,7 @@ public class UHCPlayer {
     public void initiateDeath() {
         dropBonusItemOnDeath();
         showDeathMessage();
+        removeTabPrefix();
 
         //Update rating
         summary.setDeathState(UHC.state);

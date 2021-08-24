@@ -4,15 +4,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
-import ru.UHC.UHC;
-import ru.lobby.LobbyTeamBuilder;
 import ru.mutator.InventoryBuilderMutator;
+import ru.rating.InventoryBuilderRating;
 
-public class LobbySignMutatorSelect extends LobbySign {
+public class LobbySignShowRating extends LobbySign {
 
     @Override
     public String getConfigName() {
-        return "MUTATOR_SELECT";
+        return "SHOW_RATING";
     }
 
     @Override
@@ -27,15 +26,15 @@ public class LobbySignMutatorSelect extends LobbySign {
 
     @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
-        InventoryBuilderMutator builder = InventoryBuilderMutator.getBuilder(clicker);
-        builder.setOP(false);
+        InventoryBuilderRating builder = InventoryBuilderRating.getBuilder(clicker);
+        builder.setOp(false);
         builder.openInventory();
     }
 
     @Override
     public void updateText(Sign sign) {
-        sign.setLine(1, ChatColor.DARK_PURPLE + "Мутаторы");
-        sign.setLine(2, ChatColor.GRAY + "/mutator");
+        sign.setLine(1, ChatColor.DARK_AQUA + "Рейтинг");
+        sign.setLine(2, ChatColor.GRAY + "/rating");
     }
 
 }

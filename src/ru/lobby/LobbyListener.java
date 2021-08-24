@@ -11,7 +11,6 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -24,40 +23,19 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import ru.UHC.PlayerOptions;
-import ru.UHC.UHC;
 import ru.UHC.WorldManager;
-import ru.main.UHCPlugin;
 import ru.util.TaskManager;
 
 public class LobbyListener implements Listener {
 
     public static boolean isInLobby(Player player) {
         return Lobby.isInLobby(player);
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void lobbyInvClick(InventoryClickEvent e) {
-        Player clickedPlayer = (Player) e.getWhoClicked();
-        InventoryView view = e.getView();
-        Inventory inv = e.getInventory();
-        int slot = e.getRawSlot();
-        ItemStack item = e.getCurrentItem() == null ? new ItemStack(Material.AIR) : e.getCurrentItem();
-        if(view.getTitle().equals(PlayerOptions.invName) && e.getClickedInventory() == view.getTopInventory()) {
-            PlayerOptions option = PlayerOptions.values()[slot];
-            if(option != null) {
-                option.setActive(clickedPlayer, !option.isActive(clickedPlayer));
-                PlayerOptions.openInventory(clickedPlayer);
-            }
-        }
     }
 
     @EventHandler
