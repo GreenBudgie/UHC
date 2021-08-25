@@ -32,6 +32,10 @@ public abstract class Mutator {
 		return MutatorManager.preferredMutators.getOrDefault(name, new HashSet<>()).contains(this);
 	}
 
+	public String getConfigName() {
+		return this.getClass().getSimpleName();
+	}
+
 	public boolean isHidden() {
 		return isHidden;
 	}

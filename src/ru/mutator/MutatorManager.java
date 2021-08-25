@@ -11,9 +11,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.GameType;
+import ru.UHC.PlayerOptionHolder;
+import ru.UHC.UHC;
+import ru.classes.UHCClass;
+import ru.lobby.Lobby;
+import ru.main.UHCPlugin;
 import ru.util.InventoryHelper;
 import ru.util.ItemUtils;
 import ru.util.MathUtils;
@@ -80,6 +86,30 @@ public class MutatorManager {
 	public static MutatorOmniscient omniscient = new MutatorOmniscient();
 	public static MutatorVegetarian vegetarian = new MutatorVegetarian();
 	public static MutatorPhantomArtifacts artifacts = new MutatorPhantomArtifacts();
+
+	public static void init() {
+		Bukkit.getPluginManager().registerEvents(new Listener() {
+
+			@EventHandler
+			public void setPreferencesOnJoin(PlayerJoinEvent event) {
+				String playerName = event.getPlayer().getName();
+				restorePreferences(playerName);
+			}
+
+		}, UHCPlugin.instance);
+		for(Player player : Lobby.getLobby().getPlayers()) {
+			restorePreferences(player.getName());
+		}
+	}
+
+	private static void restorePreferences(String playerName) {
+		if(!preferredMutators.containsKey(playerName)) {
+			Set<Mutator> savedMutators = PlayerOptionHolder.getMutatorPreferences(playerName);
+			if(!savedMutators.isEmpty()) {
+				preferredMutators.put(playerName, savedMutators);
+			}
+		}
+	}
 
 	public static void updateMutators() {
 		List<Mutator> copy = Lists.newArrayList(activeMutators); //Prevents concurrent modifications
@@ -230,9 +260,12 @@ public class MutatorManager {
 		}
 		if(pref.isEmpty()) {
 			preferredMutators.remove(name);
+			PlayerOptionHolder.saveMutatorPreferences(name, null);
 		} else {
 			preferredMutators.put(name, pref);
+			PlayerOptionHolder.saveMutatorPreferences(name, pref);
 		}
+
 	}
 
 	public static void clearPreferences(String name) {
@@ -240,6 +273,13 @@ public class MutatorManager {
 		for(Mutator preferred : preferredSet) {
 			setPreference(name, preferred, false);
 		}
+	}
+
+	public static Mutator getMutatorByConfigName(String configName) {
+		for(Mutator mutator : mutators) {
+			if(mutator.getConfigName().equals(configName)) return mutator;
+		}
+		return null;
 	}
 
 }

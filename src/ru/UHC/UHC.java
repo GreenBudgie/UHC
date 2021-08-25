@@ -113,6 +113,7 @@ public class UHC implements Listener {
 		WorldManager.init();
 		RecipeHandler.init();
 		Lobby.init();
+		MutatorManager.init();
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			createLobbyScoreboard(p);
 		}
