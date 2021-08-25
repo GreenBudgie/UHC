@@ -32,11 +32,11 @@ public abstract class UHCClass implements Listener {
     public void onUpdate(UHCPlayer uhcPlayer) {}
 
     /**
-     * Defines a list of items that will be given to a player as the game start
+     * Defines an array of items that will be given to a player as the game starts
      * @return A list of items; might be empty
      */
-    public List<ItemStack> getStartItems() {
-        return new ArrayList<>();
+    public ItemStack[] getStartItems() {
+        return new ItemStack[0];
     }
 
     public ItemStack makeItemToShow(Player forPlayer) {

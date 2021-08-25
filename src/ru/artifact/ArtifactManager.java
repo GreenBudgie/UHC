@@ -16,6 +16,8 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
+import ru.UHC.WorldManager;
+import ru.classes.ClassManager;
 import ru.items.CustomItems;
 import ru.mutator.MutatorManager;
 import ru.util.InventoryHelper;
@@ -129,16 +131,21 @@ public class ArtifactManager implements Listener {
 	}
 
 	@EventHandler
-	public void drop(EntityDeathEvent e) {
-		Entity ent = e.getEntity();
-		int multiplier = MutatorManager.isActive(MutatorManager.doubleArtifacts) ? 2 : 1;
-		if(ent instanceof Monster || ent instanceof Slime || ent instanceof Shulker || ent instanceof Ghast || ent instanceof Phantom || ent instanceof Boss) {
-			if(!(ent instanceof Slime) || MathUtils.chance(20)) {
+	public void dropArtifact(EntityDeathEvent e) {
+		LivingEntity entity = e.getEntity();
+		if(entity.getKiller() != null) {
+			int multiplier = MutatorManager.isActive(MutatorManager.doubleArtifacts) ? 2 : 1;
+			if(entity instanceof Monster ||
+					entity instanceof Slime ||
+					entity instanceof Shulker ||
+					entity instanceof Ghast ||
+					entity instanceof Boss ||
+					entity instanceof Hoglin) {
+				if(entity instanceof Slime && !MathUtils.chance(20)) return;
+				if(ClassManager.getInGameClass(entity.getKiller()) == ClassManager.DEMON &&
+						entity.getWorld() == WorldManager.getGameMapNether()) return;
 				ItemStack item = CustomItems.darkArtifact.getItemStack();
 				item.setAmount(multiplier);
-				if(ent instanceof Ghast || ent instanceof WitherSkeleton || ent instanceof Blaze) {
-					item.setAmount(2 * multiplier);
-				}
 				e.getDrops().add(item);
 			}
 		}

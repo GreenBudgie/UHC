@@ -23,7 +23,7 @@ public class CustomItemInfernalLead extends RequesterCustomItem implements Block
 
 	@Override
 	public String getDescription() {
-		return "При установке показывает расположение ближайшей крепости в аду. Можно использовать неограниченное количество раз.";
+		return "При установке показывает расположение ближайшей крепости в аду. Можно использовать неограниченное количество раз, главное суметь его сломать.";
 	}
 
 	@Override
@@ -37,8 +37,9 @@ public class CustomItemInfernalLead extends RequesterCustomItem implements Block
 	}
 
 	@Override
-	public void placeBlock(Location location, Player owner) {
+	public boolean placeBlock(Location location, Player owner) {
 		new CustomBlockInfernalLead(location);
+		return true;
 	}
 
 	@Override

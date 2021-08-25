@@ -3,30 +3,24 @@ package ru.block;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.util.Vector;
-import ru.UHC.FightHelper;
-import ru.UHC.PlayerManager;
 import ru.items.CustomItem;
 import ru.items.CustomItems;
 import ru.util.ParticleUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-public class CustomBlockVanishingTotem extends CustomBlockTotem {
+public class CustomBlockPulsatingTotem extends CustomBlockTotem {
 
-    public CustomBlockVanishingTotem(Location location, Player owner) {
+    public CustomBlockPulsatingTotem(Location location, Player owner) {
         super(location, owner);
     }
 
     @Override
     public CustomItem getRepresentingItem() {
-        return CustomItems.vanishingTotem;
+        return CustomItems.pulsatingTotem;
     }
 
     @Override
@@ -43,10 +37,19 @@ public class CustomBlockVanishingTotem extends CustomBlockTotem {
         for(Projectile projectile : projectiles) {
             if(projectile.getShooter() instanceof Player shooter && isImmune(shooter)) continue;
             if(projectile.getLocation().distanceSquared(centerLocation) <= radiusSq) {
+
+                Location projectileLocation = projectile.getLocation();
+                Vector projectilePointer = new Vector(
+                        projectileLocation.getX() - centerLocation.getX(),
+                        projectileLocation.getY() - centerLocation.getY(),
+                        projectileLocation.getZ() - centerLocation.getZ());
+                projectilePointer.normalize();
+                projectilePointer.multiply(0.7);
+                projectile.setVelocity(projectilePointer);
+
                 ParticleUtils.createParticlesAround(projectile, Particle.SMOKE_LARGE, null, 4);
                 ParticleUtils.createLine(centerLocation, projectile.getLocation(), Particle.SMALL_FLAME, 3, null);
                 projectile.getWorld().playSound(projectile.getLocation(), Sound.ENTITY_PHANTOM_HURT, 1, 2);
-                projectile.remove();
             }
         }
         if(ticksPassed > 0 && ticksPassed % 30 == 0) {

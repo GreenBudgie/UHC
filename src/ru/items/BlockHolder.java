@@ -5,7 +5,10 @@ import org.bukkit.entity.Player;
 
 public interface BlockHolder {
 
-    void placeBlock(Location location, Player owner);
+    /**
+     * @return Whether the block is successfully placed
+     */
+    boolean placeBlock(Location location, Player owner);
     boolean canPlaceOnDeathmatch();
 
 }

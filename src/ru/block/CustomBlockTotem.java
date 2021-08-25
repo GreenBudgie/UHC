@@ -21,6 +21,7 @@ public abstract class CustomBlockTotem extends CustomBlockItem {
     public void onEffectStop() {}
 
     public boolean isImmune(Player player) {
+        if(!player.getWorld().getPVP()) return true;
         UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
         if(uhcPlayer == null) return false;
         UHCPlayer teammate = uhcPlayer.getTeammate();

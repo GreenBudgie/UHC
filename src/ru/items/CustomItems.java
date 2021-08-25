@@ -28,7 +28,8 @@ public class CustomItems {
 	public static CustomItemTerraDrill terraDrill = new CustomItemTerraDrill();
 	public static CustomItemInfernalLead infernalLead = new CustomItemInfernalLead();
 	public static CustomItemKnockoutTotem knockoutTotem = new CustomItemKnockoutTotem();
-	public static CustomItemVanishingTotem vanishingTotem = new CustomItemVanishingTotem();
+	public static CustomItemPulsatingTotem pulsatingTotem = new CustomItemPulsatingTotem();
+	public static CustomItemInfernalTotem infernalTotem = new CustomItemInfernalTotem();
 
 	public static void init() {
 		for(CustomItem item : items) {

@@ -31,7 +31,6 @@ public class ClassManager implements Listener {
     public static final List<UHCClass> classes = new ArrayList<>();
     public static final Map<String, UHCClass> lobbyPlayerClasses = new HashMap<>();
 
-    public static final ClassArcher ARCHER = new ClassArcher();
     public static final ClassDemon DEMON = new ClassDemon();
 
     public static void init() {

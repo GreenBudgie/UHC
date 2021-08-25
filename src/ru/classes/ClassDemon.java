@@ -2,9 +2,9 @@ package ru.classes;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Piglin;
-import org.bukkit.entity.PiglinBrute;
-import org.bukkit.entity.Player;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -14,7 +14,9 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.PlayerManager;
 import ru.UHC.WorldManager;
+import ru.items.CustomItems;
 import ru.util.MathUtils;
+import ru.util.ParticleUtils;
 
 public class ClassDemon extends UHCClass implements Listener {
 
@@ -27,7 +29,7 @@ public class ClassDemon extends UHCClass implements Listener {
     public String[] getAdvantages() {
         return new String[] {
                 "Урон от огня, магмы и лавы снижен в 2 раза",
-                "Пиглины дружелюбны",
+                "Пиглины дружелюбны (не распространяется на зомбифицированных и брутов)",
                 "С кварцевой руды падает редстоун, 1-2шт"
         };
     }
@@ -35,13 +37,21 @@ public class ClassDemon extends UHCClass implements Listener {
     @Override
     public String[] getDisadvantages() {
         return new String[] {
-                "Получаемый урон в обычном мире увеличен на 30% (кроме дезматча)"
+                "Получаемый урон в обычном мире увеличен на 30% (кроме дезматча)",
+                "Артефакты не выбиваются с адских мобов"
         };
     }
 
     @Override
+    public ItemStack[] getStartItems() {
+        ItemStack totem = CustomItems.infernalTotem.getItemStack();
+        totem.setAmount(3);
+        return new ItemStack[] {totem};
+    }
+
+    @Override
     public Material getItemToShow() {
-        return Material.CRYING_OBSIDIAN;
+        return Material.WEEPING_VINES;
     }
 
     @EventHandler
@@ -72,6 +82,7 @@ public class ClassDemon extends UHCClass implements Listener {
                 event.setDamage(event.getDamage() * 0.5);
             }
             if(player.getWorld() == WorldManager.getGameMap()) {
+                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_HURT, 0.8f, 0.5f);
                 event.setDamage(event.getDamage() * 1.3);
             }
         }

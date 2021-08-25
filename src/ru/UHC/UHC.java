@@ -417,6 +417,7 @@ public class UHC implements Listener {
 			map.setTime(0);
 			map.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
 			map.setGameRule(GameRule.DO_WEATHER_CYCLE, true);
+			WorldManager.getGameMapNether().setPVP(false);
 			Drops.firstSetup();
 
 			GameSummary summary = Rating.setupCurrentGameSummary();
@@ -835,6 +836,7 @@ public class UHC implements Listener {
 					state = GameState.GAME;
 					deathmatchTimer = 60 * getGameDuration();
 					WorldManager.getGameMap().setPVP(true);
+					WorldManager.getGameMapNether().setPVP(true);
 					for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 						p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1F, 0.5F);
 						p.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "ПВП " + ChatColor.GOLD + ChatColor.BOLD + "Включено" + ChatColor.GRAY + "!",
@@ -1211,6 +1213,12 @@ public class UHC implements Listener {
 			player.setNoDamageTicks(160);
 			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 160, 9, true, true, true));
 			Inventory inv = player.getInventory();
+			UHCClass uhcClass = ClassManager.getInGameClass(player);
+			if(uhcClass != null) {
+				for(ItemStack item : uhcClass.getStartItems()) {
+					inv.addItem(item);
+				}
+			}
 			for(Mutator inventoryMutator : MutatorManager.activeMutators) {
 				if(inventoryMutator instanceof ItemBasedMutator) {
 					inv.addItem(((ItemBasedMutator) inventoryMutator).getItemsToAdd().toArray(new ItemStack[0]));

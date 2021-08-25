@@ -70,8 +70,7 @@ public class CustomItemsListener implements Listener {
 						boolean isDeathmatch = UHC.state == GameState.DEATHMATCH;
 						boolean canPlaceNow = UHC.state.isInGame();
 						if(canPlaceNow || (isDeathmatch && holder.canPlaceOnDeathmatch() && pvpIsOn)) {
-							holder.placeBlock(e.getBlock().getLocation(), e.getPlayer());
-							toCancel = false;
+							toCancel = !holder.placeBlock(e.getBlock().getLocation(), e.getPlayer());
 						}
 						if(toCancel) e.setCancelled(true);
 					}

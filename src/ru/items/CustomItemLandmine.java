@@ -38,8 +38,9 @@ public class CustomItemLandmine extends RequesterCustomItem implements BlockHold
 	}
 
 	@Override
-	public void placeBlock(Location location, Player owner) {
+	public boolean placeBlock(Location location, Player owner) {
 		new CustomBlockLandmine(location, owner);
+		return true;
 	}
 
 	@Override

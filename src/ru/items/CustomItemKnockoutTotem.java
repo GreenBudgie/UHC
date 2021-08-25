@@ -19,7 +19,7 @@ public class CustomItemKnockoutTotem extends RequesterCustomItem implements Bloc
 
 	@Override
 	public String getDescription() {
-		return "Тотем отбрасывания. При установке разбрасывает в стороны всех живых существ и игроков, кроме тебя и тиммейта, в радиусе 6 блоков. Действует 30 секунд. Одноразовый.";
+		return "Тотем отбрасывания. При установке разбрасывает в стороны всех живых существ и игроков, кроме тебя и тиммейта, в радиусе 6 блоков. Действует 30 секунд. Одноразовый. Не работает до ПВП.";
 	}
 
 	@Override
@@ -33,8 +33,9 @@ public class CustomItemKnockoutTotem extends RequesterCustomItem implements Bloc
 	}
 
 	@Override
-	public void placeBlock(Location location, Player owner) {
+	public boolean placeBlock(Location location, Player owner) {
 		new CustomBlockKnockoutTotem(location, owner);
+		return true;
 	}
 
 	@Override
