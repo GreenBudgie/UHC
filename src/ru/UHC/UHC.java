@@ -369,6 +369,7 @@ public class UHC implements Listener {
 			Rating.getCurrentGameSummary().calculateAndSetDuration();
 			Rating.saveCurrentGameSummary();
 			for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+				inGamePlayer.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
 				resetPlayer(inGamePlayer);
 				inGamePlayer.setGameMode(GameMode.ADVENTURE);
 				inGamePlayer.teleport(WorldManager.getLobby().getSpawnLocation());
@@ -437,6 +438,9 @@ public class UHC implements Listener {
 			for(Player player : Bukkit.getOnlinePlayers()) {
 				LobbyGameManager.PVP_ARENA.onArenaLeave(player);
 				PlayerManager.registerPlayer(player);
+				if(ClassManager.getInGameClass(player) == ClassManager.NECROMANCER) {
+					player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(10);
+				}
 				resetPlayer(player);
 				player.setNoDamageTicks(600);
 				player.setGameMode(GameMode.ADVENTURE);
@@ -1286,8 +1290,7 @@ public class UHC implements Listener {
 	}
 
 	public static void heal(Player p) {
-		p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-		p.setHealth(20);
+		p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
 		p.setSaturation(20);
 		p.setExhaustion(20);
 		p.setFoodLevel(20);

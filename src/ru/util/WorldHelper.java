@@ -347,24 +347,30 @@ public class WorldHelper {
 		};
 	}
 
-	public static void chorusTeleport(LivingEntity e, int range) {
-		double x = e.getLocation().getX();
-		double y = e.getLocation().getY();
-		double z = e.getLocation().getZ();
+	public static void chorusTeleport(LivingEntity entity, int range, boolean playSound) {
+		double x = entity.getLocation().getX();
+		double y = entity.getLocation().getY();
+		double z = entity.getLocation().getZ();
 		Random rand = new Random();
 		for(int i = 0; i < range; ++i) {
 			double d3 = x + (rand.nextDouble() - 0.5D) * range;
-			double d4 = MathUtils.clamp(y + (double) (rand.nextInt(range) - (range / 2)), 0.0D, e.getWorld().getMaxHeight() - 1);
+			double d4 = MathUtils.clamp(y + (double) (rand.nextInt(range) - (range / 2)), 0.0D, entity.getWorld().getMaxHeight() - 1);
 			double d5 = z + (rand.nextDouble() - 0.5D) * range;
-			Location tpLoc = new Location(e.getWorld(), d3, d4, d5);
-			if(e.getWorld().getWorldBorder().isInside(tpLoc)) {
-				if(((CraftLivingEntity) e).getHandle().a(d3, d4, d5, false)) {
-					e.getWorld().playSound(e.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
-					e.getWorld().playSound(new Location(e.getWorld(), x, y, z), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
+			Location tpLoc = new Location(entity.getWorld(), d3, d4, d5);
+			if(entity.getWorld().getWorldBorder().isInside(tpLoc)) {
+				if(((CraftLivingEntity) entity).getHandle().a(d3, d4, d5, false)) {
+					if(playSound) {
+						entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
+						entity.getWorld().playSound(new Location(entity.getWorld(), x, y, z), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
+					}
 					break;
 				}
 			}
 		}
+	}
+
+	public static void chorusTeleport(LivingEntity e, int range) {
+		chorusTeleport(e, range, true);
 	}
 
 	public static boolean hasFullBlocksAbove(Location l) {

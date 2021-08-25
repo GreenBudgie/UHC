@@ -1,6 +1,8 @@
 package ru.UHC;
 
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -35,6 +37,7 @@ public class UHCPlayer {
     private int leavesRemaining = 3;
 
     private double offlineHealth;
+    private double maxOfflineHealth;
 
     public UHCPlayer(Player player) {
         this.player = player;
@@ -81,6 +84,7 @@ public class UHCPlayer {
                         timeToRejoin = maxTimeToRejoin;
                         state = State.LEFT_AND_ALIVE;
                         offlineHealth = player.getHealth();
+                        maxOfflineHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
                         createGhost();
                         saveInventory();
                     }
@@ -391,7 +395,7 @@ public class UHCPlayer {
     public void setOfflineHealth(double value) {
         if(state == State.LEFT_AND_ALIVE) {
             offlineHealth = value;
-            if(offlineHealth >= 20) offlineHealth = 20;
+            if(offlineHealth >= maxOfflineHealth) offlineHealth = maxOfflineHealth;
             if(offlineHealth <= 0) kill();
         }
     }

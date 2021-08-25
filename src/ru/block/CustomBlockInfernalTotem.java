@@ -6,6 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import ru.UHC.FightHelper;
 import ru.UHC.PlayerManager;
 import ru.items.CustomItem;
 import ru.items.CustomItems;
@@ -45,6 +46,9 @@ public class CustomBlockInfernalTotem extends CustomBlockTotem {
                     ParticleUtils.createParticlesAround(entity, Particle.SMOKE_LARGE, null, 10);
                     entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 0.6F);
                     entity.setFireTicks(Math.max(entity.getFireTicks(), 60));
+                    if(entity instanceof Player player) {
+                        FightHelper.setDamager(player, owner, 70, "убил тотемом");
+                    }
                 }
             }
         }

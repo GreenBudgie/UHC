@@ -18,7 +18,7 @@ import ru.items.CustomItems;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
 
-public class ClassDemon extends UHCClass implements Listener {
+public class ClassDemon extends UHCClass {
 
     @Override
     public String getName() {
@@ -29,7 +29,7 @@ public class ClassDemon extends UHCClass implements Listener {
     public String[] getAdvantages() {
         return new String[] {
                 "Урон от огня, магмы и лавы снижен в 2 раза",
-                "Пиглины дружелюбны (не распространяется на зомбифицированных и брутов)",
+                "Пиглины дружелюбны (не распространяется на зомби и брутов)",
                 "С кварцевой руды падает редстоун, 1-2шт"
         };
     }

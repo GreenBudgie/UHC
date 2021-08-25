@@ -32,6 +32,7 @@ public class ClassManager implements Listener {
     public static final Map<String, UHCClass> lobbyPlayerClasses = new HashMap<>();
 
     public static final ClassDemon DEMON = new ClassDemon();
+    public static final ClassNecromancer NECROMANCER = new ClassNecromancer();
 
     public static void init() {
         Bukkit.getPluginManager().registerEvents(new ClassManager(), UHCPlugin.instance);

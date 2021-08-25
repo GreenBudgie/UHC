@@ -64,7 +64,7 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
                 ParticleUtils.createParticlesAround(entity, Particle.SMOKE_LARGE, null, 5);
                 entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_FIRECHARGE_USE, 0.5F, 1.5F);
                 if(entity instanceof Player player) {
-                    FightHelper.setDamager(player, owner, 40, "убил тотемом");
+                    FightHelper.setDamager(player, owner, 70, "убил тотемом");
                 }
             }
             ParticleUtils.createParticlesOutlineSphere(centerLocation, getEffectRadius() / 3, Particle.SMOKE_LARGE, null, 20);

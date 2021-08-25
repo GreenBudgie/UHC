@@ -30,6 +30,7 @@ public class CustomItems {
 	public static CustomItemKnockoutTotem knockoutTotem = new CustomItemKnockoutTotem();
 	public static CustomItemPulsatingTotem pulsatingTotem = new CustomItemPulsatingTotem();
 	public static CustomItemInfernalTotem infernalTotem = new CustomItemInfernalTotem();
+	public static CustomItemUnderworldEgg underworldEgg = new CustomItemUnderworldEgg();
 
 	public static void init() {
 		for(CustomItem item : items) {
