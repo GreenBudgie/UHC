@@ -33,6 +33,11 @@ public class MutatorDangerWater extends Mutator {
 	}
 
 	@Override
+	public boolean conflictsWithClasses() {
+		return true;
+	}
+
+	@Override
 	public void update() {
 		for(Player p : PlayerManager.getAliveOnlinePlayers()) {
 			if(((CraftPlayer) p).getHandle().isInWater()) {

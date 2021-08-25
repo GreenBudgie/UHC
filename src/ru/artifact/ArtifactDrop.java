@@ -31,7 +31,7 @@ public class ArtifactDrop extends Artifact {
 	}
 
 	@Override
-	public void onUse(@Nullable Player player) {
+	public boolean onUse(@Nullable Player player) {
 		for(Drop drop : Drops.DROPS) {
 			drop.setLocation(drop.getRandomLocation());
 			drop.setTimer(drop.getTimer() / 3);
@@ -39,6 +39,7 @@ public class ArtifactDrop extends Artifact {
 		if(player != null) {
 			player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1.5F);
 		}
+		return true;
 	}
 
 	@Override

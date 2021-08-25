@@ -197,6 +197,7 @@ public class UHCPlayer {
     public void setUHCClass(UHCClass uhcClass) {
         this.uhcClass = uhcClass;
         if(uhcClass != null) {
+            summary.setUHCClass(uhcClass);
             setTabPrefix();
         } else {
             removeTabPrefix();

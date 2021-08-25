@@ -39,7 +39,7 @@ public class ArtifactHealth extends Artifact {
 	}
 
 	@Override
-	public void onUse(@Nullable Player player) {
+	public boolean onUse(@Nullable Player player) {
 		for(UHCPlayer uhcCurrentPlayer : PlayerManager.getAlivePlayers()) {
 			if(uhcCurrentPlayer.isOnline()) {
 				Player currentPlayer = uhcCurrentPlayer.getPlayer();
@@ -51,6 +51,7 @@ public class ArtifactHealth extends Artifact {
 				uhcCurrentPlayer.addOfflineHealth(4);
 			}
 		}
+		return true;
 	}
 
 	@Override

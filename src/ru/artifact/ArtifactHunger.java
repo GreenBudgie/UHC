@@ -32,7 +32,7 @@ public class ArtifactHunger extends Artifact {
 	}
 
 	@Override
-	public void onUse(@Nullable Player player) {
+	public boolean onUse(@Nullable Player player) {
 		for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
 			if(currentPlayer.getFoodLevel() > 2) {
 				if(currentPlayer.getSaturation() > 2) currentPlayer.setSaturation(2);
@@ -42,6 +42,7 @@ public class ArtifactHunger extends Artifact {
 		if(player != null) {
 			player.playSound(player.getLocation(), Sound.ENTITY_CAT_DEATH, 1F, 0.5F);
 		}
+		return true;
 	}
 
 	@Override

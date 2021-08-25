@@ -54,6 +54,10 @@ public abstract class Mutator {
 		return true;
 	}
 
+	public boolean conflictsWithClasses() {
+		return false;
+	}
+
 	public final void activate(boolean applyHiding, String preference) {
 		MutatorManager.activeMutators.add(this);
 		if(applyHiding) hide();

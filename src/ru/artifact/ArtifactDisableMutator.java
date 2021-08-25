@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import ru.UHC.GameType;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.mutator.Mutator;
@@ -37,7 +38,8 @@ public class ArtifactDisableMutator extends Artifact {
 	}
 
 	@Override
-	public void onUse(@Nullable Player player) {
+	public boolean onUse(@Nullable Player player) {
+		if(!GameType.getType().allowsMutators()) return false;
 		List<Mutator> mutators = MutatorManager.getMutatorsForDeactivation();
 		if(mutators.size() > 0) {
 			if(player != null) {
@@ -48,9 +50,9 @@ public class ArtifactDisableMutator extends Artifact {
 				currentPlayer.sendMessage(ChatColor.YELLOW + "Был деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + mutator.getName());
 			}
 			mutator.deactivate();
-		} else if(player != null) {
-			player.sendMessage(ChatColor.RED + "Невозможно деактивировать ни один мутатор!");
+			return true;
 		}
+		return false;
 	}
 
 	@Override

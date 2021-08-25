@@ -39,25 +39,32 @@ public abstract class Artifact {
 
 	public abstract float getPriceIncreaseAmount();
 
-	public abstract void onUse(@Nullable Player player);
+	public abstract boolean onUse(@Nullable Player player);
 
-	public void use(@Nullable Player player) {
+	public boolean use(@Nullable Player player) {
 		if(player != null) {
-			for(Player receiver : PlayerManager.getInGamePlayersAndSpectators()) {
-				receiver.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " призвал силу артефакта " + ChatColor.BOLD + ChatColor.DARK_RED + getName());
-				if(receiver != player) {
+			if(onUse(player)) {
+				for(Player receiver : PlayerManager.getInGamePlayersAndSpectators()) {
+					receiver.sendMessage(ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " призвал силу артефакта " + ChatColor.BOLD + ChatColor.DARK_RED + getName());
+					if(receiver != player) {
+						receiver.playSound(receiver.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 0.5F, 0.5F);
+					}
+				}
+				currentPrice += getPriceIncreaseAmount();
+				return true;
+			} else {
+				player.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Невозможно активировать этот артефакт!");
+			}
+		} else {
+			if(onUse(null)) {
+				for(Player receiver : PlayerManager.getInGamePlayersAndSpectators()) {
+					receiver.sendMessage(ChatColor.YELLOW + "Призвана сила артефакта " + ChatColor.BOLD + ChatColor.DARK_RED + getName());
 					receiver.playSound(receiver.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 0.5F, 0.5F);
 				}
+				return true;
 			}
-			onUse(player);
-			currentPrice += getPriceIncreaseAmount();
-		} else {
-			for(Player receiver : PlayerManager.getInGamePlayersAndSpectators()) {
-				receiver.sendMessage(ChatColor.YELLOW + "Призвана сила артефакта " + ChatColor.BOLD + ChatColor.DARK_RED + getName());
-				receiver.playSound(receiver.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 0.5F, 0.5F);
-			}
-			onUse(null);
 		}
+		return false;
 	}
 
 	public abstract Material getType();

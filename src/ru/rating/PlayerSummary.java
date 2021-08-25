@@ -5,7 +5,8 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.GameState;
 import ru.UHC.UHC;
-import ru.main.UHCPlugin;
+import ru.classes.ClassManager;
+import ru.classes.UHCClass;
 import ru.util.ItemUtils;
 
 import javax.annotation.Nullable;
@@ -22,6 +23,7 @@ public class PlayerSummary implements ConfigurationSerializable {
     private String killerName = null;
     private String teammateName = null;
     private GameState deathState = null;
+    private UHCClass uhcClass = null;
 
     /**
      * Game performance must be calculated once after all players are present in game summary
@@ -143,6 +145,7 @@ public class PlayerSummary implements ConfigurationSerializable {
         if(getKillerName() != null) serialized.put("killerName", getKillerName());
         if(getTeammateName() != null) serialized.put("teammateName", getTeammateName());
         if(getDeathState() != null) serialized.put("deathState", getDeathState().name());
+        if(getUHClass() != null) serialized.put("class", getUHClass().getConfigName());
         return serialized;
     }
 
@@ -158,6 +161,9 @@ public class PlayerSummary implements ConfigurationSerializable {
             summary.setTeammateName((String) input.get("teammateName"));
         if(input.containsKey("deathState"))
             summary.setDeathState(GameState.valueOf((String) input.get("deathState")));
+        if(input.containsKey("class")) {
+            summary.setUHCClass(ClassManager.getClassByConfigName((String) input.get("class")));
+        }
         return summary;
     }
 
@@ -173,11 +179,19 @@ public class PlayerSummary implements ConfigurationSerializable {
         if(getKillerName() != null) builder.withLore(formatKiller());
         builder.withLore(formatOverallKills(), formatGameKills(), formatDeathmatchKills());
         if(getDeathState() != null) builder.withLore(formatDeathState());
+        builder.withLore(formatUHCClass());
         representingItem = builder.build();
     }
 
     public ItemStack getRepresentingItem() {
         return representingItem;
+    }
+
+    public String formatUHCClass() {
+        if(uhcClass == null) {
+            return ChatColor.GRAY + "Играл без класса";
+        }
+        return ChatColor.GRAY + "Класс: " + uhcClass.getName();
     }
 
     public String formatPerformanceResult() {
@@ -242,6 +256,14 @@ public class PlayerSummary implements ConfigurationSerializable {
 
     public String formatTitle() {
         return ChatColor.GOLD + playerName;
+    }
+
+    public UHCClass getUHClass() {
+        return uhcClass;
+    }
+
+    public void setUHCClass(UHCClass uhcClass) {
+        this.uhcClass = uhcClass;
     }
 
     public String getPlayerName() {

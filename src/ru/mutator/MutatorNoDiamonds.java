@@ -19,6 +19,11 @@ public class MutatorNoDiamonds extends Mutator implements Listener {
 	}
 
 	@Override
+	public boolean conflictsWithClasses() {
+		return true;
+	}
+
+	@Override
 	public ThreatStatus getThreatStatus() {
 		return ThreatStatus.DANGEROUS;
 	}
@@ -31,11 +36,6 @@ public class MutatorNoDiamonds extends Mutator implements Listener {
 	@Override
 	public String getDescription() {
 		return "С алмазной руды теперь будет падать земля вместо алмазов";
-	}
-
-	@Override
-	public boolean conflictsWith(Mutator another) {
-		return another == MutatorManager.invalidDrop;
 	}
 
 	@EventHandler

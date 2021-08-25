@@ -48,14 +48,13 @@ public class WorldManager {
 		setRules(map);
 		spawnLocation = map.getSpawnLocation().clone();
 		gameMap = map;
-		Bukkit.broadcastMessage(arrows + ChatColor.RESET + ChatColor.GRAY + " Генерация предпросмотра мира...");
-		LobbyMapPreview.setPreview();
 		Bukkit.broadcastMessage(arrows + ChatColor.RESET + ChatColor.DARK_RED + " Генерация ада...");
 		World nether = Bukkit.createWorld(new WorldCreator("CurrentMapNether").environment(World.Environment.NETHER));
 		setRules(nether);
 		gameMapNether = nether;
 		Bukkit.broadcastMessage(arrows + ChatColor.RESET + ChatColor.GRAY + " Копирование арены...");
 		ArenaManager.setupCurrentArena();
+		LobbyMapPreview.setPreview();
 		Bukkit.broadcastMessage(arrows + ChatColor.DARK_GREEN + "" + ChatColor.BOLD + " Новый мир создан!");
 		TaskManager.asyncInvokeLater(() -> UHC.generating = false, 20);
 		return map;

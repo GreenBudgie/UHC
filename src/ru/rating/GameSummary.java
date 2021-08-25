@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.GameState;
+import ru.UHC.GameType;
 import ru.util.ItemUtils;
 import ru.util.MathUtils;
 import ru.util.NumericalCases;
@@ -20,6 +21,7 @@ public class GameSummary implements ConfigurationSerializable {
     private boolean isRatingGame = false;
     private boolean isDuo = false;
     private int durationMinutes = 0;
+    private GameType type = null;
     private List<PlayerSummary> playerSummaries = new ArrayList<>();
 
     @Override
@@ -29,6 +31,7 @@ public class GameSummary implements ConfigurationSerializable {
         serialized.put("isRatingGame", isRatingGame());
         serialized.put("isDuo", isDuo());
         serialized.put("durationMinutes", getDurationMinutes());
+        if(getType() != null) serialized.put("type", getType().name());
         List<Map<String, Object>> summaries = new ArrayList<>();
         for(PlayerSummary summary : getPlayerSummaries()) {
             summaries.add(summary.serialize());
@@ -44,6 +47,13 @@ public class GameSummary implements ConfigurationSerializable {
         summary.setRatingGame((boolean) input.getOrDefault("isRatingGame", false));
         summary.setDuo((boolean) input.getOrDefault("isDuo", false));
         summary.setDurationMinutes((int) input.getOrDefault("durationMinutes", 0));
+        if(input.containsKey("type")) {
+            try {
+                GameType gameType = GameType.valueOf((String) input.get("type"));
+                summary.setType(gameType);
+            } catch(Exception ignored) {
+            }
+        }
         List<Map<?, ?>> summaries = (List<Map<?, ?>>) input.getOrDefault("players", new ArrayList<>());
         for(Map<?, ?> serializedSummary : summaries) {
             summary.getPlayerSummaries().add(PlayerSummary.deserialize(summary, (Map<String, Object>) serializedSummary));
@@ -62,6 +72,7 @@ public class GameSummary implements ConfigurationSerializable {
         summary.setDuo(Math.random() < 0.5);
         summary.setRatingGame(Math.random() < 0.5);
         summary.setDurationMinutes(MathUtils.randomRange(20, 80));
+        summary.setType(MathUtils.choose(GameType.values()));
         int playerNumber = MathUtils.randomRange(minPlayers, maxPlayers);
         List<String> realPlayerNames = Lists.newArrayList(
                 "Forest_engine",
@@ -121,17 +132,30 @@ public class GameSummary implements ConfigurationSerializable {
         }
     }
 
+    public GameType getType() {
+        return type;
+    }
+
+    public void setType(GameType type) {
+        this.type = type;
+    }
+
     public ItemStack getRepresentingItem() {
-        return ItemUtils.builder(Material.WRITABLE_BOOK).
+        ItemUtils.Builder builder = ItemUtils.builder(Material.WRITABLE_BOOK).
                 withName(formatTitle()).
-                withLore(
-                        formatIsRatingGame(),
-                        formatWinners(),
+                withLore(formatIsRatingGame(), formatWinners());
+        if(getType() != null) builder.withLore(formatType());
+        return builder.withLore(
                         formatIsDuo(),
                         formatDuration(),
                         formatPlayerNumber()).
                 withValue("date", String.valueOf(getDate().getTime())).
                 build();
+    }
+
+    public String formatType() {
+        if(getType() == null) return "";
+        return ChatColor.GRAY + "Тип игры: " + getType().getDescription();
     }
 
     public String formatPlayerNumber() {

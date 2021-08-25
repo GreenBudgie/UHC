@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import ru.UHC.GameType;
 import ru.UHC.UHC;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
@@ -37,14 +38,14 @@ public class ArtifactRandom extends Artifact {
 	}
 
 	@Override
-	public void onUse(@Nullable Player player) {
+	public boolean onUse(@Nullable Player player) {
 		List<Artifact> toAdd = Lists.newArrayList(ArtifactManager.timeLeap, ArtifactManager.drop, ArtifactManager.teleport, ArtifactManager.time,
 				ArtifactManager.hunger);
 		toAdd.add(MathUtils.choose(ArtifactManager.health, ArtifactManager.damage));
 		boolean canAddMutator = false;
 		boolean canRemoveMutator = false;
-		if(MutatorManager.activeMutators.size() < 6) canAddMutator = true;
-		if(MutatorManager.getMutatorsForDeactivation().size() > 0) canRemoveMutator = true;
+		if(MutatorManager.activeMutators.size() < 6 && GameType.getType().allowsMutators()) canAddMutator = true;
+		if(MutatorManager.getMutatorsForDeactivation().size() > 0 && GameType.getType().allowsMutators()) canRemoveMutator = true;
 		if(canAddMutator && canRemoveMutator) {
 			toAdd.add(MathUtils.choose(ArtifactManager.mutator, ArtifactManager.disableMutator));
 		} else {
@@ -61,6 +62,7 @@ public class ArtifactRandom extends Artifact {
 		if(player != null) {
 			player.sendMessage(ChatColor.YELLOW + "Были активированы артефакты: " + addedInfo);
 		}
+		return true;
 	}
 
 	@Override

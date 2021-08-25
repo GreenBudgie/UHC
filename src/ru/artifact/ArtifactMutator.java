@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import ru.UHC.GameType;
 import ru.mutator.MutatorManager;
 
 import javax.annotation.Nullable;
@@ -31,13 +32,14 @@ public class ArtifactMutator extends Artifact {
 	}
 
 	@Override
-	public void onUse(@Nullable Player player) {
+	public boolean onUse(@Nullable Player player) {
+		if(!GameType.getType().allowsMutators()) return false;
 		if(MutatorManager.activeMutators.size() < 6) {
 			if(player != null) player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.8F, 1F);
 			MutatorManager.activateRandomArtifactMutator();
-		} else if(player != null) {
-			player.sendMessage(ChatColor.RED + "Мутатор не был активирован!");
+			return true;
 		}
+		return false;
 	}
 
 	@Override

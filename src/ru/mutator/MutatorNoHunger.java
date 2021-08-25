@@ -30,6 +30,11 @@ public class MutatorNoHunger extends Mutator implements Listener {
 	}
 
 	@Override
+	public boolean conflictsWithClasses() {
+		return true;
+	}
+
+	@Override
 	public String getDescription() {
 		return "Голод не тратится";
 	}

@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import ru.UHC.GameType;
 import ru.util.InventoryHelper;
 import ru.util.ItemUtils;
 import ru.util.MathUtils;
@@ -58,7 +59,6 @@ public class MutatorManager {
 	public static MutatorInvisible invisible = new MutatorInvisible();
 	public static MutatorElytra elytra = new MutatorElytra();
 	public static MutatorGoodDeath goodDeath = new MutatorGoodDeath();
-	public static MutatorInvalidDrop invalidDrop = new MutatorInvalidDrop();
 	public static MutatorJump jump = new MutatorJump();
 	public static MutatorUnexpectedRequests unexpectedRequests = new MutatorUnexpectedRequests();
 	public static MutatorDirtIsLava dirtIsLava = new MutatorDirtIsLava();
@@ -143,6 +143,7 @@ public class MutatorManager {
 		List<Mutator> availableMutators = Lists.newArrayList(mutators);
 		availableMutators.removeAll(activeMutators);
 		availableMutators.removeIf(MutatorManager::doesMutatorConflictsWithActive);
+		if(GameType.getType().allowsClasses()) availableMutators.removeIf(Mutator::conflictsWithClasses);
 		return availableMutators;
 	}
 
@@ -196,7 +197,7 @@ public class MutatorManager {
 	}
 
 	public static Mutator activateRandomArtifactMutator() {
-		List<Mutator> artifactMutators = getNonConflictingInactiveMutators().stream().filter(Mutator::canBeAddedFromArtifact).collect(Collectors.toList());
+		List<Mutator> artifactMutators = getNonConflictingInactiveMutators().stream().filter(Mutator::canBeAddedFromArtifact).toList();
 		Mutator mutator = MathUtils.choose(artifactMutators);
 		mutator.activate(false, null);
 		return mutator;

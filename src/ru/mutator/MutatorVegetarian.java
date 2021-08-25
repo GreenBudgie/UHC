@@ -50,6 +50,11 @@ public class MutatorVegetarian extends Mutator implements Listener {
 	}
 
 	@Override
+	public boolean conflictsWithClasses() {
+		return true;
+	}
+
+	@Override
 	public String getName() {
 		return "Вегетарианец";
 	}

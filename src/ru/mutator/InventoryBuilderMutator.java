@@ -204,6 +204,8 @@ public class InventoryBuilderMutator {
 								ChatColor.BOLD + percent + ChatColor.RESET + ChatColor.GRAY + "%");
 			}
 		}
+		if(mutator.conflictsWithClasses())
+			ItemUtils.addLore(item, ChatColor.DARK_RED + "" + ChatColor.BOLD + "Недоступен при игре с классами");
 		return item;
 	}
 

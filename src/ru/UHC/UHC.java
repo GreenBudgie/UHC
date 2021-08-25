@@ -105,6 +105,10 @@ public class UHC implements Listener {
 	private static final int DEATHMATCH_TIME_UNTIL_ZONE_SHRINK = 3 * 60; //3 minutes
 	private static final int DEATHMATCH_ZONE_SHRINK_DURATION = 2 * 60; //2 minutes
 
+	private static final int PREPARING_MAX_TIME_WITH_MUTATORS = 35;
+	private static final int PREPARING_MAX_TIME_NO_MUTATORS = 15;
+	private static int preparingMaxTime;
+
 	public static void init() {
 		WorldManager.init();
 		RecipeHandler.init();
@@ -403,7 +407,11 @@ public class UHC implements Listener {
 			}
 			reduceTimeOnFewTeams = true;
 			resetAllAdvancements();
-			mutatorCount = MathUtils.chance(30) ? 4 : (MathUtils.chance(65) ? 3 : 2);
+			if(GameType.getType().allowsMutators()) {
+				mutatorCount = MathUtils.chance(30) ? 4 : (MathUtils.chance(65) ? 3 : 2);
+			} else {
+				mutatorCount = 0;
+			}
 			voteResults.clear();
 			for(Player player : Bukkit.getOnlinePlayers()) {
 				InventoryHelper.sendActionBarMessage(player,
@@ -423,6 +431,7 @@ public class UHC implements Listener {
 			GameSummary summary = Rating.setupCurrentGameSummary();
 			summary.setRatingGame(isRatingGame);
 			summary.setDuo(isDuo);
+			summary.setType(GameType.getType());
 
 			for(Player player : Bukkit.getOnlinePlayers()) {
 				LobbyGameManager.PVP_ARENA.onArenaLeave(player);
@@ -567,14 +576,21 @@ public class UHC implements Listener {
 			progress = 0.5;
 		}
 		if(progress >= 0.6) {
+			if(GameType.getType().allowsMutators()) {
+				preparingTimer = PREPARING_MAX_TIME_WITH_MUTATORS;
+			} else {
+				preparingTimer = PREPARING_MAX_TIME_NO_MUTATORS;
+			}
+			preparingMaxTime = preparingTimer;
 			for(Player p : PlayerManager.getAliveOnlinePlayers()) {
 				p.sendTitle(ChatColor.GREEN + "Карта " + ChatColor.DARK_GREEN + ChatColor.BOLD + "Норм",
-						ChatColor.GOLD + "35 секунд до начала", 10, 60, 30);
+						ChatColor.DARK_AQUA + "" + ChatColor.BOLD + preparingTimer +
+								ChatColor.GOLD + " секунд до начала",
+						10, 60, 30);
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
 				p.getInventory().clear();
 			}
 			state = GameState.PREPARING;
-			preparingTimer = 35;
 		} else {
 			for(Player p : PlayerManager.getAliveOnlinePlayers()) {
 				p.sendTitle(ChatColor.RED + "Карта " + ChatColor.DARK_RED + ChatColor.BOLD + "Говно" + ChatColor.GRAY + "!",
@@ -683,9 +699,10 @@ public class UHC implements Listener {
 		if(state == GameState.PREPARING) {
 			if(TaskManager.isSecUpdated()) {
 				preparingTimer--;
-				if(preparingTimer == 30) {
+				if(preparingTimer == preparingMaxTime - 5) {
 					for(Player p : PlayerManager.getAliveOnlinePlayers()) {
-						p.sendTitle(getUHCLogo() + ChatColor.DARK_GRAY + " aka " + ChatColor.GOLD + "Битва Инвалидов", "", 5, 100, 0);
+						p.sendTitle(getUHCLogo() + ChatColor.DARK_GRAY + " aka " + ChatColor.GOLD + "Битва Инвалидов",
+								ChatColor.DARK_GRAY + "v3.0", 5, 100, 20);
 						p.sendMessage(
 								ChatColor.GRAY + "-------- " + getUHCLogo() + ChatColor.DARK_GRAY + " aka " + ChatColor.GOLD + "Битва Инвалидов" + ChatColor.GRAY
 										+ " --------");
@@ -715,111 +732,113 @@ public class UHC implements Listener {
 				}
 				timerInfo = ChatColor.GOLD + "Подготовка" + ChatColor.GRAY + ": " + ChatColor.AQUA + ChatColor.BOLD + preparingTimer;
 			}
-			if(preparingTimer == 26) {
-				if(TaskManager.tick == 0) {
-					for(Player p : PlayerManager.getAliveOnlinePlayers()) {
-						p.sendTitle(ChatColor.GOLD + "Выбираем мутаторы", ChatColor.AQUA + "Количество" + ChatColor.GRAY + ": " +
-										ChatColor.DARK_AQUA + ChatColor.BOLD + 0,
-								10, 200, 0);
-					}
-				}
-				if(TaskManager.tick == 10) {
-					mutatorInvPreEffect(0, false);
-				}
-			}
-			if(preparingTimer == 25) {
-				if(TaskManager.tick == 0) {
-					mutatorInvPreEffect(1, false);
-				}
-				if(TaskManager.tick == 10) {
-					mutatorInvPreEffect(2, false);
-				}
-			}
-			if(preparingTimer == 24) {
-				if(TaskManager.tick == 0) {
-					mutatorInvPreEffect(3, false);
-				}
-			}
-			if(preparingTimer == 23) {
-				if(TaskManager.tick == 0) {
-					mutatorInvPreEffect(0, true);
-				}
-				if(TaskManager.tick == 10) {
-					mutatorInvPreEffect(1, true);
-				}
-			}
-			if(preparingTimer == 22) {
-				if(TaskManager.tick == 0) {
-					mutatorInvPreEffect(2, true);
-				}
-				if(TaskManager.tick == 10) {
-					mutatorInvPreEffect(3, true);
-				}
-			}
-			//Choosing mutator PHASE 1
-			if(preparingTimer == 20 || preparingTimer == 19) {
-				if(TaskManager.tick % 4 == 0) {
-					mutatorInvSwitchEffect(0, 20);
-				}
-			}
-			if(preparingTimer == 18 && TaskManager.tick == 0) {
-				mutatorInvSelect(0);
-			}
-			if(preparingTimer <= 17) {
-				if(mutatorCount >= 2) {
-					//Choosing mutator PHASE 2
-					if(preparingTimer == 17 || preparingTimer == 16) {
-						if(TaskManager.tick % 4 == 0) {
-							mutatorInvSwitchEffect(1, 17);
+			if(mutatorCount > 0) {
+				if(preparingTimer == 26) {
+					if(TaskManager.tick == 0) {
+						for(Player p : PlayerManager.getAliveOnlinePlayers()) {
+							p.sendTitle(ChatColor.GOLD + "Выбираем мутаторы", ChatColor.AQUA + "Количество" + ChatColor.GRAY + ": " +
+											ChatColor.DARK_AQUA + ChatColor.BOLD + 0,
+									10, 200, 0);
 						}
 					}
-					if(preparingTimer == 15 && TaskManager.tick == 0) {
-						mutatorInvSelect(1);
+					if(TaskManager.tick == 10) {
+						mutatorInvPreEffect(0, false);
 					}
-					if(preparingTimer <= 14) {
-						if(mutatorCount >= 3) {
-							//Choosing mutator PHASE 3
-							if(preparingTimer == 14 || preparingTimer == 13) {
-								if(TaskManager.tick % 4 == 0) {
-									mutatorInvSwitchEffect(2, 14);
+				}
+				if(preparingTimer == 25) {
+					if(TaskManager.tick == 0) {
+						mutatorInvPreEffect(1, false);
+					}
+					if(TaskManager.tick == 10) {
+						mutatorInvPreEffect(2, false);
+					}
+				}
+				if(preparingTimer == 24) {
+					if(TaskManager.tick == 0) {
+						mutatorInvPreEffect(3, false);
+					}
+				}
+				if(preparingTimer == 23) {
+					if(TaskManager.tick == 0) {
+						mutatorInvPreEffect(0, true);
+					}
+					if(TaskManager.tick == 10) {
+						mutatorInvPreEffect(1, true);
+					}
+				}
+				if(preparingTimer == 22) {
+					if(TaskManager.tick == 0) {
+						mutatorInvPreEffect(2, true);
+					}
+					if(TaskManager.tick == 10) {
+						mutatorInvPreEffect(3, true);
+					}
+				}
+				//Choosing mutator PHASE 1
+				if(preparingTimer == 20 || preparingTimer == 19) {
+					if(TaskManager.tick % 4 == 0) {
+						mutatorInvSwitchEffect(0, 20);
+					}
+				}
+				if(preparingTimer == 18 && TaskManager.tick == 0) {
+					mutatorInvSelect(0);
+				}
+				if(preparingTimer <= 17) {
+					if(mutatorCount >= 2) {
+						//Choosing mutator PHASE 2
+						if(preparingTimer == 17 || preparingTimer == 16) {
+							if(TaskManager.tick % 4 == 0) {
+								mutatorInvSwitchEffect(1, 17);
+							}
+						}
+						if(preparingTimer == 15 && TaskManager.tick == 0) {
+							mutatorInvSelect(1);
+						}
+						if(preparingTimer <= 14) {
+							if(mutatorCount >= 3) {
+								//Choosing mutator PHASE 3
+								if(preparingTimer == 14 || preparingTimer == 13) {
+									if(TaskManager.tick % 4 == 0) {
+										mutatorInvSwitchEffect(2, 14);
+									}
 								}
-							}
-							if(preparingTimer == 12 && TaskManager.tick == 0) {
-								mutatorInvSelect(2);
-							}
-							if(preparingTimer <= 11) {
-								if(mutatorCount == 4) {
-									//Choosing mutator PHASE 4
-									if(preparingTimer == 11 || preparingTimer == 10) {
-										if(TaskManager.tick % 4 == 0) {
-											mutatorInvSwitchEffect(3, 11);
+								if(preparingTimer == 12 && TaskManager.tick == 0) {
+									mutatorInvSelect(2);
+								}
+								if(preparingTimer <= 11) {
+									if(mutatorCount == 4) {
+										//Choosing mutator PHASE 4
+										if(preparingTimer == 11 || preparingTimer == 10) {
+											if(TaskManager.tick % 4 == 0) {
+												mutatorInvSwitchEffect(3, 11);
+											}
+										}
+										if(preparingTimer == 9 && TaskManager.tick == 0) {
+											mutatorInvSelect(3);
+										}
+										//End of PHASE 4
+										if(preparingTimer == 8 && TaskManager.tick == 0) {
+											mutatorInvEnd();
+										}
+									} else {
+										//End of PHASE 3
+										if(preparingTimer == 11 && TaskManager.tick == 0) {
+											mutatorInvEnd();
 										}
 									}
-									if(preparingTimer == 9 && TaskManager.tick == 0) {
-										mutatorInvSelect(3);
-									}
-									//End of PHASE 4
-									if(preparingTimer == 8 && TaskManager.tick == 0) {
-										mutatorInvEnd();
-									}
-								} else {
-									//End of PHASE 3
-									if(preparingTimer == 11 && TaskManager.tick == 0) {
-										mutatorInvEnd();
-									}
+								}
+							} else {
+								//End of PHASE 2
+								if(preparingTimer == 14 && TaskManager.tick == 0) {
+									mutatorInvEnd();
 								}
 							}
-						} else {
-							//End of PHASE 2
-							if(preparingTimer == 14 && TaskManager.tick == 0) {
-								mutatorInvEnd();
-							}
 						}
-					}
-				} else {
-					//End of PHASE 1
-					if(preparingTimer == 17 && TaskManager.tick == 0) {
-						mutatorInvEnd();
+					} else {
+						//End of PHASE 1
+						if(preparingTimer == 17 && TaskManager.tick == 0) {
+							mutatorInvEnd();
+						}
 					}
 				}
 			}

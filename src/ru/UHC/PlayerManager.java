@@ -30,10 +30,12 @@ public class PlayerManager {
     public static UHCPlayer registerPlayer(Player player) {
         UHCPlayer uhcPlayer = new UHCPlayer(player);
         players.add(uhcPlayer);
-        uhcPlayer.setUHCClass(ClassManager.getClassInLobby(player));
         GameSummary gameSummary = Rating.getCurrentGameSummary();
         PlayerSummary playerSummary = gameSummary.addPlayerSummary(player.getName());
         uhcPlayer.setSummary(playerSummary);
+        if(GameType.getType().allowsClasses()) {
+            uhcPlayer.setUHCClass(ClassManager.getClassInLobby(player));
+        }
         if(UHC.isDuo) {
             Player teammate = LobbyTeamBuilder.getTeammate(player);
             if(teammate != null) {

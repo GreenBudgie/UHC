@@ -39,4 +39,9 @@ public class MutatorLessHealth extends Mutator {
 		return false;
 	}
 
+	@Override
+	public boolean conflictsWithClasses() {
+		return true;
+	}
+
 }

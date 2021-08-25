@@ -32,13 +32,14 @@ public class ArtifactTimeLeap extends Artifact {
 	}
 
 	@Override
-	public void onUse(@Nullable Player player) {
+	public boolean onUse(@Nullable Player player) {
 		if(MutatorManager.isActive(MutatorManager.eternalNight) || MutatorManager.isActive(MutatorManager.eternalDay)) {
-			if(player != null) player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 0.5F, 0.5F);
+			return false;
 		} else {
 			WorldManager.getGameMap().setTime(WorldManager.getGameMap().getTime() + 12000);
 			if(player != null) player.playSound(player.getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 1F, 0.8F);
 		}
+		return true;
 	}
 
 	@Override

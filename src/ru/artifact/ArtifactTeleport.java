@@ -33,7 +33,7 @@ public class ArtifactTeleport extends Artifact {
 	}
 
 	@Override
-	public void onUse(@Nullable Player player) {
+	public boolean onUse(@Nullable Player player) {
 		for(UHCPlayer uhcCurrentPlayer : PlayerManager.getAlivePlayers()) {
 			if(uhcCurrentPlayer.isOnline()) {
 				WorldHelper.chorusTeleport(uhcCurrentPlayer.getPlayer(), 80);
@@ -43,6 +43,7 @@ public class ArtifactTeleport extends Artifact {
 				}
 			}
 		}
+		return true;
 	}
 
 	@Override

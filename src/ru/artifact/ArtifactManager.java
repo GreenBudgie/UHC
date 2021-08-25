@@ -105,18 +105,21 @@ public class ArtifactManager implements Listener {
 					for(Artifact artifact : artifacts) {
 						if(artifact.getType() == item.getType()) {
 							if(getArtifactCount(p) >= artifact.getCurrentPrice()) {
-								artifact.use(p);
-								//Reopening other players' inventories to reset prices
-								for(Player player : PlayerManager.getAliveOnlinePlayers()) {
-									if(player != p) {
-										InventoryView openInv = player.getOpenInventory();
-										if(openInv.getTitle().startsWith(inventoryName)) {
-											player.closeInventory();
-											openArtifactInventory(player);
+								if(artifact.use(p)) {
+									//Reopening other players' inventories to reset prices
+									for(Player player : PlayerManager.getAliveOnlinePlayers()) {
+										if(player != p) {
+											InventoryView openInv = player.getOpenInventory();
+											if(openInv.getTitle().startsWith(inventoryName)) {
+												player.closeInventory();
+												openArtifactInventory(player);
+											}
 										}
 									}
+									removeArtifacts(p, artifact.getCurrentPrice());
+								} else {
+									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
 								}
-								removeArtifacts(p, artifact.getCurrentPrice());
 								p.closeInventory();
 								break;
 							} else {
