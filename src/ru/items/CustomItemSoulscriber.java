@@ -1,8 +1,10 @@
 package ru.items;
 
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import ru.UHC.PlayerManager;
@@ -25,25 +27,23 @@ public class CustomItemSoulscriber extends RequesterCustomItem implements Listen
 		return false;
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void attack(EntityDamageByEntityEvent e) {
-		if(e.getEntity() instanceof Player && e.getDamager() instanceof Player && !e.isCancelled() && e.getFinalDamage() > 0) {
-			Player attacker = (Player) e.getDamager();
-			int hp = MathUtils.randomRange(0, 3);
-			if(hp > 0 && attacker.getHealth() < 20 && isEquals(attacker.getInventory().getItemInMainHand())) {
-				Player victim = (Player) e.getEntity();
-				if(!PlayerManager.isTeammates(victim, attacker)) {
-					attacker.setHealth(MathUtils.clamp(attacker.getHealth() + hp, 0, 20));
-					victim.getWorld().playSound(victim.getLocation(), Sound.ITEM_HOE_TILL, 1, 0.5F);
-					ParticleUtils.createParticlesAround(victim, Particle.REDSTONE, Color.fromRGB(80, 0, 0), 15);
-				}
+		if(e.getEntity() instanceof Player victim && e.getDamager() instanceof Player attacker &&
+				!e.isCancelled() && e.getFinalDamage() > 0 && isEquals(attacker.getInventory().getItemInMainHand())) {
+			double regenHp = e.getFinalDamage() * 0.2;
+			double maxHp = attacker.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+			if(!PlayerManager.isTeammates(victim, attacker)) {
+				attacker.setHealth(MathUtils.clamp(attacker.getHealth() + regenHp, 0, maxHp));
+				victim.getWorld().playSound(victim.getLocation(), Sound.ITEM_HOE_TILL, 1, 0.5F);
+				ParticleUtils.createParticlesAround(victim, Particle.REDSTONE, Color.fromRGB(80, 0, 0), 15);
 			}
 		}
 	}
 
 	@Override
 	public String getDescription() {
-		return "При атаке противника пополняет тебе 0-3 хп";
+		return "При атаке противника регенерирует тебе 20% здоровья от нанесенного урона";
 	}
 
 	@Override
