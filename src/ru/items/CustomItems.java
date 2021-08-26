@@ -31,6 +31,7 @@ public class CustomItems {
 	public static CustomItemPulsatingTotem pulsatingTotem = new CustomItemPulsatingTotem();
 	public static CustomItemInfernalTotem infernalTotem = new CustomItemInfernalTotem();
 	public static CustomItemUnderworldEgg underworldEgg = new CustomItemUnderworldEgg();
+	public static CustomItemTerraTracer terraTracer = new CustomItemTerraTracer();
 
 	public static void init() {
 		for(CustomItem item : items) {

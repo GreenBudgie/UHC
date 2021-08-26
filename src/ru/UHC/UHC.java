@@ -437,10 +437,7 @@ public class UHC implements Listener {
 
 			for(Player player : Bukkit.getOnlinePlayers()) {
 				LobbyGameManager.PVP_ARENA.onArenaLeave(player);
-				PlayerManager.registerPlayer(player);
-				if(ClassManager.getInGameClass(player) == ClassManager.NECROMANCER) {
-					player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(10);
-				}
+				UHCPlayer uhcPlayer = PlayerManager.registerPlayer(player);
 				resetPlayer(player);
 				player.setNoDamageTicks(600);
 				player.setGameMode(GameMode.ADVENTURE);
@@ -448,6 +445,10 @@ public class UHC implements Listener {
 						ChatColor.GREEN + "Карта " + ChatColor.DARK_GREEN + ChatColor.BOLD + "Норм"));
 				player.getInventory().setItem(5, InventoryHelper.generateItemWithName(Material.RED_DYE,
 						ChatColor.RED + "Карта " + ChatColor.DARK_RED + ChatColor.BOLD + "Говно"));
+				UHCClass playerClass = uhcPlayer.getUHCClass();
+				if(playerClass != null) {
+					playerClass.onGameInit(uhcPlayer);
+				}
 			}
 			double radius = PlayerManager.getPlayers().size();
 			double radsPerPlayer = 2 * Math.PI / PlayerManager.getPlayers().size();
@@ -1239,6 +1240,10 @@ public class UHC implements Listener {
 			Inventory inv = player.getInventory();
 			UHCClass uhcClass = ClassManager.getInGameClass(player);
 			if(uhcClass != null) {
+				UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
+				if(uhcPlayer != null && uhcPlayer.isAliveAndOnline()) {
+					uhcClass.onGameStart(uhcPlayer);
+				}
 				for(ItemStack item : uhcClass.getStartItems()) {
 					inv.addItem(item);
 				}

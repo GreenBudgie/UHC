@@ -32,6 +32,18 @@ public abstract class UHCClass implements Listener {
     public void onUpdate(UHCPlayer uhcPlayer) {}
 
     /**
+     * Called when the player is released from the platform
+     * This method assumes that the given player has the current class
+     */
+    public void onGameStart(UHCPlayer uhcPlayer) {}
+
+    /**
+     * Called when the player is about to teleport to the game world
+     * This method assumes that the given player has the current class
+     */
+    public void onGameInit(UHCPlayer uhcPlayer) {}
+
+    /**
      * Defines an array of items that will be given to a player as the game starts
      * @return A list of items; might be empty
      */

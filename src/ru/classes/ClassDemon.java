@@ -30,15 +30,16 @@ public class ClassDemon extends UHCClass {
         return new String[] {
                 "Урон от огня, магмы и лавы снижен в 2 раза",
                 "Пиглины дружелюбны (не распространяется на зомби и брутов)",
-                "С кварцевой руды падает редстоун, 1-2шт"
+                "С кварцевой руды падает редстоун, 1-2шт",
+                "Предмет: тотем, поджигающий существ вокруг"
         };
     }
 
     @Override
     public String[] getDisadvantages() {
         return new String[] {
-                "Получаемый урон в обычном мире увеличен на 30% (кроме дезматча)",
-                "Артефакты не выбиваются с адских мобов"
+                "Получаемый урон в обычном мире увеличен на 25% (кроме дезматча)",
+                "Артефакты не выбиваются в аду"
         };
     }
 
@@ -83,7 +84,7 @@ public class ClassDemon extends UHCClass {
             }
             if(player.getWorld() == WorldManager.getGameMap()) {
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_HURT, 0.8f, 0.5f);
-                event.setDamage(event.getDamage() * 1.3);
+                event.setDamage(event.getDamage() * 1.25);
             }
         }
     }

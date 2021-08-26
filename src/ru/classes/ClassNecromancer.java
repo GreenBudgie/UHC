@@ -34,7 +34,8 @@ public class ClassNecromancer extends UHCClass {
         return new String[] {
                 "При убийстве игрока максимально возможное количество здоровья увеличивается на 2 сердца",
                 "При убийстве игрока регенерируется 1 сердце",
-                "При убийстве любого моба или игрока ненадолго получает эффект поглощения урона"
+                "При убийстве любого моба или игрока ненадолго получает эффект поглощения урона",
+                "Предмет: яйцо для призыва армии зомби и скелетов, атакующих врагов"
         };
     }
 
@@ -43,6 +44,11 @@ public class ClassNecromancer extends UHCClass {
         return new String[] {
                 "В начале игры максимальное количество здоровья ограничено в 5 сердец"
         };
+    }
+
+    @Override
+    public void onGameInit(UHCPlayer uhcPlayer) {
+        uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(10);
     }
 
     @Override
