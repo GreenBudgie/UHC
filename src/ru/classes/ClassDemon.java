@@ -1,24 +1,31 @@
 package ru.classes;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.PlayerManager;
+import ru.UHC.UHCPlayer;
 import ru.UHC.WorldManager;
 import ru.items.CustomItems;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
 
-public class ClassDemon extends UHCClass {
+import java.util.HashMap;
+import java.util.Map;
+
+public class ClassDemon extends BarHolderUHCClass {
+
+    private final Map<UHCPlayer, Double> soulFlame = new HashMap<>(); //From 0 to 1
+    private final double soulFlameBurn = 1 / 6D; //How much soul flame progress to burn per hit
 
     @Override
     public String getName() {
@@ -31,6 +38,7 @@ public class ClassDemon extends UHCClass {
                 "Урон от огня, магмы и лавы снижен в 2 раза",
                 "Пиглины дружелюбны (не распространяется на зомби и брутов)",
                 "С кварцевой руды падает редстоун, 1-2шт",
+                "Шкала Soul Flame, наполняется при получении уроня от огня. Когда тебя атакуют, тратится одно деление шкалы и нападающий поджигается.",
                 "Предмет: тотем, поджигающий существ вокруг"
         };
     }
@@ -43,6 +51,17 @@ public class ClassDemon extends UHCClass {
         };
     }
 
+    /**
+     * Gets the player soul flame value, or 0 if not found
+     */
+    private double getSoulFlame(UHCPlayer uhcPlayer) {
+        return soulFlame.getOrDefault(uhcPlayer, 0D);
+    }
+
+    private void setSoulFlame(UHCPlayer uhcPlayer, double flame) {
+        soulFlame.put(uhcPlayer, flame);
+    }
+
     @Override
     public ItemStack[] getStartItems() {
         ItemStack totem = CustomItems.infernalTotem.getItemStack();
@@ -53,6 +72,47 @@ public class ClassDemon extends UHCClass {
     @Override
     public Material getItemToShow() {
         return Material.WEEPING_VINES;
+    }
+
+    @Override
+    public void onGameStart(UHCPlayer uhcPlayer) {
+        super.onGameStart(uhcPlayer);
+        if(uhcPlayer.isAliveAndOnline()) {
+            updateSoulFlame(uhcPlayer, 0);
+        }
+    }
+
+    private void updateSoulFlame(UHCPlayer uhcPlayer, double previousValue) {
+        BossBar bar = getBar(uhcPlayer);
+        if(uhcPlayer.isAliveAndOnline() && bar != null) {
+            double currentValue = getSoulFlame(uhcPlayer);
+            for(double i = 0; i <= 1; i += soulFlameBurn) {
+                if(currentValue >= i && previousValue < i) {
+                    ParticleUtils.createParticlesOutlineSphere(uhcPlayer.getLocation(), 2.5, Particle.FLAME, null, 50);
+                    uhcPlayer.getLocation().getWorld().playSound(uhcPlayer.getLocation(), Sound.ITEM_TOTEM_USE, 0.7f, 1.7F);
+                    break;
+                }
+            }
+            bar.setProgress(currentValue);
+            int usesRemaining = (int) ((1 / soulFlameBurn) * currentValue);
+            bar.setTitle(getBarName() + ChatColor.GRAY + " x" + ChatColor.GOLD + ChatColor.BOLD + usesRemaining);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void burnAttacker(EntityDamageByEntityEvent event) {
+        if(!event.isCancelled() && event.getEntity() instanceof Player victim && event.getDamager() instanceof Player attacker && hasClass(victim)) {
+            UHCPlayer uhcVictim = PlayerManager.asUHCPlayer(victim);
+            double flame = getSoulFlame(uhcVictim);
+            if(uhcVictim != null && attacker.getFireTicks() == 0 & flame >= soulFlameBurn) {
+                ParticleUtils.createParticlesAround(victim, Particle.FLAME, null, 10);
+                ParticleUtils.createParticlesAround(attacker, Particle.FLAME, null, 10);
+                attacker.getWorld().playSound(attacker.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1);
+                attacker.setFireTicks(60 + (int) (flame * 80));
+                setSoulFlame(uhcVictim, MathUtils.clamp(flame - soulFlameBurn, 0, 1));
+                updateSoulFlame(uhcVictim, flame);
+            }
+        }
     }
 
     @EventHandler
@@ -73,13 +133,17 @@ public class ClassDemon extends UHCClass {
         }
     }
 
+    private boolean isFireDamage(EntityDamageEvent.DamageCause cause) {
+        return cause == EntityDamageEvent.DamageCause.FIRE ||
+                cause == EntityDamageEvent.DamageCause.FIRE_TICK ||
+                cause == EntityDamageEvent.DamageCause.LAVA ||
+                cause == EntityDamageEvent.DamageCause.HOT_FLOOR;
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void damage(EntityDamageEvent event) {
-        if(event.getEntity() instanceof Player player && hasClass(player)) {
-            if(event.getCause() == EntityDamageEvent.DamageCause.FIRE ||
-                    event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK ||
-                    event.getCause() == EntityDamageEvent.DamageCause.LAVA ||
-                    event.getCause() == EntityDamageEvent.DamageCause.HOT_FLOOR) {
+        if(!event.isCancelled() && event.getEntity() instanceof Player player && hasClass(player)) {
+            if(isFireDamage(event.getCause())) {
                 event.setDamage(event.getDamage() * 0.5);
             }
             if(player.getWorld() == WorldManager.getGameMap()) {
@@ -87,6 +151,34 @@ public class ClassDemon extends UHCClass {
                 event.setDamage(event.getDamage() * 1.25);
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void damageMonitor(EntityDamageEvent event) {
+        if(!event.isCancelled() && event.getEntity() instanceof Player player && hasClass(player)) {
+            UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
+            if(uhcPlayer != null && isFireDamage(event.getCause())) {
+                double finalDamage = event.getFinalDamage();
+                double currentFlame = getSoulFlame(uhcPlayer);
+                setSoulFlame(uhcPlayer, MathUtils.clamp(currentFlame + finalDamage / 20, 0, 1));
+                updateSoulFlame(uhcPlayer, currentFlame);
+            }
+        }
+    }
+
+    @Override
+    public String getBarName() {
+        return ChatColor.DARK_RED + "" + ChatColor.BOLD + "Soul Flame";
+    }
+
+    @Override
+    public BarStyle getBarStyle() {
+        return BarStyle.SEGMENTED_6;
+    }
+
+    @Override
+    public BarColor getBarColor() {
+        return BarColor.RED;
     }
 
 }

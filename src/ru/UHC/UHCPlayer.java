@@ -85,6 +85,9 @@ public class UHCPlayer {
                         state = State.LEFT_AND_ALIVE;
                         offlineHealth = player.getHealth();
                         maxOfflineHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+                        if(uhcClass != null) {
+                            uhcClass.onPlayerLeave(this);
+                        }
                         createGhost();
                         saveInventory();
                     }
@@ -110,6 +113,9 @@ public class UHCPlayer {
             player.setHealth(offlineHealth);
             for(Mutator mutator : MutatorManager.activeMutators) {
                 mutator.onPlayerRejoin(player);
+            }
+            if(uhcClass != null) {
+                uhcClass.onPlayerRejoin(this);
             }
             String timesLeft = new NumericalCases("раз", "раза", "раз").byNumber(leavesRemaining);
             player.sendMessage(ChatColor.GRAY + "- " +
@@ -215,6 +221,10 @@ public class UHCPlayer {
         dropBonusItemOnDeath();
         showDeathMessage();
         removeTabPrefix();
+
+        if(uhcClass != null) {
+            uhcClass.onPlayerDeath(this);
+        }
 
         //Update rating
         summary.setDeathState(UHC.state);

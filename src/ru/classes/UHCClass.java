@@ -32,16 +32,55 @@ public abstract class UHCClass implements Listener {
     public void onUpdate(UHCPlayer uhcPlayer) {}
 
     /**
+     * Called when players are released from the platform
+     * Called only once for this class
+     */
+    public void onGameStart() {}
+
+    /**
+     * Called when players are about to teleport to the game world
+     * Called only once for this class
+     */
+    public void onGameInit() {}
+
+    /**
+     * Called when players are about to teleport to lobby when the game ends
+     * Called only once for each class
+     */
+    public void onGameEnd() {}
+
+    /**
+     * Called when player is about to teleport to lobby when the game ends
+     * Called for each player several times
+     */
+    public void onGameEnd(UHCPlayer uhcPlayer) {}
+
+    /**
      * Called when the player is released from the platform
-     * This method assumes that the given player has the current class
+     * Called for each player several times
      */
     public void onGameStart(UHCPlayer uhcPlayer) {}
 
     /**
      * Called when the player is about to teleport to the game world
-     * This method assumes that the given player has the current class
+     * Called for each player several times
      */
     public void onGameInit(UHCPlayer uhcPlayer) {}
+
+    /**
+     * Called when player leaves the game with the current class
+     */
+    public void onPlayerLeave(UHCPlayer uhcPlayer) {}
+
+    /**
+     * Called when player rejoins the game after being offline
+     */
+    public void onPlayerRejoin(UHCPlayer uhcPlayer) {}
+
+    /**
+     * Called when player dies (online or offline) with the current class
+     */
+    public void onPlayerDeath(UHCPlayer uhcPlayer) {}
 
     /**
      * Defines an array of items that will be given to a player as the game starts

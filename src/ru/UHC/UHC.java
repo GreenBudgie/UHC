@@ -374,9 +374,15 @@ public class UHC implements Listener {
 				inGamePlayer.setGameMode(GameMode.ADVENTURE);
 				inGamePlayer.teleport(WorldManager.getLobby().getSpawnLocation());
 			}
+			for(UHCClass currentClass : ClassManager.classes) {
+				currentClass.onGameEnd();
+			}
 			for(UHCPlayer uhcPlayer : PlayerManager.getPlayers()) {
 				if(uhcPlayer.getGhost() != null) uhcPlayer.getGhost().remove();
 				uhcPlayer.removeTabPrefix();
+				if(uhcPlayer.getUHCClass() != null) {
+					uhcPlayer.getUHCClass().onGameEnd(uhcPlayer);
+				}
 			}
 			CustomBlockManager.removeAllBlocks();
 			voteBar.removeAll();
@@ -435,6 +441,10 @@ public class UHC implements Listener {
 			summary.setRatingGame(isRatingGame);
 			summary.setDuo(isDuo);
 			summary.setType(GameType.getType());
+
+			for(UHCClass currentClass : ClassManager.classes) {
+				currentClass.onGameInit();
+			}
 
 			for(Player player : Bukkit.getOnlinePlayers()) {
 				LobbyGameManager.PVP_ARENA.onArenaLeave(player);
@@ -1240,6 +1250,9 @@ public class UHC implements Listener {
 			player.setNoDamageTicks(160);
 			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 160, 9, true, true, true));
 			Inventory inv = player.getInventory();
+			for(UHCClass currentClass : ClassManager.classes) {
+				currentClass.onGameStart();
+			}
 			UHCClass uhcClass = ClassManager.getInGameClass(player);
 			if(uhcClass != null) {
 				UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
