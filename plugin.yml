@@ -54,3 +54,7 @@ commands:
  teammate:
   description: Формирование команды для игры в режиме дуо
   usage: /teammate <request/accept/decline/leave> [player]
+ worldtime:
+  description: Set the time in the current world
+  usage: /worldtime <day/night/noon/midnight/[number]>
+  aliases: [wt]

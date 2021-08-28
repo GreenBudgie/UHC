@@ -37,8 +37,8 @@ public class ClassDemon extends BarHolderUHCClass {
         return new String[] {
                 "Урон от огня, магмы и лавы снижен в 2 раза",
                 "Пиглины дружелюбны (не распространяется на зомби и брутов)",
-                "С кварцевой руды падает редстоун, 1-2шт",
-                "Шкала Soul Flame, наполняется при получении уроня от огня. Когда тебя атакуют, тратится одно деление шкалы и нападающий поджигается.",
+                "С кварцевой руды падает редстоун",
+                "Шкала Soul Flame, наполняется при получении урона от огня. Когда тебя атакуют, тратится одно деление шкалы и нападающий поджигается",
                 "Предмет: тотем, поджигающий существ вокруг"
         };
     }
@@ -84,7 +84,7 @@ public class ClassDemon extends BarHolderUHCClass {
 
     @Override
     public void onPlayerRejoin(UHCPlayer uhcPlayer) {
-        super.onGameEnd(uhcPlayer);
+        super.onPlayerRejoin(uhcPlayer);
         if(uhcPlayer.getPlayer() != null) {
             updateSoulFlame(uhcPlayer, getSoulFlame(uhcPlayer));
         }
