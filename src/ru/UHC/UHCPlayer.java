@@ -10,6 +10,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.classes.UHCClass;
 import ru.lobby.Lobby;
+import ru.main.UHCPlugin;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
 import ru.rating.PlayerSummary;

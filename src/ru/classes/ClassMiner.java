@@ -2,29 +2,43 @@ package ru.classes;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Piglin;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.GameState;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.UHC.UHCPlayer;
-import ru.UHC.WorldManager;
 import ru.items.CustomItems;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
 import ru.util.TaskManager;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
-public class ClassMiner extends UHCClass {
+public class ClassMiner extends BarHolderUHCClass {
+
+    //Fatigue is now a value between 0 and 1, where 1 is the start value
+    private Map<UHCPlayer, Double> fatigue = new HashMap<>();
+
+    private final float PLAYER_DEFAULT_WALK_SPEED = 0.2F;
+    private final double MIN_SPEED_REDUCTION = 1;
+    private final double MAX_SPEED_REDUCTION = 0.75;
+    private final double MIN_DAMAGE_REDUCTION = 0.9;
+    private final double MAX_DAMAGE_REDUCTION = 0.7;
+    private final int NEEDED_COPPER = 50;
+    private final double BONUS_PER_COPPER = 1D / NEEDED_COPPER;
 
     private Material[] ORES = new Material[] {
             Material.COAL_ORE,
@@ -86,6 +100,7 @@ public class ClassMiner extends UHCClass {
         return new String[] {
                 "Спешка I на всю игру",
                 "Все инструменты более прочные",
+                "Больше опыта при добыче руды",
                 "Предмет: маяк, указывающий на расположение алмазов либо древних обломков"
         };
     }
@@ -93,7 +108,8 @@ public class ClassMiner extends UHCClass {
     @Override
     public String[] getDisadvantages() {
         return new String[] {
-                "При вскапывании любой руды ты начинаешь светиться"
+                "При вскапывании любой руды ты начинаешь светиться",
+                "Шкала Miner Fatigue (усталость). Ты наносишь меньше урона и медленнее передвигаешься. Добыча меди улучшает эти характеристики."
         };
     }
 
@@ -104,6 +120,46 @@ public class ClassMiner extends UHCClass {
             if(!player.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, Integer.MAX_VALUE, 0));
             }
+        }
+    }
+
+    @Override
+    public void onGameStart(UHCPlayer uhcPlayer) {
+        super.onGameStart(uhcPlayer);
+        if(uhcPlayer.isAliveAndOnline()) {
+            updateFatigueEffects(uhcPlayer);
+        }
+    }
+
+    @Override
+    public void onPlayerLeave(UHCPlayer uhcPlayer) {
+        super.onPlayerLeave(uhcPlayer);
+        if(uhcPlayer.getPlayer() != null) {
+            uhcPlayer.getPlayer().setWalkSpeed(PLAYER_DEFAULT_WALK_SPEED);
+        }
+    }
+
+    @Override
+    public void onPlayerDeath(UHCPlayer uhcPlayer) {
+        super.onPlayerDeath(uhcPlayer);
+        if(uhcPlayer.getPlayer() != null) {
+            uhcPlayer.getPlayer().setWalkSpeed(PLAYER_DEFAULT_WALK_SPEED);
+        }
+    }
+
+    @Override
+    public void onPlayerRejoin(UHCPlayer uhcPlayer) {
+        super.onPlayerRejoin(uhcPlayer);
+        if(uhcPlayer.getPlayer() != null) {
+            updateFatigueEffects(uhcPlayer);
+        }
+    }
+
+    @Override
+    public void onGameEnd(UHCPlayer uhcPlayer) {
+        super.onGameEnd(uhcPlayer);
+        if(uhcPlayer.getPlayer() != null) {
+            uhcPlayer.getPlayer().setWalkSpeed(PLAYER_DEFAULT_WALK_SPEED);
         }
     }
 
@@ -119,11 +175,68 @@ public class ClassMiner extends UHCClass {
         return Material.DIAMOND_PICKAXE;
     }
 
+    private double getFatigue(UHCPlayer uhcPlayer) {
+        return fatigue.getOrDefault(uhcPlayer, 1D);
+    }
+
+    private void setFatigue(UHCPlayer uhcPlayer, double fatigue) {
+        this.fatigue.put(uhcPlayer, fatigue);
+    }
+
+    private double getDamageReduction(UHCPlayer uhcPlayer) {
+        double currentFatigue = getFatigue(uhcPlayer);
+        return (MIN_DAMAGE_REDUCTION - MAX_DAMAGE_REDUCTION) * (1 - currentFatigue) + MAX_DAMAGE_REDUCTION;
+    }
+
+    private double getSpeedReduction(UHCPlayer uhcPlayer) {
+        double currentFatigue = getFatigue(uhcPlayer);
+        double halfFatigue = MathUtils.clamp((currentFatigue - 0.5) * 2, 0, 1);
+        return (MIN_SPEED_REDUCTION - MAX_SPEED_REDUCTION) * (1 - halfFatigue) + MAX_SPEED_REDUCTION;
+    }
+
+    private void updateFatigueEffects(UHCPlayer uhcPlayer) {
+        BossBar bar = getBar(uhcPlayer);
+        if(uhcPlayer.isAliveAndOnline() && bar != null) {
+            double currentFatigue = getFatigue(uhcPlayer);
+            bar.setProgress(currentFatigue);
+            double speedReduction = getSpeedReduction(uhcPlayer);
+            int damagePercentage = (int) Math.round(((1 - getDamageReduction(uhcPlayer)) * 100));
+            int speedPercentage = (int) Math.round(((1 - speedReduction) * 100));
+            bar.setTitle(getBarTitle() +
+                    ChatColor.GRAY + " -" + ChatColor.GOLD + ChatColor.BOLD + damagePercentage + ChatColor.GRAY + "% урона" +
+                    ChatColor.DARK_GRAY + ", " +
+                    ChatColor.GRAY + "-" + ChatColor.DARK_AQUA + ChatColor.BOLD + speedPercentage + ChatColor.GRAY + "% скорости");
+            Player player = uhcPlayer.getPlayer();
+            player.setWalkSpeed((float) (PLAYER_DEFAULT_WALK_SPEED * speedReduction));
+        }
+    }
+
     @EventHandler
-    public void glowOnOreMine(BlockBreakEvent event) {
+    public void reduceDamage(EntityDamageByEntityEvent event) {
+        if(!event.isCancelled() && event.getEntity() instanceof LivingEntity && event.getDamager() instanceof Player attacker && hasClass(attacker)) {
+            UHCPlayer uhcAttacker = PlayerManager.asUHCPlayer(attacker);
+            if(uhcAttacker != null) {
+                double reduction = getDamageReduction(uhcAttacker);
+                event.setDamage(event.getDamage() * reduction);
+            }
+        }
+    }
+
+    @EventHandler
+    public void oreMine(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
+        if(hasClass(player) && (block.getType() == Material.COPPER_ORE || block.getType() == Material.DEEPSLATE_COPPER_ORE)) {
+            event.setDropItems(false);
+            UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
+            if(uhcPlayer != null) {
+                double currentFatigue = getFatigue(uhcPlayer);
+                setFatigue(uhcPlayer, MathUtils.clamp(currentFatigue - BONUS_PER_COPPER, 0, 1));
+                updateFatigueEffects(uhcPlayer);
+            }
+        }
         if(hasClass(player) && Stream.of(ORES).anyMatch(type -> type == block.getType())) {
+            event.setExpToDrop((int) (event.getExpToDrop() * 1.5));
             ParticleUtils.createParticlesInside(block, Particle.SPELL_MOB, Color.WHITE, 5);
             block.getWorld().playSound(block.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_HIT, 0.5f, 1);
             player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20 * 5, 0));
@@ -138,4 +251,18 @@ public class ClassMiner extends UHCClass {
         }
     }
 
+    @Override
+    public String getBarTitle() {
+        return ChatColor.GRAY + "" + ChatColor.BOLD + "Miner Fatigue";
+    }
+
+    @Override
+    public BarStyle getBarStyle() {
+        return BarStyle.SOLID;
+    }
+
+    @Override
+    public BarColor getBarColor() {
+        return BarColor.WHITE;
+    }
 }

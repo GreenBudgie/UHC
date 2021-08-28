@@ -6,6 +6,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import ru.UHC.UHCPlayer;
+import ru.main.UHCPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +15,7 @@ public abstract class BarHolderUHCClass extends UHCClass {
 
     protected Map<UHCPlayer, BossBar> bars = new HashMap<>();
 
-    public abstract String getBarName();
+    public abstract String getBarTitle();
     public abstract BarStyle getBarStyle();
     public abstract BarColor getBarColor();
 
@@ -25,7 +26,7 @@ public abstract class BarHolderUHCClass extends UHCClass {
     @Override
     public void onGameStart(UHCPlayer uhcPlayer) {
         if(uhcPlayer.isAliveAndOnline()) {
-            BossBar bar = Bukkit.createBossBar(getBarName(), getBarColor(), getBarStyle());
+            BossBar bar = Bukkit.createBossBar(getBarTitle(), getBarColor(), getBarStyle());
             bar.setVisible(true);
             bar.setProgress(0);
             bar.addPlayer(uhcPlayer.getPlayer());

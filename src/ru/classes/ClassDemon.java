@@ -82,6 +82,14 @@ public class ClassDemon extends BarHolderUHCClass {
         }
     }
 
+    @Override
+    public void onPlayerRejoin(UHCPlayer uhcPlayer) {
+        super.onGameEnd(uhcPlayer);
+        if(uhcPlayer.getPlayer() != null) {
+            updateSoulFlame(uhcPlayer, getSoulFlame(uhcPlayer));
+        }
+    }
+
     private void updateSoulFlame(UHCPlayer uhcPlayer, double previousValue) {
         BossBar bar = getBar(uhcPlayer);
         if(uhcPlayer.isAliveAndOnline() && bar != null) {
@@ -95,7 +103,7 @@ public class ClassDemon extends BarHolderUHCClass {
             }
             bar.setProgress(currentValue);
             int usesRemaining = (int) ((1 / soulFlameBurn) * currentValue);
-            bar.setTitle(getBarName() + ChatColor.GRAY + " x" + ChatColor.GOLD + ChatColor.BOLD + usesRemaining);
+            bar.setTitle(getBarTitle() + ChatColor.GRAY + " x" + ChatColor.GOLD + ChatColor.BOLD + usesRemaining);
         }
     }
 
@@ -167,7 +175,7 @@ public class ClassDemon extends BarHolderUHCClass {
     }
 
     @Override
-    public String getBarName() {
+    public String getBarTitle() {
         return ChatColor.DARK_RED + "" + ChatColor.BOLD + "Soul Flame";
     }
 
