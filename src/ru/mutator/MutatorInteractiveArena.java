@@ -20,8 +20,13 @@ public class MutatorInteractiveArena extends Mutator {
 	}
 
 	@Override
+	public boolean canWorkIfArenaIsClosed() {
+		return false;
+	}
+
+	@Override
 	public String getDescription() {
-		return "Во время ДМ на арене можно будет ломать и ставить блоки, а также использовать зажигалку и ведра. Однако, со сломанных блоков не будет падать дроп.";
+		return "Во время ДМ на арене можно будет ломать и ставить блоки, а также использовать зажигалку и ведра. Однако, со сломанных блоков не будет падать дроп. Не выпадает, если арена закрытая.";
 	}
 
 }

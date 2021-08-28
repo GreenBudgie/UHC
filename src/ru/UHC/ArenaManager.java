@@ -26,6 +26,7 @@ public class ArenaManager {
         defaultParameters.put("name", "Unknown arena");
         defaultParameters.put("minBorderSize", 10);
         defaultParameters.put("maxBorderSize", 24);
+        defaultParameters.put("isOpen", true);
         for(File file : Bukkit.getWorldContainer().listFiles()) {
             if(file.getName().startsWith("Arena")) {
                 World arenaWorld = Bukkit.createWorld(new WorldCreator(file.getName()));
@@ -49,6 +50,7 @@ public class ArenaManager {
                 String name = "";
                 int minBorderSize = 0;
                 int maxBorderSize = 0;
+                boolean isOpen = true;
                 for(String parameterName : defaultParameters.keySet()) {
                     Object parameter = arenaConfig.get(parameterName);
                     if(parameter == null) {
@@ -61,11 +63,12 @@ public class ArenaManager {
                         case "name" -> name = (String) parameter;
                         case "minBorderSize" -> minBorderSize = (int) parameter;
                         case "maxBorderSize" -> maxBorderSize = (int) parameter;
+                        case "isOpen" -> isOpen = (boolean) parameter;
                     }
                 }
                 Arena arena;
                 try {
-                    arena = new Arena(arenaWorld, name, maxBorderSize, minBorderSize);
+                    arena = new Arena(arenaWorld, name, maxBorderSize, minBorderSize, isOpen);
                 } catch(Exception e) {
                     UHCPlugin.error("Unable to setup \"" + file.getName() + "\"");
                     e.printStackTrace();
@@ -83,6 +86,7 @@ public class ArenaManager {
                 } else {
                     arenas.add(arena);
                 }
+                resetArenaBorder(arena);
             }
         }
     }
@@ -133,16 +137,16 @@ public class ArenaManager {
         } else {
             currentArena = chosenArena.cloneAsTemp();
         }
-        resetArenaBorder();
+        resetArenaBorder(currentArena);
         needsUpdate = false;
     }
 
-    public static void resetArenaBorder() {
-        WorldBorder arenaBorder = currentArena.world().getWorldBorder();
+    public static void resetArenaBorder(Arena arena) {
+        WorldBorder arenaBorder = arena.world().getWorldBorder();
         arenaBorder.setDamageBuffer(1);
         arenaBorder.setWarningDistance(1);
-        arenaBorder.setSize(currentArena.maxBorderSize() * 4);
-        arenaBorder.setCenter(currentArena.world().getSpawnLocation());
+        arenaBorder.setSize(arena.maxBorderSize() * 4);
+        arenaBorder.setCenter(arena.world().getSpawnLocation());
     }
 
     public static void switchChosenArena() {
@@ -183,11 +187,11 @@ public class ArenaManager {
         return currentArena;
     }
 
-    public record Arena(World world, String name, int maxBorderSize, int minBorderSize) {
+    public record Arena(World world, String name, int maxBorderSize, int minBorderSize, boolean isOpen) {
 
         public Arena cloneAsTemp() {
             World tempWorld = WorldManager.copyAsTemp(world);
-            return new Arena(tempWorld, name, maxBorderSize, minBorderSize);
+            return new Arena(tempWorld, name, maxBorderSize, minBorderSize, isOpen);
         }
 
     }

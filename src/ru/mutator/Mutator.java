@@ -62,6 +62,14 @@ public abstract class Mutator {
 		return false;
 	}
 
+	/**
+	 * Whether this mutator can be randomly chosen even if arena is closed.
+	 * Ex: interactive arena cannot
+	 */
+	public boolean canWorkIfArenaIsClosed() {
+		return true;
+	}
+
 	public final void activate(boolean applyHiding, String preference) {
 		MutatorManager.activeMutators.add(this);
 		if(applyHiding) hide();

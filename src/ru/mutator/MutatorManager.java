@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import ru.UHC.ArenaManager;
 import ru.UHC.GameType;
 import ru.UHC.PlayerOptionHolder;
 import ru.UHC.UHC;
@@ -174,6 +175,7 @@ public class MutatorManager {
 		availableMutators.removeAll(activeMutators);
 		availableMutators.removeIf(MutatorManager::doesMutatorConflictsWithActive);
 		if(GameType.getType().allowsClasses()) availableMutators.removeIf(Mutator::conflictsWithClasses);
+		if(!ArenaManager.getCurrentArena().isOpen()) availableMutators.removeIf(mutator -> !mutator.canWorkIfArenaIsClosed());
 		return availableMutators;
 	}
 

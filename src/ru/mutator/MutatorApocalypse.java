@@ -6,10 +6,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.Listener;
-import ru.UHC.PlayerManager;
-import ru.UHC.UHC;
-import ru.UHC.UHCPlayer;
-import ru.UHC.WorldManager;
+import ru.UHC.*;
 import ru.util.MathUtils;
 import ru.util.TaskManager;
 
@@ -66,7 +63,8 @@ public class MutatorApocalypse extends Mutator implements Listener {
 				timeToDrop--;
 				if(timeToDrop <= 0) {
 					Location dropLocation = getRandomLocation();
-					if(dropLocation != null) {
+					boolean closedArena = UHC.state == GameState.DEATHMATCH && !ArenaManager.getCurrentArena().isOpen();
+					if(dropLocation != null && !closedArena) {
 						TNTPrimed tnt = (TNTPrimed) dropLocation.getWorld().spawnEntity(dropLocation, EntityType.PRIMED_TNT);
 						tnt.setFuseTicks(12 * 20);
 					}

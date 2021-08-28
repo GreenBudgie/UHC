@@ -421,7 +421,7 @@ public class UHC implements Listener {
 							ChatColor.RED + ChatColor.BOLD + " начинается" +
 							ChatColor.GRAY + "!");
 			}
-			ArenaManager.resetArenaBorder();
+			ArenaManager.resetArenaBorder(ArenaManager.getCurrentArena());
 			WorldManager.updateBorder();
 			World map = WorldManager.getGameMap();
 			map.setPVP(false);
