@@ -101,7 +101,7 @@ public class UHC implements Listener {
 			ChatColor.YELLOW + ChatColor.BOLD + "C";
 
 	private static final int DEATHMATCH_NO_PVP_DURATION = 15; //15 seconds
-	private static final int DEATHMATCH_START_TIMER = 8 * 60; //8 minutes
+	public static final int DEATHMATCH_START_TIMER = 8 * 60; //8 minutes
 	private static final int DEATHMATCH_TIME_UNTIL_ZONE_SHRINK = 3 * 60; //3 minutes
 	private static final int DEATHMATCH_ZONE_SHRINK_DURATION = 2 * 60; //2 minutes
 
@@ -421,6 +421,7 @@ public class UHC implements Listener {
 							ChatColor.RED + ChatColor.BOLD + " начинается" +
 							ChatColor.GRAY + "!");
 			}
+			ArenaManager.resetArenaBorder();
 			WorldManager.updateBorder();
 			World map = WorldManager.getGameMap();
 			map.setPVP(false);
@@ -908,6 +909,7 @@ public class UHC implements Listener {
 				if(timeUntilShrink == 0) {
 					ArenaManager.Arena arena = ArenaManager.getCurrentArena();
 					WorldBorder arenaBorder = arena.world().getWorldBorder();
+					arenaBorder.setSize(arena.maxBorderSize());
 					arenaBorder.setSize(arena.minBorderSize(), DEATHMATCH_ZONE_SHRINK_DURATION);
 					for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 						inGamePlayer.playSound(inGamePlayer.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1, 0.8f);

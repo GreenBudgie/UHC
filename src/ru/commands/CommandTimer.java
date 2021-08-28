@@ -18,16 +18,16 @@ public class CommandTimer implements CommandExecutor, TabCompleter {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!sender.isOp()) return true;
 		Player p = (Player) sender;
-		if(!UHC.state.isInGame()) {
-			sender.sendMessage(ChatColor.RED + "Возможно выполнение только во время OUTBREAK и GAME");
+		if(!UHC.state.isInGame() && UHC.state != GameState.DEATHMATCH) {
+			sender.sendMessage(ChatColor.RED + "Возможно выполнение только во время OUTBREAK, GAME и DEATHMATCH");
 			return true;
 		}
 		if(args.length == 1) {
 			if(args[0].equalsIgnoreCase("reset")) {
-				if(UHC.state == GameState.OUTBREAK) {
-					UHC.outbreakTimer = UHC.getNoPVPDuration() * 60;
-				} else {
-					UHC.deathmatchTimer = UHC.getGameDuration() * 60;
+				switch(UHC.state) {
+					case OUTBREAK -> UHC.outbreakTimer = UHC.getNoPVPDuration() * 60;
+					case GAME -> UHC.deathmatchTimer = UHC.getGameDuration() * 60;
+					case DEATHMATCH -> UHC.arenaTimer = UHC.DEATHMATCH_START_TIMER;
 				}
 			}
 		}
@@ -45,17 +45,17 @@ public class CommandTimer implements CommandExecutor, TabCompleter {
 				return true;
 			}
 			if(args[0].equalsIgnoreCase("set")) {
-				if(UHC.state == GameState.OUTBREAK) {
-					UHC.outbreakTimer = timer;
-				} else {
-					UHC.deathmatchTimer = timer;
+				switch(UHC.state) {
+					case OUTBREAK -> UHC.outbreakTimer = timer;
+					case GAME -> UHC.deathmatchTimer = timer;
+					case DEATHMATCH -> UHC.arenaTimer = timer;
 				}
 			}
 			if(args[0].equalsIgnoreCase("add")) {
-				if(UHC.state == GameState.OUTBREAK) {
-					UHC.outbreakTimer = UHC.outbreakTimer + timer;
-				} else {
-					UHC.deathmatchTimer = UHC.deathmatchTimer + timer;
+				switch(UHC.state) {
+					case OUTBREAK -> UHC.outbreakTimer = UHC.outbreakTimer + timer;
+					case GAME -> UHC.deathmatchTimer = UHC.deathmatchTimer + timer;
+					case DEATHMATCH -> UHC.arenaTimer = UHC.arenaTimer + timer;
 				}
 			}
 

@@ -133,12 +133,16 @@ public class ArenaManager {
         } else {
             currentArena = chosenArena.cloneAsTemp();
         }
+        resetArenaBorder();
+        needsUpdate = false;
+    }
+
+    public static void resetArenaBorder() {
         WorldBorder arenaBorder = currentArena.world().getWorldBorder();
         arenaBorder.setDamageBuffer(1);
         arenaBorder.setWarningDistance(1);
-        arenaBorder.setSize(currentArena.maxBorderSize());
+        arenaBorder.setSize(currentArena.maxBorderSize() * 4);
         arenaBorder.setCenter(currentArena.world().getSpawnLocation());
-        needsUpdate = false;
     }
 
     public static void switchChosenArena() {

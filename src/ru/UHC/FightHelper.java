@@ -17,6 +17,7 @@ public class FightHelper {
 	 * @return Player's killer
 	 */
 	public static UHCPlayer getKiller(Player victim) {
+		if(victim == null) return null;
 		UHCPlayer uhcDamager = getCustomDamager(victim);
 		Player defaultKiller = victim.getKiller();
 		UHCPlayer uhcDefaultKiller = null;

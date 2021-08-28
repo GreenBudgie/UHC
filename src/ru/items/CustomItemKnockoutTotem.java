@@ -29,7 +29,7 @@ public class CustomItemKnockoutTotem extends RequesterCustomItem implements Bloc
 
 	@Override
 	public int getLapisPrice() {
-		return 12;
+		return 0;
 	}
 
 	@Override

@@ -51,6 +51,7 @@ public class ItemRequester implements Listener {
 				CustomItems.knockoutTotem,
 				CustomItems.tnt,
 				CustomItems.heavenMembrane,
+				CustomItems.pulsatingTotem,
 				CustomItems.tracker,
 				CustomItems.terraDrill));
 	}
