@@ -1869,14 +1869,4 @@ public class UHC implements Listener {
 		}
 	}
 
-	@EventHandler
-	public void move(PlayerMoveEvent e) {
-		Player p = e.getPlayer();
-		if(PlayerManager.isSpectator(p)) {
-			if(e.getTo().getY() <= 0) {
-				e.setCancelled(true);
-			}
-		}
-	}
-
 }

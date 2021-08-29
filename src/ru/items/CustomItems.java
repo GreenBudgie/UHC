@@ -32,6 +32,7 @@ public class CustomItems {
 	public static CustomItemInfernalTotem infernalTotem = new CustomItemInfernalTotem();
 	public static CustomItemUnderworldEgg underworldEgg = new CustomItemUnderworldEgg();
 	public static CustomItemTerraTracer terraTracer = new CustomItemTerraTracer();
+	public static CustomItemAncientShard ancientShard = new CustomItemAncientShard();
 
 	public static void init() {
 		for(CustomItem item : items) {
