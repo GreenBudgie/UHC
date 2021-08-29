@@ -3,6 +3,7 @@ package ru.UHC;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -274,6 +275,7 @@ public class UHCPlayer {
         List<ItemStack> itemsToDrop = new ArrayList<>();
         if(player != null) {
             itemsToDrop.addAll(Arrays.asList(player.getInventory().getContents()));
+            itemsToDrop.removeIf(item -> item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE));
         } else {
             if(savedInventory != null) {
                 itemsToDrop.addAll(Arrays.asList(savedInventory));

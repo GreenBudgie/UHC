@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -27,44 +28,67 @@ import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ItemRequester implements Listener {
 
 	public static final NumericalCases REDSTONE_CASES = new NumericalCases("редстоун", "редстоуна", "редстоуна");
 	public static final NumericalCases LAPIS_CASES = new NumericalCases("лазурит", "лазурита", "лазурита");
 	public static List<RequestedItem> requestedItems = new ArrayList<>();
-	public static List<RequesterCustomItem> requesterCustomItems = new ArrayList<>();
+	public static Map<Integer, RequesterCustomItem> requesterCustomItems = new HashMap<>();
 	private static String name = ChatColor.DARK_AQUA + "Запросы";
 
 	public static void init() {
-		requesterCustomItems.addAll(Lists.newArrayList(
-				CustomItems.shulkerBox,
-				CustomItems.highlighter,
-				CustomItems.creatureHighlighter,
-				CustomItems.booster,
-				CustomItems.pearl,
-				CustomItems.infernalLead,
-				CustomItems.landmine,
-				CustomItems.soulscriber,
-				CustomItems.shieldBreaker,
-				CustomItems.knockoutTotem,
-				CustomItems.tnt,
-				CustomItems.heavenMembrane,
-				CustomItems.pulsatingTotem,
-				CustomItems.tracker,
-				CustomItems.terraDrill));
+		putItem(CustomItems.shulkerBox, 10);
+		putItem(CustomItems.iceball, 11);
+		putItem(CustomItems.highlighter, 12);
+		putItem(CustomItems.creatureHighlighter, 13);
+		putItem(CustomItems.booster, 14);
+		putItem(CustomItems.pearl, 15);
+		putItem(CustomItems.infernalLead, 16);
+
+		putItem(CustomItems.landmine, 21);
+		putItem(CustomItems.knockoutTotem, 22);
+		putItem(CustomItems.soulscriber, 23);
+
+		putItem(CustomItems.shieldBreaker, 30);
+		putItem(CustomItems.tnt, 31);
+		putItem(CustomItems.heavenMembrane, 32);
+
+		putItem(CustomItems.pulsatingTotem, 39);
+		putItem(CustomItems.tracker, 40);
+		putItem(CustomItems.terraDrill, 41);
 	}
 
-	public static void openRequesterInventory(Player p) {
-		Inventory inv = Bukkit.createInventory(p, 18,
+	private static void putItem(RequesterCustomItem item, int slot) {
+		requesterCustomItems.put(slot, item);
+	}
+
+	private static final int[] redstoneDecorativeSlots = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26};
+	private static final int[] lapisDecorativeSlots = new int[] {27, 35, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53};
+
+	public static void openRequesterInventory(Player player) {
+		Inventory inventory = Bukkit.createInventory(player, 54,
 				name + ChatColor.DARK_GRAY + " (" +
-						ChatColor.RED + getRedstone(p) +
+						ChatColor.RED + getRedstone(player) +
 						ChatColor.DARK_GRAY + " / " +
-						ChatColor.BLUE + getLapis(p) +
+						ChatColor.BLUE + getLapis(player) +
 						ChatColor.DARK_GRAY + ")");
-		requesterCustomItems.forEach(item -> inv.addItem(item.getInfoItemStack(p)));
-		p.openInventory(inv);
+		ItemStack redstone = new ItemStack(Material.REDSTONE);
+		for(int redstoneSlot : redstoneDecorativeSlots) {
+			inventory.setItem(redstoneSlot, redstone);
+		}
+		ItemStack lapis = new ItemStack(Material.LAPIS_LAZULI);
+		for(int lapisSlot : lapisDecorativeSlots) {
+			inventory.setItem(lapisSlot, lapis);
+		}
+		for(int slot : requesterCustomItems.keySet()) {
+			RequesterCustomItem item = requesterCustomItems.get(slot);
+			inventory.setItem(slot, item.getInfoItemStack(player));
+		}
+		player.openInventory(inventory);
 	}
 
 	public static int getRedstone(Player p) {
@@ -82,8 +106,7 @@ public class ItemRequester implements Listener {
 
 	public static void request(Player requester, ItemStack item) {
 		CustomItem customItem = CustomItems.getCustomItem(item);
-		if(customItem instanceof RequesterCustomItem) {
-			RequesterCustomItem requesterItem = (RequesterCustomItem) customItem;
+		if(customItem instanceof RequesterCustomItem requesterItem) {
 			if(requesterItem.canRequest(requester)) {
 				requester.getWorld().playSound(requester.getLocation(), Sound.ENTITY_ILLUSIONER_CAST_SPELL, 1F, 0.5F);
 				if(!MutatorManager.requestAnywhere.isActive()) {
@@ -124,28 +147,37 @@ public class ItemRequester implements Listener {
 	}
 
 	@EventHandler
-	public void openInv(PlayerInteractEvent e) {
-		Player p = e.getPlayer();
+	public void openInventory(PlayerInteractEvent e) {
+		Player player = e.getPlayer();
 		ItemStack item = e.getItem();
-		if(PlayerManager.isPlaying(p) && UHC.state.isInGame() && item != null && item.getType() == Material.REDSTONE && (e.getAction() == Action.RIGHT_CLICK_BLOCK
+		if(PlayerManager.isPlaying(player) && UHC.state.isInGame() && item != null && item.getType() == Material.REDSTONE && (e.getAction() == Action.RIGHT_CLICK_BLOCK
 				|| e.getAction() == Action.RIGHT_CLICK_AIR)) {
-			openRequesterInventory(p);
-			p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.5F);
+			openRequesterInventory(player);
+			player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.5F);
 			e.setCancelled(true);
 		}
 	}
 
 	@EventHandler
-	public void invClick(InventoryClickEvent e) {
-		Player p = (Player) e.getWhoClicked();
+	public void inventoryClick(InventoryClickEvent e) {
+		Player player = (Player) e.getWhoClicked();
 		if(UHC.state.isInGame() && e.getView().getTitle().startsWith(name)) {
 			if(e.getClickedInventory() != null && e.getClickedInventory() == e.getView().getTopInventory()) {
 				ItemStack item = e.getCurrentItem();
 				if(item != null && item.getType() != Material.AIR) {
-					request(p, item);
+					request(player, item);
 				}
 			}
 			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void noRocketDamage(EntityDamageByEntityEvent event) {
+		if(event.getDamager() instanceof Firework rocket && event.getEntity() instanceof Player player) {
+			if(PlayerManager.isPlaying(player)) {
+				if(rocket.hasMetadata("request")) event.setCancelled(true);
+			}
 		}
 	}
 

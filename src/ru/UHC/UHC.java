@@ -1860,13 +1860,4 @@ public class UHC implements Listener {
 		}
 	}
 
-	@EventHandler
-	public void noRocketDamage(EntityDamageByEntityEvent event) {
-		if(event.getDamager() instanceof Firework rocket && event.getEntity() instanceof Player player) {
-			if(PlayerManager.isPlaying(player)) {
-				if(rocket.hasMetadata("request")) event.setCancelled(true);
-			}
-		}
-	}
-
 }

@@ -70,7 +70,7 @@ public class MutatorUnexpectedRequests extends Mutator {
 										(ChatColor.AQUA + String.valueOf((int) l.distance(player.getLocation()))) :
 										WorldHelper.getEnvironmentNamePrepositional(l.getWorld().getEnvironment(), ChatColor.AQUA)) + ChatColor.WHITE + ")"));
 					}
-					ItemRequester.requestedItems.add(new RequestedItem(l, MathUtils.choose(ItemRequester.requesterCustomItems).getItemStack()));
+					ItemRequester.requestedItems.add(new RequestedItem(l, MathUtils.choose(ItemRequester.requesterCustomItems.values()).getItemStack()));
 					reset();
 				}
 			}

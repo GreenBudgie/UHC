@@ -33,6 +33,7 @@ public class CustomItems {
 	public static CustomItemUnderworldEgg underworldEgg = new CustomItemUnderworldEgg();
 	public static CustomItemTerraTracer terraTracer = new CustomItemTerraTracer();
 	public static CustomItemAncientShard ancientShard = new CustomItemAncientShard();
+	public static CustomItemIceball iceball = new CustomItemIceball();
 
 	public static void init() {
 		for(CustomItem item : items) {

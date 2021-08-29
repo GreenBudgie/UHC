@@ -125,7 +125,8 @@ public class ClassDemon extends BarHolderUHCClass {
 
     @EventHandler
     public void breakQuartz(BlockBreakEvent event) {
-        if(event.getBlock().getType() == Material.NETHER_QUARTZ_ORE && hasClass(event.getPlayer())) {
+        if(event.getBlock().getType() == Material.NETHER_QUARTZ_ORE && event.isDropItems() && hasClass(event.getPlayer())) {
+            ParticleUtils.createParticlesInside(event.getBlock(), Particle.REDSTONE, Color.fromRGB(200, 0, 0), 9);
             int redstoneDropAmount = MathUtils.randomRange(1, 2);
             event.getBlock().getWorld().dropItemNaturally(
                     event.getBlock().getLocation(),

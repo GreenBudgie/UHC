@@ -69,9 +69,11 @@ public class ClassNecromancer extends UHCClass {
         UHCPlayer uhcKiller = FightHelper.getKiller(player);
         if(uhcKiller != null && uhcKiller.isAliveAndOnline()) {
             Player killer = uhcKiller.getPlayer();
-            AttributeInstance maxHealth = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-            maxHealth.setBaseValue(maxHealth.getBaseValue() + 4);
-            killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 5, 0));
+            if(hasClass(killer)) {
+                AttributeInstance maxHealth = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                maxHealth.setBaseValue(maxHealth.getBaseValue() + 4);
+                killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 5, 0));
+            }
         }
     }
 

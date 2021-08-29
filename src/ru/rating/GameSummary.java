@@ -24,6 +24,8 @@ public class GameSummary implements ConfigurationSerializable {
     private GameType type = null;
     private List<PlayerSummary> playerSummaries = new ArrayList<>();
 
+    private ItemStack representingItem = null;
+
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialized = new HashMap<>();
@@ -127,6 +129,7 @@ public class GameSummary implements ConfigurationSerializable {
     }
 
     protected void postSetup() {
+        generateRepresentingItem();
         for(PlayerSummary summary : getPlayerSummaries()) {
             summary.postSetup();
         }
@@ -140,17 +143,18 @@ public class GameSummary implements ConfigurationSerializable {
         this.type = type;
     }
 
-    public ItemStack getRepresentingItem() {
-        ItemUtils.Builder builder = ItemUtils.builder(Material.WRITABLE_BOOK).
-                withName(formatTitle()).
-                withLore(formatIsRatingGame(), formatWinners());
+    public void generateRepresentingItem() {
+        ItemUtils.Builder builder = ItemUtils.builder(Material.WRITABLE_BOOK);
+        builder.withName(formatTitle());
+        builder.withLore(formatIsRatingGame(), formatWinners());
         if(getType() != null) builder.withLore(formatType());
-        return builder.withLore(
-                        formatIsDuo(),
-                        formatDuration(),
-                        formatPlayerNumber()).
-                withValue("date", String.valueOf(getDate().getTime())).
-                build();
+        builder.withLore(formatIsDuo(), formatDuration(), formatPlayerNumber());
+        builder.withValue("date", String.valueOf(getDate().getTime()));
+        representingItem = builder.build();
+    }
+
+    public ItemStack getRepresentingItem() {
+        return representingItem;
     }
 
     public String formatType() {
