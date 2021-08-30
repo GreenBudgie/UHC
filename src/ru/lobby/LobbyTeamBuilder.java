@@ -49,16 +49,16 @@ public class LobbyTeamBuilder implements Listener {
 
     public static void init() {
         for(Player player : Bukkit.getOnlinePlayers()) {
-            restoreTeammate(player, false, false);
+            restoreTeammate(player, false);
         }
     }
 
-    private static void restoreTeammate(Player player, boolean sound, boolean message) {
+    private static void restoreTeammate(Player player, boolean message) {
         String savedTeammateName = PlayerOptionHolder.getLobbyTeammateName(player.getName());
         if(savedTeammateName != null) {
             Player teammate = Bukkit.getPlayer(savedTeammateName);
             if(teammate != null && teammate.isOnline() && !hasTeammate(teammate)) {
-                makeTeam(player, teammate, sound, message);
+                makeTeam(player, teammate, false, message);
             } else {
                 PlayerOptionHolder.removeLobbyTeammate(player.getName());
             }
@@ -131,7 +131,7 @@ public class LobbyTeamBuilder implements Listener {
     @EventHandler
     public void updateOnJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        restoreTeammate(player, false, true);
+        restoreTeammate(player, true);
         reopenInventories();
     }
 

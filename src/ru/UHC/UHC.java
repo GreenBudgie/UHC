@@ -1057,7 +1057,7 @@ public class UHC implements Listener {
 		playerLookAngle = playerLookAngle % 360.0D;
 		double teammateAngle = Math.atan2(z2 - z1, x2 - x1);
 		double finalAngle = (Math.PI - (Math.toRadians(playerLookAngle - 90.0D) - teammateAngle)) % (Math.PI * 2);
-		if(finalAngle < 0) finalAngle = Math.PI / 2 + finalAngle;
+		if(finalAngle < 0) finalAngle = 2 * Math.PI + finalAngle;
 		char[] arrows = new char[] {'\u2191', '\u2B08', '\u2192', '\u2B0A', '\u2193', '\u2B0B', '\u2190', '\u2B09', '\u2191'};
 		double step = Math.PI / 4;
 		double range = Math.PI / 8;
@@ -1068,7 +1068,6 @@ public class UHC implements Listener {
 				arrow = arrows[i];
 			}
 		}
-		UHCPlugin.log(MathUtils.decimal(Math.toDegrees(finalAngle), 2));
 		return arrow;
 	}
 
