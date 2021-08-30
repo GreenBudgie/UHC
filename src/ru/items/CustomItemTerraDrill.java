@@ -24,7 +24,16 @@ import java.util.Set;
 public class CustomItemTerraDrill extends RequesterCustomItem implements Listener {
 
 	private static Map<Player, BlockFace> lastFace = new HashMap<>();
-	private static final Set<Material> rock = Sets.newHashSet(Material.STONE, Material.ANDESITE, Material.DIORITE, Material.GRANITE, Material.TUFF, Material.DEEPSLATE);
+	private static final Set<Material> rock = Sets.newHashSet(
+			Material.STONE,
+			Material.ANDESITE,
+			Material.DIORITE,
+			Material.GRANITE,
+			Material.TUFF,
+			Material.DEEPSLATE,
+			Material.NETHERRACK,
+			Material.BLACKSTONE,
+			Material.BASALT);
 
 	public String getName() {
 		return ChatColor.DARK_RED + "" + ChatColor.BOLD + "Terra Drill";
@@ -34,10 +43,10 @@ public class CustomItemTerraDrill extends RequesterCustomItem implements Listene
 		return Material.IRON_PICKAXE;
 	}
 
-	@Override()
+	@Override
 	public void onBreak(Player p, ItemStack item, BlockBreakEvent e) {
 		Block b = e.getBlock();
-		if(rock.contains(b.getType()) && !e.isCancelled() && !MutatorManager.strongStone.isActive()) {
+		if(rock.contains(b.getType()) && !e.isCancelled()) {
 			BlockFace face = lastFace.getOrDefault(p, BlockFace.EAST);
 			Location l = b.getLocation();
 			Set<Block> toBreak = new HashSet<>();
@@ -72,6 +81,7 @@ public class CustomItemTerraDrill extends RequesterCustomItem implements Listene
 				toBreak.add(l.clone().add(0, -1, 0).getBlock());
 			}
 			for(Block block : toBreak) {
+				if(block.getType() == Material.STONE && MutatorManager.strongStone.isActive()) continue;
 				if(rock.contains(block.getType())) {
 					block.breakNaturally(item);
 				}

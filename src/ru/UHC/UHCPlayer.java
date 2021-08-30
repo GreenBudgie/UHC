@@ -134,7 +134,9 @@ public class UHCPlayer {
     }
 
     public void removeTabPrefix() {
-        player.setPlayerListName(null);
+        if(player != null) {
+            player.setPlayerListName(null);
+        }
     }
 
     public void setTabPrefix() {
@@ -275,12 +277,12 @@ public class UHCPlayer {
         List<ItemStack> itemsToDrop = new ArrayList<>();
         if(player != null) {
             itemsToDrop.addAll(Arrays.asList(player.getInventory().getContents()));
-            itemsToDrop.removeIf(item -> item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE));
         } else {
             if(savedInventory != null) {
                 itemsToDrop.addAll(Arrays.asList(savedInventory));
             }
         }
+        itemsToDrop.removeIf(item -> item != null && item.getEnchantments().containsKey(Enchantment.VANISHING_CURSE));
         for(ItemStack item : itemsToDrop) {
             if(item != null && item.getType() != Material.AIR) {
                 location.getWorld().dropItemNaturally(location, item);

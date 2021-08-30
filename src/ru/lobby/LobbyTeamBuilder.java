@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import ru.UHC.PlayerManager;
 import ru.UHC.PlayerOptionHolder;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
@@ -257,7 +258,8 @@ public class LobbyTeamBuilder implements Listener {
     }
 
     private static void makeTeam(Player player1, Player player2, boolean sound, boolean message) {
-        if(message) {
+        if(player1 == player2) return;
+        if(message && !PlayerManager.isInGame(player1) && !PlayerManager.isInGame(player2)) {
             player1.sendMessage(PREFIX +
                     ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "Теперь ты союзник с " +
                     ChatColor.RESET + ChatColor.GOLD + player2.getName());
@@ -265,7 +267,7 @@ public class LobbyTeamBuilder implements Listener {
                     ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "Теперь ты союзник с " +
                     ChatColor.RESET + ChatColor.GOLD + player1.getName());
         }
-        if(sound) {
+        if(sound && !PlayerManager.isInGame(player1) && !PlayerManager.isInGame(player2)) {
             player1.playSound(player1.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.5F, 1F);
             player2.playSound(player2.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.5F, 1F);
         }
@@ -316,7 +318,7 @@ public class LobbyTeamBuilder implements Listener {
         if(UHC.playing) return;
         for(Team team : teams) {
             if(team.player1() == member || team.player2() == member) {
-                if(effect) {
+                if(effect && !PlayerManager.isInGame(team.player1()) && !PlayerManager.isInGame(team.player2())) {
                     team.player1().sendMessage(PREFIX +
                             ChatColor.DARK_RED + ChatColor.BOLD + "Ты и " +
                             ChatColor.RESET + ChatColor.GOLD + team.player2().getName() +
