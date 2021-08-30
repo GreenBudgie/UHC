@@ -38,6 +38,9 @@ import ru.classes.ClassManager;
 import ru.classes.UHCClass;
 import ru.drop.Drop;
 import ru.drop.Drops;
+import ru.event.GameEndEvent;
+import ru.event.GameInitializeEvent;
+import ru.event.GameStartEvent;
 import ru.items.BlockHolder;
 import ru.items.CustomItem;
 import ru.items.CustomItems;
@@ -365,6 +368,8 @@ public class UHC implements Listener {
 
 	public static void endGame() {
 		if(playing) {
+			Bukkit.getPluginManager().callEvent(new GameEndEvent());
+
 			Rating.getCurrentGameSummary().calculateAndSetDuration();
 			Rating.saveCurrentGameSummary();
 			for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
@@ -510,6 +515,8 @@ public class UHC implements Listener {
 			playing = true;
 			ArenaManager.getCurrentArena().world().setPVP(false);
 			SignManager.updateTextOnSigns();
+
+			Bukkit.getPluginManager().callEvent(new GameInitializeEvent());
 		} else {
 			Bukkit.broadcastMessage(ChatColor.RED + "Игра уже идет");
 		}
@@ -1267,6 +1274,7 @@ public class UHC implements Listener {
 				}
 			}
 		}
+		Bukkit.getPluginManager().callEvent(new GameStartEvent());
 		if(MutatorManager.isActive(MutatorManager.hungerGames)) {
 			outbreakTimer = 60;
 		} else {

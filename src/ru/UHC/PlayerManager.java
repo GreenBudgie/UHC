@@ -1,6 +1,7 @@
 package ru.UHC;
 
 import com.google.common.collect.Lists;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
@@ -8,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.classes.ClassManager;
+import ru.event.SpectatorJoinEvent;
 import ru.lobby.LobbyTeamBuilder;
 import ru.main.UHCPlugin;
 import ru.mutator.Mutator;
@@ -88,6 +90,7 @@ public class PlayerManager {
     }
 
     public static void removeSpectator(Player spectator) {
+        Bukkit.getPluginManager().callEvent(new SpectatorJoinEvent(spectator));
         UHC.resetPlayer(spectator);
         spectator.setGameMode(GameMode.ADVENTURE);
         getSpectators().remove(spectator);
@@ -104,6 +107,7 @@ public class PlayerManager {
         for(Mutator mutator : MutatorManager.activeMutators) {
             mutator.onSpectatorJoinFromLobby(player);
         }
+        Bukkit.getPluginManager().callEvent(new SpectatorJoinEvent(player));
     }
 
     /**

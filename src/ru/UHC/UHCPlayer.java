@@ -10,6 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.classes.UHCClass;
+import ru.event.UHCPlayerDeathEvent;
+import ru.event.UHCPlayerLeaveEvent;
+import ru.event.UHCPlayerRejoinEvent;
 import ru.lobby.Lobby;
 import ru.main.UHCPlugin;
 import ru.mutator.Mutator;
@@ -90,6 +93,7 @@ public class UHCPlayer {
                         if(uhcClass != null) {
                             uhcClass.onPlayerLeave(this);
                         }
+                        Bukkit.getPluginManager().callEvent(new UHCPlayerLeaveEvent(this));
                         createGhost();
                         saveInventory();
                     }
@@ -119,6 +123,7 @@ public class UHCPlayer {
             if(uhcClass != null) {
                 uhcClass.onPlayerRejoin(this);
             }
+            Bukkit.getPluginManager().callEvent(new UHCPlayerRejoinEvent(this));
             String timesLeft = new NumericalCases("раз", "раза", "раз").byNumber(leavesRemaining);
             player.sendMessage(ChatColor.GRAY + "- " +
                             ChatColor.DARK_RED + "Ты можешь перезайти еще " +
@@ -237,6 +242,8 @@ public class UHCPlayer {
             summary.setKillerName(killer.getNickname());
             killer.getSummary().increaseKills();
         }
+
+        Bukkit.getPluginManager().callEvent(new UHCPlayerDeathEvent(this, killer));
 
         //Send event to mutators
         for(Mutator mutator : MutatorManager.activeMutators) {
