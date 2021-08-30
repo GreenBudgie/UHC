@@ -45,9 +45,9 @@ public class ClassBerserk extends BarHolderUHCClass {
         return new String[] {
                 "20 сердец при старте игры",
                 "Гнилая плоть и сырое мясо безвредны",
-                "Сопротивление урону на 15 секунд, когда ешь сырое мясо",
+                "Спешка III на 10 секунд, когда ешь сырое мясо",
                 "Шкала Battle Rage: увеличивается урон при убийстве враждебных мобов не из спавнера",
-                "Предмет: выдает спешку V на 10 секунд"
+                "Предмет: гарантирует, что первый полученный урон будет поглощен"
         };
     }
 
@@ -74,7 +74,7 @@ public class ClassBerserk extends BarHolderUHCClass {
     @Override
     public ItemStack[] getStartItems() {
         ItemStack shard = CustomItems.ancientShard.getItemStack();
-        shard.setAmount(4);
+        shard.setAmount(3);
         return new ItemStack[] {shard};
     }
 
@@ -147,7 +147,7 @@ public class ClassBerserk extends BarHolderUHCClass {
         if(hasClass(player)) {
             ItemStack item = event.getItem();
             if(Stream.of(rawMeat).anyMatch(meat -> item.getType() == meat)) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 15, 0));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20 * 10, 2));
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1, 0.5F);
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1, 0.5F);
                 TaskManager.invokeLater(() -> {
