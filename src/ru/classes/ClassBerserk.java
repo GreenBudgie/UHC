@@ -9,7 +9,6 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.player.PlayerChannelEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -18,6 +17,9 @@ import org.bukkit.potion.PotionEffectType;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.UHC.UHCPlayer;
+import ru.event.GameInitializeEvent;
+import ru.event.GameStartEvent;
+import ru.event.UHCPlayerRejoinEvent;
 import ru.items.CustomItems;
 import ru.main.UHCPlugin;
 import ru.util.MathUtils;
@@ -83,25 +85,28 @@ public class ClassBerserk extends BarHolderUHCClass {
         return Material.IRON_AXE;
     }
 
-    @Override
-    public void onGameInit(UHCPlayer uhcPlayer) {
-        super.onGameInit(uhcPlayer);
-        uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(40);
-        UHC.heal(uhcPlayer.getPlayer());
+    @EventHandler
+    public void gameInit(GameInitializeEvent event) {
+        for(UHCPlayer uhcPlayer : getPlayersWithClass()) {
+            uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(40);
+            UHC.heal(uhcPlayer.getPlayer());
+        }
     }
 
+    @EventHandler
     @Override
-    public void onGameStart(UHCPlayer uhcPlayer) {
-        super.onGameStart(uhcPlayer);
-        if(uhcPlayer.isAliveAndOnline()) {
+    public void onGameStart(GameStartEvent event) {
+        super.onGameStart(event);
+        for(UHCPlayer uhcPlayer : getAliveOnlinePlayersWithClass()) {
             updateBattleRage(uhcPlayer);
         }
     }
 
     @Override
-    public void onPlayerRejoin(UHCPlayer uhcPlayer) {
-        super.onPlayerRejoin(uhcPlayer);
-        if(uhcPlayer.getPlayer() != null) {
+    @EventHandler
+    public void onPlayerRejoin(UHCPlayerRejoinEvent event) {
+        super.onPlayerRejoin(event);
+        for(UHCPlayer uhcPlayer : getAliveOnlinePlayersWithClass()) {
             updateBattleRage(uhcPlayer);
         }
     }

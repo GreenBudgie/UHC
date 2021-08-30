@@ -18,6 +18,7 @@ import ru.UHC.GameState;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.UHC.UHCPlayer;
+import ru.event.*;
 import ru.items.CustomItems;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
@@ -123,43 +124,53 @@ public class ClassMiner extends BarHolderUHCClass {
         }
     }
 
+    @EventHandler
     @Override
-    public void onGameStart(UHCPlayer uhcPlayer) {
-        super.onGameStart(uhcPlayer);
-        if(uhcPlayer.isAliveAndOnline()) {
+    public void onGameStart(GameStartEvent event) {
+        super.onGameStart(event);
+        for(UHCPlayer uhcPlayer : getAliveOnlinePlayersWithClass()) {
             updateFatigueEffects(uhcPlayer);
         }
     }
 
+    @EventHandler
     @Override
-    public void onPlayerLeave(UHCPlayer uhcPlayer) {
-        super.onPlayerLeave(uhcPlayer);
+    public void onPlayerLeave(UHCPlayerLeaveEvent event) {
+        super.onPlayerLeave(event);
+        UHCPlayer uhcPlayer = event.getUHCPlayer();
         if(uhcPlayer.getPlayer() != null) {
             uhcPlayer.getPlayer().setWalkSpeed(PLAYER_DEFAULT_WALK_SPEED);
         }
     }
 
+    @EventHandler
     @Override
-    public void onPlayerDeath(UHCPlayer uhcPlayer) {
-        super.onPlayerDeath(uhcPlayer);
+    public void onPlayerDeath(UHCPlayerDeathEvent event) {
+        super.onPlayerDeath(event);
+        UHCPlayer uhcPlayer = event.getUHCPlayer();
         if(uhcPlayer.getPlayer() != null) {
             uhcPlayer.getPlayer().setWalkSpeed(PLAYER_DEFAULT_WALK_SPEED);
         }
     }
 
+    @EventHandler
     @Override
-    public void onPlayerRejoin(UHCPlayer uhcPlayer) {
-        super.onPlayerRejoin(uhcPlayer);
+    public void onPlayerRejoin(UHCPlayerRejoinEvent event) {
+        super.onPlayerRejoin(event);
+        UHCPlayer uhcPlayer = event.getUHCPlayer();
         if(uhcPlayer.getPlayer() != null) {
             updateFatigueEffects(uhcPlayer);
         }
     }
 
+    @EventHandler
     @Override
-    public void onGameEnd(UHCPlayer uhcPlayer) {
-        super.onGameEnd(uhcPlayer);
-        if(uhcPlayer.getPlayer() != null) {
-            uhcPlayer.getPlayer().setWalkSpeed(PLAYER_DEFAULT_WALK_SPEED);
+    public void onGameEnd(GameEndEvent event) {
+        super.onGameEnd(event);
+        for(UHCPlayer uhcPlayer : getAliveOnlinePlayersWithClass()) {
+            if(uhcPlayer.getPlayer() != null) {
+                uhcPlayer.getPlayer().setWalkSpeed(PLAYER_DEFAULT_WALK_SPEED);
+            }
         }
     }
 

@@ -48,8 +48,6 @@ import ru.lobby.Lobby;
 import ru.lobby.LobbyGameManager;
 import ru.lobby.LobbyTeamBuilder;
 import ru.lobby.sign.SignManager;
-import ru.main.UHCPlugin;
-import ru.mutator.ItemBasedMutator;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
 import ru.rating.GameSummary;
@@ -378,15 +376,9 @@ public class UHC implements Listener {
 				inGamePlayer.setGameMode(GameMode.ADVENTURE);
 				inGamePlayer.teleport(WorldManager.getLobby().getSpawnLocation());
 			}
-			for(UHCClass currentClass : ClassManager.classes) {
-				currentClass.onGameEnd();
-			}
 			for(UHCPlayer uhcPlayer : PlayerManager.getPlayers()) {
 				if(uhcPlayer.getGhost() != null) uhcPlayer.getGhost().remove();
 				uhcPlayer.removeTabPrefix();
-				if(uhcPlayer.getUHCClass() != null) {
-					uhcPlayer.getUHCClass().onGameEnd(uhcPlayer);
-				}
 			}
 			CustomBlockManager.removeAllBlocks();
 			voteBar.removeAll();
@@ -445,10 +437,6 @@ public class UHC implements Listener {
 			summary.setDuo(isDuo);
 			summary.setType(GameType.getType());
 
-			for(UHCClass currentClass : ClassManager.classes) {
-				currentClass.onGameInit();
-			}
-
 			for(Player player : Bukkit.getOnlinePlayers()) {
 				LobbyGameManager.PVP_ARENA.onArenaLeave(player);
 				UHCPlayer uhcPlayer = PlayerManager.registerPlayer(player);
@@ -459,10 +447,6 @@ public class UHC implements Listener {
 						ChatColor.GREEN + "Карта " + ChatColor.DARK_GREEN + ChatColor.BOLD + "Норм"));
 				player.getInventory().setItem(5, InventoryHelper.generateItemWithName(Material.RED_DYE,
 						ChatColor.RED + "Карта " + ChatColor.DARK_RED + ChatColor.BOLD + "Говно"));
-				UHCClass playerClass = uhcPlayer.getUHCClass();
-				if(playerClass != null) {
-					playerClass.onGameInit(uhcPlayer);
-				}
 			}
 			double radius = PlayerManager.getPlayers().size();
 			double radsPerPlayer = 2 * Math.PI / PlayerManager.getPlayers().size();
@@ -1254,25 +1238,6 @@ public class UHC implements Listener {
 			}
 			player.setNoDamageTicks(160);
 			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 160, 9, true, true, true));
-			Inventory inv = player.getInventory();
-			for(UHCClass currentClass : ClassManager.classes) {
-				currentClass.onGameStart();
-			}
-			UHCClass uhcClass = ClassManager.getInGameClass(player);
-			if(uhcClass != null) {
-				UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
-				if(uhcPlayer != null && uhcPlayer.isAliveAndOnline()) {
-					uhcClass.onGameStart(uhcPlayer);
-				}
-				for(ItemStack item : uhcClass.getStartItems()) {
-					inv.addItem(item);
-				}
-			}
-			for(Mutator inventoryMutator : MutatorManager.activeMutators) {
-				if(inventoryMutator instanceof ItemBasedMutator) {
-					inv.addItem(((ItemBasedMutator) inventoryMutator).getItemsToAdd().toArray(new ItemStack[0]));
-				}
-			}
 		}
 		Bukkit.getPluginManager().callEvent(new GameStartEvent());
 		if(MutatorManager.isActive(MutatorManager.hungerGames)) {
@@ -1573,6 +1538,7 @@ public class UHC implements Listener {
 		Player player = e.getPlayer();
 		if(PlayerManager.isInGame(player)) {
 			if(PlayerManager.isSpectator(player)) {
+				PlayerManager.removeSpectator(player);
 				for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 					inGamePlayer.sendMessage(ChatColor.AQUA + "Наблюдатель " + ChatColor.GOLD + player.getName() + ChatColor.AQUA + " отключился");
 				}
@@ -1580,9 +1546,6 @@ public class UHC implements Listener {
 			if(PlayerManager.isPlaying(player)) {
 				UHCPlayer uplayer = PlayerManager.asUHCPlayer(player);
 				uplayer.leave();
-			}
-			for(Mutator mutator : MutatorManager.activeMutators) {
-				mutator.onSpectatorLeave(player);
 			}
 		} else {
 			for(Player pl : WorldManager.getLobby().getPlayers()) {

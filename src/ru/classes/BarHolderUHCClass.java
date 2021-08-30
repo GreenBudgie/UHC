@@ -5,7 +5,9 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import ru.UHC.UHCPlayer;
+import ru.event.*;
 import ru.main.UHCPlugin;
 
 import java.util.HashMap;
@@ -23,9 +25,9 @@ public abstract class BarHolderUHCClass extends UHCClass {
         return bars.getOrDefault(uhcPlayer, null);
     }
 
-    @Override
-    public void onGameStart(UHCPlayer uhcPlayer) {
-        if(uhcPlayer.isAliveAndOnline()) {
+    @EventHandler
+    public void onGameStart(GameStartEvent event) {
+        for(UHCPlayer uhcPlayer : getAliveOnlinePlayersWithClass()) {
             BossBar bar = Bukkit.createBossBar(getBarTitle(), getBarColor(), getBarStyle());
             bar.setVisible(true);
             bar.setProgress(0);
@@ -34,8 +36,21 @@ public abstract class BarHolderUHCClass extends UHCClass {
         }
     }
 
-    @Override
-    public void onGameEnd(UHCPlayer uhcPlayer) {
+    @EventHandler
+    public void onGameEnd(GameEndEvent event) {
+        for(UHCPlayer uhcPlayer : getAliveOnlinePlayersWithClass()) {
+            Player player = uhcPlayer.getPlayer();
+            BossBar bar = getBar(uhcPlayer);
+            if(player != null && bar != null) {
+                bar.removePlayer(player);
+                bar.setVisible(false);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDeath(UHCPlayerDeathEvent event) {
+        UHCPlayer uhcPlayer = event.getUHCPlayer();
         Player player = uhcPlayer.getPlayer();
         BossBar bar = getBar(uhcPlayer);
         if(player != null && bar != null) {
@@ -44,18 +59,9 @@ public abstract class BarHolderUHCClass extends UHCClass {
         }
     }
 
-    @Override
-    public void onPlayerDeath(UHCPlayer uhcPlayer) {
-        Player player = uhcPlayer.getPlayer();
-        BossBar bar = getBar(uhcPlayer);
-        if(player != null && bar != null) {
-            bar.removePlayer(player);
-            bar.setVisible(false);
-        }
-    }
-
-    @Override
-    public void onPlayerLeave(UHCPlayer uhcPlayer) {
+    @EventHandler
+    public void onPlayerLeave(UHCPlayerLeaveEvent event) {
+        UHCPlayer uhcPlayer = event.getUHCPlayer();
         Player player = uhcPlayer.getPlayer();
         BossBar bar = getBar(uhcPlayer);
         if(player != null && bar != null) {
@@ -63,8 +69,9 @@ public abstract class BarHolderUHCClass extends UHCClass {
         }
     }
 
-    @Override
-    public void onPlayerRejoin(UHCPlayer uhcPlayer) {
+    @EventHandler
+    public void onPlayerRejoin(UHCPlayerRejoinEvent event) {
+        UHCPlayer uhcPlayer = event.getUHCPlayer();
         Player player = uhcPlayer.getPlayer();
         BossBar bar = getBar(uhcPlayer);
         if(player != null && bar != null) {

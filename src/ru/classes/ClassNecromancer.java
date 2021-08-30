@@ -18,6 +18,7 @@ import org.bukkit.potion.PotionEffectType;
 import ru.UHC.FightHelper;
 import ru.UHC.UHCPlayer;
 import ru.UHC.WorldManager;
+import ru.event.GameInitializeEvent;
 import ru.items.CustomItems;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
@@ -46,9 +47,11 @@ public class ClassNecromancer extends UHCClass {
         };
     }
 
-    @Override
-    public void onGameInit(UHCPlayer uhcPlayer) {
-        uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(10);
+    @EventHandler
+    public void gameInit(GameInitializeEvent event) {
+        for(UHCPlayer uhcPlayer : getPlayersWithClass()) {
+            uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(10);
+        }
     }
 
     @Override

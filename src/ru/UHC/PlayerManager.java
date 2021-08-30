@@ -10,6 +10,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.classes.ClassManager;
 import ru.event.SpectatorJoinEvent;
+import ru.event.SpectatorLeaveEvent;
 import ru.lobby.LobbyTeamBuilder;
 import ru.main.UHCPlugin;
 import ru.mutator.Mutator;
@@ -90,13 +91,10 @@ public class PlayerManager {
     }
 
     public static void removeSpectator(Player spectator) {
-        Bukkit.getPluginManager().callEvent(new SpectatorJoinEvent(spectator));
+        Bukkit.getPluginManager().callEvent(new SpectatorLeaveEvent(spectator));
         UHC.resetPlayer(spectator);
         spectator.setGameMode(GameMode.ADVENTURE);
         getSpectators().remove(spectator);
-        for(Mutator mutator : MutatorManager.activeMutators) {
-            mutator.onSpectatorLeave(spectator);
-        }
     }
 
     public static void addSpectator(Player player) {
@@ -104,9 +102,6 @@ public class PlayerManager {
         player.setGameMode(GameMode.SPECTATOR);
         player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
         getSpectators().add(player);
-        for(Mutator mutator : MutatorManager.activeMutators) {
-            mutator.onSpectatorJoinFromLobby(player);
-        }
         Bukkit.getPluginManager().callEvent(new SpectatorJoinEvent(player));
     }
 

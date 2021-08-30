@@ -19,6 +19,10 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
+import ru.event.SpectatorJoinEvent;
+import ru.event.SpectatorLeaveEvent;
+import ru.event.UHCPlayerLeaveEvent;
+import ru.event.UHCPlayerRejoinEvent;
 import ru.util.MathUtils;
 import ru.util.TaskManager;
 
@@ -137,24 +141,24 @@ public class MutatorRestrictions extends Mutator implements Listener {
 		}
 	}
 
-	@Override
-	public void onPlayerLeave(Player player) {
-		bar.removePlayer(player);
+	@EventHandler
+	public void playerLeave(UHCPlayerLeaveEvent event) {
+		bar.removePlayer(event.getUHCPlayer().getPlayer());
 	}
 
-	@Override
-	public void onPlayerRejoin(Player player) {
-		bar.addPlayer(player);
+	@EventHandler
+	public void playerRejoin(UHCPlayerRejoinEvent event) {
+		bar.addPlayer(event.getUHCPlayer().getPlayer());
 	}
 
-	@Override
-	public void onSpectatorJoinFromLobby(Player player) {
-		bar.addPlayer(player);
+	@EventHandler
+	public void spectatorJoin(SpectatorJoinEvent event) {
+		bar.addPlayer(event.getPlayer());
 	}
 
-	@Override
-	public void onSpectatorLeave(Player player) {
-		bar.removePlayer(player);
+	@EventHandler
+	public void spectatorLeave(SpectatorLeaveEvent event) {
+		bar.removePlayer(event.getPlayer());
 	}
 
 	@EventHandler

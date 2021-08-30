@@ -15,7 +15,10 @@ import org.bukkit.inventory.ItemStack;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHCPlayer;
 import ru.UHC.WorldManager;
+import ru.event.GameStartEvent;
+import ru.event.UHCPlayerRejoinEvent;
 import ru.items.CustomItems;
+import ru.main.UHCPlugin;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
 
@@ -74,17 +77,19 @@ public class ClassDemon extends BarHolderUHCClass {
         return Material.WEEPING_VINES;
     }
 
+    @EventHandler
     @Override
-    public void onGameStart(UHCPlayer uhcPlayer) {
-        super.onGameStart(uhcPlayer);
-        if(uhcPlayer.isAliveAndOnline()) {
+    public void onGameStart(GameStartEvent event) {
+        super.onGameStart(event);
+        for(UHCPlayer uhcPlayer : getAliveOnlinePlayersWithClass()) {
             updateSoulFlame(uhcPlayer, 0);
         }
     }
 
     @Override
-    public void onPlayerRejoin(UHCPlayer uhcPlayer) {
-        super.onPlayerRejoin(uhcPlayer);
+    public void onPlayerRejoin(UHCPlayerRejoinEvent event) {
+        super.onPlayerRejoin(event);
+        UHCPlayer uhcPlayer = event.getUHCPlayer();
         if(uhcPlayer.getPlayer() != null) {
             updateSoulFlame(uhcPlayer, getSoulFlame(uhcPlayer));
         }

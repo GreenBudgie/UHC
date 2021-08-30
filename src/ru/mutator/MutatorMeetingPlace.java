@@ -5,11 +5,16 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.UHC.UHCPlayer;
 import ru.UHC.WorldManager;
+import ru.event.SpectatorJoinEvent;
+import ru.event.SpectatorLeaveEvent;
+import ru.event.UHCPlayerLeaveEvent;
+import ru.event.UHCPlayerRejoinEvent;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
 import ru.util.Region;
@@ -88,24 +93,24 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 		border.setDamageAmount(0);
 	}
 
-	@Override
-	public void onPlayerLeave(Player player) {
-		bar.removePlayer(player);
+	@EventHandler
+	public void playerLeave(UHCPlayerLeaveEvent event) {
+		bar.removePlayer(event.getUHCPlayer().getPlayer());
 	}
 
-	@Override
-	public void onPlayerRejoin(Player player) {
-		bar.addPlayer(player);
+	@EventHandler
+	public void playerRejoin(UHCPlayerRejoinEvent event) {
+		bar.addPlayer(event.getUHCPlayer().getPlayer());
 	}
 
-	@Override
-	public void onSpectatorJoinFromLobby(Player player) {
-		bar.addPlayer(player);
+	@EventHandler
+	public void spectatorJoin(SpectatorJoinEvent event) {
+		bar.addPlayer(event.getPlayer());
 	}
 
-	@Override
-	public void onSpectatorLeave(Player player) {
-		bar.removePlayer(player);
+	@EventHandler
+	public void spectatorLeave(SpectatorLeaveEvent event) {
+		bar.removePlayer(event.getPlayer());
 	}
 
 	@Override

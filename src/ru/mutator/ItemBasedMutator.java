@@ -2,15 +2,18 @@ package ru.mutator;
 
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.UHC.UHCPlayer;
+import ru.event.GameStartEvent;
 
 import java.util.List;
 import java.util.Map;
 
-public abstract class ItemBasedMutator extends Mutator {
+public abstract class ItemBasedMutator extends Mutator implements Listener {
 
 	public abstract boolean isOnlyPreGame();
 
@@ -51,6 +54,13 @@ public abstract class ItemBasedMutator extends Mutator {
 	@Override
 	public final boolean canBeHidden() {
 		return false;
+	}
+	
+	@EventHandler
+	public void giveItemsOnGameStart(GameStartEvent event) {
+		for(Player player : PlayerManager.getAliveOnlinePlayers()) {
+			player.getInventory().addItem(getItemsToAdd().toArray(new ItemStack[0]));
+		}
 	}
 
 }

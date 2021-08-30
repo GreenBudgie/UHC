@@ -69,9 +69,6 @@ public class UHCPlayer {
                 for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
                     player.sendMessage(ChatColor.GOLD + nickname + ChatColor.RED + " вышел из игры");
                 }
-                for(Mutator mutator : MutatorManager.activeMutators) {
-                    mutator.onPlayerLeave(player);
-                }
                 if(!player.isOnGround()) {
                     int playerY = player.getLocation().getBlockY();
                     int highestY = player.getWorld().getHighestBlockYAt(player.getLocation());
@@ -90,9 +87,6 @@ public class UHCPlayer {
                         state = State.LEFT_AND_ALIVE;
                         offlineHealth = player.getHealth();
                         maxOfflineHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-                        if(uhcClass != null) {
-                            uhcClass.onPlayerLeave(this);
-                        }
                         Bukkit.getPluginManager().callEvent(new UHCPlayerLeaveEvent(this));
                         createGhost();
                         saveInventory();
@@ -117,12 +111,6 @@ public class UHCPlayer {
                 player.sendMessage(ChatColor.GOLD + nickname + ChatColor.DARK_GREEN + " вернулся в игру");
             }
             player.setHealth(offlineHealth);
-            for(Mutator mutator : MutatorManager.activeMutators) {
-                mutator.onPlayerRejoin(player);
-            }
-            if(uhcClass != null) {
-                uhcClass.onPlayerRejoin(this);
-            }
             Bukkit.getPluginManager().callEvent(new UHCPlayerRejoinEvent(this));
             String timesLeft = new NumericalCases("раз", "раза", "раз").byNumber(leavesRemaining);
             player.sendMessage(ChatColor.GRAY + "- " +
@@ -230,10 +218,6 @@ public class UHCPlayer {
         dropBonusItemOnDeath();
         showDeathMessage();
         removeTabPrefix();
-
-        if(uhcClass != null) {
-            uhcClass.onPlayerDeath(this);
-        }
 
         //Update rating
         summary.setDeathState(UHC.state);

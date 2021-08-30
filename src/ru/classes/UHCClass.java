@@ -4,9 +4,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHCPlayer;
+import ru.event.GameStartEvent;
 import ru.main.UHCPlugin;
 import ru.util.ItemUtils;
 
@@ -30,57 +33,6 @@ public abstract class UHCClass implements Listener {
     }
 
     public void onUpdate(UHCPlayer uhcPlayer) {}
-
-    /**
-     * Called when players are released from the platform
-     * Called only once for this class
-     */
-    public void onGameStart() {}
-
-    /**
-     * Called when players are about to teleport to the game world
-     * Called only once for this class
-     */
-    public void onGameInit() {}
-
-    /**
-     * Called when players are about to teleport to lobby when the game ends
-     * Called only once for each class
-     */
-    public void onGameEnd() {}
-
-    /**
-     * Called when player is about to teleport to lobby when the game ends
-     * Called for each player several times
-     */
-    public void onGameEnd(UHCPlayer uhcPlayer) {}
-
-    /**
-     * Called when the player is released from the platform
-     * Called for each player several times
-     */
-    public void onGameStart(UHCPlayer uhcPlayer) {}
-
-    /**
-     * Called when the player is about to teleport to the game world
-     * Called for each player several times
-     */
-    public void onGameInit(UHCPlayer uhcPlayer) {}
-
-    /**
-     * Called when player leaves the game with the current class
-     */
-    public void onPlayerLeave(UHCPlayer uhcPlayer) {}
-
-    /**
-     * Called when player rejoins the game after being offline
-     */
-    public void onPlayerRejoin(UHCPlayer uhcPlayer) {}
-
-    /**
-     * Called when player dies (online or offline) with the current class
-     */
-    public void onPlayerDeath(UHCPlayer uhcPlayer) {}
 
     /**
      * Defines an array of items that will be given to a player as the game starts
@@ -109,12 +61,33 @@ public abstract class UHCClass implements Listener {
         return item;
     }
 
+    public final List<UHCPlayer> getAliveOnlinePlayersWithClass() {
+        return PlayerManager.getPlayers().stream().filter(uhcPlayer -> uhcPlayer.getUHCClass() == this && uhcPlayer.isAliveAndOnline()).toList();
+    }
+
+    public final List<UHCPlayer> getAlivePlayersWithClass() {
+        return PlayerManager.getPlayers().stream().filter(uhcPlayer -> uhcPlayer.getUHCClass() == this && uhcPlayer.isAlive()).toList();
+    }
+
+    public final List<UHCPlayer> getPlayersWithClass() {
+        return PlayerManager.getPlayers().stream().filter(uhcPlayer -> uhcPlayer.getUHCClass() == this).toList();
+    }
+
     public final String getTabPrefix() {
         return ChatColor.DARK_GRAY + "[" + getName() + ChatColor.DARK_GRAY + "]";
     }
 
     public final boolean hasClass(Player player) {
         return this == ClassManager.getInGameClass(player);
+    }
+
+    @EventHandler
+    public void giveStartItems(GameStartEvent event) {
+        for(UHCPlayer uhcPlayer : getAliveOnlinePlayersWithClass()) {
+            for(ItemStack item : getStartItems()) {
+                uhcPlayer.getPlayer().getInventory().addItem(item);
+            }
+        }
     }
 
 }

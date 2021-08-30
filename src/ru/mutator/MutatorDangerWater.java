@@ -3,14 +3,17 @@ package ru.mutator;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.UHC.UHCPlayer;
+import ru.event.UHCPlayerLeaveEvent;
 
-public class MutatorDangerWater extends Mutator {
+public class MutatorDangerWater extends Mutator implements Listener {
 
 	@Override
 	public Material getItemToShow() {
@@ -49,14 +52,14 @@ public class MutatorDangerWater extends Mutator {
 		}
 	}
 
-	@Override
-	public void onPlayerLeave(Player player) {
+	@EventHandler
+	public void onPlayerLeave(UHCPlayerLeaveEvent event) {
+		UHCPlayer uhcPlayer = event.getUHCPlayer();
+		Player player = uhcPlayer.getPlayer();
 		if(((CraftPlayer) player).getHandle().isInWater()) {
-			UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
-			if(uhcPlayer != null) {
-				player.setLastDamageCause(new EntityDamageEvent(player, EntityDamageEvent.DamageCause.DROWNING, 100));
-				uhcPlayer.killOnLeave();
-			}
+			player.setLastDamageCause(new EntityDamageEvent(player, EntityDamageEvent.DamageCause.DROWNING, 100));
+			uhcPlayer.killOnLeave();
 		}
 	}
+
 }

@@ -116,19 +116,7 @@ public abstract class Mutator {
 	public void update() {
 	}
 
-	public void onPlayerLeave(Player player) {
-	}
-
-	public void onPlayerRejoin(Player player) {
-	}
-
 	public void onPlayerDeath(UHCPlayer uhcPlayer) {
-	}
-
-	public void onSpectatorJoinFromLobby(Player player) {
-	}
-
-	public void onSpectatorLeave(Player player) {
 	}
 
 	public boolean conflictsWith(Mutator another) {
