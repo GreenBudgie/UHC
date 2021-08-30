@@ -57,6 +57,22 @@ public class PlayerOptionHolder {
         savedPlayerOptions.set(playerName + ".mutators", mutatorConfigNames);
     }
 
+    @Nullable
+    public static String getLobbyTeammateName(String playerName) {
+        ConfigurationSection section = savedPlayerOptions.getConfigurationSection(playerName);
+        if(section == null) return null;
+        return section.getString("teammate");
+    }
+
+    public static void saveLobbyTeammates(String player1Name, String player2Name) {
+        savedPlayerOptions.set(player1Name + ".teammate", player2Name);
+        savedPlayerOptions.set(player2Name + ".teammate", player1Name);
+    }
+
+    public static void removeLobbyTeammate(String playerName) {
+        savedPlayerOptions.set(playerName + ".teammate", null);
+    }
+
     public static void saveOptions() {
         try {
             savedPlayerOptions.save(savedPlayerOptionsFile);

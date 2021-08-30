@@ -46,6 +46,7 @@ public class Lobby {
             UHCPlugin.error("Unable to save lobby.yml");
         }
         SignManager.init();
+        LobbyTeamBuilder.init();
         LobbyGameManager.init();
         LobbyMapPreview.init();
         Bukkit.getPluginManager().registerEvents(new LobbyListener(), UHCPlugin.instance);

@@ -27,7 +27,7 @@ public class CommandTeammate implements CommandExecutor, TabCompleter {
 			if(args.length == 1) {
 				if(args[0].equalsIgnoreCase("leave")) {
 					if(LobbyTeamBuilder.hasTeammate(player)) {
-						LobbyTeamBuilder.disbandTeam(player);
+						LobbyTeamBuilder.disbandTeam(player, true, true);
 					} else {
 						player.sendMessage(LobbyTeamBuilder.PREFIX + ChatColor.RED + "Сейчас ты не в команде");
 					}

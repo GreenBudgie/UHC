@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import ru.UHC.PlayerOptionHolder;
 import ru.UHC.UHC;
 import ru.UHC.WorldManager;
 import ru.main.UHCPlugin;
@@ -46,6 +47,24 @@ public class LobbyTeamBuilder implements Listener {
     private static final ItemStack teamDisbandItem =
             ItemUtils.builder(Material.BARRIER).withName(ChatColor.RED + "" + ChatColor.BOLD + "Покинуть команду").build();
 
+    public static void init() {
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            restoreTeammate(player, false, false);
+        }
+    }
+
+    private static void restoreTeammate(Player player, boolean sound, boolean message) {
+        String savedTeammateName = PlayerOptionHolder.getLobbyTeammateName(player.getName());
+        if(savedTeammateName != null) {
+            Player teammate = Bukkit.getPlayer(savedTeammateName);
+            if(teammate != null && teammate.isOnline() && !hasTeammate(teammate)) {
+                makeTeam(player, teammate, sound, message);
+            } else {
+                PlayerOptionHolder.removeLobbyTeammate(player.getName());
+            }
+        }
+    }
+
     public static int getTeamNumber() {
         int teamNumber = teams.size();
         for(Player player : Lobby.getLobby().getPlayers()) {
@@ -71,7 +90,7 @@ public class LobbyTeamBuilder implements Listener {
                     openRequestAcceptInventory(player);
                 }
                 if(item.getType() == Material.BARRIER) {
-                    disbandTeam(player);
+                    disbandTeam(player, true, true);
                 }
             }
             event.setCancelled(true);
@@ -94,7 +113,7 @@ public class LobbyTeamBuilder implements Listener {
                     openRequestSendInventory(player);
                 }
                 if(item.getType() == Material.BARRIER) {
-                    disbandTeam(player);
+                    disbandTeam(player, true, true);
                 }
             }
             event.setCancelled(true);
@@ -103,13 +122,16 @@ public class LobbyTeamBuilder implements Listener {
 
     @EventHandler
     public void updateOnQuit(PlayerQuitEvent event) {
-        disbandTeam(event.getPlayer());
         Player player = event.getPlayer();
+        disbandTeam(player, false, false);
+        requests.removeIf(request -> request.sender() == player || request.receiver() == player);
         teams.removeIf(team -> team.player1() == player || team.player2() == player);
     }
 
     @EventHandler
     public void updateOnJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        restoreTeammate(player, false, true);
         reopenInventories();
     }
 
@@ -230,26 +252,35 @@ public class LobbyTeamBuilder implements Listener {
     public static void acceptIncomingRequest(Player receiver, Player toAccept) {
         if(UHC.playing) return;
         if(hasActiveRequestTo(toAccept, receiver)) {
-            receiver.sendMessage(PREFIX +
-                    ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "Теперь ты союзник с " +
-                    ChatColor.RESET + ChatColor.GOLD + toAccept.getName());
-            toAccept.sendMessage(PREFIX +
-                    ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "Теперь ты союзник с " +
-                    ChatColor.RESET + ChatColor.GOLD + receiver.getName());
-            receiver.playSound(receiver.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.5F, 1F);
-            toAccept.playSound(toAccept.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.5F, 1F);
-            disbandTeam(toAccept);
-            disbandTeam(receiver);
-            teams.add(new Team(toAccept, receiver));
-            requests.removeIf(request ->
-                            request.receiver() == receiver ||
-                            request.sender() == toAccept ||
-                            request.receiver() == toAccept ||
-                            request.sender() == receiver);
-            reopenInventory(toAccept);
-            reopenInventory(receiver);
-            UHC.refreshLobbyScoreboard();
+            makeTeam(toAccept, receiver, true, true);
         }
+    }
+
+    private static void makeTeam(Player player1, Player player2, boolean sound, boolean message) {
+        if(message) {
+            player1.sendMessage(PREFIX +
+                    ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "Теперь ты союзник с " +
+                    ChatColor.RESET + ChatColor.GOLD + player2.getName());
+            player2.sendMessage(PREFIX +
+                    ChatColor.LIGHT_PURPLE + ChatColor.BOLD + "Теперь ты союзник с " +
+                    ChatColor.RESET + ChatColor.GOLD + player1.getName());
+        }
+        if(sound) {
+            player1.playSound(player1.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.5F, 1F);
+            player2.playSound(player2.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.5F, 1F);
+        }
+        disbandTeam(player2, true, false);
+        disbandTeam(player1, true, false);
+        PlayerOptionHolder.saveLobbyTeammates(player1.getName(), player2.getName());
+        teams.add(new Team(player2, player1));
+        requests.removeIf(request ->
+                request.receiver() == player1 ||
+                        request.sender() == player2 ||
+                        request.receiver() == player2 ||
+                        request.sender() == player1);
+        reopenInventory(player2);
+        reopenInventory(player1);
+        UHC.refreshLobbyScoreboard();
     }
 
     public static void declineIncomingRequest(Player receiver, Player toDecline) {
@@ -281,20 +312,26 @@ public class LobbyTeamBuilder implements Listener {
         return getTeammate(player) != null;
     }
 
-    public static void disbandTeam(Player member) {
+    public static void disbandTeam(Player member, boolean effect, boolean removeSavedOption) {
         if(UHC.playing) return;
         for(Team team : teams) {
             if(team.player1() == member || team.player2() == member) {
-                team.player1().sendMessage(PREFIX +
-                        ChatColor.DARK_RED + ChatColor.BOLD + "Ты и " +
-                        ChatColor.RESET + ChatColor.GOLD + team.player2().getName() +
-                        ChatColor.DARK_RED + ChatColor.BOLD + " больше не союзники");
-                team.player2().sendMessage(PREFIX +
-                        ChatColor.DARK_RED + ChatColor.BOLD + "Ты и " +
-                        ChatColor.RESET + ChatColor.GOLD + team.player1().getName() +
-                        ChatColor.DARK_RED + ChatColor.BOLD + " больше не союзники");
-                team.player1().playSound(team.player1().getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
-                team.player2().playSound(team.player2().getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
+                if(effect) {
+                    team.player1().sendMessage(PREFIX +
+                            ChatColor.DARK_RED + ChatColor.BOLD + "Ты и " +
+                            ChatColor.RESET + ChatColor.GOLD + team.player2().getName() +
+                            ChatColor.DARK_RED + ChatColor.BOLD + " больше не союзники");
+                    team.player2().sendMessage(PREFIX +
+                            ChatColor.DARK_RED + ChatColor.BOLD + "Ты и " +
+                            ChatColor.RESET + ChatColor.GOLD + team.player1().getName() +
+                            ChatColor.DARK_RED + ChatColor.BOLD + " больше не союзники");
+                    team.player1().playSound(team.player1().getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
+                    team.player2().playSound(team.player2().getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
+                }
+                if(removeSavedOption) {
+                    PlayerOptionHolder.removeLobbyTeammate(team.player1().getName());
+                    PlayerOptionHolder.removeLobbyTeammate(team.player2().getName());
+                }
                 break;
             }
         }

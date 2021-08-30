@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.UHC.PlayerOptionHolder;
 import ru.UHC.RecipeHandler;
 import ru.lobby.LobbyGameManager;
+import ru.lobby.LobbyTeamBuilder;
 import ru.lobby.sign.SignManager;
 import ru.UHC.UHC;
 import ru.artifact.ArtifactManager;
@@ -21,6 +22,7 @@ import ru.mutator.InventoryBuilderMutator;
 import ru.rating.InventoryBuilderRating;
 import ru.rating.Rating;
 import ru.requester.ItemRequester;
+import ru.util.InventoryHelper;
 import ru.util.TaskManager;
 
 public class UHCPlugin extends JavaPlugin {
@@ -133,6 +135,10 @@ public class UHCPlugin extends JavaPlugin {
 				player.sendMessage(obj.toString());
 			}
 		}
+	}
+
+	public static void logActBar(Player player, Object toLog) {
+		InventoryHelper.sendActionBarMessage(player, toLog.toString());
 	}
 
 	public static void log() {

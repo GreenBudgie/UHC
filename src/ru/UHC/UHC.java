@@ -4,8 +4,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.world.item.trading.MerchantRecipe;
 import net.minecraft.world.item.trading.MerchantRecipeList;
 import org.bukkit.*;
-import org.bukkit.advancement.Advancement;
-import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
@@ -47,6 +45,7 @@ import ru.lobby.Lobby;
 import ru.lobby.LobbyGameManager;
 import ru.lobby.LobbyTeamBuilder;
 import ru.lobby.sign.SignManager;
+import ru.main.UHCPlugin;
 import ru.mutator.ItemBasedMutator;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
@@ -414,7 +413,6 @@ public class UHC implements Listener {
 				return;
 			}
 			reduceTimeOnFewTeams = true;
-			resetAllAdvancements();
 			if(GameType.getType().allowsMutators()) {
 				mutatorCount = MathUtils.chance(30) ? 4 : (MathUtils.chance(65) ? 3 : 2);
 			} else {
@@ -1070,6 +1068,7 @@ public class UHC implements Listener {
 				arrow = arrows[i];
 			}
 		}
+		UHCPlugin.log(MathUtils.decimal(Math.toDegrees(finalAngle), 2));
 		return arrow;
 	}
 
@@ -1356,38 +1355,6 @@ public class UHC implements Listener {
 				.withSplittedLore(ChatColor.GOLD + "Окружи его золотыми слитками и получи 2 золотых яблока").build();
 	}
 
-	public static void giveAllRecipes(Player player) {
-		Iterator<Advancement> iterator = Bukkit.getServer().advancementIterator();
-		while(iterator.hasNext()) {
-			Advancement adv = iterator.next();
-			if(adv.getKey().getKey().startsWith("recipes")) {
-				AdvancementProgress progress = player.getAdvancementProgress(adv);
-				for(String criteria : progress.getRemainingCriteria()) {
-					progress.awardCriteria(criteria);
-				}
-			}
-		}
-	}
-
-	public static void resetAdvancements(Player player) {
-		Iterator<Advancement> iterator = Bukkit.getServer().advancementIterator();
-		while(iterator.hasNext()) {
-			Advancement adv = iterator.next();
-			if(!adv.getKey().getKey().startsWith("recipes")) {
-				AdvancementProgress progress = player.getAdvancementProgress(adv);
-				for(String criteria : progress.getAwardedCriteria()) {
-					progress.revokeCriteria(criteria);
-				}
-			}
-		}
-	}
-
-	public static void resetAllAdvancements() {
-		for(Player player : Bukkit.getOnlinePlayers()) {
-			resetAdvancements(player);
-		}
-	}
-
 	private static String invViewStart = ChatColor.GRAY + "Инвентарь";
 
 	public static void viewInventory(Player observer, Player target) {
@@ -1631,7 +1598,6 @@ public class UHC implements Listener {
 			if(!isInLobby(player)) player.teleport(WorldManager.getLobby().getSpawnLocation());
 			player.setGameMode(GameMode.ADVENTURE);
 			resetPlayer(player);
-			giveAllRecipes(player);
 			String msg = ChatColor.GREEN + "" + ChatColor.BOLD + "+ " + ChatColor.RESET + ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " присоединился";
 			for(Player pl : WorldManager.getLobby().getPlayers()) {
 				pl.sendMessage(msg);
