@@ -55,7 +55,7 @@ public abstract class ItemBasedMutator extends Mutator implements Listener {
 	public final boolean canBeHidden() {
 		return false;
 	}
-	
+
 	@EventHandler
 	public void giveItemsOnGameStart(GameStartEvent event) {
 		for(Player player : PlayerManager.getAliveOnlinePlayers()) {

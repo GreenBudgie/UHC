@@ -28,18 +28,25 @@ public abstract class CustomBlockItem extends CustomBlock {
     @Override
     public void onBreak(BlockBreakEvent event) {
         super.onBreak(event);
-        if(location != null && location.getWorld() != null) {
-            if(event.getPlayer().getGameMode() != GameMode.CREATIVE) {
-                location.getWorld().dropItemNaturally(location, getRepresentingItem().getItemStack());
-            }
+        if(event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+            dropAndRemove();
         }
     }
 
     @Override
     public void onExplode() {
         super.onExplode();
+        dropAndRemove();
+    }
+
+    /**
+     * Removes the current block and drops representing item in its location
+     */
+    public final void dropAndRemove() {
         if(location != null && location.getWorld() != null) {
             location.getWorld().dropItemNaturally(location, getRepresentingItem().getItemStack());
         }
+        remove();
     }
+
 }

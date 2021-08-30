@@ -35,7 +35,7 @@ public class ClassMiner extends BarHolderUHCClass {
 
     private final float PLAYER_DEFAULT_WALK_SPEED = 0.2F;
     private final double MIN_SPEED_REDUCTION = 1;
-    private final double MAX_SPEED_REDUCTION = 0.75;
+    private final double MAX_SPEED_REDUCTION = 0.8;
     private final double MIN_DAMAGE_REDUCTION = 0.9;
     private final double MAX_DAMAGE_REDUCTION = 0.7;
     private final int NEEDED_COPPER = 50;

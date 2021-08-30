@@ -103,7 +103,7 @@ public class CustomBlockTerraTracer extends CustomBlockItem {
             } else {
                 location.getWorld().playSound(location, Sound.BLOCK_BEACON_DEACTIVATE, 1.5F, 1.5F);
                 ParticleUtils.createCircle(centerLocation, Particle.SMOKE_NORMAL, null, 1.5, 10);
-                remove();
+                dropAndRemove();
             }
         }
         if(hasLocatedOre() && ticksPassed > 80 && ticksPassed % 10 == 0) {
