@@ -13,6 +13,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHCPlayer;
+import ru.event.GameEndEvent;
+import ru.event.UHCPlayerDeathEvent;
 import ru.main.UHCPlugin;
 import ru.util.ParticleUtils;
 
@@ -74,6 +76,11 @@ public class CustomItemAncientShard extends ClassCustomItem implements Listener 
 				player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 			}
 		}
+	}
+
+	@EventHandler
+	public void clearOnGameEnd(GameEndEvent event) {
+		affectedPlayers.clear();
 	}
 
 	@Override

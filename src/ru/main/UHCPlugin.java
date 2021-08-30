@@ -75,18 +75,6 @@ public class UHCPlugin extends JavaPlugin {
 	}
 
 	public void onDisable() {
-		if(UHC.playing) {
-			UHC.endGame();
-		}
-		for(Player player : Bukkit.getOnlinePlayers()) {
-			if(LobbyGameManager.PVP_ARENA.isOnArena(player)) {
-				player.teleport(LobbyGameManager.PVP_ARENA.getSpawnLocation());
-				LobbyGameManager.PVP_ARENA.onArenaLeave(player);
-			}
-		}
-		if(!LobbyGameManager.PVP_ARENA.isOpen()) {
-			LobbyGameManager.PVP_ARENA.openArena();
-		}
 		PlayerOptionHolder.saveOptions();
 	}
 

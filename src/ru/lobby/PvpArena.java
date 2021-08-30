@@ -16,6 +16,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -513,6 +514,19 @@ public class PvpArena extends LobbyGame implements Listener {
 			} else {
 				player.teleport(WorldManager.getLobby().getSpawnLocation());
 			}
+		}
+	}
+
+	@EventHandler
+	public void onPluginDisable(PluginDisableEvent event) {
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			if(isOnArena(player)) {
+				player.teleport(getSpawnLocation());
+				onArenaLeave(player);
+			}
+		}
+		if(!isOpen()) {
+			openArena();
 		}
 	}
 

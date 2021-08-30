@@ -23,6 +23,7 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -48,6 +49,7 @@ import ru.lobby.Lobby;
 import ru.lobby.LobbyGameManager;
 import ru.lobby.LobbyTeamBuilder;
 import ru.lobby.sign.SignManager;
+import ru.main.UHCPlugin;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
 import ru.rating.GameSummary;
@@ -1793,6 +1795,13 @@ public class UHC implements Listener {
 	public void tntArena(EntityExplodeEvent e) {
 		if(e.getEntityType() == EntityType.PRIMED_TNT && (state == GameState.DEATHMATCH || state == GameState.ENDING)) {
 			e.blockList().clear();
+		}
+	}
+
+	@EventHandler
+	public void pluginDisable(PluginDisableEvent event) {
+		if(UHC.playing) {
+			UHC.endGame();
 		}
 	}
 
