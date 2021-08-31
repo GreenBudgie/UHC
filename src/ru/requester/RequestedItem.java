@@ -4,11 +4,15 @@ import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import ru.UHC.PlayerManager;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
 import ru.util.TaskManager;
 import ru.util.WorldHelper;
+
+import javax.annotation.Nullable;
 
 public class RequestedItem {
 
@@ -31,6 +35,22 @@ public class RequestedItem {
 		timer = (ArmorStand) location.getWorld().spawnEntity(location.clone().add(0, -0.3, 0), EntityType.ARMOR_STAND);
 		hideStand(timer);
 		timer.setCustomName(ChatColor.AQUA + "" + timeToDrop);
+	}
+
+	public void announce(@Nullable Player requester) {
+		for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+			String distanceInfo = "";
+			if(requester == null || inGamePlayer != requester) {
+				distanceInfo = ChatColor.WHITE + " (" + (location.getWorld() == inGamePlayer.getWorld() ?
+						(ChatColor.AQUA + String.valueOf((int) location.distance(inGamePlayer.getLocation()))) :
+						WorldHelper.getEnvironmentNamePrepositional(location.getWorld().getEnvironment(), ChatColor.GRAY)) + ChatColor.WHITE + ")";
+			}
+			inGamePlayer.sendMessage(
+					ChatColor.LIGHT_PURPLE + "Был сделан запрос: " +
+							ChatColor.DARK_AQUA + location.getBlockX() +
+							ChatColor.WHITE + ", " + ChatColor.DARK_AQUA +
+							location.getBlockZ() + distanceInfo);
+		}
 	}
 
 	private void hideStand(ArmorStand stand) {

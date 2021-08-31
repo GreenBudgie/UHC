@@ -174,7 +174,7 @@ public class ClassDemon extends BarHolderUHCClass {
             if(uhcPlayer != null && isFireDamage(event.getCause())) {
                 double finalDamage = event.getFinalDamage();
                 double currentFlame = getSoulFlame(uhcPlayer);
-                setSoulFlame(uhcPlayer, MathUtils.clamp(currentFlame + finalDamage / 20, 0, 1));
+                setSoulFlame(uhcPlayer, MathUtils.clamp(currentFlame + finalDamage / 12, 0, 1));
                 updateSoulFlame(uhcPlayer, currentFlame);
             }
         }

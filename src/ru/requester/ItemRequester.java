@@ -120,18 +120,9 @@ public class ItemRequester implements Listener {
 				ParticleUtils.createParticlesInsideSphere(requester.getLocation(), 3, Particle.TOTEM, null, 30);
 				int lapisPrice = MutatorManager.simpleRequests.isActive() ? 0 : requesterItem.getLapisPrice();
 				removeMaterials(requester, requesterItem.getRedstonePrice(), lapisPrice);
-				for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
-					Location requesterLocation = requester.getLocation();
-					inGamePlayer.sendMessage(
-							ChatColor.LIGHT_PURPLE + "Был сделан запрос: " +
-									ChatColor.DARK_AQUA + requesterLocation.getBlockX() +
-									ChatColor.WHITE + ", " + ChatColor.DARK_AQUA +
-									requesterLocation.getBlockZ() +
-									(inGamePlayer == requester ? "" : ChatColor.WHITE + " (" + (requesterLocation.getWorld() == inGamePlayer.getWorld() ?
-											(ChatColor.AQUA + String.valueOf((int) requesterLocation.distance(inGamePlayer.getLocation()))) :
-											WorldHelper.getEnvironmentNamePrepositional(requesterLocation.getWorld().getEnvironment(), ChatColor.AQUA)) + ChatColor.WHITE + ")"));
-				}
-				requestedItems.add(new RequestedItem(requester.getLocation(), requesterItem.getItemStack()));
+				RequestedItem requestedItem = new RequestedItem(requester.getLocation(), requesterItem.getItemStack());
+				requestedItem.announce(requester);
+				requestedItems.add(requestedItem);
 				requester.closeInventory();
 			} else {
 				requester.playSound(requester.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);

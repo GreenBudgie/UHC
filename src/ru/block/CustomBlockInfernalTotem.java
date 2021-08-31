@@ -45,9 +45,9 @@ public class CustomBlockInfernalTotem extends CustomBlockTotem {
                     if(entity instanceof Player player && (!PlayerManager.isPlaying(player) || isImmune(player))) continue;
                     ParticleUtils.createParticlesAround(entity, Particle.SMOKE_LARGE, null, 10);
                     entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 0.6F);
-                    entity.setFireTicks(Math.max(entity.getFireTicks(), 60));
+                    entity.setFireTicks(Math.max(entity.getFireTicks(), 100));
                     if(entity instanceof Player player) {
-                        FightHelper.setDamager(player, owner, 70, "убил тотемом");
+                        FightHelper.setDamager(player, owner, 110, "убил тотемом");
                     }
                 }
             }

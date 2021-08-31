@@ -63,6 +63,7 @@ public class UHCPlugin extends JavaPlugin {
 		UHC.init();
 		CustomItems.init();
 		ItemRequester.init();
+		ArtifactManager.init();
 		ClassManager.init();
 		Rating.loadFromConfig();
 

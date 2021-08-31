@@ -40,7 +40,7 @@ public class ArtifactRandom extends Artifact {
 	@Override
 	public boolean onUse(@Nullable Player player) {
 		List<Artifact> toAdd = Lists.newArrayList(ArtifactManager.timeLeap, ArtifactManager.drop, ArtifactManager.teleport, ArtifactManager.time,
-				ArtifactManager.hunger);
+				ArtifactManager.hunger, ArtifactManager.request);
 		toAdd.add(MathUtils.choose(ArtifactManager.health, ArtifactManager.damage));
 		boolean canAddMutator = false;
 		boolean canRemoveMutator = false;

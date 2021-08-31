@@ -63,14 +63,9 @@ public class MutatorUnexpectedRequests extends Mutator {
 					timeToNextRequest--;
 				} else {
 					Location l = getRandomLocation();
-					for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
-						player.sendMessage(
-								ChatColor.LIGHT_PURPLE + "Был сделан запрос: " + ChatColor.DARK_AQUA + l.getBlockX() + ChatColor.WHITE + ", " + ChatColor.DARK_AQUA + l.getBlockZ()
-										+ (ChatColor.WHITE + " (" + (l.getWorld() == player.getWorld() ?
-										(ChatColor.AQUA + String.valueOf((int) l.distance(player.getLocation()))) :
-										WorldHelper.getEnvironmentNamePrepositional(l.getWorld().getEnvironment(), ChatColor.AQUA)) + ChatColor.WHITE + ")"));
-					}
-					ItemRequester.requestedItems.add(new RequestedItem(l, MathUtils.choose(ItemRequester.requesterCustomItems.values()).getItemStack()));
+					RequestedItem requestedItem = new RequestedItem(l, MathUtils.choose(ItemRequester.requesterCustomItems.values()).getItemStack());
+					requestedItem.announce(null);
+					ItemRequester.requestedItems.add(requestedItem);
 					reset();
 				}
 			}

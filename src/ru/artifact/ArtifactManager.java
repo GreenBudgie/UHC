@@ -3,6 +3,7 @@ package ru.artifact;
 import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -21,12 +22,11 @@ import ru.classes.ClassManager;
 import ru.items.CustomItems;
 import ru.mutator.MutatorManager;
 import ru.util.InventoryHelper;
+import ru.util.ItemUtils;
 import ru.util.MathUtils;
 import ru.util.NumericalCases;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,20 +43,55 @@ public class ArtifactManager implements Listener {
 	public static ArtifactDisableMutator disableMutator = new ArtifactDisableMutator();
 	public static ArtifactRandom random = new ArtifactRandom();
 	public static ArtifactHunger hunger = new ArtifactHunger();
+	public static ArtifactRequest request = new ArtifactRequest();
+
+	private static final Map<Integer, Artifact> inventoryArtifacts = new HashMap<>();
 
 	private static String inventoryName = ChatColor.DARK_RED + "Призвать";
 
-	public static void openArtifactInventory(Player p) {
+	public static void init() {
+		putArtifact(timeLeap, 11);
+		putArtifact(drop, 12);
+		putArtifact(request, 13);
+		putArtifact(teleport, 14);
+		putArtifact(mutator, 15);
+
+		putArtifact(disableMutator, 20);
+		putArtifact(time, 21);
+		putArtifact(hunger, 22);
+		putArtifact(health, 23);
+		putArtifact(damage, 24);
+
+		putArtifact(random, 40);
+	}
+
+	private static void putArtifact(Artifact artifact, int slot) {
+		inventoryArtifacts.put(slot, artifact);
+	}
+
+	public static void openArtifactInventory(Player player) {
 		NumericalCases cases = new NumericalCases("артефакт", "артефакта", "артефактов");
-		int count = getArtifactCount(p);
-		Inventory inv = Bukkit.createInventory(p, 18,
-				inventoryName + ChatColor.DARK_GRAY + " (" + ChatColor.YELLOW + count + ChatColor.RED + " " + cases.byNumber(count) + ChatColor.DARK_GRAY + ")");
-		List<Artifact> sorted = Lists.newArrayList(artifacts);
-		sorted.sort(Comparator.comparingInt(Artifact::getCurrentPrice));
-		for(Artifact artifact : sorted) {
-			inv.addItem(artifact.getItemFor(p));
+		int count = getArtifactCount(player);
+		Inventory inventory = Bukkit.createInventory(player, 54, inventoryName +
+						ChatColor.DARK_GRAY + " (" +
+						ChatColor.DARK_AQUA + ChatColor.BOLD + count +
+						ChatColor.RED + " " + cases.byNumber(count) +
+						ChatColor.DARK_GRAY + ")");
+		ItemStack blackGlass = ItemUtils.builder(Material.BLACK_STAINED_GLASS_PANE).withName("").build();
+		for(int slot = 0; slot < 54; slot++) {
+			if(
+				slot < 9 ||
+				slot >= 45 ||
+				slot % 9 == 0 ||
+				slot % 9 == 8
+			) {
+				inventory.setItem(slot, blackGlass);
+			}
 		}
-		p.openInventory(inv);
+		for(int slot : inventoryArtifacts.keySet()) {
+			inventory.setItem(slot, inventoryArtifacts.get(slot).getItemFor(player));
+		}
+		player.openInventory(inventory);
 	}
 
 	public static int getArtifactCount(Player p) {
@@ -105,6 +140,7 @@ public class ArtifactManager implements Listener {
 					for(Artifact artifact : artifacts) {
 						if(artifact.getType() == item.getType()) {
 							if(getArtifactCount(p) >= artifact.getCurrentPrice()) {
+								int priceBefore = artifact.getCurrentPrice();
 								if(artifact.use(p)) {
 									//Reopening other players' inventories to reset prices
 									for(Player player : PlayerManager.getAliveOnlinePlayers()) {
@@ -116,7 +152,7 @@ public class ArtifactManager implements Listener {
 											}
 										}
 									}
-									removeArtifacts(p, artifact.getCurrentPrice());
+									removeArtifacts(p, priceBefore);
 								} else {
 									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
 								}

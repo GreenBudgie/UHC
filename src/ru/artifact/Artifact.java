@@ -88,9 +88,9 @@ public abstract class Artifact {
 		ItemStack artifact = getItem();
 		if(ArtifactManager.getArtifactCount(p) >= getCurrentPrice()) {
 			ItemUtils.addGlow(artifact);
-			ItemUtils.addLore(artifact, false, ChatColor.GREEN + "Нажми, чтобы призвать");
+			ItemUtils.addLore(artifact, false, ChatColor.GREEN + "" + ChatColor.BOLD + "Нажми, чтобы призвать");
 		} else {
-			ItemUtils.addLore(artifact, false, ChatColor.RED + "Недостаточно артефактов");
+			ItemUtils.addLore(artifact, false, ChatColor.DARK_RED + "" + ChatColor.BOLD + "Недостаточно артефактов");
 		}
 		return artifact;
 	}
