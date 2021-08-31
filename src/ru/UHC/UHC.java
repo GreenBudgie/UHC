@@ -1212,6 +1212,8 @@ public class UHC implements Listener {
 				}
 			}
 		}
+		Rating.getCurrentGameSummary().setStartMutators(Lists.newArrayList(MutatorManager.activeMutators));
+
 		clearPlatformRegion();
 		for(Player player : PlayerManager.getAliveOnlinePlayers()) {
 			if(MutatorManager.isActive(MutatorManager.hungerGames)) {

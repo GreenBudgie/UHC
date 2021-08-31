@@ -35,7 +35,7 @@ public class ClassNecromancer extends UHCClass {
         return new String[] {
                 "При убийстве игрока максимально возможное количество здоровья увеличивается на 2 сердца",
                 "При убийстве игрока регенерируется 1 сердце",
-                "При убийстве любого моба или игрока ненадолго получает эффект поглощения урона",
+                "При убийстве любого моба или игрока получает эффект поглощения урона",
                 "Предмет: яйцо для призыва армии зомби и скелетов, атакующих врагов"
         };
     }
@@ -92,7 +92,7 @@ public class ClassNecromancer extends UHCClass {
             if(killer != null && hasClass(killer)) {
                 ParticleUtils.createParticlesAround(entity, Particle.SPELL_MOB, Color.RED, 30);
                 entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_HOE_TILL, 1F, 0.5F);
-                killer.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 30, 0));
+                killer.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 40, 0));
             }
         }
     }

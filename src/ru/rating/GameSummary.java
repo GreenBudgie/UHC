@@ -7,6 +7,8 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.GameState;
 import ru.UHC.GameType;
+import ru.mutator.Mutator;
+import ru.mutator.MutatorManager;
 import ru.util.ItemUtils;
 import ru.util.MathUtils;
 import ru.util.NumericalCases;
@@ -22,6 +24,7 @@ public class GameSummary implements ConfigurationSerializable {
     private boolean isDuo = false;
     private int durationMinutes = 0;
     private GameType type = null;
+    private List<Mutator> startMutators = null;
     private List<PlayerSummary> playerSummaries = new ArrayList<>();
 
     private ItemStack representingItem = null;
@@ -34,6 +37,9 @@ public class GameSummary implements ConfigurationSerializable {
         serialized.put("isDuo", isDuo());
         serialized.put("durationMinutes", getDurationMinutes());
         if(getType() != null) serialized.put("type", getType().name());
+        if(getStartMutators() != null && !getStartMutators().isEmpty()) {
+            serialized.put("mutators", startMutators.stream().map(Mutator::getConfigName).toList());
+        }
         List<Map<String, Object>> summaries = new ArrayList<>();
         for(PlayerSummary summary : getPlayerSummaries()) {
             summaries.add(summary.serialize());
@@ -55,6 +61,17 @@ public class GameSummary implements ConfigurationSerializable {
                 summary.setType(gameType);
             } catch(Exception ignored) {
             }
+        }
+        if(input.containsKey("mutators")) {
+            List<String> rawMutatorList = (List<String>) input.get("mutators");
+            List<Mutator> mutators = new ArrayList<>();
+            for(String rawMutator : rawMutatorList) {
+                Mutator mutator = MutatorManager.getMutatorByConfigName(rawMutator);
+                if(mutator != null) {
+                    mutators.add(mutator);
+                }
+            }
+            summary.setStartMutators(mutators);
         }
         List<Map<?, ?>> summaries = (List<Map<?, ?>>) input.getOrDefault("players", new ArrayList<>());
         for(Map<?, ?> serializedSummary : summaries) {
@@ -135,6 +152,14 @@ public class GameSummary implements ConfigurationSerializable {
         }
     }
 
+    public List<Mutator> getStartMutators() {
+        return startMutators;
+    }
+
+    public void setStartMutators(List<Mutator> startMutators) {
+        this.startMutators = startMutators;
+    }
+
     public GameType getType() {
         return type;
     }
@@ -149,6 +174,12 @@ public class GameSummary implements ConfigurationSerializable {
         builder.withLore(formatIsRatingGame(), formatWinners());
         if(getType() != null) builder.withLore(formatType());
         builder.withLore(formatIsDuo(), formatDuration(), formatPlayerNumber());
+        if(getStartMutators() != null && !getStartMutators().isEmpty()) {
+            builder.withLore(ChatColor.GRAY + "Мутаторы на старте:");
+            for(Mutator mutator : getStartMutators()) {
+                builder.withLore(ChatColor.GRAY + "- " + ChatColor.LIGHT_PURPLE + mutator.getName());
+            }
+        }
         builder.withValue("date", String.valueOf(getDate().getTime()));
         representingItem = builder.build();
     }
