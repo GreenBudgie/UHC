@@ -26,6 +26,28 @@ public class WorldManager {
 		lobby.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
 		lobby.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 
+		//------------------------
+		try {
+			new File(lobby.getWorldFolder().getAbsolutePath() + File.separator + "TEST.txt").createNewFile();
+		} catch(Exception ignored) {}
+
+		File dataFolder = new File(lobby.getWorldFolder().getAbsolutePath() + File.separator + "data");
+		for(int i = 0;; i++) {
+			File mapDat = new File(dataFolder.getAbsolutePath() + File.separator + "map_" + i + ".dat");
+			try {
+				if(!mapDat.delete()) {
+					break;
+				}
+			} catch(Exception ignored) {
+				break;
+			}
+		}
+		File idcounts = new File(dataFolder.getAbsolutePath() + File.separator + "idcounts.dat");
+		try {
+			idcounts.delete();
+		} catch(Exception ignored) {}
+		//------------------------
+
 		ArenaManager.init();
 
 		if(Bukkit.getWorld("CurrentMap") != null) {
