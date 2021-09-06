@@ -26,11 +26,21 @@ public class WorldManager {
 		lobby.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
 		lobby.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 
-		//------------------------
-		try {
-			new File(lobby.getWorldFolder().getAbsolutePath() + File.separator + "TEST.txt").createNewFile();
-		} catch(Exception ignored) {}
+		removeMapDatFiles();
+		ArenaManager.init();
 
+		if(Bukkit.getWorld("CurrentMap") != null) {
+			gameMap = Bukkit.createWorld(new WorldCreator("CurrentMap"));
+			gameMap.setDifficulty(Difficulty.HARD);
+			spawnLocation = gameMap.getSpawnLocation().clone();
+		}
+		if(Bukkit.getWorld("CurrentMapNether") != null) {
+			gameMapNether = Bukkit.createWorld(new WorldCreator("CurrentMapNether"));
+			gameMapNether.setDifficulty(Difficulty.HARD);
+		}
+	}
+
+	private static void removeMapDatFiles() {
 		File dataFolder = new File(lobby.getWorldFolder().getAbsolutePath() + File.separator + "data");
 		for(int i = 0;; i++) {
 			File mapDat = new File(dataFolder.getAbsolutePath() + File.separator + "map_" + i + ".dat");
@@ -46,19 +56,6 @@ public class WorldManager {
 		try {
 			idcounts.delete();
 		} catch(Exception ignored) {}
-		//------------------------
-
-		ArenaManager.init();
-
-		if(Bukkit.getWorld("CurrentMap") != null) {
-			gameMap = Bukkit.createWorld(new WorldCreator("CurrentMap"));
-			gameMap.setDifficulty(Difficulty.HARD);
-			spawnLocation = gameMap.getSpawnLocation().clone();
-		}
-		if(Bukkit.getWorld("CurrentMapNether") != null) {
-			gameMapNether = Bukkit.createWorld(new WorldCreator("CurrentMapNether"));
-			gameMapNether.setDifficulty(Difficulty.HARD);
-		}
 	}
 
 	public static World createMap() {

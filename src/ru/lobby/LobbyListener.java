@@ -2,9 +2,7 @@ package ru.lobby;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.Jukebox;
-import org.bukkit.block.Lectern;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
@@ -17,31 +15,27 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
-import ru.UHC.WorldManager;
+import ru.UHC.UHC;
 import ru.util.TaskManager;
 
 public class LobbyListener implements Listener {
 
-    public static boolean isInLobby(Player player) {
-        return Lobby.isInLobby(player);
+    public static boolean isInLobbyOrArena(Player player) {
+        return Lobby.isInLobbyOrWatchingArena(player);
     }
 
     @EventHandler
     public void noDamage(EntityDamageEvent e) {
-        if(e.getEntity() instanceof Player p) {
-            if(isInLobby(p) && !LobbyGameManager.PVP_ARENA.isOnArena(p)) {
+        if(e.getEntity() instanceof Player player) {
+            if(Lobby.isInLobby(player) && !LobbyGameManager.PVP_ARENA.isOnArena(player)) {
                 e.setCancelled(true);
             }
         }
@@ -50,7 +44,7 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void noMinecartCollide(VehicleEntityCollisionEvent e) {
         if(e.getEntity() instanceof Player p) {
-            if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
+            if(p.getGameMode() == GameMode.ADVENTURE && isInLobbyOrArena(p)) {
                 e.setCancelled(true);
             }
         }
@@ -59,7 +53,7 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void noMinecartDamage(VehicleDamageEvent e) {
         if(e.getAttacker() instanceof Player p) {
-            if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
+            if(p.getGameMode() == GameMode.ADVENTURE && isInLobbyOrArena(p)) {
                 e.setCancelled(true);
             }
         }
@@ -69,7 +63,7 @@ public class LobbyListener implements Listener {
     public void noItemFrameInteract(PlayerInteractEntityEvent e) {
         Player p = e.getPlayer();
         Entity ent = e.getRightClicked();
-        if(ent instanceof ItemFrame && p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
+        if(ent instanceof ItemFrame && p.getGameMode() == GameMode.ADVENTURE && isInLobbyOrArena(p)) {
             e.setCancelled(true);
         }
     }
@@ -77,7 +71,7 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void noGrief(HangingBreakByEntityEvent e) {
         if(e.getRemover() instanceof Player p) {
-            if(p.getGameMode() == GameMode.ADVENTURE && isInLobby(p)) {
+            if(p.getGameMode() == GameMode.ADVENTURE && isInLobbyOrArena(p)) {
                 e.setCancelled(true);
             }
         }
@@ -85,7 +79,7 @@ public class LobbyListener implements Listener {
 
     @EventHandler
     public void noFrameItemBreak(EntityDamageByEntityEvent e) {
-        if(e.getEntityType() == EntityType.ITEM_FRAME && e.getDamager() instanceof Player && isInLobby((Player) e.getDamager())
+        if(e.getEntityType() == EntityType.ITEM_FRAME && e.getDamager() instanceof Player && isInLobbyOrArena((Player) e.getDamager())
                 && ((Player) e.getDamager()).getGameMode() != GameMode.CREATIVE) {
             e.setCancelled(true);
         }
@@ -93,7 +87,7 @@ public class LobbyListener implements Listener {
 
     @EventHandler
     public void allowMusicDisks(PlayerInteractEvent e) {
-        if(isInLobby(e.getPlayer()) && e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.JUKEBOX
+        if(isInLobbyOrArena(e.getPlayer()) && e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.JUKEBOX
                 && e.getHand() == EquipmentSlot.HAND && e.getPlayer().getGameMode() == GameMode.ADVENTURE) {
             Jukebox jukebox = (Jukebox) e.getClickedBlock().getState();
             if(!jukebox.isPlaying() && jukebox.getRecord().getType() == Material.AIR && e.getItem() != null && e.getItem().getType().isRecord()) {
@@ -109,40 +103,22 @@ public class LobbyListener implements Listener {
 
     @EventHandler
     public void noDrop(PlayerDropItemEvent e) {
-        if(isInLobby(e.getPlayer()) && e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+        if(isInLobbyOrArena(e.getPlayer()) && e.getPlayer().getGameMode() != GameMode.CREATIVE) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void noPlace(BlockPlaceEvent e) {
-        if(isInLobby(e.getPlayer()) && e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+        if(isInLobbyOrArena(e.getPlayer()) && e.getPlayer().getGameMode() != GameMode.CREATIVE) {
             e.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void lectern(PlayerInteractEvent e) {
-        if(isInLobby(e.getPlayer()) && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Player player = e.getPlayer();
-            Block block = e.getClickedBlock();
-            if(block.getType() == Material.LECTERN) {
-                if(!e.getPlayer().getInventory().contains(Material.WRITTEN_BOOK)) {
-                    Lectern lectern = (Lectern) block.getState();
-                    ItemStack book = lectern.getInventory().getItem(0);
-                    if(book != null) {
-                        player.getInventory().addItem(book);
-                    }
-                }
-                e.setCancelled(true);
-            }
         }
     }
 
     @EventHandler
     public void noFoodLoss(FoodLevelChangeEvent e) {
         Player p = (Player) e.getEntity();
-        if(isInLobby(p) && e.getFoodLevel() < 20) {
+        if(isInLobbyOrArena(p) && e.getFoodLevel() < 20) {
             p.setFoodLevel(20);
             e.setCancelled(true);
         }
@@ -151,18 +127,27 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void noEntityDamage(EntityDamageByEntityEvent e) {
         if(e.getDamager() instanceof Player player && player.getGameMode() == GameMode.ADVENTURE &&
-                isInLobby(player) && !(e.getEntity() instanceof Player)) {
+                isInLobbyOrArena(player) && !(e.getEntity() instanceof Player)) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void move(PlayerMoveEvent e) {
-        Player p = e.getPlayer();
-        if(isInLobby(p)) {
-            if(e.getTo().getY() <= 0) {
-                p.teleport(WorldManager.getLobby().getSpawnLocation());
-            }
+    public void noLobbyArenasInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if(Lobby.isWatchingArena(player) && player.getGameMode() != GameMode.CREATIVE) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void lobbyDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        UHC.heal(player);
+        event.getDrops().clear();
+        event.setKeepInventory(true);
+        if(isInLobbyOrArena(player)) {
+            player.teleport(player.getWorld().getSpawnLocation());
         }
     }
 

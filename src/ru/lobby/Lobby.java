@@ -5,6 +5,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import ru.UHC.ArenaManager;
 import ru.UHC.WorldManager;
 import ru.lobby.sign.LobbySign;
 import ru.lobby.sign.SignManager;
@@ -12,6 +13,7 @@ import ru.main.UHCPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Lobby {
 
@@ -63,6 +65,25 @@ public class Lobby {
 
     public static boolean isInLobby(Player player) {
         return getLobby().getPlayers().contains(player);
+    }
+
+    public static boolean isWatchingArena(Player player) {
+        for(ArenaManager.Arena arena : ArenaManager.getArenas()) {
+            if(arena.world().getPlayers().contains(player)) return true;
+        }
+        return false;
+    }
+
+    public static List<Player> getPlayersInLobbyAndArenas() {
+        List<Player> lobbyPlayers = new ArrayList<>();
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            if(isInLobbyOrWatchingArena(player)) lobbyPlayers.add(player);
+        }
+        return lobbyPlayers;
+    }
+
+    public static boolean isInLobbyOrWatchingArena(Player player) {
+        return isInLobby(player) || isWatchingArena(player);
     }
 
 

@@ -3,7 +3,6 @@ package ru.lobby;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Content;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -22,9 +20,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 import ru.UHC.PlayerManager;
 import ru.UHC.PlayerOptionHolder;
 import ru.UHC.UHC;
-import ru.UHC.WorldManager;
-import ru.main.UHCPlugin;
-import ru.util.InventoryHelper;
 import ru.util.ItemUtils;
 
 import java.util.ArrayList;
@@ -68,7 +63,7 @@ public class LobbyTeamBuilder implements Listener {
 
     public static int getTeamNumber() {
         int teamNumber = teams.size();
-        for(Player player : Lobby.getLobby().getPlayers()) {
+        for(Player player : Lobby.getPlayersInLobbyAndArenas()) {
             if(!hasTeammate(player)) teamNumber++;
         }
         return teamNumber;
@@ -164,7 +159,7 @@ public class LobbyTeamBuilder implements Listener {
 
     public static void openRequestSendInventory(Player player) {
         if(UHC.playing) return;
-        List<Player> players = Lobby.getLobby().getPlayers();
+        List<Player> players = Lobby.getPlayersInLobbyAndArenas();
         players.removeIf(currentPlayer -> currentPlayer == player || hasActiveRequestTo(player, currentPlayer));
         int inventorySize = (((players.size() - 1) / 9) + 1) * 9 + 9;
         Inventory inventory = Bukkit.createInventory(player, inventorySize, requestSendInventoryName);
@@ -202,7 +197,7 @@ public class LobbyTeamBuilder implements Listener {
     }
 
     public static void reopenInventories() {
-        for(Player player : Lobby.getLobby().getPlayers()) {
+        for(Player player : Lobby.getPlayersInLobbyAndArenas()) {
             reopenInventory(player);
         }
     }

@@ -282,11 +282,11 @@ public class PvpArena extends LobbyGame implements Listener {
 		onArenaEnter(p1);
 		onArenaEnter(p2);
 		isDuel = true;
-		for(Player p : getLobbyPlayers()) {
-			p.sendTitle(ChatColor.AQUA + "Дуэль!", ChatColor.GOLD + p1.getName() + ChatColor.RED + ChatColor.BOLD + " VS " + ChatColor.RESET + ChatColor.GOLD + p2.getName(),
+		for(Player player : getLobbyPlayers()) {
+			player.sendTitle(ChatColor.AQUA + "Дуэль!", ChatColor.GOLD + p1.getName() + ChatColor.RED + ChatColor.BOLD + " VS " + ChatColor.RESET + ChatColor.GOLD + p2.getName(),
 					5, 40, 10);
-			p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 0.5F, 1F);
-			heal(p);
+			player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 0.5F, 1F);
+			heal(player);
 		}
 	}
 
@@ -466,7 +466,7 @@ public class PvpArena extends LobbyGame implements Listener {
 	@EventHandler
 	public void move(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
-		if(UHC.isInLobby(player)) {
+		if(Lobby.getLobby().getPlayers().contains(player)) {
 			Location to = e.getTo();
 			if(isOnArena(player) && leaveRegion.isInside(to)) {
 				onArenaLeave(player);
@@ -480,40 +480,33 @@ public class PvpArena extends LobbyGame implements Listener {
 	@EventHandler
 	public void death(PlayerDeathEvent e) {
 		Player player = e.getEntity();
-		if(UHC.isInLobby(player)) {
-			heal(player);
-			e.getDrops().clear();
-			e.setKeepInventory(true);
-			if(isOnArena(player)) {
-				onArenaLeave(player);
-				killsToNextKit--;
-				if(killsToNextKit <= 0) {
-					killsToNextKit = 8;
-					currentKit = getRandomKit();
-					for(Player currentPlayer : onArena) {
-						InventoryHelper.sendActionBarMessage(currentPlayer,
-										ChatColor.GOLD + "В следующий раз будет выдан новый набор: " +
-												ChatColor.LIGHT_PURPLE + currentKit.getName());
-					}
+		if(Lobby.getLobby().getPlayers().contains(player) && isOnArena(player)) {
+			onArenaLeave(player);
+			killsToNextKit--;
+			if(killsToNextKit <= 0) {
+				killsToNextKit = 8;
+				currentKit = getRandomKit();
+				for(Player currentPlayer : onArena) {
+					InventoryHelper.sendActionBarMessage(currentPlayer,
+							ChatColor.GOLD + "В следующий раз будет выдан новый набор: " +
+									ChatColor.LIGHT_PURPLE + currentKit.getName());
 				}
-				Player killer = player.getKiller();
-				if(killer != null) {
-					heal(killer);
-					killer.getInventory().clear();
-					currentKit.give(killer);
-					killer.playSound(killer.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.8F, 1F);
-				}
-				for(Arrow arrow : player.getWorld().getEntitiesByClass(Arrow.class)) {
-					if(arrow.isInBlock()) {
-						arrow.remove();
-					}
-				}
-				SignManager.updateTextOnSigns();
-				player.teleport(spawnLocation);
-				TaskManager.invokeLater(() -> player.setVelocity(new Vector(0, 0, 0)));
-			} else {
-				player.teleport(WorldManager.getLobby().getSpawnLocation());
 			}
+			Player killer = player.getKiller();
+			if(killer != null) {
+				heal(killer);
+				killer.getInventory().clear();
+				currentKit.give(killer);
+				killer.playSound(killer.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.8F, 1F);
+			}
+			for(Arrow arrow : player.getWorld().getEntitiesByClass(Arrow.class)) {
+				if(arrow.isInBlock()) {
+					arrow.remove();
+				}
+			}
+			SignManager.updateTextOnSigns();
+			player.teleport(spawnLocation);
+			TaskManager.invokeLater(() -> player.setVelocity(new Vector(0, 0, 0)));
 		}
 	}
 

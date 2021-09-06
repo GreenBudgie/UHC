@@ -7,7 +7,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import ru.UHC.ArenaManager;
 import ru.UHC.UHC;
 import ru.lobby.Lobby;
 import ru.lobby.LobbyTeamBuilder;
@@ -85,7 +84,7 @@ public class CommandTeammate implements CommandExecutor, TabCompleter {
 				}
 				if(args[0].equalsIgnoreCase("request")) {
 					return MathUtils.getListOfStringsMatchingLastWord(args,
-							Lobby.getLobby().getPlayers().stream().
+							Lobby.getPlayersInLobbyAndArenas().stream().
 							filter(currentPlayer -> !LobbyTeamBuilder.hasActiveRequestTo(player, currentPlayer) && player != currentPlayer).
 							map(Player::getName).
 							toList());

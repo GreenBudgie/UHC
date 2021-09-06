@@ -7,9 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
-import ru.UHC.WorldManager;
+import ru.lobby.Lobby;
 import ru.lobby.LobbyGameManager;
-import ru.lobby.PvpArena;
 
 public class CommandLobby implements CommandExecutor {
 
@@ -18,11 +17,11 @@ public class CommandLobby implements CommandExecutor {
 		if(PlayerManager.isPlaying(player)) {
 			player.sendMessage(ChatColor.RED + "Нельзя выйти в лобби во время игры");
 		} else {
-			if(UHC.isInLobby(player)) {
+			if(Lobby.isInLobbyOrWatchingArena(player)) {
 				LobbyGameManager.PVP_ARENA.onArenaLeave(player);
 			}
 			boolean inGame = PlayerManager.isInGame(player);
-			player.teleport(WorldManager.getLobby().getSpawnLocation());
+			player.teleport(Lobby.getLobby().getSpawnLocation());
 			if(inGame) {
 				PlayerManager.removeSpectator(player);
 				UHC.refreshScoreboards();

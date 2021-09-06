@@ -5,9 +5,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.UHC.UHC;
-import ru.UHC.WorldManager;
-
-import java.util.List;
+import ru.lobby.Lobby;
 
 public class LobbySignGameDuo extends LobbySign {
 
@@ -19,7 +17,7 @@ public class LobbySignGameDuo extends LobbySign {
     @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
         UHC.isDuo = !UHC.isDuo;
-        WorldManager.getLobby().getPlayers().forEach(UHC::updateLobbyScoreboard);
+        Lobby.getPlayersInLobbyAndArenas().forEach(UHC::updateLobbyScoreboard);
     }
 
     @Override

@@ -80,7 +80,6 @@ public class UHC implements Listener {
 	public static int gameDuration = 1;
 	public static boolean generating = false;
 	public static boolean isRatingGame = true;
-	public static Location parkourStart;
 	public static String timerInfo = "";
 	public static int fastStart = 0; //0 - disabled, 1 - without mutators, 2 - with mutators
 	private static int mutatorCount = 0;
@@ -119,7 +118,6 @@ public class UHC implements Listener {
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			createLobbyScoreboard(p);
 		}
-		parkourStart = new Location(WorldManager.getLobby(), -1, 4, 21);
 	}
 
 	public static String getUHCLogo() {
@@ -135,7 +133,7 @@ public class UHC implements Listener {
 
 		Team lobbyTeam = board.registerNewTeam("LobbyTeam");
 		lobbyTeam.setColor(ChatColor.GOLD);
-		WorldManager.getLobby().getPlayers().forEach(pl -> lobbyTeam.addEntry(pl.getName()));
+		Lobby.getPlayersInLobbyAndArenas().forEach(pl -> lobbyTeam.addEntry(pl.getName()));
 
 		Team playerTeam = board.registerNewTeam("PlayerTeam");
 		playerTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
@@ -278,7 +276,7 @@ public class UHC implements Listener {
 	}
 
 	public static void refreshLobbyScoreboard() {
-		WorldManager.getLobby().getPlayers().forEach(UHC::createLobbyScoreboard);
+		Lobby.getPlayersInLobbyAndArenas().forEach(UHC::createLobbyScoreboard);
 	}
 
 	public static void refreshGameScoreboard() {
@@ -296,13 +294,12 @@ public class UHC implements Listener {
 		lobbyTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
 		lobbyTeam.setCanSeeFriendlyInvisibles(false);
 		lobbyTeam.setColor(ChatColor.GOLD);
-		WorldManager.getLobby().getPlayers().forEach(pl -> lobbyTeam.addEntry(pl.getName()));
+		Lobby.getPlayersInLobbyAndArenas().forEach(pl -> lobbyTeam.addEntry(pl.getName()));
 
 		Team playerTeam = board.registerNewTeam("PlayerTeam");
 		playerTeam.setColor(ChatColor.AQUA);
 		PlayerManager.getAliveOnlinePlayers().forEach(pl -> playerTeam.addEntry(pl.getName()));
 
-		WorldManager.getLobby().getPlayers().forEach(pl -> lobbyTeam.addEntry(pl.getName()));
 		p.setScoreboard(board);
 		updateLobbyScoreboard(p);
 	}
@@ -316,7 +313,7 @@ public class UHC implements Listener {
 		int c = 0;
 		if(isDuo) {
 			List<Player> registered = new ArrayList<>();
-			for(Player currentPlayer : WorldManager.getLobby().getPlayers()) {
+			for(Player currentPlayer : Lobby.getPlayersInLobbyAndArenas()) {
 				Player currentTeammate = LobbyTeamBuilder.getTeammate(currentPlayer);
 				String s;
 				String currentPlayerName = (currentPlayer == player ? ChatColor.GREEN : ChatColor.GOLD) + currentPlayer.getName();
@@ -376,7 +373,7 @@ public class UHC implements Listener {
 				inGamePlayer.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
 				resetPlayer(inGamePlayer);
 				inGamePlayer.setGameMode(GameMode.ADVENTURE);
-				inGamePlayer.teleport(WorldManager.getLobby().getSpawnLocation());
+				inGamePlayer.teleport(Lobby.getLobby().getSpawnLocation());
 			}
 			for(UHCPlayer uhcPlayer : PlayerManager.getPlayers()) {
 				if(uhcPlayer.getGhost() != null) uhcPlayer.getGhost().remove();
@@ -1188,10 +1185,6 @@ public class UHC implements Listener {
 		}
 	}
 
-	public static boolean isInLobby(Player p) {
-		return WorldManager.getLobby().getPlayers().contains(p);
-	}
-
 	public static void resetPlayer(Player p) {
 		p.getInventory().clear();
 		p.getActivePotionEffects().forEach(ef -> p.removePotionEffect(ef.getType()));
@@ -1356,7 +1349,7 @@ public class UHC implements Listener {
 	@EventHandler
 	public void damageByEntity(EntityDamageByEntityEvent e) {
 		if(e.getEntity() instanceof Player player && e.getDamager() instanceof Player damager) {
-			if(PlayerManager.isTeammates(player, damager) && !isInLobby(player)) e.setCancelled(true);
+			if(PlayerManager.isTeammates(player, damager) && !Lobby.isInLobbyOrWatchingArena(player)) e.setCancelled(true);
 		}
 	}
 
@@ -1469,11 +1462,11 @@ public class UHC implements Listener {
 		String prefix = ChatColor.LIGHT_PURPLE + "<Локально> ";
 		for(Player receiver : Bukkit.getOnlinePlayers()) {
 			if(!local) {
-				if(isInLobby(sender) && PlayerManager.isInGame(receiver)) {
+				if(Lobby.isInLobbyOrWatchingArena(sender) && PlayerManager.isInGame(receiver)) {
 					receiver.sendMessage(ChatColor.YELLOW + "<Лобби> " + suffix);
 					continue;
 				}
-				if(isInLobby(receiver) && PlayerManager.isInGame(sender)) {
+				if(Lobby.isInLobbyOrWatchingArena(receiver) && PlayerManager.isInGame(sender)) {
 					receiver.sendMessage(ChatColor.AQUA + "<Игра> " + suffix);
 					continue;
 				}
@@ -1483,7 +1476,7 @@ public class UHC implements Listener {
 				}
 				receiver.sendMessage(suffix);
 			} else {
-				if((isInLobby(sender) && isInLobby(receiver)) ||
+				if((Lobby.isInLobbyOrWatchingArena(sender) && Lobby.isInLobbyOrWatchingArena(receiver)) ||
 						(PlayerManager.isSpectator(sender) && PlayerManager.isSpectator(receiver)) ||
 						(!isDuo && PlayerManager.isPlaying(sender) && PlayerManager.isPlaying(receiver))) {
 					receiver.sendMessage(prefix + suffix);
@@ -1552,11 +1545,11 @@ public class UHC implements Listener {
 				uplayer.leave();
 			}
 		} else {
-			for(Player pl : WorldManager.getLobby().getPlayers()) {
-				pl.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "- " + ChatColor.RESET + ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " отключился");
+			for(Player currentPlayer : Lobby.getPlayersInLobbyAndArenas()) {
+				currentPlayer.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "- " + ChatColor.RESET + ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " отключился");
 			}
-			refreshLobbyScoreboardLater();
 		}
+		refreshScoreboardsLater();
 	}
 
 	@EventHandler
@@ -1566,23 +1559,21 @@ public class UHC implements Listener {
 		UHCPlayer uplayer = PlayerManager.asUHCPlayer(player);
 		if(uplayer != null && !uplayer.isSpectator()) {
 			uplayer.rejoin(player);
-			refreshGameScoreboardLater();
 		} else {
 			player.setPlayerListFooter(null);
-			if(!isInLobby(player)) player.teleport(WorldManager.getLobby().getSpawnLocation());
-			player.setGameMode(GameMode.ADVENTURE);
-			resetPlayer(player);
+			if(player.getGameMode() != GameMode.CREATIVE) {
+				player.setGameMode(GameMode.ADVENTURE);
+			}
 			String msg = ChatColor.GREEN + "" + ChatColor.BOLD + "+ " + ChatColor.RESET + ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " присоединился";
-			for(Player pl : WorldManager.getLobby().getPlayers()) {
-				pl.sendMessage(msg);
+			for(Player currentPlayer : Lobby.getPlayersInLobbyAndArenas()) {
+				currentPlayer.sendMessage(msg);
 			}
 			if(playing) {
-				refreshGameScoreboardLater();
 				player.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Сейчас идет игра! " + ChatColor.RESET + ChatColor.AQUA
 						+ "За игрой можно наблюдать, кликнув по табличке.");
 			}
 		}
-		refreshLobbyScoreboardLater();
+		refreshScoreboardsLater();
 	}
 
 	@EventHandler
@@ -1712,7 +1703,11 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void noTeleport(PlayerTeleportEvent e) {
-		if(e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE && e.getTo().getWorld() == WorldManager.getLobby()) {
+		World world = e.getTo().getWorld();
+		boolean isGameWorld = world == WorldManager.getGameMap() ||
+				world == WorldManager.getGameMapNether() ||
+				(ArenaManager.getCurrentArena() != null && world == ArenaManager.getCurrentArena().world());
+		if(e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE && !isGameWorld) {
 			e.setCancelled(true);
 		}
 	}

@@ -38,7 +38,7 @@ public class ClassManager implements Listener {
 
     public static void init() {
         Bukkit.getPluginManager().registerEvents(new ClassManager(), UHCPlugin.instance);
-        for(Player player : Lobby.getLobby().getPlayers()) {
+        for(Player player : Lobby.getPlayersInLobbyAndArenas()) {
             UHCClass uhcClass = PlayerOptionHolder.getSelectedClass(player);
             if(uhcClass != null) {
                 lobbyPlayerClasses.put(player.getName(), uhcClass);
@@ -79,7 +79,7 @@ public class ClassManager implements Listener {
      * Selects the class while the player is in lobby
      */
     public static void selectClassInLobby(Player player, UHCClass uhcClass) {
-        if(!Lobby.isInLobby(player)) return;
+        if(!Lobby.isInLobbyOrWatchingArena(player)) return;
         lobbyPlayerClasses.put(player.getName(), uhcClass);
         player.sendMessage(
                 ChatColor.GRAY + "" + ChatColor.BOLD + "> " +
@@ -93,7 +93,7 @@ public class ClassManager implements Listener {
      * Removes the selected class from the player while he is in lobby
      */
     public static void removeClassInLobby(Player player) {
-        if(!Lobby.isInLobby(player)) return;
+        if(!Lobby.isInLobbyOrWatchingArena(player)) return;
         lobbyPlayerClasses.remove(player.getName());
         player.sendMessage(
                 ChatColor.GRAY + "" + ChatColor.BOLD + "> " +
@@ -126,7 +126,7 @@ public class ClassManager implements Listener {
     public void invClick(InventoryClickEvent e) {
         if(e.getView().getTitle().equals(INV_NAME)) {
             Player player = (Player) e.getWhoClicked();
-            if(!Lobby.isInLobby(player)) return;
+            if(!Lobby.isInLobbyOrWatchingArena(player)) return;
             e.setCancelled(true);
             ItemStack item = e.getCurrentItem();
             if(item == null) return;

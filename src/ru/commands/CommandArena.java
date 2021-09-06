@@ -18,14 +18,21 @@ import java.util.stream.Collectors;
 public class CommandArena implements CommandExecutor, TabCompleter {
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if(!sender.isOp()) return true;
-		if(args.length >= 1) {
-			String worldName = args[0];
-			for(ArenaManager.Arena arena : ArenaManager.getArenas()) {
-				if(arena.world().getName().equals(worldName)) {
-					((Player) sender).teleport(arena.world().getSpawnLocation());
-					sender.sendMessage(ChatColor.WHITE + "Телепортирован на арену: " + ChatColor.DARK_GREEN + arena.name());
-					break;
+		if(sender instanceof Player player) {
+			if(args.length >= 1) {
+				String worldName = args[0];
+				boolean found = false;
+				for(ArenaManager.Arena arena : ArenaManager.getArenas()) {
+					if(arena.getSimpleName().equals(worldName) || arena.world().getName().equals(worldName)) {
+						player.teleport(arena.world().getSpawnLocation());
+						player.sendMessage(ChatColor.WHITE + "Просмотр арены - " + ChatColor.DARK_GREEN + arena.name());
+						player.sendMessage(ChatColor.GRAY + "Напиши " + ChatColor.WHITE + "/lobby" + ChatColor.GRAY + ", чтобы вернуться");
+						found = true;
+						break;
+					}
+				}
+				if(!found) {
+					player.sendMessage(ChatColor.DARK_RED + "Неверное название арены!");
 				}
 			}
 		}
@@ -35,7 +42,7 @@ public class CommandArena implements CommandExecutor, TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 		if(args.length == 1) {
-			return MathUtils.getListOfStringsMatchingLastWord(args, ArenaManager.getArenas().stream().map(arena -> arena.world().getName()).toList());
+			return MathUtils.getListOfStringsMatchingLastWord(args, ArenaManager.getArenas().stream().map(ArenaManager.Arena::getSimpleName).toList());
 		}
 		return new ArrayList<>();
 	}

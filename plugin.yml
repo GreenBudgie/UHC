@@ -1,7 +1,7 @@
 name: UHC
 api-version: 1.16
 main: ru.main.UHCPlugin
-version: 2.1
+version: 3.0
 commands:
  test:
   description: Debug command
@@ -19,8 +19,8 @@ commands:
   description: Вернуться в лобби
   usage: /lobby
  arena:
-  description: Go to arena
-  usage: /arena <world_name>
+  description: Просмотр арены
+  usage: /arena <название_арены>
  skip:
   description: Skip the current GameState
   usage: /skip

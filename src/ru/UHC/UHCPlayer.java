@@ -2,7 +2,6 @@ package ru.UHC;
 
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -14,7 +13,6 @@ import ru.event.UHCPlayerDeathEvent;
 import ru.event.UHCPlayerLeaveEvent;
 import ru.event.UHCPlayerRejoinEvent;
 import ru.lobby.Lobby;
-import ru.main.UHCPlugin;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
 import ru.rating.PlayerSummary;
@@ -501,7 +499,7 @@ public class UHCPlayer {
      * Checks whether the current player is registered as "uhc player" and currently not in lobby.
      */
     public boolean isInGame() {
-        return player != null && !Lobby.isInLobby(player);
+        return player != null && !Lobby.isInLobbyOrWatchingArena(player);
     }
 
     /**

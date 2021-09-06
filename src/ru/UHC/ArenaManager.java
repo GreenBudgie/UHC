@@ -194,6 +194,10 @@ public class ArenaManager {
             return new Arena(tempWorld, name, maxBorderSize, minBorderSize, isOpen);
         }
 
+        public String getSimpleName() {
+            return name.replaceAll(" ", "_");
+        }
+
     }
 
 }
