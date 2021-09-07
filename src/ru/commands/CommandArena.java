@@ -23,7 +23,13 @@ public class CommandArena implements CommandExecutor, TabCompleter {
 					if(arena.getSimpleName().equals(worldName) || arena.getWorld().getName().equals(worldName)) {
 						player.teleport(arena.getWorld().getSpawnLocation());
 						player.sendMessage(ChatColor.WHITE + "Просмотр арены - " + ChatColor.DARK_GREEN + arena.getName());
+						if(!arena.isOpen()) {
+							player.sendMessage(ChatColor.WHITE + "Это " +
+									ChatColor.GRAY + ChatColor.BOLD + " закрытая " +
+									ChatColor.WHITE + "арена - нельзя выйти за ее пределы");
+						}
 						player.sendMessage(ChatColor.GRAY + "Напиши " + ChatColor.WHITE + "/lobby" + ChatColor.GRAY + ", чтобы вернуться");
+						if(!arena.isEnabled()) player.sendMessage(ChatColor.RED + "Эта арена сейчас не используется!");
 						found = true;
 						break;
 					}

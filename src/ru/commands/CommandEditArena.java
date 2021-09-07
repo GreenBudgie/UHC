@@ -49,6 +49,7 @@ public class CommandEditArena implements CommandExecutor, TabCompleter {
 				if(args.length == 3) {
 					try {
 						selectedArena.setByOption(option, args[2]);
+						selectedArena.updateConfig();
 						player.sendMessage(ChatColor.WHITE + option.name() +
 								ChatColor.GRAY + " is now " +
 								ChatColor.WHITE + selectedArena.getByOption(option));

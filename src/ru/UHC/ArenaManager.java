@@ -15,7 +15,7 @@ public class ArenaManager {
     private static Arena chosenArena = null;
     private static boolean announceArena = true;
     private static Arena currentArena;
-    private static List<Arena> arenas = new ArrayList<>();
+    private final static List<Arena> arenas = new ArrayList<>();
 
     private static boolean needsUpdate = false;
     
@@ -117,7 +117,7 @@ public class ArenaManager {
     public static void setupCurrentArena() {
         removeCurrentArena();
         if(chosenArena == null) {
-            currentArena = MathUtils.choose(arenas).cloneAsTemp();
+            currentArena = MathUtils.choose(getEnabledArenas()).cloneAsTemp();
         } else {
             currentArena = chosenArena.cloneAsTemp();
         }
@@ -133,22 +133,35 @@ public class ArenaManager {
     }
 
     public static void switchChosenArena() {
-        int chosenArenaIndex = arenas.indexOf(chosenArena);
+        List<Arena> enabledArenas = getEnabledArenas();
+        int chosenArenaIndex = enabledArenas.indexOf(chosenArena);
         if(chosenArenaIndex == -1) {
-            chosenArena = arenas.get(0);
+            chosenArena = enabledArenas.get(0);
             needsUpdate = false;
         } else {
-            if(chosenArenaIndex == arenas.size() - 1) {
+            if(chosenArenaIndex == enabledArenas.size() - 1) {
                 chosenArena = null;
                 needsUpdate = true;
             } else {
-                chosenArena = arenas.get(chosenArenaIndex + 1);
+                chosenArena = enabledArenas.get(chosenArenaIndex + 1);
             }
         }
     }
 
+    /**
+     * Gets the list of arenas.
+     * This does not include temp (current) arena.
+     */
     public static List<Arena> getArenas() {
         return arenas;
+    }
+
+    /**
+     * Gets the list of enabled arenas.
+     * This does not include temp (current) arena.
+     */
+    public static List<Arena> getEnabledArenas() {
+        return arenas.stream().filter(Arena::isEnabled).toList();
     }
 
     /**
@@ -198,6 +211,10 @@ public class ArenaManager {
         private boolean isOpen;
         private boolean isEnabled;
 
+        private Arena(World world) {
+            this.world = world;
+        }
+
         public Arena(World world, String name, int maxBorderSize, int minBorderSize, boolean isOpen, boolean isEnabled) {
             this.world = world;
             this.name = name;
@@ -220,7 +237,6 @@ public class ArenaManager {
                 case IS_ENABLED ->
                         setEnabled(Boolean.parseBoolean(value));
             }
-            updateConfig();
         }
 
         public Object getByOption(ArenaOptions option) {
@@ -245,17 +261,19 @@ public class ArenaManager {
         public boolean updateConfig() {
             File worldFile = world.getWorldFolder();
             File configFile = new File(worldFile.getAbsolutePath() + File.separator + "arena.yml");
-            if(configFile.exists()) {
-                configFile.delete();
-            }
-            try {
-                configFile.createNewFile();
-            } catch(Exception exception) {
-                UHCPlugin.error("Unable to update config for \"" + getName() + "\"");
-                exception.printStackTrace();
-                return false;
+            if(!configFile.exists()) {
+                try {
+                    configFile.createNewFile();
+                } catch(Exception exception) {
+                    UHCPlugin.error("Unable to update config for \"" + getName() + "\"");
+                    exception.printStackTrace();
+                    return false;
+                }
             }
             YamlConfiguration arenaConfig = YamlConfiguration.loadConfiguration(configFile);
+            for(ArenaOptions option : ArenaOptions.values()) {
+                arenaConfig.set(option.name(), getByOption(option));
+            }
             try {
                 arenaConfig.save(configFile);
             } catch(Exception exception) {
@@ -276,12 +294,11 @@ public class ArenaManager {
         }
 
         public static Arena deserialize(World world, Map<String, Object> input) {
-            String name = (String) input.getOrDefault(ArenaOptions.NAME.name(), ArenaOptions.NAME.getDefaultValue());
-            int maxBorderSize = (int) input.getOrDefault(ArenaOptions.MAX_BORDER_SIZE.name(), ArenaOptions.MAX_BORDER_SIZE.getDefaultValue());
-            int minBorderSize = (int) input.getOrDefault(ArenaOptions.MIN_BORDER_SIZE.name(), ArenaOptions.MIN_BORDER_SIZE.getDefaultValue());
-            boolean isOpen = (boolean) input.getOrDefault(ArenaOptions.IS_OPEN.name(), ArenaOptions.IS_OPEN.getDefaultValue());
-            boolean isEnabled = (boolean) input.getOrDefault(ArenaOptions.IS_ENABLED.name(), ArenaOptions.IS_ENABLED.getDefaultValue());
-            return new Arena(world, name, maxBorderSize, minBorderSize, isOpen, isEnabled);
+            Arena arena = new Arena(world);
+            for(ArenaOptions option : ArenaOptions.values()) {
+                arena.setByOption(option, input.getOrDefault(option.name(), option.getDefaultValue()).toString());
+            }
+            return arena;
         }
 
         public World getWorld() {
