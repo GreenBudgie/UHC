@@ -69,7 +69,7 @@ public class Lobby {
 
     public static boolean isWatchingArena(Player player) {
         for(ArenaManager.Arena arena : ArenaManager.getArenas()) {
-            if(arena.world().getPlayers().contains(player)) return true;
+            if(arena.getWorld().getPlayers().contains(player)) return true;
         }
         return false;
     }

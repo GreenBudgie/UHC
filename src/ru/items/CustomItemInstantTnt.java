@@ -9,14 +9,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import ru.UHC.*;
 import ru.main.UHCPlugin;
 import ru.util.ParticleUtils;
-import ru.util.WorldHelper;
 
 public class CustomItemInstantTnt extends RequesterCustomItem implements Listener {
 
@@ -33,7 +30,7 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 		boolean canPlace = true;
 		ArenaManager.Arena arena = ArenaManager.getCurrentArena();
 		if(arena != null) {
-			if(!arena.world().getPVP()) canPlace = false;
+			if(!arena.getWorld().getPVP()) canPlace = false;
 		}
 		if(UHC.state != GameState.ENDING && (UHC.state != GameState.DEATHMATCH || canPlace)) {
 			ParticleUtils.createParticlesOutline(b, Particle.REDSTONE, Color.RED, 15);

@@ -6,7 +6,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.UHC.ArenaManager;
-import ru.UHC.WorldManager;
 
 public class LobbySignGameArena extends LobbySign {
 
@@ -50,7 +49,7 @@ public class LobbySignGameArena extends LobbySign {
                 sign.setLine(3, ChatColor.GRAY + "- Скрытая -");
             }
         } else {
-            sign.setLine(2, ChatColor.GREEN + ArenaManager.getChosenArena().name());
+            sign.setLine(2, ChatColor.GREEN + ArenaManager.getChosenArena().getName());
         }
     }
 

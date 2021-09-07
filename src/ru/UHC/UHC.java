@@ -49,7 +49,6 @@ import ru.lobby.Lobby;
 import ru.lobby.LobbyGameManager;
 import ru.lobby.LobbyTeamBuilder;
 import ru.lobby.sign.SignManager;
-import ru.main.UHCPlugin;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
 import ru.rating.GameSummary;
@@ -496,7 +495,7 @@ public class UHC implements Listener {
 				preparingTimer = 3;
 			}
 			playing = true;
-			ArenaManager.getCurrentArena().world().setPVP(false);
+			ArenaManager.getCurrentArena().getWorld().setPVP(false);
 			SignManager.updateTextOnSigns();
 
 			Bukkit.getPluginManager().callEvent(new GameInitializeEvent());
@@ -879,7 +878,7 @@ public class UHC implements Listener {
 					state = GameState.DEATHMATCH;
 					arenaTimer = DEATHMATCH_START_TIMER;
 					for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
-						inGamePlayer.teleport(ArenaManager.getCurrentArena().world().getSpawnLocation());
+						inGamePlayer.teleport(ArenaManager.getCurrentArena().getWorld().getSpawnLocation());
 						inGamePlayer.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Дезматч" + ChatColor.GRAY + "!",
 								ChatColor.DARK_AQUA + "" + ChatColor.BOLD + DEATHMATCH_NO_PVP_DURATION +
 										ChatColor.RESET + ChatColor.GOLD + " секунд до " +
@@ -889,7 +888,7 @@ public class UHC implements Listener {
 					}
 					for(UHCPlayer offlinePlayer : PlayerManager.getAlivePlayers()) {
 						if(!offlinePlayer.isOnline()) {
-							offlinePlayer.teleport(ArenaManager.getCurrentArena().world().getSpawnLocation());
+							offlinePlayer.teleport(ArenaManager.getCurrentArena().getWorld().getSpawnLocation());
 						}
 					}
 				}
@@ -906,9 +905,9 @@ public class UHC implements Listener {
 				//Start border scaling
 				if(timeUntilShrink == 0) {
 					ArenaManager.Arena arena = ArenaManager.getCurrentArena();
-					WorldBorder arenaBorder = arena.world().getWorldBorder();
-					arenaBorder.setSize(arena.maxBorderSize());
-					arenaBorder.setSize(arena.minBorderSize(), DEATHMATCH_ZONE_SHRINK_DURATION);
+					WorldBorder arenaBorder = arena.getWorld().getWorldBorder();
+					arenaBorder.setSize(arena.getMaxBorderSize());
+					arenaBorder.setSize(arena.getMinBorderSize(), DEATHMATCH_ZONE_SHRINK_DURATION);
 					for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 						inGamePlayer.playSound(inGamePlayer.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1, 0.8f);
 						inGamePlayer.sendTitle(" ", ChatColor.DARK_RED + "" + ChatColor.BOLD + ">>> " +
@@ -919,7 +918,7 @@ public class UHC implements Listener {
 				}
 				int timeUntilPvp = DEATHMATCH_NO_PVP_DURATION - (DEATHMATCH_START_TIMER - arenaTimer);
 				if(timeUntilPvp == 0) {
-					ArenaManager.getCurrentArena().world().setPVP(true);
+					ArenaManager.getCurrentArena().getWorld().setPVP(true);
 					for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 						p.sendTitle(" ", ChatColor.DARK_RED + "" + ChatColor.BOLD + ">>> " + ChatColor.GOLD + ChatColor.BOLD + "ПВП" + ChatColor.RED +
 								ChatColor.BOLD + " Включено!" + ChatColor.DARK_RED + ChatColor.BOLD + " <<<", 0, 35, 15);
@@ -1222,7 +1221,7 @@ public class UHC implements Listener {
 				player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "> " +
 						ChatColor.GRAY + "Дезматч будет проходить на арене" +
 						ChatColor.DARK_GRAY + ": " +
-						ChatColor.DARK_GREEN + ArenaManager.getCurrentArena().name() +
+						ChatColor.DARK_GREEN + ArenaManager.getCurrentArena().getName() +
 						ChatColor.DARK_GRAY + "" + ChatColor.BOLD + " <");
 			}
 			player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.4F, 1);
@@ -1706,7 +1705,7 @@ public class UHC implements Listener {
 		World world = e.getTo().getWorld();
 		boolean isGameWorld = world == WorldManager.getGameMap() ||
 				world == WorldManager.getGameMapNether() ||
-				(ArenaManager.getCurrentArena() != null && world == ArenaManager.getCurrentArena().world());
+				(ArenaManager.getCurrentArena() != null && world == ArenaManager.getCurrentArena().getWorld());
 		if(e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE && !isGameWorld) {
 			e.setCancelled(true);
 		}

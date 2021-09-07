@@ -7,13 +7,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import ru.UHC.ArenaManager;
-import ru.UHC.UHC;
-import ru.UHC.WorldManager;
 import ru.util.MathUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CommandArena implements CommandExecutor, TabCompleter {
 
@@ -23,9 +20,9 @@ public class CommandArena implements CommandExecutor, TabCompleter {
 				String worldName = args[0];
 				boolean found = false;
 				for(ArenaManager.Arena arena : ArenaManager.getArenas()) {
-					if(arena.getSimpleName().equals(worldName) || arena.world().getName().equals(worldName)) {
-						player.teleport(arena.world().getSpawnLocation());
-						player.sendMessage(ChatColor.WHITE + "Просмотр арены - " + ChatColor.DARK_GREEN + arena.name());
+					if(arena.getSimpleName().equals(worldName) || arena.getWorld().getName().equals(worldName)) {
+						player.teleport(arena.getWorld().getSpawnLocation());
+						player.sendMessage(ChatColor.WHITE + "Просмотр арены - " + ChatColor.DARK_GREEN + arena.getName());
 						player.sendMessage(ChatColor.GRAY + "Напиши " + ChatColor.WHITE + "/lobby" + ChatColor.GRAY + ", чтобы вернуться");
 						found = true;
 						break;

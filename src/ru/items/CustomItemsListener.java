@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import ru.UHC.ArenaManager;
 import ru.UHC.GameState;
 import ru.UHC.UHC;
-import ru.main.UHCPlugin;
 
 public class CustomItemsListener implements Listener {
 
@@ -66,7 +65,7 @@ public class CustomItemsListener implements Listener {
 					item.onPlace(e.getPlayer(), e.getBlock(), e.getItemInHand(), e);
 					if(item instanceof BlockHolder holder) {
 						boolean toCancel = true;
-						boolean pvpIsOn = ArenaManager.getCurrentArena().world().getPVP();
+						boolean pvpIsOn = ArenaManager.getCurrentArena().getWorld().getPVP();
 						boolean isDeathmatch = UHC.state == GameState.DEATHMATCH;
 						boolean canPlaceNow = UHC.state.isInGame();
 						if(canPlaceNow || (isDeathmatch && holder.canPlaceOnDeathmatch() && pvpIsOn)) {

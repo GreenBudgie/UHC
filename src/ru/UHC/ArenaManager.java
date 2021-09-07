@@ -2,15 +2,13 @@ package ru.UHC;
 
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import ru.main.UHCPlugin;
 import ru.util.MathUtils;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ArenaManager {
 
@@ -22,11 +20,6 @@ public class ArenaManager {
     private static boolean needsUpdate = false;
     
     public static void init() {
-        Map<String, Object> defaultParameters = new HashMap<>();
-        defaultParameters.put("name", "Unknown arena");
-        defaultParameters.put("minBorderSize", 10);
-        defaultParameters.put("maxBorderSize", 24);
-        defaultParameters.put("isOpen", true);
         for(File file : Bukkit.getWorldContainer().listFiles()) {
             if(file.getName().startsWith("Arena")) {
                 World arenaWorld = Bukkit.createWorld(new WorldCreator(file.getName()));
@@ -47,28 +40,19 @@ public class ArenaManager {
                 setupArenaWorld(arenaWorld);
                 YamlConfiguration arenaConfig = YamlConfiguration.loadConfiguration(configFile);
                 boolean toUpdate = false;
-                String name = "";
-                int minBorderSize = 0;
-                int maxBorderSize = 0;
-                boolean isOpen = true;
-                for(String parameterName : defaultParameters.keySet()) {
+                for(ArenaOptions option : ArenaOptions.values()) {
+                    String parameterName = option.name();
                     Object parameter = arenaConfig.get(parameterName);
                     if(parameter == null) {
                         UHCPlugin.warning("\"" + file.getName() + "\" config has no parameter " + parameterName);
-                        parameter = defaultParameters.get(parameterName);
+                        parameter = option.getDefaultValue();
                         arenaConfig.set(parameterName, parameter);
                         toUpdate = true;
-                    }
-                    switch(parameterName) {
-                        case "name" -> name = (String) parameter;
-                        case "minBorderSize" -> minBorderSize = (int) parameter;
-                        case "maxBorderSize" -> maxBorderSize = (int) parameter;
-                        case "isOpen" -> isOpen = (boolean) parameter;
                     }
                 }
                 Arena arena;
                 try {
-                    arena = new Arena(arenaWorld, name, maxBorderSize, minBorderSize, isOpen);
+                    arena = Arena.deserialize(arenaWorld, arenaConfig.getValues(false));
                 } catch(Exception e) {
                     UHCPlugin.error("Unable to setup \"" + file.getName() + "\"");
                     e.printStackTrace();
@@ -116,8 +100,8 @@ public class ArenaManager {
 
     public static void removeCurrentArena() {
         if(currentArena != null) {
-            Bukkit.unloadWorld(currentArena.world(), false);
-            WorldManager.deleteTempWorld(currentArena.world());
+            Bukkit.unloadWorld(currentArena.getWorld(), false);
+            WorldManager.deleteTempWorld(currentArena.getWorld());
             currentArena = null;
         }
     }
@@ -127,7 +111,7 @@ public class ArenaManager {
      */
     public static boolean needsUpdate() {
         if(needsUpdate) return true;
-        return WorldManager.hasMap() && currentArena != null && chosenArena != null && !currentArena.name().equals(chosenArena.name());
+        return WorldManager.hasMap() && currentArena != null && chosenArena != null && !currentArena.getName().equals(chosenArena.getName());
     }
 
     public static void setupCurrentArena() {
@@ -142,11 +126,10 @@ public class ArenaManager {
     }
 
     public static void resetArenaBorder(Arena arena) {
-        WorldBorder arenaBorder = arena.world().getWorldBorder();
+        WorldBorder arenaBorder = arena.getWorld().getWorldBorder();
         arenaBorder.setDamageBuffer(1);
         arenaBorder.setWarningDistance(1);
-        arenaBorder.setSize(arena.maxBorderSize() * 4);
-        arenaBorder.setCenter(arena.world().getSpawnLocation());
+        arenaBorder.setSize(arena.getMaxBorderSize() * 4);
     }
 
     public static void switchChosenArena() {
@@ -187,17 +170,147 @@ public class ArenaManager {
         return currentArena;
     }
 
-    public record Arena(World world, String name, int maxBorderSize, int minBorderSize, boolean isOpen) {
+    public enum ArenaOptions {
+
+        NAME("Unknown arena"),
+        MAX_BORDER_SIZE(32),
+        MIN_BORDER_SIZE(10),
+        IS_OPEN(true),
+        IS_ENABLED(true);
+
+        private Object defaultValue;
+
+        ArenaOptions(Object defaultValue) {
+            this.defaultValue = defaultValue;
+        }
+
+        public Object getDefaultValue() {
+            return defaultValue;
+        }
+    }
+
+    public static final class Arena implements ConfigurationSerializable {
+
+        private final World world;
+        private String name;
+        private int maxBorderSize;
+        private int minBorderSize;
+        private boolean isOpen;
+        private boolean isEnabled;
+
+        public Arena(World world, String name, int maxBorderSize, int minBorderSize, boolean isOpen, boolean isEnabled) {
+            this.world = world;
+            this.name = name;
+            this.maxBorderSize = maxBorderSize;
+            this.minBorderSize = minBorderSize;
+            this.isOpen = isOpen;
+            this.isEnabled = isEnabled;
+        }
+
+        public Object getByOption(ArenaOptions option) {
+            return switch(option) {
+                case NAME -> name;
+                case MAX_BORDER_SIZE -> maxBorderSize;
+                case MIN_BORDER_SIZE -> minBorderSize;
+                case IS_OPEN -> isOpen;
+                case IS_ENABLED -> isEnabled;
+            };
+        }
 
         public Arena cloneAsTemp() {
             World tempWorld = WorldManager.copyAsTemp(world);
-            return new Arena(tempWorld, name, maxBorderSize, minBorderSize, isOpen);
+            return new Arena(tempWorld, name, maxBorderSize, minBorderSize, isOpen, isEnabled);
         }
 
         public String getSimpleName() {
             return name.replaceAll(" ", "_");
         }
 
+        public boolean updateConfig() {
+            File worldFile = world.getWorldFolder();
+            File configFile = new File(worldFile.getAbsolutePath() + File.separator + "arena.yml");
+            if(configFile.exists()) {
+                configFile.delete();
+            }
+            try {
+                configFile.createNewFile();
+            } catch(Exception exception) {
+                UHCPlugin.error("Unable to update config for \"" + getName() + "\"");
+                exception.printStackTrace();
+                return false;
+            }
+            YamlConfiguration arenaConfig = YamlConfiguration.loadConfiguration(configFile);
+            try {
+                arenaConfig.save(configFile);
+            } catch(Exception exception) {
+                UHCPlugin.error("Unable to update config for \"" + getName() + "\"");
+                exception.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public Map<String, Object> serialize() {
+            Map<String, Object> output = new HashMap<>();
+            for(ArenaOptions option : ArenaOptions.values()) {
+                output.put(option.name(), getByOption(option));
+            }
+            return output;
+        }
+
+        public static Arena deserialize(World world, Map<String, Object> input) {
+            String name = (String) input.getOrDefault(ArenaOptions.NAME.name(), ArenaOptions.NAME.getDefaultValue());
+            int maxBorderSize = (int) input.getOrDefault(ArenaOptions.MAX_BORDER_SIZE.name(), ArenaOptions.MAX_BORDER_SIZE.getDefaultValue());
+            int minBorderSize = (int) input.getOrDefault(ArenaOptions.MIN_BORDER_SIZE.name(), ArenaOptions.MIN_BORDER_SIZE.getDefaultValue());
+            boolean isOpen = (boolean) input.getOrDefault(ArenaOptions.IS_OPEN.name(), ArenaOptions.IS_OPEN.getDefaultValue());
+            boolean isEnabled = (boolean) input.getOrDefault(ArenaOptions.IS_ENABLED.name(), ArenaOptions.IS_ENABLED.getDefaultValue());
+            return new Arena(world, name, maxBorderSize, minBorderSize, isOpen, isEnabled);
+        }
+
+        public World getWorld() {
+            return world;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getMaxBorderSize() {
+            return maxBorderSize;
+        }
+
+        public int getMinBorderSize() {
+            return minBorderSize;
+        }
+
+        public boolean isOpen() {
+            return isOpen;
+        }
+
+        public boolean isEnabled() {
+            return isEnabled;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setMaxBorderSize(int maxBorderSize) {
+            this.maxBorderSize = maxBorderSize;
+        }
+
+        public void setMinBorderSize(int minBorderSize) {
+            this.minBorderSize = minBorderSize;
+        }
+
+        public void setOpen(boolean open) {
+            isOpen = open;
+        }
+
+        public void setEnabled(boolean enabled) {
+            isEnabled = enabled;
+        }
     }
 
 }
