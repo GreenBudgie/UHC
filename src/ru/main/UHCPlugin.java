@@ -56,6 +56,7 @@ public class UHCPlugin extends JavaPlugin {
 		registerCommand("class", new CommandClass());
 		registerCommand("teammate", new CommandTeammate());
 		registerCommand("worldtime", new CommandWorldTime());
+		registerCommand("editarena", new CommandEditArena());
 
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new UHC(), this);

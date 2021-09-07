@@ -58,3 +58,7 @@ commands:
   description: Set the time in the current world
   usage: /worldtime <day/night/noon/midnight/[number]>
   aliases: [wt]
+ editarena:
+  description: Read or write an arena option
+  usage: /editarena <arena> <option> [value]
+  aliases: [ea]

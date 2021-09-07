@@ -47,7 +47,14 @@ public class CommandEditArena implements CommandExecutor, TabCompleter {
 					return true;
 				}
 				if(args.length == 3) {
-
+					try {
+						selectedArena.setByOption(option, args[2]);
+						player.sendMessage(ChatColor.WHITE + option.name() +
+								ChatColor.GRAY + " is now " +
+								ChatColor.WHITE + selectedArena.getByOption(option));
+					} catch(NumberFormatException exception) {
+						player.sendMessage(ChatColor.DARK_RED + "Invalid value");
+					}
 				}
 			}
 		}

@@ -207,6 +207,22 @@ public class ArenaManager {
             this.isEnabled = isEnabled;
         }
 
+        public void setByOption(ArenaOptions option, String value) throws NumberFormatException {
+            switch(option) {
+                case NAME ->
+                        setName(value.replaceAll("_", " "));
+                case MAX_BORDER_SIZE ->
+                        setMaxBorderSize(Integer.parseInt(value));
+                case MIN_BORDER_SIZE ->
+                        setMinBorderSize(Integer.parseInt(value));
+                case IS_OPEN ->
+                        setOpen(Boolean.parseBoolean(value));
+                case IS_ENABLED ->
+                        setEnabled(Boolean.parseBoolean(value));
+            }
+            updateConfig();
+        }
+
         public Object getByOption(ArenaOptions option) {
             return switch(option) {
                 case NAME -> name;
