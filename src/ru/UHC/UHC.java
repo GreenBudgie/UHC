@@ -1563,10 +1563,18 @@ public class UHC implements Listener {
 			if(player.getGameMode() != GameMode.CREATIVE) {
 				player.setGameMode(GameMode.ADVENTURE);
 			}
-			String msg = ChatColor.GREEN + "" + ChatColor.BOLD + "+ " + ChatColor.RESET + ChatColor.GOLD + player.getName() + ChatColor.YELLOW + " присоединился";
+			String joinMessage = ChatColor.GREEN + "" + ChatColor.BOLD + "+ " +
+					ChatColor.RESET + ChatColor.GOLD + player.getName() +
+					ChatColor.YELLOW + " присоединился";
 			for(Player currentPlayer : Lobby.getPlayersInLobbyAndArenas()) {
-				currentPlayer.sendMessage(msg);
+				currentPlayer.sendMessage(joinMessage);
 			}
+			player.sendMessage(joinMessage);
+			TaskManager.invokeLater(() -> {
+				if(!Lobby.isInLobbyOrWatchingArena(player)) {
+					player.teleport(Lobby.getLobby().getSpawnLocation());
+				}
+			});
 			if(playing) {
 				player.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Сейчас идет игра! " + ChatColor.RESET + ChatColor.AQUA
 						+ "За игрой можно наблюдать, кликнув по табличке.");

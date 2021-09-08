@@ -1,12 +1,10 @@
 package ru.commands;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import ru.classes.ClassManager;
-import ru.lobby.LobbyMapPreview;
+import ru.UHC.PlayerManager;
 import ru.main.UHCPlugin;
 
 public class CommandTest implements CommandExecutor {
@@ -15,8 +13,7 @@ public class CommandTest implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!sender.isOp()) return true;
 		Player p = (Player) sender;
-		char symbol = '\u2318';
-		UHCPlugin.log(symbol, ChatColor.WHITE + "" + ChatColor.BOLD + symbol);
+		UHCPlugin.log(PlayerManager.getSpectators());
 		return true;
 	}
 

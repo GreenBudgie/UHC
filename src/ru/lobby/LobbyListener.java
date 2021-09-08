@@ -146,7 +146,7 @@ public class LobbyListener implements Listener {
         UHC.heal(player);
         event.getDrops().clear();
         event.setKeepInventory(true);
-        if(isInLobbyOrArena(player)) {
+        if(isInLobbyOrArena(player) && !LobbyGameManager.PVP_ARENA.isOnArena(player)) {
             player.teleport(player.getWorld().getSpawnLocation());
         }
     }

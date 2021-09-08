@@ -21,6 +21,7 @@ import org.bukkit.potion.PotionEffectType;
 import ru.UHC.FightHelper;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHCPlayer;
+import ru.event.UHCPlayerDeathEvent;
 import ru.main.UHCPlugin;
 import ru.util.ParticleUtils;
 import ru.util.TaskManager;
@@ -79,14 +80,17 @@ public class CustomItemUnderworldEgg extends ClassCustomItem implements Listener
 	public void targetFixes(EntityTargetLivingEntityEvent event) {
 		if(event.getEntity() instanceof LivingEntity entity) {
 			if(entity.hasMetadata("necromancer_owner")) {
-				if(!(event.getTarget() instanceof Player)) {
+				if(!(event.getTarget() instanceof Player target)) {
 					event.setCancelled(true); //Cancel if targets not a player
+					return;
+				}
+				if(target.getGameMode() == GameMode.SPECTATOR) {
+					event.setCancelled(true); //Cancel if targets a spectator (vanilla bug fix)
 					return;
 				}
 				List<MetadataValue> values = entity.getMetadata("necromancer_owner");
 				if(!values.isEmpty()) {
 					String necromancerOwner = values.get(0).asString();
-					Player target = (Player) event.getTarget();
 					if(target.getName().equals(necromancerOwner)) {
 						event.setCancelled(true); //Cancel if targets the necromancer
 						return;
@@ -104,18 +108,45 @@ public class CustomItemUnderworldEgg extends ClassCustomItem implements Listener
 	}
 
 	@EventHandler
-	public void monsterDamage(EntityDamageByEntityEvent event) {
-		if(event.getEntity() instanceof Player victim && event.getDamager() instanceof Monster damager) {
-			if(damager.hasMetadata("necromancer_owner")) {
-				List<MetadataValue> values = damager.getMetadata("necromancer_owner");
-				if(!values.isEmpty()) {
-					String necromancerOwner = values.get(0).asString();
-					UHCPlayer owner = PlayerManager.asUHCPlayer(necromancerOwner);
-					if(owner != null && owner.isAlive()) {
-						FightHelper.setDamager(victim, owner, 40, "убил мобами");
+	public void removeTargetOnDeath(UHCPlayerDeathEvent event) {
+		UHCPlayer uhcPlayer = event.getUHCPlayer();
+		Player player = uhcPlayer.getPlayer();
+		if(player != null) {
+			World world = player.getWorld();
+			for(LivingEntity entity : world.getLivingEntities()) {
+				if(entity instanceof Monster monster && monster.hasMetadata("necromancer_owner")) {
+					if(monster.getTarget() == player) {
+						monster.setTarget(null);
 					}
 				}
 			}
+		}
+	}
+
+	private void setCustomDamager(Player victim, Monster damager) {
+		if(damager.hasMetadata("necromancer_owner")) {
+			List<MetadataValue> values = damager.getMetadata("necromancer_owner");
+			if(!values.isEmpty()) {
+				String necromancerOwner = values.get(0).asString();
+				UHCPlayer owner = PlayerManager.asUHCPlayer(necromancerOwner);
+				if(owner != null && owner.isAlive()) {
+					FightHelper.setDamager(victim, owner, 40, "убил мобами");
+				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void monsterArrowDamage(ProjectileHitEvent event) {
+		if(event.getHitEntity() instanceof Player victim && event.getEntity().getShooter() instanceof Monster shooter) {
+			setCustomDamager(victim, shooter);
+		}
+	}
+
+	@EventHandler
+	public void monsterDamage(EntityDamageByEntityEvent event) {
+		if(event.getEntity() instanceof Player victim && event.getDamager() instanceof Monster damager) {
+			setCustomDamager(victim, damager);
 		}
 	}
 
