@@ -1166,10 +1166,10 @@ public class UHC implements Listener {
 				reduceTimeOnFewTeams = false;
 				timeChanged = true;
 			} else if(alivePlayers == 3) {
-				deathmatchTimer = (int) Math.max(deathmatchTimer / 1.7, minTime);
+				deathmatchTimer = (int) Math.max(deathmatchTimer / 1.5, minTime);
 				timeChanged = true;
 			} else if(alivePlayers == 2) {
-				deathmatchTimer = minTime;
+				deathmatchTimer = (int) Math.max(deathmatchTimer / 1.7, minTime);
 				timeChanged = true;
 			}
 			if(timeChanged) {

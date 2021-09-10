@@ -210,9 +210,10 @@ public class UHCPlayer {
     }
 
     /**
-     * Called when a player or its ghost dies
+     * Called when a player or its ghost dies, before player is moved to spectators
      */
     public void initiateDeath() {
+        dropInventory();
         dropBonusItemOnDeath();
         showDeathMessage();
         removeTabPrefix();
@@ -232,13 +233,25 @@ public class UHCPlayer {
             mutator.onPlayerDeath(this);
         }
 
+        //Death effects
+        Location location = getLocation();
+        if(location != null) {
+            location.getWorld().strikeLightningEffect(location);
+            location.getWorld().playSound(location, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, Float.MAX_VALUE, 0.8F);
+        }
+    }
+
+    /**
+     * Called right after the player is dead and moved to spectators
+     */
+    public void postDeath() {
         //Announce the place to players
         UHCPlayer teammate = getTeammate();
         PlayerTeam team = PlayerManager.getTeamWithMember(this);
         int aliveTeams = PlayerManager.getAliveTeams().size();
         int winningPlace = aliveTeams + 1;
+        summary.setWinningPlace(winningPlace);
         if(aliveTeams <= 2 && aliveTeams >= 1 && !team.isAlive()) {
-            summary.setWinningPlace(winningPlace);
             String placeText = winningPlace == 3 ?
                     ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "третье" :
                     ChatColor.AQUA + "" + ChatColor.BOLD + "второе";
@@ -247,13 +260,6 @@ public class UHCPlayer {
             if(teammate != null) {
                 teammate.sendMessage(info);
             }
-        }
-
-        //Death effects
-        Location location = getLocation();
-        if(location != null) {
-            location.getWorld().strikeLightningEffect(location);
-            location.getWorld().playSound(location, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, Float.MAX_VALUE, 0.8F);
         }
 
         UHC.recalculateTimeOnPlayerDeath();
@@ -438,22 +444,23 @@ public class UHCPlayer {
      * Called when a player dies while playing
      */
     public void deathInGame() {
-        moveToSpectators();
         initiateDeath();
+        moveToSpectators();
+        postDeath();
     }
 
     /**
      * Called when a player's ghost 'dies' while player is not on server
      */
     public void deathWhileLeft() {
+        initiateDeath();
         state = State.LEFT_AND_DEAD;
         if(ghost != null) {
             ParticleUtils.createParticlesAround(ghost, Particle.REDSTONE, Color.fromRGB(100, 0, 0), 20);
             ghost.getWorld().playSound(ghost.getLocation(), Sound.ENTITY_PLAYER_DEATH, 1, 1);
             ghost.remove();
         }
-        dropInventory();
-        initiateDeath();
+        postDeath();
     }
 
     public void moveToSpectators() {
