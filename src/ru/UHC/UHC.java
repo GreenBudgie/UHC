@@ -1573,6 +1573,8 @@ public class UHC implements Listener {
 			TaskManager.invokeLater(() -> {
 				if(!Lobby.isInLobbyOrWatchingArena(player)) {
 					player.teleport(Lobby.getLobby().getSpawnLocation());
+					player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+					resetPlayer(player);
 				}
 			});
 			if(playing) {

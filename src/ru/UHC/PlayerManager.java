@@ -11,6 +11,7 @@ import org.bukkit.potion.PotionEffectType;
 import ru.classes.ClassManager;
 import ru.event.SpectatorJoinEvent;
 import ru.event.SpectatorLeaveEvent;
+import ru.lobby.Lobby;
 import ru.lobby.LobbyTeamBuilder;
 import ru.main.UHCPlugin;
 import ru.mutator.Mutator;
@@ -93,6 +94,7 @@ public class PlayerManager {
     public static void removeSpectator(Player spectator) {
         Bukkit.getPluginManager().callEvent(new SpectatorLeaveEvent(spectator));
         UHC.resetPlayer(spectator);
+        spectator.teleport(Lobby.getLobby().getSpawnLocation());
         spectator.setGameMode(GameMode.ADVENTURE);
         getSpectators().remove(spectator);
     }
