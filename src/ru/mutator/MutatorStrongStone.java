@@ -34,6 +34,11 @@ public class MutatorStrongStone extends Mutator implements Listener {
 		return "Камень нельзя ломать киркой. На булыжник, андезит, гранит и т.д. не действует";
 	}
 
+	@Override
+	public boolean conflictsWithClasses() {
+		return true;
+	}
+
 	@EventHandler
 	public void dig(BlockBreakEvent e) {
 		Block b = e.getBlock();

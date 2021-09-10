@@ -225,7 +225,8 @@ public class MutatorManager {
 	}
 
 	public static void deactivateMutators() {
-		for(Mutator mutator : activeMutators) {
+		List<Mutator> copy = Lists.newArrayList(activeMutators); //Prevents concurrent modifications
+		for(Mutator mutator : copy) {
 			mutator.onDeactivate();
 			if(mutator instanceof Listener) {
 				HandlerList.unregisterAll((Listener) mutator);

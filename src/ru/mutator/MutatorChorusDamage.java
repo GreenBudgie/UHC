@@ -36,7 +36,7 @@ public class MutatorChorusDamage extends Mutator implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void eat(EntityDamageEvent e) {
+	public void teleportOnDamage(EntityDamageEvent e) {
 		if(!e.isCancelled() && e.getFinalDamage() > 0 && e.getEntity() instanceof Player player) {
 			if(PlayerManager.isPlaying(player) && !player.isInvulnerable() && player.getNoDamageTicks() <= 0) {
 				if(UHC.state == GameState.DEATHMATCH && !ArenaManager.getCurrentArena().isOpen()) return;
