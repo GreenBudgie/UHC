@@ -28,7 +28,7 @@ public class CustomItemShulkerBox extends RequesterCustomItem {
 
 	@Override
 	public int getRedstonePrice() {
-		return 24;
+		return 20;
 	}
 
 	@Override
