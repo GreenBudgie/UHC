@@ -24,10 +24,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.SuspiciousStewMeta;
 import org.bukkit.potion.PotionEffect;
@@ -1323,19 +1320,29 @@ public class UHC implements Listener {
 				.withSplittedLore(ChatColor.GOLD + "Окружи его золотыми слитками и получи 2 золотых яблока").build();
 	}
 
-	private static String invViewStart = ChatColor.GRAY + "Инвентарь";
+	private static String invViewStart = ChatColor.DARK_GRAY + "Инвентарь";
 
 	public static void viewInventory(Player observer, Player target) {
-		Inventory inv = Bukkit.createInventory(observer, 9 * 5, invViewStart + ChatColor.GOLD + " " + target.getName());
-		for(int i = 0; i < target.getInventory().getContents().length; i++) {
-			ItemStack item = target.getInventory().getContents()[i];
-			inv.setItem(i, item);
+		final int size = 9 * 6;
+		PlayerInventory targetInventory = target.getInventory();
+		Inventory currentInventory = Bukkit.createInventory(observer, size, invViewStart + ChatColor.DARK_AQUA + ChatColor.BOLD + " " + target.getName());
+		for(int i = 0; i < targetInventory.getStorageContents().length; i++) {
+			ItemStack item = targetInventory.getStorageContents()[i];
+			currentInventory.setItem(i, item);
 		}
-		for(int i = 0; i < target.getInventory().getArmorContents().length; i++) {
-			ItemStack armor = target.getInventory().getArmorContents()[i];
-			inv.setItem(9 * 4 + 2 + i, armor);
+		ItemStack blackPanel = ItemUtils.builder(Material.BLACK_STAINED_GLASS_PANE).withName(" ").build();
+		for(int slot = size - 18; slot < size - 9; slot++) {
+			currentInventory.setItem(slot, blackPanel);
 		}
-		observer.openInventory(inv);
+		for(int slot = size - 9 + 4; slot < size - 1; slot++) {
+			currentInventory.setItem(slot, blackPanel);
+		}
+		currentInventory.setItem(size - 9, targetInventory.getHelmet());
+		currentInventory.setItem(size - 9 + 1, targetInventory.getChestplate());
+		currentInventory.setItem(size - 9 + 2, targetInventory.getLeggings());
+		currentInventory.setItem(size - 9 + 3, targetInventory.getBoots());
+		currentInventory.setItem(size - 1, targetInventory.getItemInOffHand());
+		observer.openInventory(currentInventory);
 	}
 
 	@EventHandler
