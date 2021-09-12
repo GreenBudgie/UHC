@@ -36,8 +36,8 @@ public class ClassNecromancer extends UHCClass {
     public String[] getAdvantages() {
         return new String[] {
                 "При убийстве игрока максимально возможное количество здоровья увеличивается на 2 сердца",
-                "При смерти любого игрока во время игры регенерируется 0.5 сердца",
-                "При убийстве игрока регенерируется 1.5 сердца",
+                "При смерти любого игрока во время игры регенерируется 1 сердце",
+                "При убийстве игрока регенерируется 2 сердца",
                 "При убийстве любого моба или игрока получает эффект поглощения урона",
                 "Предмет: яйцо для призыва армии зомби и скелетов, атакующих врагов"
         };
@@ -46,14 +46,14 @@ public class ClassNecromancer extends UHCClass {
     @Override
     public String[] getDisadvantages() {
         return new String[] {
-                "В начале игры максимальное количество здоровья ограничено в 6 сердец"
+                "В начале игры максимальное количество здоровья ограничено в 7 сердец"
         };
     }
 
     @EventHandler
     public void gameInit(GameInitializeEvent event) {
         for(UHCPlayer uhcPlayer : getPlayersWithClass()) {
-            uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(12);
+            uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
         }
     }
 
@@ -75,7 +75,7 @@ public class ClassNecromancer extends UHCClass {
         for(UHCPlayer uhcNecromancer : getAliveOnlinePlayersWithClass()) {
             if(uhcNecromancer == uhcPlayer) continue;
             Player necromancer = uhcNecromancer.getPlayer();
-            necromancer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 50, 0));
+            necromancer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 0));
         }
         UHCPlayer uhcKiller = event.getKiller();
         if(uhcKiller != null && uhcKiller.isAliveAndOnline()) {
@@ -83,7 +83,7 @@ public class ClassNecromancer extends UHCClass {
             if(hasClass(killer)) {
                 AttributeInstance maxHealth = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 maxHealth.setBaseValue(maxHealth.getBaseValue() + 4);
-                killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 150, 0));
+                killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 0));
             }
         }
     }

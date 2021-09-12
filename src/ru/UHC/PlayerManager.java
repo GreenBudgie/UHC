@@ -78,6 +78,7 @@ public class PlayerManager {
     }
 
     public static UHCPlayer asUHCPlayer(Player player) {
+        if(player == null) return null;
         for(UHCPlayer uplayer : players) {
             if(uplayer.getPlayer() == player || uplayer.getNickname().equals(player.getName())) return uplayer;
         }
