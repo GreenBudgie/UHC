@@ -49,15 +49,12 @@ public class MutatorTotems extends ItemBasedMutator implements Listener {
 
 	@EventHandler
 	public void resurrect(EntityResurrectEvent e) {
-		if(!e.isCancelled() && e.getEntity() instanceof Player p) {
-			if(PlayerManager.isPlaying(p)) {
+		if(!e.isCancelled() && e.getEntity() instanceof Player player) {
+			if(PlayerManager.isPlaying(player)) {
 				TaskManager.invokeLater(() -> {
 
-					PotionEffect regen = p.getPotionEffect(PotionEffectType.REGENERATION);
-					if(regen != null) {
-						p.addPotionEffect(new PotionEffect(regen.getType(), regen.getDuration() / 2, regen.getAmplifier() / 2, regen.isAmbient(), regen.hasParticles(),
-								regen.hasIcon()));
-					}
+					player.removePotionEffect(PotionEffectType.REGENERATION);
+					player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 6 * 20, 1));
 
 				});
 			}

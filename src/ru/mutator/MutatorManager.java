@@ -48,7 +48,7 @@ public class MutatorManager {
 	public static MutatorChemistBattle chemistBattle = new MutatorChemistBattle();
 	public static MutatorNoRegen noRegen = new MutatorNoRegen();
 	public static MutatorDangerWater dangerWater = new MutatorDangerWater();
-	public static MutatorStop stop = new MutatorStop();
+	//public static MutatorStop stop = new MutatorStop();
 	public static MutatorBabyZombies babyZombies = new MutatorBabyZombies();
 	public static MutatorMeetingPlace meetingPlace = new MutatorMeetingPlace();
 	public static MutatorStrongStone strongStone = new MutatorStrongStone();
@@ -64,7 +64,7 @@ public class MutatorManager {
 	public static MutatorInteractiveArena interactiveArena = new MutatorInteractiveArena();
 	public static MutatorLessHealth lessHealth = new MutatorLessHealth();
 	public static MutatorDiamondLeather diamondLeather = new MutatorDiamondLeather();
-	public static MutatorApocalypse apocalypse = new MutatorApocalypse();
+	//public static MutatorApocalypse apocalypse = new MutatorApocalypse();
 	public static MutatorOneForAll oneForAll = new MutatorOneForAll();
 	public static MutatorRestrictions restrictions = new MutatorRestrictions();
 	public static MutatorTotems totems = new MutatorTotems();

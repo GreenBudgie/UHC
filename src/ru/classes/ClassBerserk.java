@@ -11,6 +11,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -30,11 +34,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class ClassBerserk extends BarHolderUHCClass {
+public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass {
 
     private final Map<UHCPlayer, Double> battleRage = new HashMap<>(); //From 0 to 1
     private final int MAX_MOBS_TO_KILL = 50;
-    private final double BATTLE_RAGE_PER_KILL = 1D / MAX_MOBS_TO_KILL; //How much soul flame progress to burn per hit
+    private final double BATTLE_RAGE_PER_KILL = 1D / MAX_MOBS_TO_KILL;
     private final double MAX_DAMAGE_INCREASE = 1.3;
 
     @Override
@@ -56,9 +60,9 @@ public class ClassBerserk extends BarHolderUHCClass {
     @Override
     public String[] getDisadvantages() {
         return new String[] {
-                "Может носить только кожаную броню",
+                "Может носить только кожаную броню, может быть скрафчена из гнилой плоти",
                 "Нельзя атаковать мечами",
-                "Эффекты регенерации в два раза слабее"
+                "Эффекты регенерации в полтора раза слабее"
         };
     }
 
@@ -185,7 +189,7 @@ public class ClassBerserk extends BarHolderUHCClass {
     private boolean immunity = false;
 
     @EventHandler
-    public void halfRegen(EntityPotionEffectEvent event) {
+    public void reduceRegen(EntityPotionEffectEvent event) {
         if(immunity) {
             immunity = false;
             return;
@@ -196,7 +200,7 @@ public class ClassBerserk extends BarHolderUHCClass {
                     PotionEffect effect = event.getNewEffect();
                     if(effect != null && effect.getType().equals(PotionEffectType.REGENERATION)) {
                         event.setCancelled(true);
-                        PotionEffect halfEffect = new PotionEffect(effect.getType(), effect.getDuration() / 2,
+                        PotionEffect halfEffect = new PotionEffect(effect.getType(), (int) (effect.getDuration() / 1.3),
                                 effect.getAmplifier(), effect.isAmbient(), effect.hasParticles(), effect.hasIcon());
                         immunity = true;
                         player.addPotionEffect(halfEffect);
@@ -284,4 +288,54 @@ public class ClassBerserk extends BarHolderUHCClass {
         return BarColor.RED;
     }
 
+    private ItemStack armorWithColor(Material armor) {
+        ItemStack item = new ItemStack(armor);
+        ItemMeta meta = item.getItemMeta();
+        if(meta instanceof LeatherArmorMeta leatherMeta) {
+            leatherMeta.setColor(Color.fromRGB(84, 79, 49));
+            item.setItemMeta(meta);
+        }
+        return item;
+    }
+
+    private void registerRecipe(ShapedRecipe recipe, String... shape) {
+        recipe.shape(shape);
+        recipe.setIngredient('l', Material.ROTTEN_FLESH);
+        recipe.setIngredient('-', Material.AIR);
+    }
+
+    @Override
+    public Recipe[] getClassRecipes() {
+        ShapedRecipe helmet = new ShapedRecipe(
+                new NamespacedKey(UHCPlugin.instance, "berserk_helmet"),
+                armorWithColor(Material.LEATHER_HELMET));
+        registerRecipe(helmet, "lll", "l-l", "---");
+
+        ShapedRecipe helmet2 = new ShapedRecipe(
+                new NamespacedKey(UHCPlugin.instance, "berserk_helmet2"),
+                armorWithColor(Material.LEATHER_HELMET));
+        registerRecipe(helmet2, "---", "lll", "l-l");
+
+        ShapedRecipe chestplate = new ShapedRecipe(
+                new NamespacedKey(UHCPlugin.instance, "berserk_chestplate"),
+                armorWithColor(Material.LEATHER_CHESTPLATE));
+        registerRecipe(chestplate, "l-l", "lll", "lll");
+
+        ShapedRecipe leggings = new ShapedRecipe(
+                new NamespacedKey(UHCPlugin.instance, "berserk_leggings"),
+                armorWithColor(Material.LEATHER_LEGGINGS));
+        registerRecipe(leggings, "lll", "l-l", "l-l");
+
+        ShapedRecipe boots = new ShapedRecipe(
+                new NamespacedKey(UHCPlugin.instance, "berserk_boots"),
+                armorWithColor(Material.LEATHER_BOOTS));
+        registerRecipe(boots, "---", "l-l", "l-l");
+
+        ShapedRecipe boots2 = new ShapedRecipe(
+                new NamespacedKey(UHCPlugin.instance, "berserk_boots2"),
+                armorWithColor(Material.LEATHER_BOOTS));
+        registerRecipe(boots2, "l-l", "l-l", "---");
+        
+        return new Recipe[] {helmet, helmet2, chestplate, leggings, boots, boots2};
+    }
 }

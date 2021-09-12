@@ -2,12 +2,19 @@ package ru.classes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 import ru.UHC.PlayerManager;
+import ru.UHC.RecipeHandler;
+import ru.UHC.UHC;
 import ru.UHC.UHCPlayer;
 import ru.event.GameStartEvent;
 import ru.main.UHCPlugin;
@@ -21,6 +28,11 @@ public abstract class UHCClass implements Listener {
     public UHCClass() {
         ClassManager.classes.add(this);
         Bukkit.getPluginManager().registerEvents(this, UHCPlugin.instance);
+        if(this instanceof RecipeHolderClass recipeHolder) {
+            for(Recipe classRecipe : recipeHolder.getClassRecipes()) {
+                Bukkit.addRecipe(classRecipe);
+            }
+        }
     }
 
     public abstract String getName();
@@ -86,6 +98,27 @@ public abstract class UHCClass implements Listener {
         for(UHCPlayer uhcPlayer : getAliveOnlinePlayersWithClass()) {
             for(ItemStack item : getStartItems()) {
                 uhcPlayer.getPlayer().getInventory().addItem(item);
+            }
+        }
+    }
+
+    @EventHandler
+    public void customRecipeHandle(PrepareItemCraftEvent event) {
+        if(event.getView().getPlayer() instanceof Player player && this instanceof RecipeHolderClass recipeHolder) {
+            Recipe eventRecipe = event.getRecipe();
+            if(eventRecipe instanceof Keyed keyedEventRecipe) {
+                boolean isCustom = false;
+                for(Recipe classRecipe : recipeHolder.getClassRecipes()) {
+                    if(classRecipe instanceof Keyed keyedClassRecipe) {
+                        if(keyedClassRecipe.getKey().equals(keyedEventRecipe.getKey())) {
+                            isCustom = true;
+                            break;
+                        }
+                    }
+                }
+                if((isCustom && !hasClass(player)) || !UHC.playing) {
+                    event.getInventory().setResult(null);
+                }
             }
         }
     }
