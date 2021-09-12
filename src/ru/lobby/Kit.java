@@ -34,36 +34,42 @@ public class Kit {
 	
 	public void addArmorSet(ArmorMaterial armor) {
 		switch(armor) {
-		case LEATHER:
-			addHelmet(Material.LEATHER_HELMET);
-			addChestplate(Material.LEATHER_CHESTPLATE);
-			addLeggings(Material.LEATHER_LEGGINGS);
-			addBoots(Material.LEATHER_BOOTS);
-			break;
-		case CHAIN:
-			addHelmet(Material.CHAINMAIL_HELMET);
-			addChestplate(Material.CHAINMAIL_CHESTPLATE);
-			addLeggings(Material.CHAINMAIL_LEGGINGS);
-			addBoots(Material.CHAINMAIL_BOOTS);
-			break;
-		case GOLD:
-			addHelmet(Material.GOLDEN_HELMET);
-			addChestplate(Material.GOLDEN_CHESTPLATE);
-			addLeggings(Material.GOLDEN_LEGGINGS);
-			addBoots(Material.GOLDEN_BOOTS);
-			break;
-		case IRON:
-			addHelmet(Material.IRON_HELMET);
-			addChestplate(Material.IRON_CHESTPLATE);
-			addLeggings(Material.IRON_LEGGINGS);
-			addBoots(Material.IRON_BOOTS);
-			break;
-		case DIAMOND:
-			addHelmet(Material.DIAMOND_HELMET);
-			addChestplate(Material.DIAMOND_CHESTPLATE);
-			addLeggings(Material.DIAMOND_LEGGINGS);
-			addBoots(Material.DIAMOND_BOOTS);
-			break;
+			case LEATHER -> {
+				addHelmet(Material.LEATHER_HELMET);
+				addChestplate(Material.LEATHER_CHESTPLATE);
+				addLeggings(Material.LEATHER_LEGGINGS);
+				addBoots(Material.LEATHER_BOOTS);
+			}
+			case CHAIN -> {
+				addHelmet(Material.CHAINMAIL_HELMET);
+				addChestplate(Material.CHAINMAIL_CHESTPLATE);
+				addLeggings(Material.CHAINMAIL_LEGGINGS);
+				addBoots(Material.CHAINMAIL_BOOTS);
+			}
+			case GOLD -> {
+				addHelmet(Material.GOLDEN_HELMET);
+				addChestplate(Material.GOLDEN_CHESTPLATE);
+				addLeggings(Material.GOLDEN_LEGGINGS);
+				addBoots(Material.GOLDEN_BOOTS);
+			}
+			case IRON -> {
+				addHelmet(Material.IRON_HELMET);
+				addChestplate(Material.IRON_CHESTPLATE);
+				addLeggings(Material.IRON_LEGGINGS);
+				addBoots(Material.IRON_BOOTS);
+			}
+			case DIAMOND -> {
+				addHelmet(Material.DIAMOND_HELMET);
+				addChestplate(Material.DIAMOND_CHESTPLATE);
+				addLeggings(Material.DIAMOND_LEGGINGS);
+				addBoots(Material.DIAMOND_BOOTS);
+			}
+			case NETHERITE -> {
+				addHelmet(Material.NETHERITE_HELMET);
+				addChestplate(Material.NETHERITE_CHESTPLATE);
+				addLeggings(Material.NETHERITE_LEGGINGS);
+				addBoots(Material.NETHERITE_BOOTS);
+			}
 		}
 	}
 
@@ -120,7 +126,7 @@ public class Kit {
 	}
 
 	public enum ArmorMaterial {
-		LEATHER, CHAIN, GOLD, IRON, DIAMOND;
+		LEATHER, CHAIN, GOLD, IRON, DIAMOND, NETHERITE;
 	}
 
 }

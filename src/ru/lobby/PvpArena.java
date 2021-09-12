@@ -87,6 +87,13 @@ public class PvpArena extends LobbyGame implements Listener {
 		Kit uselessKit = new Kit("Бесполезная лопата");
 		uselessKit.addItem(Material.WOODEN_SHOVEL);
 
+		Kit usefulKit = new Kit("НЕ бесполезная лопата");
+		usefulKit.addArmorSet(Kit.ArmorMaterial.CHAIN);
+		usefulKit.addItem(ItemUtils.builder(Material.WOODEN_SHOVEL).withEnchantments(
+				new ItemUtils.Enchant(Enchantment.KNOCKBACK, 10),
+				new ItemUtils.Enchant(Enchantment.FIRE_ASPECT, 2),
+				new ItemUtils.Enchant(Enchantment.DAMAGE_ALL, 1)).build());
+
 		Kit healingKit = new Kit("Много хила");
 		healingKit.addArmorSet(Kit.ArmorMaterial.LEATHER);
 		healingKit.addItem(Material.IRON_SWORD);
@@ -162,7 +169,7 @@ public class PvpArena extends LobbyGame implements Listener {
 		mixedKit3.addItem(
 				ItemUtils.addEnchantments(new ItemStack(Material.BOW), new ItemUtils.Enchant(Enchantment.ARROW_INFINITE), new ItemUtils.Enchant(Enchantment.ARROW_FIRE)));
 		mixedKit3.addItem(
-				ItemUtils.addEnchantments(new ItemStack(Material.CROSSBOW), new ItemUtils.Enchant(Enchantment.MULTISHOT), new ItemUtils.Enchant(Enchantment.PIERCING)));
+				ItemUtils.addEnchantments(new ItemStack(Material.CROSSBOW), new ItemUtils.Enchant(Enchantment.QUICK_CHARGE, 2), new ItemUtils.Enchant(Enchantment.MULTISHOT), new ItemUtils.Enchant(Enchantment.PIERCING)));
 		for(int i = 0; i < 5; i++) {
 			mixedKit3.addItem(new ItemStack(Material.ARROW, 64));
 		}
@@ -197,6 +204,51 @@ public class PvpArena extends LobbyGame implements Listener {
 		wizardKit2.addItem(ItemUtils.potionBuilder().asSplash().withColor(Color.GREEN)
 				.withEffects(new PotionEffect(PotionEffectType.CONFUSION, 400, 0), new PotionEffect(PotionEffectType.POISON, 100, 0)).withName("Bad Vial").build());
 		wizardKit2.withShield();
+
+		Kit wizardKit3 = new Kit("Маг 3");
+		wizardKit3.addArmorSet(Kit.ArmorMaterial.NETHERITE);
+		wizardKit3.addItem(ItemUtils.builder(Material.GOLDEN_AXE).
+				withEnchantments(new ItemUtils.Enchant(Enchantment.FIRE_ASPECT)).
+				build());
+		ItemStack damagingLiquid = ItemUtils.potionBuilder().
+				asLingering().
+				withColor(Color.BLACK).
+				withName(ChatColor.DARK_GRAY + "Damaging Liquid").
+				withEffects(new PotionEffect(PotionEffectType.HARM, 1, 0)).
+				build();
+		wizardKit3.addItem(damagingLiquid);
+		wizardKit3.addItem(damagingLiquid);
+		wizardKit3.addItem(ItemUtils.potionBuilder().
+				asLingering().
+				withColor(Color.WHITE).
+				withName("Liquid of heaven").
+				withEffects(new PotionEffect(PotionEffectType.LEVITATION, 10, 10)).
+				build());
+		wizardKit3.addItem(ItemUtils.potionBuilder().
+				asDrinkable().
+				withColor(Color.AQUA).
+				withName(ChatColor.AQUA + "" + ChatColor.BOLD + "Power Potion").
+				withEffects(
+						new PotionEffect(PotionEffectType.REGENERATION, 160, 1),
+						new PotionEffect(PotionEffectType.ABSORPTION, 160, 0),
+						new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 160, 0),
+						new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 160, 0),
+						new PotionEffect(PotionEffectType.FAST_DIGGING, 160, 4),
+						new PotionEffect(PotionEffectType.SPEED, 160, 1),
+						new PotionEffect(PotionEffectType.GLOWING, 160, 0)).
+				build());
+
+		Kit manyDamage = new Kit("Много дамага");
+		manyDamage.addArmorSet(Kit.ArmorMaterial.NETHERITE);
+		manyDamage.addItem(Material.WOODEN_SWORD);
+		ItemStack damagePotion = ItemUtils.potionBuilder().
+				asSplash().
+				withColor(Color.BLACK).
+				withName("Damage").
+				withEffects(new PotionEffect(PotionEffectType.HARM, 1, 0)).build();
+		for(int i = 0; i < 8; i++) {
+			manyDamage.addItem(damagePotion);
+		}
 
 		currentKit = getRandomKit();
 	}
@@ -272,6 +324,16 @@ public class PvpArena extends LobbyGame implements Listener {
 		return onArena.contains(player);
 	}
 
+	private List<Player> getNearArenaPlayers() {
+		List<Player> nearestPlayers = new ArrayList<>();
+		for(Player player : getLobbyPlayers()) {
+			if(isOnArena(player) || spawnLocation.distance(player.getLocation()) <= 32) {
+				nearestPlayers.add(player);
+			}
+		}
+		return nearestPlayers;
+	}
+
 	public void initDuel(Player p1, Player p2) {
 		currentKit = getRandomKit();
 		duelingPlayer1 = p1;
@@ -280,11 +342,11 @@ public class PvpArena extends LobbyGame implements Listener {
 		p2.teleport(duelSpawn2);
 		heal(p1);
 		heal(p2);
+		isDuel = true;
 		onArenaEnter(p1);
 		onArenaEnter(p2);
-		isDuel = true;
-		for(Player player : getLobbyPlayers()) {
-			player.sendTitle(ChatColor.AQUA + "Дуэль!", ChatColor.GOLD + p1.getName() + ChatColor.RED + ChatColor.BOLD + " VS " + ChatColor.RESET + ChatColor.GOLD + p2.getName(),
+		for(Player player : getNearArenaPlayers()) {
+			player.sendTitle(" ", ChatColor.GOLD + p1.getName() + ChatColor.RED + ChatColor.BOLD + " VS " + ChatColor.RESET + ChatColor.GOLD + p2.getName(),
 					5, 40, 10);
 			player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 0.5F, 1F);
 			heal(player);
@@ -294,8 +356,8 @@ public class PvpArena extends LobbyGame implements Listener {
 	public void endDuel(Player winner, Player loser) {
 		duelingPlayer1 = null;
 		duelingPlayer2 = null;
-		for(Player player : getLobbyPlayers()) {
-			player.sendTitle(ChatColor.DARK_AQUA + "Дуэль завершена", ChatColor.GOLD + winner.getName() + ChatColor.YELLOW + " замачил " + ChatColor.GOLD + loser.getName(), 5,
+		for(Player player : getNearArenaPlayers()) {
+			player.sendTitle(" ", ChatColor.GOLD + winner.getName() + ChatColor.YELLOW + " замачил " + ChatColor.GOLD + loser.getName(), 5,
 					60, 20);
 		}
 		heal(winner);
@@ -365,19 +427,23 @@ public class PvpArena extends LobbyGame implements Listener {
 	/**
 	 * Calls when a player enters an arena in any way
 	 */
-	public void onArenaEnter(Player p) {
-		if(!isOnArena(p)) {
-			if(isDuel) {
-				p.teleport(spawnLocation);
-				InventoryHelper.sendActionBarMessage(p, ChatColor.DARK_RED + "Сейчас идет дуэль");
-				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
+	public void onArenaEnter(Player player) {
+		if(!isOnArena(player)) {
+			if(!isOpen && !isDueling(player)) {
+				player.teleport(spawnLocation);
+				InventoryHelper.sendActionBarMessage(player, ChatColor.DARK_RED + "Подожди, арена закрыта");
+				player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
+			} else if(isDuel && !isDueling(player)) {
+				player.teleport(spawnLocation);
+				InventoryHelper.sendActionBarMessage(player, ChatColor.DARK_RED + "Сейчас идет дуэль");
+				player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
 			} else {
-				currentKit.give(p);
-				InventoryHelper.sendActionBarMessage(p, ChatColor.GRAY + "> " +
+				currentKit.give(player);
+				InventoryHelper.sendActionBarMessage(player, ChatColor.GRAY + "> " +
 						ChatColor.RED + ChatColor.BOLD + "Ты зашел на арену" +
 						ChatColor.RESET + ChatColor.GRAY + " <");
-				p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_CHAIN, 0.5F, 1F);
-				onArena.add(p);
+				player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_CHAIN, 0.5F, 1F);
+				onArena.add(player);
 			}
 		}
 	}
@@ -494,7 +560,7 @@ public class PvpArena extends LobbyGame implements Listener {
 				}
 			}
 			Player killer = player.getKiller();
-			if(killer != null) {
+			if(killer != null && isOnArena(killer)) {
 				heal(killer);
 				killer.getInventory().clear();
 				currentKit.give(killer);
