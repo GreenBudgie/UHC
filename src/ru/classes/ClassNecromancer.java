@@ -16,9 +16,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.FightHelper;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHCPlayer;
 import ru.UHC.WorldManager;
 import ru.event.GameInitializeEvent;
+import ru.event.UHCPlayerDeathEvent;
 import ru.items.CustomItems;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
@@ -34,7 +36,8 @@ public class ClassNecromancer extends UHCClass {
     public String[] getAdvantages() {
         return new String[] {
                 "При убийстве игрока максимально возможное количество здоровья увеличивается на 2 сердца",
-                "При убийстве игрока регенерируется 1 сердце",
+                "При смерти любого игрока во время игры регенерируется 0.5 сердца",
+                "При убийстве игрока регенерируется 1.5 сердца",
                 "При убийстве любого моба или игрока получает эффект поглощения урона",
                 "Предмет: яйцо для призыва армии зомби и скелетов, атакующих врагов"
         };
@@ -43,14 +46,14 @@ public class ClassNecromancer extends UHCClass {
     @Override
     public String[] getDisadvantages() {
         return new String[] {
-                "В начале игры максимальное количество здоровья ограничено в 5 сердец"
+                "В начале игры максимальное количество здоровья ограничено в 6 сердец"
         };
     }
 
     @EventHandler
     public void gameInit(GameInitializeEvent event) {
         for(UHCPlayer uhcPlayer : getPlayersWithClass()) {
-            uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(10);
+            uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(12);
         }
     }
 
@@ -67,15 +70,20 @@ public class ClassNecromancer extends UHCClass {
     }
 
     @EventHandler
-    public void handlePlayerKill(PlayerDeathEvent event) {
-        Player player = event.getEntity();
-        UHCPlayer uhcKiller = FightHelper.getKiller(player);
+    public void handlePlayerDeathRegeneration(UHCPlayerDeathEvent event) {
+        UHCPlayer uhcPlayer = event.getUHCPlayer();
+        for(UHCPlayer uhcNecromancer : getAliveOnlinePlayersWithClass()) {
+            if(uhcNecromancer == uhcPlayer) continue;
+            Player necromancer = uhcNecromancer.getPlayer();
+            necromancer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 50, 0));
+        }
+        UHCPlayer uhcKiller = event.getKiller();
         if(uhcKiller != null && uhcKiller.isAliveAndOnline()) {
             Player killer = uhcKiller.getPlayer();
             if(hasClass(killer)) {
                 AttributeInstance maxHealth = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 maxHealth.setBaseValue(maxHealth.getBaseValue() + 4);
-                killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 5, 0));
+                killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 150, 0));
             }
         }
     }
