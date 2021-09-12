@@ -34,10 +34,9 @@ public class UHCPlayer {
     private UHCClass uhcClass;
 
     private UHCPlayer ghostKiller;
-    private final int maxTimeToRejoin = 3 * 60;
+    private final int maxTimeToRejoin = 4 * 60;
     private int timeToRejoin = 0;
     private boolean deadByTime = false;
-    private int leavesRemaining = 3;
 
     private double offlineHealth;
     private double maxOfflineHealth;
@@ -76,19 +75,14 @@ public class UHCPlayer {
                         killOnLeave();
                     }
                 }
-                if(leavesRemaining <= 0) {
-                    killOnLeave();
-                } else {
-                    if(state == State.PLAYING) {
-                        leavesRemaining--;
-                        timeToRejoin = maxTimeToRejoin;
-                        state = State.LEFT_AND_ALIVE;
-                        offlineHealth = player.getHealth();
-                        maxOfflineHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-                        Bukkit.getPluginManager().callEvent(new UHCPlayerLeaveEvent(this));
-                        createGhost();
-                        saveInventory();
-                    }
+                if(state == State.PLAYING) {
+                    timeToRejoin = maxTimeToRejoin;
+                    state = State.LEFT_AND_ALIVE;
+                    offlineHealth = player.getHealth();
+                    maxOfflineHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+                    Bukkit.getPluginManager().callEvent(new UHCPlayerLeaveEvent(this));
+                    createGhost();
+                    saveInventory();
                 }
             }
         }
@@ -110,12 +104,6 @@ public class UHCPlayer {
             }
             player.setHealth(offlineHealth);
             Bukkit.getPluginManager().callEvent(new UHCPlayerRejoinEvent(this));
-            String timesLeft = new NumericalCases("раз", "раза", "раз").byNumber(leavesRemaining);
-            player.sendMessage(ChatColor.GRAY + "- " +
-                            ChatColor.DARK_RED + "Ты можешь перезайти еще " +
-                            ChatColor.DARK_AQUA + ChatColor.BOLD + leavesRemaining + " " +
-                            ChatColor.RESET + ChatColor.DARK_RED + timesLeft +
-                            ChatColor.GRAY + "!");
         } else if(state == State.LEFT_AND_DEAD) {
             moveToSpectators();
             for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
@@ -143,7 +131,7 @@ public class UHCPlayer {
         if(TaskManager.isSecUpdated()) {
             if(state == State.LEFT_AND_ALIVE) {
                 timeToRejoin--;
-                if(timeToRejoin == 60 && ghost != null) {
+                if(timeToRejoin == maxTimeToRejoin / 2 && ghost != null) {
                     ghost.setCustomNameVisible(true);
                 }
                 if(timeToRejoin <= 0) {
@@ -306,12 +294,6 @@ public class UHCPlayer {
         if(deadByTime) {
             for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
                 inGamePlayer.sendMessage(FightHelper.padCrosses(ChatColor.GOLD + nickname + ChatColor.RED + " не успел вернуться в игру"));
-            }
-            return;
-        }
-        if(leavesRemaining == 0) {
-            for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
-                inGamePlayer.sendMessage(FightHelper.padCrosses(ChatColor.GOLD + nickname + ChatColor.RED + " слишком часто ливал"));
             }
             return;
         }

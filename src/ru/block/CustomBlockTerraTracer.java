@@ -33,6 +33,7 @@ public class CustomBlockTerraTracer extends CustomBlockItem {
             for(int y = centerY - distance; y <= centerY + distance; y++) {
                 for(int z = centerZ - distance; z <= centerZ + distance; z++) {
                     Location currentLocation = new Location(world, x, y, z);
+                    if(!world.getWorldBorder().isInside(currentLocation)) continue;
                     Material blockType = currentLocation.getBlock().getType();
                     if(blockType == Material.DIAMOND_ORE || blockType == Material.DEEPSLATE_DIAMOND_ORE || blockType == Material.ANCIENT_DEBRIS) {
                         if(nearest == null) {
