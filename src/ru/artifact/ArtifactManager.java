@@ -1,6 +1,5 @@
 package ru.artifact;
 
-import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,6 +19,7 @@ import ru.UHC.UHC;
 import ru.UHC.WorldManager;
 import ru.classes.ClassManager;
 import ru.items.CustomItems;
+import ru.lobby.Lobby;
 import ru.mutator.MutatorManager;
 import ru.util.InventoryHelper;
 import ru.util.ItemUtils;
@@ -47,7 +47,7 @@ public class ArtifactManager implements Listener {
 
 	private static final Map<Integer, Artifact> inventoryArtifacts = new HashMap<>();
 
-	private static String inventoryName = ChatColor.DARK_RED + "Призвать";
+	private static final String INVENTORY_NAME = ChatColor.DARK_RED + "" + ChatColor.BOLD + "Силы артефактов";
 
 	public static void init() {
 		putArtifact(timeLeap, 11);
@@ -69,15 +69,23 @@ public class ArtifactManager implements Listener {
 		inventoryArtifacts.put(slot, artifact);
 	}
 
+	private static boolean isPreview(Player player) {
+		return !PlayerManager.isPlaying(player) || !UHC.state.isInGame();
+	}
+
 	public static void openArtifactInventory(Player player) {
-		NumericalCases cases = new NumericalCases("артефакт", "артефакта", "артефактов");
-		int count = getArtifactCount(player);
-		Inventory inventory = Bukkit.createInventory(player, 54, inventoryName +
-						ChatColor.DARK_GRAY + " (" +
-						ChatColor.DARK_AQUA + ChatColor.BOLD + count +
-						ChatColor.RED + " " + cases.byNumber(count) +
-						ChatColor.DARK_GRAY + ")");
-		ItemStack blackGlass = ItemUtils.builder(Material.BLACK_STAINED_GLASS_PANE).withName("").build();
+		boolean preview = isPreview(player);
+		Inventory inventory;
+		if(preview) {
+			inventory = Bukkit.createInventory(player, 54, INVENTORY_NAME);
+		} else {
+			int count = getArtifactCount(player);
+			inventory = Bukkit.createInventory(player, 54, INVENTORY_NAME +
+					ChatColor.DARK_GRAY + " (" +
+					ChatColor.RED + ChatColor.BOLD + count +
+					ChatColor.DARK_GRAY + ")");
+		}
+		ItemStack blackGlass = ItemUtils.builder(Material.BLACK_STAINED_GLASS_PANE).withName(" ").build();
 		for(int slot = 0; slot < 54; slot++) {
 			if(
 				slot < 9 ||
@@ -89,7 +97,8 @@ public class ArtifactManager implements Listener {
 			}
 		}
 		for(int slot : inventoryArtifacts.keySet()) {
-			inventory.setItem(slot, inventoryArtifacts.get(slot).getItemFor(player));
+			Artifact artifact = inventoryArtifacts.get(slot);
+			inventory.setItem(slot, preview ? artifact.getItem() : artifact.getItemFor(player));
 		}
 		player.openInventory(inventory);
 	}
@@ -131,41 +140,41 @@ public class ArtifactManager implements Listener {
 	}
 
 	@EventHandler
-	public void invClick(InventoryClickEvent e) {
-		Player p = (Player) e.getWhoClicked();
-		if(e.getView().getTitle().startsWith(inventoryName)) {
-			if(e.getClickedInventory() != null && e.getClickedInventory() == e.getView().getTopInventory()) {
-				ItemStack item = e.getCurrentItem();
+	public void invClick(InventoryClickEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		if(event.getView().getTitle().startsWith(INVENTORY_NAME)) {
+			if(!isPreview(player) && event.getClickedInventory() != null && event.getClickedInventory() == event.getView().getTopInventory()) {
+				ItemStack item = event.getCurrentItem();
 				if(item != null) {
 					for(Artifact artifact : artifacts) {
 						if(artifact.getType() == item.getType()) {
-							if(getArtifactCount(p) >= artifact.getCurrentPrice()) {
+							if(getArtifactCount(player) >= artifact.getCurrentPrice()) {
 								int priceBefore = artifact.getCurrentPrice();
-								if(artifact.use(p)) {
+								if(artifact.use(player)) {
 									//Reopening other players' inventories to reset prices
-									for(Player player : PlayerManager.getAliveOnlinePlayers()) {
-										if(player != p) {
-											InventoryView openInv = player.getOpenInventory();
-											if(openInv.getTitle().startsWith(inventoryName)) {
-												player.closeInventory();
-												openArtifactInventory(player);
+									for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
+										if(currentPlayer != player) {
+											InventoryView openInv = currentPlayer.getOpenInventory();
+											if(openInv.getTitle().startsWith(INVENTORY_NAME)) {
+												currentPlayer.closeInventory();
+												openArtifactInventory(currentPlayer);
 											}
 										}
 									}
-									removeArtifacts(p, priceBefore);
+									removeArtifacts(player, priceBefore);
 								} else {
-									p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
+									player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
 								}
-								p.closeInventory();
+								player.closeInventory();
 								break;
 							} else {
-								p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
+								player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
 							}
 						}
 					}
 				}
 			}
-			e.setCancelled(true);
+			event.setCancelled(true);
 		}
 	}
 

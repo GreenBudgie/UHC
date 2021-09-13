@@ -1,6 +1,5 @@
 package ru.requester;
 
-import com.google.common.collect.Lists;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -25,7 +24,6 @@ import ru.mutator.MutatorManager;
 import ru.util.InventoryHelper;
 import ru.util.NumericalCases;
 import ru.util.ParticleUtils;
-import ru.util.WorldHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +36,7 @@ public class ItemRequester implements Listener {
 	public static final NumericalCases LAPIS_CASES = new NumericalCases("лазурит", "лазурита", "лазурита");
 	public static List<RequestedItem> requestedItems = new ArrayList<>();
 	public static Map<Integer, RequesterCustomItem> requesterCustomItems = new HashMap<>();
-	private static String name = ChatColor.DARK_AQUA + "Запросы";
+	private static final String INVENTORY_NAME = ChatColor.DARK_AQUA + "Запросы";
 
 	public static void init() {
 		putItem(CustomItems.shulkerBox, 10);
@@ -69,13 +67,23 @@ public class ItemRequester implements Listener {
 	private static final int[] redstoneDecorativeSlots = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26};
 	private static final int[] lapisDecorativeSlots = new int[] {27, 35, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53};
 
+	private static boolean isPreview(Player player) {
+		return !PlayerManager.isPlaying(player) || !UHC.state.isInGame();
+	}
+
 	public static void openRequesterInventory(Player player) {
-		Inventory inventory = Bukkit.createInventory(player, 54,
-				name + ChatColor.DARK_GRAY + " (" +
-						ChatColor.RED + getRedstone(player) +
-						ChatColor.DARK_GRAY + " / " +
-						ChatColor.BLUE + getLapis(player) +
-						ChatColor.DARK_GRAY + ")");
+		boolean preview = isPreview(player);
+		Inventory inventory;
+		if(preview) {
+			inventory = Bukkit.createInventory(player, 54, INVENTORY_NAME);
+		} else {
+			inventory = Bukkit.createInventory(player, 54,
+					INVENTORY_NAME + ChatColor.DARK_GRAY + " (" +
+							ChatColor.RED + getRedstone(player) +
+							ChatColor.DARK_GRAY + " / " +
+							ChatColor.BLUE + getLapis(player) +
+							ChatColor.DARK_GRAY + ")");
+		}
 		ItemStack redstone = new ItemStack(Material.REDSTONE);
 		for(int redstoneSlot : redstoneDecorativeSlots) {
 			inventory.setItem(redstoneSlot, redstone);
@@ -86,7 +94,7 @@ public class ItemRequester implements Listener {
 		}
 		for(int slot : requesterCustomItems.keySet()) {
 			RequesterCustomItem item = requesterCustomItems.get(slot);
-			inventory.setItem(slot, item.getInfoItemStack(player));
+			inventory.setItem(slot, preview ? item.getPreviewItemStack() : item.getInGameItemStack(player));
 		}
 		player.openInventory(inventory);
 	}
@@ -152,8 +160,8 @@ public class ItemRequester implements Listener {
 	@EventHandler
 	public void inventoryClick(InventoryClickEvent e) {
 		Player player = (Player) e.getWhoClicked();
-		if(UHC.state.isInGame() && e.getView().getTitle().startsWith(name)) {
-			if(e.getClickedInventory() != null && e.getClickedInventory() == e.getView().getTopInventory()) {
+		if(e.getView().getTitle().startsWith(INVENTORY_NAME)) {
+			if(!isPreview(player) && e.getClickedInventory() != null && e.getClickedInventory() == e.getView().getTopInventory()) {
 				ItemStack item = e.getCurrentItem();
 				if(item != null && item.getType() != Material.AIR) {
 					request(player, item);

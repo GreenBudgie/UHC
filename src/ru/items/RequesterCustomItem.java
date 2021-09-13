@@ -44,17 +44,17 @@ public abstract class RequesterCustomItem extends CustomItem {
 
 	/**
 	 * Gets an ItemStack with information about price and description
-	 * @param p Player to generate an info item for
+	 * @param player Player to generate an info item for
 	 * @return Informational ItemStack
 	 */
-	public ItemStack getInfoItemStack(Player p) {
+	public ItemStack getInGameItemStack(Player player) {
 		ItemStack item = getItemStack();
 		int lapisPrice = MutatorManager.simpleRequests.isActive() ? 0 : getLapisPrice();
-		boolean enoughRedstone = ItemRequester.getRedstone(p) >= getRedstonePrice();
-		boolean enoughLapis = ItemRequester.getLapis(p) >= lapisPrice;
-		boolean allowPos = p.getLocation().getBlockY() >= p.getWorld().getHighestBlockYAt(p.getLocation()) ||
+		boolean enoughRedstone = ItemRequester.getRedstone(player) >= getRedstonePrice();
+		boolean enoughLapis = ItemRequester.getLapis(player) >= lapisPrice;
+		boolean allowPos = player.getLocation().getBlockY() >= player.getWorld().getHighestBlockYAt(player.getLocation()) ||
 				MutatorManager.requestAnywhere.isActive() ||
-				p.getWorld().getEnvironment() == World.Environment.NETHER;
+				player.getWorld().getEnvironment() == World.Environment.NETHER;
 		getDescription().applyToItem(item);
 		if(getRedstonePrice() > 0) {
 			InventoryHelper.addLore(item, ChatColor.AQUA + "" + getRedstonePrice() + ChatColor.RED + " " + ItemRequester.REDSTONE_CASES.byNumber(getRedstonePrice()));
@@ -73,4 +73,20 @@ public abstract class RequesterCustomItem extends CustomItem {
 		}
 		return item;
 	}
+
+	/**
+	 * Gets an item stack to show in lobby preview inventory
+	 */
+	public ItemStack getPreviewItemStack() {
+		ItemStack item = getItemStack();
+		getDescription().applyToItem(item);
+		if(getRedstonePrice() > 0) {
+			InventoryHelper.addLore(item, ChatColor.AQUA + "" + getRedstonePrice() + ChatColor.RED + " " + ItemRequester.REDSTONE_CASES.byNumber(getRedstonePrice()));
+		}
+		if(getLapisPrice() > 0) {
+			InventoryHelper.addLore(item, ChatColor.AQUA + "" + getLapisPrice() + ChatColor.BLUE + " " + ItemRequester.LAPIS_CASES.byNumber(getLapisPrice()));
+		}
+		return item;
+	}
+
 }

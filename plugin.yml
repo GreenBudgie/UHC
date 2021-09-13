@@ -62,3 +62,9 @@ commands:
   description: Read or write an arena option
   usage: /editarena <arena> <option> [value]
   aliases: [ea]
+ requests:
+  description: Открыть меню запросов
+  usage: /requests
+ artifacts:
+  description: Открыть меню артефактов
+  usage: /artifacts

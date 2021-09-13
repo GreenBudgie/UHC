@@ -40,6 +40,8 @@ public class SignManager implements Listener {
 		new LobbySignGameType();
 		new LobbySignReturnLobby();
 		new LobbySignTeleportToArena();
+		new LobbySignShowRequests();
+		new LobbySignShowArtifacts();
 	}
 
 	public static void init() {
