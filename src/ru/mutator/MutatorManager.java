@@ -77,6 +77,7 @@ public class MutatorManager {
 	public static MutatorAttackWeakness attackWeakness = new MutatorAttackWeakness();
 	public static MutatorHalfDamage halfDamage = new MutatorHalfDamage();
 	public static MutatorIncreasingDamage increasingDamage = new MutatorIncreasingDamage();
+	public static MutatorDeathCoordinates deathCoordinates = new MutatorDeathCoordinates();
 
 	public static void init() {
 		Bukkit.getPluginManager().registerEvents(new Listener() {
