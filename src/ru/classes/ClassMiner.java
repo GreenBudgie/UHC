@@ -20,6 +20,7 @@ import ru.UHC.UHC;
 import ru.UHC.UHCPlayer;
 import ru.event.*;
 import ru.items.CustomItems;
+import ru.util.ItemInfo;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
 import ru.util.TaskManager;
@@ -97,20 +98,25 @@ public class ClassMiner extends BarHolderUHCClass {
     }
 
     @Override
-    public String[] getAdvantages() {
-        return new String[] {
-                "Спешка I на всю игру",
-                "Все инструменты более прочные",
-                "Больше опыта при добыче руды",
-                "Предмет: маяк, указывающий на расположение алмазов либо древних обломков"
+    public ItemInfo[] getAdvantages() {
+        return new ItemInfo[] {
+                new ItemInfo("Спешка I на всю игру")
+                        .extra("Увеличивает скорость добычи блоков на 20%, скорость атаки - на 10%"),
+                new ItemInfo("Все инструменты более прочные")
+                        .extra("Инструменты не теряют прочность при использовании с шансом 50%")
+                        .note("Не распространяется на оружие"),
+                new ItemInfo("В два раза больше опыта при добыче руды")
         };
     }
 
     @Override
-    public String[] getDisadvantages() {
-        return new String[] {
-                "При вскапывании любой руды ты начинаешь светиться",
-                "Шкала Miner Fatigue (усталость). Ты наносишь меньше урона и медленнее передвигаешься. Добыча меди улучшает эти характеристики."
+    public ItemInfo[] getDisadvantages() {
+        return new ItemInfo[] {
+                new ItemInfo("При вскапывании любой руды ты начинаешь светиться")
+                        .extra("Выдается эффект свечения на 5 секунд. Дальность прорисовки зависит от многих факторов, но в среднем - около 6 чанков."),
+                new ItemInfo("Шкала Miner Fatigue (усталость). Ты наносишь меньше урона и медленнее передвигаешься. Добыча меди улучшает эти характеристики.")
+                        .extra("В начале игры урон снижен на 30%, скорость - на 20%. При добыче 25 меди скорость полностью восстанавливается. При добыче 50 меди достигается порог в -10% урона.")
+                        .note("Требуется именно сломать медную руду. Можно это сделать даже без кирки.")
         };
     }
 
@@ -247,7 +253,7 @@ public class ClassMiner extends BarHolderUHCClass {
             }
         }
         if(hasClass(player) && Stream.of(ORES).anyMatch(type -> type == block.getType())) {
-            event.setExpToDrop((int) (event.getExpToDrop() * 1.5));
+            event.setExpToDrop((int) (event.getExpToDrop() * 2));
             ParticleUtils.createParticlesInside(block, Particle.SPELL_MOB, Color.WHITE, 5);
             block.getWorld().playSound(block.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_HIT, 0.5f, 1);
             player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20 * 5, 0));

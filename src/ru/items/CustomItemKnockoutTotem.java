@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import ru.block.CustomBlockKnockoutTotem;
 import ru.block.CustomBlockLandmine;
+import ru.util.ItemInfo;
 
 public class CustomItemKnockoutTotem extends RequesterCustomItem implements BlockHolder {
 
@@ -18,8 +19,10 @@ public class CustomItemKnockoutTotem extends RequesterCustomItem implements Bloc
 	}
 
 	@Override
-	public String getDescription() {
-		return "Тотем отбрасывания. При установке разбрасывает в стороны всех живых существ и игроков, кроме тебя и тиммейта, в радиусе 6 блоков. Действует 30 секунд. Одноразовый. Не работает на игроков до ПВП.";
+	public ItemInfo getDescription() {
+		return new ItemInfo("Тотем отбрасывания. При установке разбрасывает в стороны всех живых существ и игроков, кроме тебя и тиммейта.")
+				.extra("Действует 30 секунд в радиусе 6 блоков, после этого исчезает")
+				.note("До ПВП не действует на игроков");
 	}
 
 	@Override

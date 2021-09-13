@@ -15,30 +15,17 @@ public class CommandClass implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = (Player) sender;
 		if(UHC.state.isInGame() || UHC.state == GameState.DEATHMATCH) {
-			UHCClass playerClass = ClassManager.getClassInLobby(player);
+			UHCClass playerClass = ClassManager.getInGameClass(player);
 			if(playerClass == null) {
 				player.sendMessage(
 						ChatColor.BOLD + "" + ChatColor.GRAY + "> " +
 						ChatColor.DARK_GREEN + "Класс " +
 						ChatColor.BOLD + "не выбран!");
 			} else {
-				player.sendMessage(
-						ChatColor.BOLD + "" + ChatColor.GRAY + "> " +
-						ChatColor.DARK_GREEN + "Твой класс: " +
-						playerClass.getName());
-				for(String advantage : playerClass.getAdvantages()) {
-					player.sendMessage(
-							ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "+ " +
-							ChatColor.RESET + ChatColor.GREEN + advantage);
-				}
-				for(String disadvantage : playerClass.getDisadvantages()) {
-					player.sendMessage(
-							ChatColor.DARK_RED + "" + ChatColor.BOLD + "- " +
-							ChatColor.RESET + ChatColor.RED + disadvantage);
-				}
+				ClassManager.openClassInfoInventory(player, playerClass);
 			}
 		} else {
-			ClassManager.openClassInventory(player);
+			ClassManager.openClassSelectInventory(player);
 		}
 		return true;
 	}

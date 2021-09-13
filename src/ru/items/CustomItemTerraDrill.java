@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.mutator.MutatorManager;
+import ru.util.ItemInfo;
 import ru.util.WorldHelper;
 
 import java.util.HashMap;
@@ -95,8 +96,10 @@ public class CustomItemTerraDrill extends RequesterCustomItem implements Listene
 	}
 
 	@Override
-	public String getDescription() {
-		return "Копает камень 3x3. Нельзя зачарить и починить.";
+	public ItemInfo getDescription() {
+		return new ItemInfo("Копает камень 3x3")
+				.extra("К камню также относится адский камень, базальт, андезит, диорит и т.д.")
+				.note("Нельзя зачарить и починить");
 	}
 
 	@Override

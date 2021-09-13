@@ -18,7 +18,7 @@ import ru.UHC.WorldManager;
 import ru.event.GameStartEvent;
 import ru.event.UHCPlayerRejoinEvent;
 import ru.items.CustomItems;
-import ru.main.UHCPlugin;
+import ru.util.ItemInfo;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
 
@@ -36,21 +36,24 @@ public class ClassDemon extends BarHolderUHCClass {
     }
 
     @Override
-    public String[] getAdvantages() {
-        return new String[] {
-                "Урон от огня, магмы и лавы снижен в 2 раза",
-                "Пиглины дружелюбны (не распространяется на зомби и брутов)",
-                "С кварцевой руды падает редстоун",
-                "Шкала Soul Flame, наполняется при получении урона от огня. Когда тебя атакуют, тратится одно деление шкалы и нападающий поджигается",
-                "Предмет: тотем, поджигающий существ вокруг"
+    public ItemInfo[] getAdvantages() {
+        return new ItemInfo[] {
+                new ItemInfo("Урон от огня, магмы и лавы снижен в 2 раза"),
+                new ItemInfo("Пиглины дружелюбны").note("Не распространяется на зомби-пиглинов и брутов"),
+                new ItemInfo("С кварцевой руды падает редстоун").extra("1-2 шт. за руду").note("Чар на удачу не влияет на количество"),
+                new ItemInfo("Шкала Soul Flame, наполняется при получении урона от огня. Когда тебя атакуют, тратится одно деление шкалы и нападающий поджигается.")
+                        .extra("1 ед. урона = 1/12 шкалы; Значит, шкала наполнится полностью при получении урона в 12 хп.")
+                        .note("К урону от огня относится также урон от магмы и лавы. Поджигаются только атакующие игроки, на мобов не работает.")
+                        .example("Ты получил 6хп урона от лавы и наполнил шкалу на 3 заряда. Тебя атаковали. Атакующий поджегся, у тебя осталось 2 заряда.")
         };
     }
 
     @Override
-    public String[] getDisadvantages() {
-        return new String[] {
-                "Получаемый урон в обычном мире увеличен на 25% (кроме дезматча)",
-                "Артефакты не выбиваются в аду"
+    public ItemInfo[] getDisadvantages() {
+        return new ItemInfo[] {
+                new ItemInfo("Получаемый урон в обычном мире увеличен на 25%")
+                        .note("Во время дезматча урон не увеличивается"),
+                new ItemInfo("Темные артефакты не выбиваются в аду")
         };
     }
 

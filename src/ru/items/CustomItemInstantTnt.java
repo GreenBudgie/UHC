@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import ru.UHC.*;
 import ru.main.UHCPlugin;
+import ru.util.ItemInfo;
 import ru.util.ParticleUtils;
 
 public class CustomItemInstantTnt extends RequesterCustomItem implements Listener {
@@ -63,8 +64,8 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 	}
 
 	@Override
-	public String getDescription() {
-		return "Динамит, который взрывается через полторы секунды после установки";
+	public ItemInfo getDescription() {
+		return new ItemInfo("Динамит, который взрывается через полторы секунды после установки");
 	}
 
 	@Override

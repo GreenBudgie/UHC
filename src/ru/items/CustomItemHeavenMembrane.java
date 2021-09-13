@@ -9,6 +9,7 @@ import org.bukkit.potion.PotionEffectType;
 import ru.UHC.ArenaManager;
 import ru.UHC.GameState;
 import ru.UHC.UHC;
+import ru.util.ItemInfo;
 import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
@@ -38,8 +39,11 @@ public class CustomItemHeavenMembrane extends RequesterCustomItem {
 	}
 
 	@Override
-	public String getDescription() {
-		return "При использовании телепортирует высоко в воздух, выдавая эффект медленного падения. Может вытащить из шахты. Работает только на открытых аренах.";
+	public ItemInfo getDescription() {
+		return new ItemInfo("При использовании телепортирует высоко в воздух, выдавая эффект медленного падения")
+				.note("Не работает в аду и на закрытых аренах")
+				.extra("Телепортирует на 100 блоков выше, чем самый верхний блок на твоих координатах")
+				.example("Может мгновенно вытащить из пещеры или помочь избежать битвы с игроком или мобом");
 	}
 
 	@Override

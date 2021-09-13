@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.UHC;
+import ru.util.ItemInfo;
 import ru.util.WorldHelper;
 
 public class CustomItemPlayerTracker extends RequesterCustomItem {
@@ -20,8 +21,9 @@ public class CustomItemPlayerTracker extends RequesterCustomItem {
 	}
 
 	@Override
-	public String getDescription() {
-		return "Указывает на ближайшего врага, когда держишь его в руке";
+	public ItemInfo getDescription() {
+		return new ItemInfo("Указывает на ближайшего врага, когда держишь его в руке")
+				.note("Не действует в аду, т.к. в аду компасы не работают");
 	}
 
 	@Override

@@ -13,9 +13,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHCPlayer;
+import ru.util.ItemInfo;
 import ru.event.GameEndEvent;
-import ru.event.UHCPlayerDeathEvent;
-import ru.main.UHCPlugin;
 import ru.util.ParticleUtils;
 
 import java.util.HashSet;
@@ -84,8 +83,10 @@ public class CustomItemAncientShard extends ClassCustomItem implements Listener 
 	}
 
 	@Override
-	public String getDescription() {
-		return "После использования гарантирует, что первый полученный урон будет полностью поглощен (аннулирован). Эффект действует, пока не будет получен любой урон.";
+	public ItemInfo getDescription() {
+		return new ItemInfo("После использования гарантирует, что первый полученный урон будет полностью поглощен")
+				.explanation("Эффект действует, пока не будет получен любой урон")
+				.example("Ты использовал предмет. Через 20 минут ты случайно упал в каньон, но весь полученный от падения урон был отменен. Больше эффект не действует.");
 	}
 
 }

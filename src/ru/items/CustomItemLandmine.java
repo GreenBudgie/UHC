@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.UHC.GameState;
 import ru.block.CustomBlockLandmine;
 import ru.UHC.UHC;
+import ru.util.ItemInfo;
 
 public class CustomItemLandmine extends RequesterCustomItem implements BlockHolder {
 
@@ -23,8 +24,10 @@ public class CustomItemLandmine extends RequesterCustomItem implements BlockHold
 	}
 
 	@Override
-	public String getDescription() {
-		return "Мина. Активируется при приближении врага к ней на расстоянии 5 блоков с задержкой в 1,5 секунды. Можно зарыть под землю.";
+	public ItemInfo getDescription() {
+		return new ItemInfo("Мина, которая активируется при приближении врага к ней")
+				.extra("Радиус активации: 5 блоков, задержка перед взрывом - 1.5 секунды. Сила взрыва примерно равна динамиту.")
+				.note("Можно зарыть под землю и поставить блок грязи сверху - он сразу зарастет травой");
 	}
 
 	@Override

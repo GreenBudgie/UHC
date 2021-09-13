@@ -23,6 +23,7 @@ import ru.UHC.PlayerManager;
 import ru.UHC.UHCPlayer;
 import ru.event.UHCPlayerDeathEvent;
 import ru.main.UHCPlugin;
+import ru.util.ItemInfo;
 import ru.util.ParticleUtils;
 import ru.util.TaskManager;
 import ru.util.WorldHelper;
@@ -55,14 +56,15 @@ public class CustomItemUnderworldEgg extends ClassCustomItem implements Listener
 	}
 
 	@Override
-	public String getDescription() {
-		return "Призывает помощников из-под земли в том месте, куда попало при броске. Появляются зомби и скелеты, атакующие других игроков. Нельзя использовать до ПВП.";
+	public ItemInfo getDescription() {
+		return new ItemInfo("Призывает помощников из-под земли в том месте, куда попало при броске. Появляются зомби и скелеты, атакующие других игроков.")
+				.extra("Мобы не будут нападать на тебя и твоего тиммейта")
+				.note("Нельзя использовать до ПВП");
 	}
 
 	private void spawnMob(Location center, EntityType type, Player owner) {
 		Monster monster = (Monster) center.getWorld().spawnEntity(center, type);
 		monster.setMetadata("necromancer_owner", new FixedMetadataValue(UHCPlugin.instance, owner.getName()));
-		WorldHelper.chorusTeleport(monster, 3, false);
 		monster.getWorld().strikeLightningEffect(monster.getLocation());
 		monster.setCustomName(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Undead Warrior");
 		monster.setCustomNameVisible(true);

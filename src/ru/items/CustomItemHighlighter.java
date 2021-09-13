@@ -9,6 +9,7 @@ import org.bukkit.potion.PotionEffectType;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.UHC.UHCPlayer;
+import ru.util.ItemInfo;
 import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
@@ -56,8 +57,9 @@ public class CustomItemHighlighter extends RequesterCustomItem {
 	}
 
 	@Override
-	public String getDescription() {
-		return "При использовании подсвечивает всех игроков в радиусе 128 блоков и выводит их список";
+	public ItemInfo getDescription() {
+		return new ItemInfo("При использовании подсвечивает всех игроков в радиусе 128 блоков и выводит их список")
+				.note("Ты и твой тиммейт не будут подсвечены");
 	}
 
 	@Override

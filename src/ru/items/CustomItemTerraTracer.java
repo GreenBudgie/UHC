@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import ru.block.CustomBlockInfernalLead;
 import ru.block.CustomBlockTerraTracer;
+import ru.util.ItemInfo;
 
 public class CustomItemTerraTracer extends ClassCustomItem implements BlockHolder {
 
@@ -18,8 +19,10 @@ public class CustomItemTerraTracer extends ClassCustomItem implements BlockHolde
 	}
 
 	@Override
-	public String getDescription() {
-		return "При установке указывает на ближайшее расположение алмазов или древних осколков";
+	public ItemInfo getDescription() {
+		return new ItemInfo("При установке указывает на ближайшее расположение алмазов или древних осколков")
+				.extra("Появляется стрелка из частиц, ведущая к руде. Действует, пока руда не вскопана.")
+				.note("Если рядом нет руды, то маяк можно будет использовать снова");
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.UHC;
+import ru.util.ItemInfo;
 import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
@@ -36,8 +37,8 @@ public class CustomItemCreatureHighlighter extends RequesterCustomItem {
 	}
 
 	@Override
-	public String getDescription() {
-		return "При использовании подсвечивает всех мобов в радиусе 64 блоков, но не игроков";
+	public ItemInfo getDescription() {
+		return new ItemInfo("При использовании подсвечивает всех мобов в радиусе 64 блоков, кроме игроков");
 	}
 
 	@Override

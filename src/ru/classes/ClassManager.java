@@ -27,7 +27,8 @@ import java.util.Map;
 
 public class ClassManager implements Listener {
 
-    private static final String INV_NAME = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Классы";
+    private static final String INVENTORY_CLASS_SELECT_NAME = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Классы";
+    private static final String INVENTORY_CLASS_INFO_NAME = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "О классе: ";
     public static final List<UHCClass> classes = new ArrayList<>();
     public static final Map<String, UHCClass> lobbyPlayerClasses = new HashMap<>();
 
@@ -102,13 +103,59 @@ public class ClassManager implements Listener {
         UHC.updateLobbyScoreboard(player);
     }
 
-    public static void openClassInventory(Player player) {
-        Inventory inventory = Bukkit.createInventory(player, 9, INV_NAME);
+    public static void openClassSelectInventory(Player player) {
+        Inventory inventory = Bukkit.createInventory(player, 9, INVENTORY_CLASS_SELECT_NAME);
         inventory.addItem(
                 classes.stream().map(uhcClass -> uhcClass.makeItemToShow(player)).toArray(ItemStack[]::new)
         );
         inventory.setItem(8,
                 ItemUtils.builder(Material.BARRIER).withName(ChatColor.RED + "Сбросить класс").build());
+        player.openInventory(inventory);
+    }
+
+    public static void openClassInfoInventory(Player player, UHCClass uhcClass) {
+        int invSize = 5 * 9;
+        Inventory inventory = Bukkit.createInventory(player, invSize, INVENTORY_CLASS_INFO_NAME + uhcClass.getName());
+
+        inventory.setItem(0, ItemUtils.builder(Material.LIME_DYE).withName(ChatColor.GREEN + "" + ChatColor.BOLD + "Преимущества").build());
+        for(int i = 0; i < uhcClass.getAdvantageItems().length; i++) {
+            inventory.setItem(i + 1, uhcClass.getAdvantageItems()[i]);
+        }
+
+        inventory.setItem(9, ItemUtils.builder(Material.RED_DYE).withName(ChatColor.RED + "" + ChatColor.BOLD + "Недостатки").build());
+        for(int i = 0; i < uhcClass.getDisadvantageItems().length; i++) {
+            inventory.setItem(i + 10, uhcClass.getDisadvantageItems()[i]);
+        }
+
+        ItemStack[] startItems = uhcClass.getStartItems();
+        int startItemCount = startItems.length;
+        if(startItemCount > 0) {
+            inventory.setItem(18,
+                    ItemUtils.builder(Material.CYAN_DYE).
+                            withName(ChatColor.AQUA + "" + ChatColor.BOLD + (startItemCount == 1 ? "Предмет" : "Предметы")).
+                            withLore(ChatColor.DARK_AQUA + (startItemCount == 1 ? "Будет выдан на старте игры" : "Будут выданы на старте игры")).
+                            build());
+            for(int i = 0; i < startItemCount; i++) {
+                inventory.setItem(i + 19, startItems[i]);
+            }
+        }
+
+        ItemStack blackPanel = ItemUtils.builder(Material.BLACK_STAINED_GLASS_PANE).withName(" ").build();
+        for(int slot = 27; slot < 36; slot++) {
+            inventory.setItem(slot, blackPanel);
+        }
+
+        inventory.setItem(36, ItemUtils.builder(Material.BARRIER).withName(ChatColor.RED + "К выбору классов").build());
+        inventory.setItem(40,
+                ItemUtils.builder(Material.NAME_TAG).
+                        withName(" ").
+                        withSplittedLore(ChatColor.GRAY + "Напиши " + ChatColor.WHITE + "/class" + ChatColor.GRAY + " во время игры, чтобы открыть это меню").
+                        build());
+        inventory.setItem(44, ItemUtils.builder(Material.GREEN_DYE).
+                withName(ChatColor.GREEN + "Установить класс").
+                withValue("class", uhcClass.getConfigName()).
+                build());
+
         player.openInventory(inventory);
     }
 
@@ -123,16 +170,16 @@ public class ClassManager implements Listener {
     }
 
     @EventHandler
-    public void invClick(InventoryClickEvent e) {
-        if(e.getView().getTitle().equals(INV_NAME)) {
-            Player player = (Player) e.getWhoClicked();
+    public void invClick(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        if(event.getView().getTitle().equals(INVENTORY_CLASS_SELECT_NAME)) {
             if(!Lobby.isInLobbyOrWatchingArena(player)) return;
-            e.setCancelled(true);
-            ItemStack item = e.getCurrentItem();
+            event.setCancelled(true);
+            ItemStack item = event.getCurrentItem();
             if(item == null) return;
             if(item.getType() == Material.BARRIER) {
                 removeClassInLobby(player);
-                e.getWhoClicked().closeInventory();
+                event.getWhoClicked().closeInventory();
                 return;
             }
             UHCClass uhcClass = null;
@@ -143,8 +190,31 @@ public class ClassManager implements Listener {
                 }
             }
             if(uhcClass != null) {
-                e.getWhoClicked().closeInventory();
-                selectClassInLobby(player, uhcClass);
+                if(event.isRightClick()) {
+                    event.getWhoClicked().closeInventory();
+                    selectClassInLobby(player, uhcClass);
+                } else {
+                    openClassInfoInventory(player, uhcClass);
+                }
+            }
+        }
+        if(event.getView().getTitle().startsWith(INVENTORY_CLASS_INFO_NAME)) {
+            event.setCancelled(true);
+            ItemStack item = event.getCurrentItem();
+            if(item == null) return;
+            if(item.getType() == Material.BARRIER) {
+                openClassSelectInventory(player);
+                return;
+            }
+            if(item.getType() == Material.GREEN_DYE) {
+                String rawClass = ItemUtils.getCustomValue(item, "class");
+                if(rawClass != null) {
+                    UHCClass currentClass = getClassByConfigName(rawClass);
+                    if(currentClass != null) {
+                        event.getWhoClicked().closeInventory();
+                        selectClassInLobby(player, currentClass);
+                    }
+                }
             }
         }
     }

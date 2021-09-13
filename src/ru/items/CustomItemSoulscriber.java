@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
+import ru.util.ItemInfo;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
@@ -42,8 +43,10 @@ public class CustomItemSoulscriber extends RequesterCustomItem implements Listen
 	}
 
 	@Override
-	public String getDescription() {
-		return "При атаке противника регенерирует тебе 20% здоровья от нанесенного урона";
+	public ItemInfo getDescription() {
+		return new ItemInfo("При атаке противника регенерирует тебе 20% здоровья от нанесенного урона")
+				.example("Ты нанес 5хп урона противнику - твое здоровье пополнилось на 1хп")
+				.note("Действует только на игроков. Можно зачарить!");
 	}
 
 	@Override

@@ -5,11 +5,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import ru.block.CustomBlockPulsatingTotem;
+import ru.util.ItemInfo;
 
 public class CustomItemPulsatingTotem extends RequesterCustomItem implements BlockHolder {
 
 	public String getName() {
-		return ChatColor.WHITE + "" + ChatColor.BOLD +"Pulsating Aura Totem";
+		return ChatColor.WHITE + "" + ChatColor.BOLD + "Pulsating Aura Totem";
 	}
 
 	public Material getMaterial() {
@@ -17,8 +18,10 @@ public class CustomItemPulsatingTotem extends RequesterCustomItem implements Blo
 	}
 
 	@Override
-	public String getDescription() {
-		return "Тотем пульсирующей ауры. Отталкивает любые чужие снаряды (стрелы, фаерболы, брошенные зелья, трезубцы...) в радиусе 6 блоков. Действует 30 секунд. Одноразовый.";
+	public ItemInfo getDescription() {
+		return new ItemInfo("Тотем пульсирующей ауры. Отталкивает любые чужие снаряды.")
+				.extra("Действует 30 секунд в радиусе 6 блоков, затем - исчезает")
+				.note("К снарядам относятся стрелы, фаерболы, трезубцы, снежки и т.д.");
 	}
 
 	@Override

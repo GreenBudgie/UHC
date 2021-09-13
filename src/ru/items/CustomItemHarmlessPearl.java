@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.UHC;
+import ru.util.ItemInfo;
 import ru.util.WorldHelper;
 
 import java.util.HashSet;
@@ -56,8 +57,8 @@ public class CustomItemHarmlessPearl extends RequesterCustomItem implements List
 	}
 
 	@Override
-	public String getDescription() {
-		return "Перл, не наносящий урона при телепортации";
+	public ItemInfo getDescription() {
+		return new ItemInfo("Перл, не наносящий урона при телепортации");
 	}
 
 	@Override

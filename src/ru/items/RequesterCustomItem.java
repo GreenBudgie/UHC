@@ -9,10 +9,11 @@ import ru.mutator.MutatorManager;
 import ru.mutator.MutatorRequestAnywhere;
 import ru.requester.ItemRequester;
 import ru.util.InventoryHelper;
+import ru.util.ItemInfo;
 
 public abstract class RequesterCustomItem extends CustomItem {
 
-	public abstract String getDescription();
+	public abstract ItemInfo getDescription();
 
 	public abstract int getRedstonePrice();
 
@@ -54,7 +55,7 @@ public abstract class RequesterCustomItem extends CustomItem {
 		boolean allowPos = p.getLocation().getBlockY() >= p.getWorld().getHighestBlockYAt(p.getLocation()) ||
 				MutatorManager.requestAnywhere.isActive() ||
 				p.getWorld().getEnvironment() == World.Environment.NETHER;
-		InventoryHelper.addSplittedLore(item, 25, getDescription(), ChatColor.YELLOW);
+		getDescription().applyToItem(item);
 		if(getRedstonePrice() > 0) {
 			InventoryHelper.addLore(item, ChatColor.AQUA + "" + getRedstonePrice() + ChatColor.RED + " " + ItemRequester.REDSTONE_CASES.byNumber(getRedstonePrice()));
 		}

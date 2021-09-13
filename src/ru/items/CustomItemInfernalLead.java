@@ -8,6 +8,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.block.CustomBlockInfernalLead;
 import ru.block.CustomBlockItem;
+import ru.util.ItemInfo;
 import ru.util.ParticleUtils;
 
 public class CustomItemInfernalLead extends RequesterCustomItem implements BlockHolder {
@@ -22,8 +23,9 @@ public class CustomItemInfernalLead extends RequesterCustomItem implements Block
 	}
 
 	@Override
-	public String getDescription() {
-		return "При установке показывает расположение ближайшей крепости в аду. Можно использовать неограниченное количество раз, главное суметь его сломать.";
+	public ItemInfo getDescription() {
+		return new ItemInfo("При установке показывает расположение ближайшей крепости в аду")
+				.note("Можно использовать неограниченное количество раз. Однако, для этого нужно суметь его сломать, ведь блок имеет прочность обсидиана.");
 	}
 
 	@Override

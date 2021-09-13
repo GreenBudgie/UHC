@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHCPlayer;
+import ru.util.ItemInfo;
 import ru.util.ParticleUtils;
 
 public class CustomItemIceball extends RequesterCustomItem implements Listener {
@@ -25,8 +26,8 @@ public class CustomItemIceball extends RequesterCustomItem implements Listener {
     }
 
     @Override
-    public String getDescription() {
-        return "Ледяной снежок, отталкивающий игроков, но при этом не наносящий урона";
+    public ItemInfo getDescription() {
+        return new ItemInfo("Ледяной снежок, отталкивающий игроков, но при этом не наносящий урона");
     }
 
     @Override

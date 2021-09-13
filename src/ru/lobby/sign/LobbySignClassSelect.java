@@ -5,7 +5,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.classes.ClassManager;
-import ru.mutator.InventoryBuilderMutator;
 
 public class LobbySignClassSelect extends LobbySign {
 
@@ -26,7 +25,7 @@ public class LobbySignClassSelect extends LobbySign {
 
     @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
-        ClassManager.openClassInventory(clicker);
+        ClassManager.openClassSelectInventory(clicker);
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
+import ru.util.ItemInfo;
 import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
@@ -39,8 +40,8 @@ public class CustomItemShieldBreaker extends RequesterCustomItem implements List
 	}
 
 	@Override
-	public String getDescription() {
-		return "Ломает щит противника с одного удара, если он в этот момент им защищается";
+	public ItemInfo getDescription() {
+		return new ItemInfo("Ломает щит противника с одного удара, если он в этот момент им защищается");
 	}
 
 	@Override

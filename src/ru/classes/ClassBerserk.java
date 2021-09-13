@@ -26,6 +26,7 @@ import ru.event.GameStartEvent;
 import ru.event.UHCPlayerRejoinEvent;
 import ru.items.CustomItems;
 import ru.main.UHCPlugin;
+import ru.util.ItemInfo;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
 import ru.util.TaskManager;
@@ -47,22 +48,27 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
     }
 
     @Override
-    public String[] getAdvantages() {
-        return new String[] {
-                "20 сердец при старте игры",
-                "Гнилая плоть и сырое мясо безвредны",
-                "Спешка III на 10 секунд, когда ешь сырое мясо",
-                "Шкала Battle Rage: увеличивается урон при убийстве враждебных мобов не из спавнера",
-                "Предмет: гарантирует, что первый полученный урон будет поглощен"
+    public ItemInfo[] getAdvantages() {
+        return new ItemInfo[] {
+                new ItemInfo("20 сердец при старте игры"),
+                new ItemInfo("Гнилая плоть и сырое мясо безвредны"),
+                new ItemInfo("Ты начинаешь быстрее атаковать, когда ешь сырое мясо")
+                        .extra("Выдается спешка III на 10 секунд, что увеличивает скорость атаки на 30%"),
+                new ItemInfo("Шкала Battle Rage: увеличивается урон при убийстве враждебных мобов")
+                        .note("Не работает на мобов из спавнера")
+                        .extra("Максимальный буст урона равен 30%, для этого нужно убить 50 мобов")
+                        .explanation("Буст урона сохраняется на всю игру и никуда не пропадает со временем")
         };
     }
 
     @Override
-    public String[] getDisadvantages() {
-        return new String[] {
-                "Может носить только кожаную броню, может быть скрафчена из гнилой плоти",
-                "Нельзя атаковать мечами",
-                "Эффекты регенерации в полтора раза слабее"
+    public ItemInfo[] getDisadvantages() {
+        return new ItemInfo[] {
+                new ItemInfo("Может носить только кожаную броню, которая также может быть скрафчена из гнилой плоти")
+                        .note("Другую броню надеть можно, но при первом же получении урона она мгновенно сломается"),
+                new ItemInfo("Нельзя атаковать мечами"),
+                new ItemInfo("Эффекты регенерации в полтора раза слабее")
+                        .example("Золотые яблоки будут восстанавливать 3 хп вместо 4-х")
         };
     }
 

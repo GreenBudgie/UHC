@@ -10,22 +10,24 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
 import ru.UHC.PlayerManager;
-import ru.UHC.RecipeHandler;
 import ru.UHC.UHC;
 import ru.UHC.UHCPlayer;
 import ru.event.GameStartEvent;
 import ru.main.UHCPlugin;
+import ru.util.ItemInfo;
+import ru.util.InventoryHelper;
 import ru.util.ItemUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class UHCClass implements Listener {
 
+    private ItemStack[] advantageItems;
+    private ItemStack[] disadvantageItems;
+
     public UHCClass() {
+        makeClassInfoItems();
         ClassManager.classes.add(this);
         Bukkit.getPluginManager().registerEvents(this, UHCPlugin.instance);
         if(this instanceof RecipeHolderClass recipeHolder) {
@@ -36,8 +38,8 @@ public abstract class UHCClass implements Listener {
     }
 
     public abstract String getName();
-    public abstract String[] getAdvantages();
-    public abstract String[] getDisadvantages();
+    public abstract ItemInfo[] getAdvantages();
+    public abstract ItemInfo[] getDisadvantages();
     public abstract Material getItemToShow();
 
     public final String getConfigName() {
@@ -57,20 +59,42 @@ public abstract class UHCClass implements Listener {
     public ItemStack makeItemToShow(Player forPlayer) {
         ItemStack item = new ItemStack(getItemToShow());
         ItemUtils.setName(item, getName());
-        for(String advantage : getAdvantages()) {
-            ItemUtils.addSplittedLore(item,
-                    ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "+ " +
-                    ChatColor.RESET + ChatColor.GREEN + advantage);
-        }
-        for(String disadvantage : getDisadvantages()) {
-            ItemUtils.addSplittedLore(item,
-                    ChatColor.DARK_RED + "" + ChatColor.BOLD + "- " +
-                            ChatColor.RESET + ChatColor.RED + disadvantage);
-        }
+        ItemUtils.addLore(item, ChatColor.GRAY + "Подробнее - <ЛКМ>");
+        ItemUtils.addLore(item, ChatColor.GRAY + "Выбрать класс - <ПКМ>");
         if(ClassManager.getClassInLobby(forPlayer) == this) {
             ItemUtils.addGlow(item);
         }
         return item;
+    }
+
+    public ItemStack[] getAdvantageItems() {
+        return advantageItems;
+    }
+
+    public ItemStack[] getDisadvantageItems() {
+        return disadvantageItems;
+    }
+
+    public void makeClassInfoItems() {
+        ItemInfo[] advantages = getAdvantages();
+        this.advantageItems = new ItemStack[advantages.length];
+        for(int i = 0; i < advantages.length; i++) {
+            ItemInfo advantage = advantages[i];
+            ItemStack advantageItem = InventoryHelper.generateHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjA1NmJjMTI0NGZjZmY5OTM0NGYxMmFiYTQyYWMyM2ZlZTZlZjZlMzM1MWQyN2QyNzNjMTU3MjUzMWYifX19");
+            ItemUtils.setName(advantageItem, ChatColor.GREEN + "" + ChatColor.BOLD + "+");
+            advantage.applyToItem(advantageItem);
+            this.advantageItems[i] = advantageItem;
+        }
+
+        ItemInfo[] disadvantages = getDisadvantages();
+        this.disadvantageItems = new ItemStack[disadvantages.length];
+        for(int i = 0; i < disadvantages.length; i++) {
+            ItemInfo disadvantage = disadvantages[i];
+            ItemStack disadvantageItem = InventoryHelper.generateHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGU0YjhiOGQyMzYyYzg2NGUwNjIzMDE0ODdkOTRkMzI3MmE2YjU3MGFmYmY4MGMyYzViMTQ4Yzk1NDU3OWQ0NiJ9fX0=");
+            ItemUtils.setName(disadvantageItem, ChatColor.RED + "" + ChatColor.BOLD + "-");
+            disadvantage.applyToItem(disadvantageItem);
+            this.disadvantageItems[i] = disadvantageItem;
+        }
     }
 
     public final List<UHCPlayer> getAliveOnlinePlayersWithClass() {

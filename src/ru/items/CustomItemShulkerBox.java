@@ -4,11 +4,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ru.util.ItemInfo;
 import ru.util.WorldHelper;
 
 public class CustomItemShulkerBox extends RequesterCustomItem {
@@ -22,8 +24,8 @@ public class CustomItemShulkerBox extends RequesterCustomItem {
 	}
 
 	@Override
-	public String getDescription() {
-		return "Обычный шалкер бокс";
+	public ItemInfo getDescription() {
+		return new ItemInfo("Обычный шалкер бокс");
 	}
 
 	@Override

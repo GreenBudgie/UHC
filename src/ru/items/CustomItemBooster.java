@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ru.util.ItemInfo;
 import ru.util.ParticleUtils;
 import ru.util.WorldHelper;
 
@@ -31,8 +32,8 @@ public class CustomItemBooster extends RequesterCustomItem {
 	}
 
 	@Override
-	public String getDescription() {
-		return "Выдает скорость V на 8 секунд при использовании";
+	public ItemInfo getDescription() {
+		return new ItemInfo("При использовании выдает скорость V на 8 секунд").extra("Ты становишься ровно в 2 раза быстрее");
 	}
 
 	@Override

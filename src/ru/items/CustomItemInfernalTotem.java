@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import ru.block.CustomBlockInfernalTotem;
+import ru.util.ItemInfo;
 
 public class CustomItemInfernalTotem extends ClassCustomItem implements BlockHolder {
 
@@ -17,8 +18,10 @@ public class CustomItemInfernalTotem extends ClassCustomItem implements BlockHol
 	}
 
 	@Override
-	public String getDescription() {
-		return "Тотем ада. Поджигает всех существ и игроков вокруг, кроме тебя и тиммейта. Действует 30 секунд в радиусе 4-х блоков. Одноразовый. До ПВП не поджигает игроков.";
+	public ItemInfo getDescription() {
+		return new ItemInfo("Тотем ада. Поджигает всех существ и игроков вокруг, кроме тебя и тиммейта.")
+				.extra("Действует 30 секунд в радиусе 4-х блоков, после этого исчезает")
+				.note("До ПВП поджигает только мобов, игроки в безопасности");
 	}
 
 	@Override
