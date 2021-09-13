@@ -67,7 +67,7 @@ public class CustomBlockPulsatingTotem extends CustomBlockTotem {
 
     @Override
     public int getEffectDuration() {
-        return 20 * 30;
+        return 20 * 60;
     }
 
     @Override

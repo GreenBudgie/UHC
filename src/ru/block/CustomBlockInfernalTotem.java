@@ -36,7 +36,7 @@ public class CustomBlockInfernalTotem extends CustomBlockTotem {
     @Override
     public void produceEffect() {
         ParticleUtils.createParticlesOutlineSphere(centerLocation, getEffectRadius(), Particle.FLAME, null, 4);
-        if(ticksPassed > 0 && ticksPassed % 20 == 0) {
+        if(ticksPassed > 0 && ticksPassed % 15 == 0) {
             ParticleUtils.createParticlesOutlineSphere(centerLocation, 2, Particle.SOUL_FIRE_FLAME, null, 20);
             location.getWorld().playSound(location, Sound.ENTITY_BLAZE_HURT, 0.7F, 0.5F);
             List<LivingEntity> entities = location.getWorld().getLivingEntities();

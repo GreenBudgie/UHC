@@ -20,7 +20,7 @@ public class CustomItemInfernalTotem extends ClassCustomItem implements BlockHol
 	@Override
 	public ItemInfo getDescription() {
 		return new ItemInfo("Тотем ада. Поджигает всех существ и игроков вокруг, кроме тебя и тиммейта.")
-				.extra("Действует 30 секунд в радиусе 4-х блоков, после этого исчезает")
+				.extra("Действует 30 секунд в радиусе 5 блоков, после этого исчезает. Противники горят 5 секунд.")
 				.note("До ПВП поджигает только мобов, игроки в безопасности");
 	}
 

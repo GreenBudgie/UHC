@@ -20,18 +20,19 @@ public class CustomItemPulsatingTotem extends RequesterCustomItem implements Blo
 	@Override
 	public ItemInfo getDescription() {
 		return new ItemInfo("Тотем пульсирующей ауры. Отталкивает любые чужие снаряды.")
-				.extra("Действует 30 секунд в радиусе 6 блоков, затем - исчезает")
-				.note("К снарядам относятся стрелы, фаерболы, трезубцы, снежки и т.д.");
+				.extra("Действует 1 минуту в радиусе 6 блоков, затем - исчезает")
+				.note("К снарядам относятся стрелы, фаерболы, трезубцы, снежки и т.д. Действует на арене.")
+				.example("Ты устанавливаешь тотем и можешь спокойно расстреливать других игроков, пока он будет тебя защищать от их снарядов");
 	}
 
 	@Override
 	public int getRedstonePrice() {
-		return 80;
+		return 64;
 	}
 
 	@Override
 	public int getLapisPrice() {
-		return 20;
+		return 6;
 	}
 
 	@Override

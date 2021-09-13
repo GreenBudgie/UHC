@@ -43,7 +43,7 @@ public class CustomItemIceball extends RequesterCustomItem implements Listener {
     @Override
     public ItemStack getItemStack() {
         ItemStack item = super.getItemStack();
-        item.setAmount(4);
+        item.setAmount(6);
         return item;
     }
 

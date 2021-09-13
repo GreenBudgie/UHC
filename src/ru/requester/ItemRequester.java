@@ -39,23 +39,23 @@ public class ItemRequester implements Listener {
 	private static final String INVENTORY_NAME = ChatColor.DARK_AQUA + "Запросы";
 
 	public static void init() {
-		putItem(CustomItems.shulkerBox, 10);
-		putItem(CustomItems.iceball, 11);
-		putItem(CustomItems.highlighter, 12);
-		putItem(CustomItems.creatureHighlighter, 13);
-		putItem(CustomItems.booster, 14);
-		putItem(CustomItems.pearl, 15);
-		putItem(CustomItems.infernalLead, 16);
+		putItem(CustomItems.shulkerBox, 11);
+		putItem(CustomItems.iceball, 12);
+		putItem(CustomItems.highlighter, 13);
+		putItem(CustomItems.creatureHighlighter, 14);
+		putItem(CustomItems.booster, 15);
 
-		putItem(CustomItems.landmine, 21);
+		putItem(CustomItems.pearl, 20);
+		putItem(CustomItems.infernalLead, 21);
 		putItem(CustomItems.knockoutTotem, 22);
-		putItem(CustomItems.soulscriber, 23);
+		putItem(CustomItems.landmine, 23);
+		putItem(CustomItems.soulscriber, 24);
 
-		putItem(CustomItems.shieldBreaker, 30);
-		putItem(CustomItems.tnt, 31);
-		putItem(CustomItems.heavenMembrane, 32);
+		putItem(CustomItems.pulsatingTotem, 30);
+		putItem(CustomItems.shieldBreaker, 31);
+		putItem(CustomItems.tnt, 32);
 
-		putItem(CustomItems.pulsatingTotem, 39);
+		putItem(CustomItems.heavenMembrane, 39);
 		putItem(CustomItems.tracker, 40);
 		putItem(CustomItems.terraDrill, 41);
 	}

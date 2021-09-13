@@ -41,7 +41,7 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
             ParticleUtils.createParticlesOutlineSphere(centerLocation, getEffectRadius(), Particle.SMOKE_NORMAL, null, 12);
             ParticleUtils.createParticlesInside(getBlock(), Particle.END_ROD, null, 1);
         }
-        if(ticksPassed > 0 && ticksPassed % 25 == 0) {
+        if(ticksPassed > 0 && ticksPassed % 20 == 0) {
             List<LivingEntity> nearbyEntities = new ArrayList<>();
             List<LivingEntity> entities = location.getWorld().getLivingEntities();
             for(LivingEntity entity : entities) {
@@ -57,7 +57,7 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
                         playerLocation.getY() - centerLocation.getY(),
                         playerLocation.getZ() - centerLocation.getZ());
                 playerPointer.normalize();
-                playerPointer.multiply(1.6);
+                playerPointer.multiply(1.8);
                 Vector currentVelocity = entity.getVelocity();
                 currentVelocity.add(playerPointer);
                 entity.setVelocity(currentVelocity);
@@ -81,7 +81,7 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
 
     @Override
     public int getEffectDuration() {
-        return 20 * 30;
+        return 20 * 45;
     }
 
     @Override
