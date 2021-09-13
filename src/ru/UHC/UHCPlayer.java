@@ -236,17 +236,22 @@ public class UHCPlayer {
         //Announce the place to players
         UHCPlayer teammate = getTeammate();
         PlayerTeam team = PlayerManager.getTeamWithMember(this);
-        int aliveTeams = PlayerManager.getAliveTeams().size();
-        int winningPlace = aliveTeams + 1;
-        summary.setWinningPlace(winningPlace);
-        if(aliveTeams <= 2 && aliveTeams >= 1 && !team.isAlive()) {
-            String placeText = winningPlace == 3 ?
-                    ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "третье" :
-                    ChatColor.AQUA + "" + ChatColor.BOLD + "второе";
-            String info = ChatColor.YELLOW + "Ты занял " + placeText + ChatColor.RESET + ChatColor.YELLOW + " место!";
-            sendMessage(info);
+        if(team != null && !team.isAlive()) {
+            int aliveTeams = PlayerManager.getAliveTeams().size();
+            int winningPlace = aliveTeams + 1;
+            summary.setWinningPlace(winningPlace);
             if(teammate != null) {
-                teammate.sendMessage(info);
+                teammate.summary.setWinningPlace(winningPlace);
+            }
+            if(aliveTeams <= 2 && aliveTeams >= 1) {
+                String placeText = winningPlace == 3 ?
+                        ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "третье" :
+                        ChatColor.AQUA + "" + ChatColor.BOLD + "второе";
+                String info = ChatColor.YELLOW + "Ты занял " + placeText + ChatColor.RESET + ChatColor.YELLOW + " место!";
+                sendMessage(info);
+                if(teammate != null) {
+                    teammate.sendMessage(info);
+                }
             }
         }
 
