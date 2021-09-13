@@ -114,7 +114,8 @@ public class ClassManager implements Listener {
     }
 
     public static void openClassInfoInventory(Player player, UHCClass uhcClass) {
-        int invSize = 5 * 9;
+        boolean inLobby = Lobby.isInLobbyOrWatchingArena(player);
+        int invSize = inLobby ? 5 * 9 : 3 * 9;
         Inventory inventory = Bukkit.createInventory(player, invSize, INVENTORY_CLASS_INFO_NAME + uhcClass.getName());
 
         inventory.setItem(0, ItemUtils.builder(Material.LIME_DYE).withName(ChatColor.GREEN + "" + ChatColor.BOLD + "Преимущества").build());
@@ -140,21 +141,23 @@ public class ClassManager implements Listener {
             }
         }
 
-        ItemStack blackPanel = ItemUtils.builder(Material.BLACK_STAINED_GLASS_PANE).withName(" ").build();
-        for(int slot = 27; slot < 36; slot++) {
-            inventory.setItem(slot, blackPanel);
-        }
+        if(inLobby) {
+            ItemStack blackPanel = ItemUtils.builder(Material.BLACK_STAINED_GLASS_PANE).withName(" ").build();
+            for(int slot = 27; slot < 36; slot++) {
+                inventory.setItem(slot, blackPanel);
+            }
 
-        inventory.setItem(36, ItemUtils.builder(Material.BARRIER).withName(ChatColor.RED + "К выбору классов").build());
-        inventory.setItem(40,
-                ItemUtils.builder(Material.NAME_TAG).
-                        withName(" ").
-                        withSplittedLore(ChatColor.GRAY + "Напиши " + ChatColor.WHITE + "/class" + ChatColor.GRAY + " во время игры, чтобы открыть это меню").
-                        build());
-        inventory.setItem(44, ItemUtils.builder(Material.GREEN_DYE).
-                withName(ChatColor.GREEN + "Установить класс").
-                withValue("class", uhcClass.getConfigName()).
-                build());
+            inventory.setItem(36, ItemUtils.builder(Material.BARRIER).withName(ChatColor.RED + "К выбору классов").build());
+            inventory.setItem(40,
+                    ItemUtils.builder(Material.NAME_TAG).
+                            withName(" ").
+                            withSplittedLore(ChatColor.GRAY + "Напиши " + ChatColor.WHITE + "/class" + ChatColor.GRAY + " во время игры, чтобы открыть это меню").
+                            build());
+            inventory.setItem(44, ItemUtils.builder(Material.GREEN_DYE).
+                    withName(ChatColor.GREEN + "Установить класс").
+                    withValue("class", uhcClass.getConfigName()).
+                    build());
+        }
 
         player.openInventory(inventory);
     }
@@ -173,8 +176,8 @@ public class ClassManager implements Listener {
     public void invClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         if(event.getView().getTitle().equals(INVENTORY_CLASS_SELECT_NAME)) {
-            if(!Lobby.isInLobbyOrWatchingArena(player)) return;
             event.setCancelled(true);
+            if(!Lobby.isInLobbyOrWatchingArena(player)) return;
             ItemStack item = event.getCurrentItem();
             if(item == null) return;
             if(item.getType() == Material.BARRIER) {
