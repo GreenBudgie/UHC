@@ -30,8 +30,8 @@ public class MutatorNoHunger extends Mutator implements Listener {
 	}
 
 	@Override
-	public boolean conflictsWithClasses() {
-		return true;
+	public boolean conflictsWith(Mutator another) {
+		return another == MutatorManager.vegetarian;
 	}
 
 	@Override

@@ -1233,7 +1233,7 @@ public class UHC implements Listener {
 			player.setGameMode(GameMode.SURVIVAL);
 			heal(player);
 			if(MutatorManager.lessHealth.isActive()) {
-				player.setHealth(6);
+				player.setHealth(player.getHealth() / 2);
 			}
 			player.setNoDamageTicks(160);
 			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 160, 9, true, true, true));

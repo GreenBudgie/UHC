@@ -116,9 +116,6 @@ public abstract class Mutator {
 	public void update() {
 	}
 
-	public void onPlayerDeath(UHCPlayer uhcPlayer) {
-	}
-
 	public boolean conflictsWith(Mutator another) {
 		return false;
 	}

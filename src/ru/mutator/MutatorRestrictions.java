@@ -17,6 +17,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
+import ru.UHC.GameState;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.event.SpectatorJoinEvent;
@@ -83,7 +84,7 @@ public class MutatorRestrictions extends Mutator implements Listener {
 
 	@Override
 	public void update() {
-		if(UHC.state.isInGame()) {
+		if(UHC.state.isInGame() || UHC.state == GameState.DEATHMATCH) {
 			if(TaskManager.isSecUpdated()) {
 				if(restriction == null) {
 					timeToRestrict--;

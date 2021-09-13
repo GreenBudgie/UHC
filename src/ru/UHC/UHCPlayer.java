@@ -216,11 +216,6 @@ public class UHCPlayer {
 
         Bukkit.getPluginManager().callEvent(new UHCPlayerDeathEvent(this, killer));
 
-        //Send event to mutators
-        for(Mutator mutator : MutatorManager.activeMutators) {
-            mutator.onPlayerDeath(this);
-        }
-
         //Death effects
         Location location = getLocation();
         if(location != null) {

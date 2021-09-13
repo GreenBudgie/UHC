@@ -23,7 +23,6 @@ public class MutatorManager {
 	public static Map<String, Set<Mutator>> preferredMutators = new HashMap<>();
 	public static List<Mutator> activeMutators = new ArrayList<>();
 	public static List<Mutator> mutators = new ArrayList<>();
-	public static MutatorNoDiamonds noDiamonds = new MutatorNoDiamonds();
 	public static MutatorApples apples = new MutatorApples();
 	public static MutatorGlowing glowing = new MutatorGlowing();
 	public static MutatorHungerGames hungerGames = new MutatorHungerGames();
@@ -75,6 +74,9 @@ public class MutatorManager {
 	public static MutatorRandomEffects randomEffects = new MutatorRandomEffects();
 	public static MutatorMoreRegen moreRegen = new MutatorMoreRegen();
 	public static MutatorGamesWithFire gamesWithFire = new MutatorGamesWithFire();
+	public static MutatorAttackWeakness attackWeakness = new MutatorAttackWeakness();
+	public static MutatorHalfDamage halfDamage = new MutatorHalfDamage();
+	public static MutatorIncreasingDamage increasingDamage = new MutatorIncreasingDamage();
 
 	public static void init() {
 		Bukkit.getPluginManager().registerEvents(new Listener() {

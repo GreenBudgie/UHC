@@ -50,11 +50,6 @@ public class MutatorVegetarian extends Mutator implements Listener {
 	}
 
 	@Override
-	public boolean conflictsWithClasses() {
-		return true;
-	}
-
-	@Override
 	public String getName() {
 		return "Вегетарианец";
 	}
@@ -64,8 +59,13 @@ public class MutatorVegetarian extends Mutator implements Listener {
 		return "Мясо есть нельзя: наложится эффект отравления";
 	}
 
+	@Override
+	public boolean conflictsWith(Mutator another) {
+		return another == MutatorManager.noHunger;
+	}
+
 	@EventHandler
-	public void noDrink(PlayerItemConsumeEvent e) {
+	public void poisonOnConsume(PlayerItemConsumeEvent e) {
 		Material type = e.getItem().getType();
 		if(Arrays.asList(meat).contains(type)) {
 			e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.POISON, 60, 2));

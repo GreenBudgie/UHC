@@ -21,7 +21,7 @@ public class MutatorLessHealth extends Mutator {
 
 	@Override
 	public String getDescription() {
-		return "В начале игры дается лишь 3 сердца";
+		return "В начале игры здоровье уменьшено вдвое";
 	}
 
 	@Override
@@ -37,11 +37,6 @@ public class MutatorLessHealth extends Mutator {
 	@Override
 	public boolean canBeHidden() {
 		return false;
-	}
-
-	@Override
-	public boolean conflictsWithClasses() {
-		return true;
 	}
 
 }
