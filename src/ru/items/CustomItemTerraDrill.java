@@ -82,7 +82,6 @@ public class CustomItemTerraDrill extends RequesterCustomItem implements Listene
 				toBreak.add(l.clone().add(0, -1, 0).getBlock());
 			}
 			for(Block block : toBreak) {
-				if(block.getType() == Material.STONE && MutatorManager.strongStone.isActive()) continue;
 				if(rock.contains(block.getType())) {
 					block.breakNaturally(item);
 				}

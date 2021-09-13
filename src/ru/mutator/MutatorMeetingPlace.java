@@ -20,6 +20,9 @@ import ru.util.ParticleUtils;
 import ru.util.Region;
 import ru.util.TaskManager;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class MutatorMeetingPlace extends Mutator implements Listener {
 
 	private Location meetingLoc;
@@ -30,6 +33,8 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 	private boolean isMeeting = false;
 	private double prevBorderSize = -1;
 	private final int radius = 16;
+
+	private final Set<UHCPlayer> safePlayers = new HashSet<>();
 
 	@Override
 	public ThreatStatus getThreatStatus() {
@@ -55,11 +60,26 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 		return ChatColor.DARK_GRAY + "(" + ChatColor.AQUA + meetingLoc.getBlockX() + ChatColor.WHITE + ", " + ChatColor.AQUA + meetingLoc.getBlockZ() + ChatColor.DARK_GRAY + ")";
 	}
 
+	public boolean isSafe(Location location) {
+		if(location.getWorld() != WorldManager.getGameMap()) return true;
+		return location.getX() < meetingLoc.getX() + radius &&
+				location.getX() > meetingLoc.getX() - radius &&
+				location.getZ() < meetingLoc.getZ() + radius &&
+				location.getZ() > meetingLoc.getZ() - radius;
+	}
+
 	@Override
 	public void onChoose() {
 		meetingLoc = WorldManager.spawnLocation.clone().add(0, 2, 0);
 		bar = Bukkit.createBossBar(ChatColor.GOLD + "До сбора: " + ChatColor.DARK_AQUA + MathUtils.formatTime(cooldown) + " " + getPos(), BarColor.YELLOW, BarStyle.SEGMENTED_10);
 		reset();
+		safePlayers.clear();
+		for(UHCPlayer uhcPlayer : PlayerManager.getAlivePlayers()) {
+			Location location = uhcPlayer.getLocation();
+			if(location != null && isSafe(location)) {
+				safePlayers.add(uhcPlayer);
+			}
+		}
 	}
 
 	@Override
@@ -117,6 +137,25 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 	public void update() {
 		if(TaskManager.isSecUpdated()) {
 			if(UHC.state.isInGame()) {
+				for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
+					UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(currentPlayer);
+					if(uhcPlayer != null) {
+						Location location = currentPlayer.getLocation();
+						if(safePlayers.contains(uhcPlayer) && !isSafe(location)) {
+							currentPlayer.sendTitle(" ", ChatColor.DARK_RED + "" + ChatColor.BOLD + "> " +
+									ChatColor.RED + "Теперь ты в опасности!" + ChatColor.DARK_RED + ChatColor.BOLD + " <",
+									5, 40, 10);
+							currentPlayer.playSound(currentPlayer.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
+							safePlayers.remove(uhcPlayer);
+						} else if(!safePlayers.contains(uhcPlayer) && isSafe(location)) {
+							currentPlayer.sendTitle(" ", ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "> " +
+											ChatColor.GREEN + "Теперь ты в безопасности!" + ChatColor.DARK_GREEN + ChatColor.BOLD + " <",
+									5, 40, 10);
+							currentPlayer.playSound(currentPlayer.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 1.5F);
+							safePlayers.add(uhcPlayer);
+						}
+					}
+				}
 				if(cooldown <= 0) {
 					if(meetingDelay <= 0) {
 						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
@@ -139,8 +178,8 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 							border.setSize(radius * 2, 5);
 							border.setWarningTime(15);
 							border.setWarningDistance(2);
-							border.setDamageBuffer(1);
-							border.setDamageAmount(0.3);
+							border.setDamageBuffer(2);
+							border.setDamageAmount(0.1);
 							isMeeting = true;
 						}
 						meetingDelay--;
@@ -155,6 +194,15 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 						}
 					}
 				} else {
+					if(cooldown == 60) {
+						for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
+							if(!isSafe(currentPlayer.getLocation())) {
+								currentPlayer.sendTitle(" ", ChatColor.DARK_RED + "" + ChatColor.BOLD + "> " +
+												ChatColor.RED + "Иди к центру карты, осталась минута!" + ChatColor.DARK_RED + ChatColor.BOLD + " <",
+										5, 40, 10);
+							}
+						}
+					}
 					bar.setTitle(ChatColor.GOLD + "До сбора: " + ChatColor.DARK_AQUA + MathUtils.formatTime(cooldown) + " " + getPos());
 					bar.setProgress(cooldown / (double) maxCooldown);
 					cooldown--;

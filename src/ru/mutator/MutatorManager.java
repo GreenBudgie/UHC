@@ -46,25 +46,21 @@ public class MutatorManager {
 	public static MutatorDamageBound damageBound = new MutatorDamageBound();
 	public static MutatorHealthDisplay healthDisplay = new MutatorHealthDisplay();
 	public static MutatorChemistBattle chemistBattle = new MutatorChemistBattle();
-	public static MutatorNoRegen noRegen = new MutatorNoRegen();
 	public static MutatorDangerWater dangerWater = new MutatorDangerWater();
-	//public static MutatorStop stop = new MutatorStop();
 	public static MutatorBabyZombies babyZombies = new MutatorBabyZombies();
 	public static MutatorMeetingPlace meetingPlace = new MutatorMeetingPlace();
-	public static MutatorStrongStone strongStone = new MutatorStrongStone();
 	public static MutatorInvisible invisible = new MutatorInvisible();
 	public static MutatorElytra elytra = new MutatorElytra();
 	public static MutatorGoodDeath goodDeath = new MutatorGoodDeath();
 	public static MutatorJump jump = new MutatorJump();
 	public static MutatorUnexpectedRequests unexpectedRequests = new MutatorUnexpectedRequests();
-	public static MutatorDirtIsLava dirtIsLava = new MutatorDirtIsLava();
 	public static MutatorInfiniteBows infiniteBows = new MutatorInfiniteBows();
 	public static MutatorChorusDamage chorusDamage = new MutatorChorusDamage();
 	public static MutatorSkeletons skeletons = new MutatorSkeletons();
 	public static MutatorInteractiveArena interactiveArena = new MutatorInteractiveArena();
 	public static MutatorLessHealth lessHealth = new MutatorLessHealth();
 	public static MutatorDiamondLeather diamondLeather = new MutatorDiamondLeather();
-	//public static MutatorApocalypse apocalypse = new MutatorApocalypse();
+	public static MutatorApocalypse apocalypse = new MutatorApocalypse();
 	public static MutatorOneForAll oneForAll = new MutatorOneForAll();
 	public static MutatorRestrictions restrictions = new MutatorRestrictions();
 	public static MutatorTotems totems = new MutatorTotems();
@@ -76,6 +72,9 @@ public class MutatorManager {
 	public static MutatorOmniscient omniscient = new MutatorOmniscient();
 	public static MutatorVegetarian vegetarian = new MutatorVegetarian();
 	public static MutatorPhantomArtifacts artifacts = new MutatorPhantomArtifacts();
+	public static MutatorRandomEffects randomEffects = new MutatorRandomEffects();
+	public static MutatorMoreRegen moreRegen = new MutatorMoreRegen();
+	public static MutatorGamesWithFire gamesWithFire = new MutatorGamesWithFire();
 
 	public static void init() {
 		Bukkit.getPluginManager().registerEvents(new Listener() {

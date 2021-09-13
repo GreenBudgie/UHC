@@ -38,11 +38,6 @@ public class MutatorFlameFist extends Mutator implements Listener {
 		return "Любое живое существо (включая игроков), по которому был нанесен удар, поджигается на 3 секунды. Вскопанные руды переплавляются автоматически";
 	}
 
-	@Override
-	public boolean conflictsWithClasses() {
-		return true;
-	}
-
 	@EventHandler
 	public void dig(BlockBreakEvent e) {
 		Block b = e.getBlock();

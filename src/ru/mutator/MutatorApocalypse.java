@@ -46,10 +46,10 @@ public class MutatorApocalypse extends Mutator implements Listener {
 	}
 
 	private Location getRandomLocation() {
-		List<UHCPlayer> availablePlayers = PlayerManager.getAlivePlayers();
-		availablePlayers.removeIf(player -> player.getLocation() == null || player.getLocation().getWorld() == WorldManager.getGameMapNether());
+		List<Player> availablePlayers = PlayerManager.getAliveOnlinePlayers();
+		availablePlayers.removeIf(player -> player.getLocation().getWorld() == WorldManager.getGameMapNether());
 		if(availablePlayers.isEmpty()) return null;
-		UHCPlayer target = MathUtils.choose(availablePlayers);
+		Player target = MathUtils.choose(availablePlayers);
 		int x = target.getLocation().getBlockX() + MathUtils.randomRange(-15, 15);
 		int z = target.getLocation().getBlockZ() + MathUtils.randomRange(-15, 15);
 		int y = WorldManager.getGameMap().getMaxHeight() - 1;
@@ -58,18 +58,16 @@ public class MutatorApocalypse extends Mutator implements Listener {
 
 	@Override
 	public void update() {
-		if(UHC.state.isInGame()) {
-			if(TaskManager.isSecUpdated()) {
-				timeToDrop--;
-				if(timeToDrop <= 0) {
-					Location dropLocation = getRandomLocation();
-					boolean closedArena = UHC.state == GameState.DEATHMATCH && !ArenaManager.getCurrentArena().isOpen();
-					if(dropLocation != null && !closedArena) {
-						TNTPrimed tnt = (TNTPrimed) dropLocation.getWorld().spawnEntity(dropLocation, EntityType.PRIMED_TNT);
-						tnt.setFuseTicks(12 * 20);
-					}
-					reset();
+		if(TaskManager.isSecUpdated()) {
+			timeToDrop--;
+			if(timeToDrop <= 0) {
+				Location dropLocation = getRandomLocation();
+				boolean closedArena = UHC.state == GameState.DEATHMATCH && !ArenaManager.getCurrentArena().isOpen();
+				if(dropLocation != null && !closedArena) {
+					TNTPrimed tnt = (TNTPrimed) dropLocation.getWorld().spawnEntity(dropLocation, EntityType.PRIMED_TNT);
+					tnt.setFuseTicks(12 * 20);
 				}
+				reset();
 			}
 		}
 	}
