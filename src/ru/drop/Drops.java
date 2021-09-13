@@ -107,7 +107,7 @@ public class Drops {
 
         ItemStack crossbow = new ItemStack(Material.CROSSBOW);
         crossbow.addEnchantment(Enchantment.QUICK_CHARGE, MathUtils.randomRange(1, 3));
-        if(MathUtils.chance(70)) crossbow.addEnchantment(Enchantment.PIERCING, 1);
+        crossbow.addEnchantment(Enchantment.PIERCING, 1);
         if(MathUtils.chance(15)) crossbow.addEnchantment(Enchantment.MULTISHOT, 1);
         drops.add(crossbow);
 

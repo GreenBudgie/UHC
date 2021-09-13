@@ -29,6 +29,8 @@ public class GameSummary implements ConfigurationSerializable {
 
     private ItemStack representingItem = null;
 
+    private boolean worthSaving = false;
+
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialized = new HashMap<>();
@@ -150,6 +152,18 @@ public class GameSummary implements ConfigurationSerializable {
         for(PlayerSummary summary : getPlayerSummaries()) {
             summary.postSetup();
         }
+    }
+
+    /**
+     * Makes this summary worth saving.
+     * The summary will not be saved to rating if this method was not called.
+     */
+    public void makeWorthSaving() {
+        worthSaving = true;
+    }
+
+    public boolean isWorthSaving() {
+        return worthSaving;
     }
 
     public List<Mutator> getStartMutators() {

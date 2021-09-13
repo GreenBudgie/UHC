@@ -297,10 +297,7 @@ public class InventoryBuilderRating {
 
             filter(summaries);
             for(GameSummary summary : summaries) {
-                ItemStack representingItem = summary.getRepresentingItem();
-                if(isOp())
-                    ItemUtils.addLore(representingItem, ChatColor.RED + "ПКМ: Удалить");
-                items.add(representingItem);
+                items.add(summary.getRepresentingItem());
             }
         } else {
             List<PlayerSummary> summaries = Lists.newArrayList(watchingGameSummary.getPlayerSummaries());

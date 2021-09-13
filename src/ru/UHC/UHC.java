@@ -363,8 +363,13 @@ public class UHC implements Listener {
 		if(playing) {
 			Bukkit.getPluginManager().callEvent(new GameEndEvent());
 
-			Rating.getCurrentGameSummary().calculateAndSetDuration();
-			Rating.saveCurrentGameSummary();
+			if(Rating.getCurrentGameSummary().isWorthSaving()) {
+				Rating.getCurrentGameSummary().calculateAndSetDuration();
+				Rating.saveCurrentGameSummary();
+			} else {
+				Rating.dismissCurrentGameSummary();
+			}
+
 			for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 				inGamePlayer.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
 				resetPlayer(inGamePlayer);
@@ -1202,6 +1207,7 @@ public class UHC implements Listener {
 			}
 		}
 		Rating.getCurrentGameSummary().setStartMutators(Lists.newArrayList(MutatorManager.activeMutators));
+		Rating.getCurrentGameSummary().makeWorthSaving();
 
 		clearPlatformRegion();
 		for(Player player : PlayerManager.getAliveOnlinePlayers()) {
