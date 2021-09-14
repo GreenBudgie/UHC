@@ -59,4 +59,14 @@ public class CaveDrop extends ChestBasedDrop {
         return new Location(WorldManager.getGameMap(), x, y, z);
     }
 
+    @Override
+    protected int getMinFillers() {
+        return 3;
+    }
+
+    @Override
+    protected int getMaxFillers() {
+        return 6;
+    }
+
 }

@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.PlayerManager;
-import ru.UHC.UHC;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
 import ru.util.TaskManager;
@@ -38,11 +37,11 @@ public abstract class ChestBasedDrop extends Drop {
         for(int i = 0; i < inv.getSize(); i++) {
             slotsToFill.add(i);
         }
-        int items = MathUtils.randomRange(3, 7);
+        int items = MathUtils.randomRange(getMinFillers() + getMainItemsCount(), getMaxFillers() + getMainItemsCount());
         for(int i = 0; i < items; i++) {
             int slot = MathUtils.choose(slotsToFill);
             slotsToFill.remove(slot);
-            inv.setItem(slot, i == 0 ? Drops.getRandomDrop() : getRandomFiller());
+            inv.setItem(slot, i < getMainItemsCount() ? Drops.getRandomDrop() : getRandomFiller());
         }
         location.getWorld().playSound(location, Sound.ITEM_FIRECHARGE_USE, 1F, 0.5F);
         ParticleUtils.createParticlesInRange(location, 1.5, Particle.FLAME, null, 40);
@@ -52,6 +51,14 @@ public abstract class ChestBasedDrop extends Drop {
             p.playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.5F, 0.5F);
         }
     }
+
+    protected int getMainItemsCount() {
+        return 1;
+    }
+
+    protected abstract int getMinFillers();
+
+    protected abstract int getMaxFillers();
 
     protected abstract Material getCasing();
 

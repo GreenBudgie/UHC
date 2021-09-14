@@ -1,6 +1,7 @@
 package ru.commands;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,6 +15,7 @@ import org.bukkit.potion.PotionEffectType;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.main.UHCPlugin;
+import ru.util.InventoryHelper;
 
 public class CommandTest implements CommandExecutor {
 
@@ -22,7 +24,7 @@ public class CommandTest implements CommandExecutor {
 		if(!sender.isOp()) return true;
 		Player p = (Player) sender;
 		UHCPlugin.log("Adding effect: 60");
-		p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 60, 0));
+		p.getInventory().addItem(InventoryHelper.generatePotion(ChatColor.WHITE + "Potion of Life", Color.fromRGB(252, 119, 255), true, false, new PotionEffect(PotionEffectType.HEAL, 1, 1)));
 		return true;
 	}
 

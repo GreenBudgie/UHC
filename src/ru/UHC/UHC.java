@@ -198,7 +198,7 @@ public class UHC implements Listener {
 		}
 
 		if(state.isInGame()) {
-			final boolean show = state == GameState.PREPARING || state == GameState.VOTE || state == GameState.OUTBREAK;
+			final boolean show = state == GameState.OUTBREAK;
 			for(Drop drop : new Drop[] {Drops.NETHERDROP, Drops.CAVEDROP, Drops.AIRDROP}) {
 				if(drop.getTimer() <= deathmatchTimer || show) {
 					Score locationScore = gameInfo.getScore(ChatColor.DARK_GRAY + "- " + drop.getCoordinatesInfo());
@@ -211,6 +211,15 @@ public class UHC implements Listener {
 					textScore.setScore(c++);
 				}
 			}
+			Location playerLocation = player.getLocation();
+			Score playerLocationScore = gameInfo.getScore(
+					ChatColor.GRAY + "Ты: " +
+					ChatColor.GRAY + ChatColor.BOLD + playerLocation.getBlockX() +
+					ChatColor.WHITE + ", " +
+					ChatColor.GRAY + ChatColor.BOLD + playerLocation.getBlockY() +
+					ChatColor.WHITE + ", " +
+					ChatColor.GRAY + ChatColor.BOLD + playerLocation.getBlockZ());
+			playerLocationScore.setScore(c++);
 		}
 		if(!timerInfo.isEmpty()) {
 			Score timer = gameInfo.getScore(timerInfo);

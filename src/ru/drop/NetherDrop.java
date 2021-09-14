@@ -25,7 +25,7 @@ public class NetherDrop extends ChestBasedDrop {
 
     @Override
     protected Material getCasing() {
-        return Material.CRYING_OBSIDIAN;
+        return Material.TINTED_GLASS;
     }
 
     @Override
@@ -56,6 +56,21 @@ public class NetherDrop extends ChestBasedDrop {
                 center.getBlockZ() + size);
         int y = MathUtils.randomRange(7, 16);
         return new Location(WorldManager.getGameMapNether(), x, y, z);
+    }
+
+    @Override
+    protected int getMainItemsCount() {
+        return 2;
+    }
+
+    @Override
+    protected int getMinFillers() {
+        return 4;
+    }
+
+    @Override
+    protected int getMaxFillers() {
+        return 7;
     }
 
     @Override

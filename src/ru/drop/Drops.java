@@ -46,7 +46,7 @@ public class Drops {
 
     public static List<ItemStack> getDrops() {
         List<ItemStack> drops = new ArrayList<>();
-        drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Potion of Lustiness", Color.FUCHSIA, new PotionEffect(PotionEffectType.HEAL, 1, 1)));
+        drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Potion of Life", Color.FUCHSIA, new PotionEffect(PotionEffectType.HEAL, 1, 1)));
         drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Toxic Vial", Color.GREEN, true, false, new PotionEffect(PotionEffectType.POISON, 240, 0)));
         drops.add(InventoryHelper
                 .generatePotion(ChatColor.WHITE + "Sightbreaker Potion", Color.GRAY, true, false, new PotionEffect(PotionEffectType.BLINDNESS, 400, 0)));
@@ -55,6 +55,7 @@ public class Drops {
                 .generatePotion(ChatColor.WHITE + "Potion of Power", Color.fromRGB(100, 0, 0), new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 1200, 0)));
         drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Sharp Vial", Color.BLACK, true, false, new PotionEffect(PotionEffectType.HARM, 1, 1)));
         drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Liquid Helium", Color.WHITE, true, false, new PotionEffect(PotionEffectType.LEVITATION, 400, 0)));
+
 
         drops.add(new ItemStack(Material.GOLDEN_APPLE, 2));
         drops.add(new ItemStack(Material.DIAMOND_BLOCK, MathUtils.randomRange(1, 2)));
@@ -113,10 +114,9 @@ public class Drops {
 
         ItemStack trident = new ItemStack(Material.TRIDENT);
         trident.addEnchantment(Enchantment.DURABILITY, 3);
-        trident.addEnchantment(Enchantment.LOYALTY, MathUtils.randomRange(2, 3));
-        if(MathUtils.chance(70)) trident.addEnchantment(Enchantment.IMPALING, MathUtils.randomRange(2, 4));
-        if(MathUtils.chance(40)) trident.addEnchantment(Enchantment.CHANNELING, 1);
-        drops.add(crossbow);
+        trident.addEnchantment(Enchantment.LOYALTY, 3);
+        if(MathUtils.chance(50)) trident.addEnchantment(Enchantment.CHANNELING, 1);
+        drops.add(trident);
 
         drops.add(new ItemStack(Material.ENCHANTING_TABLE));
         drops.add(new ItemStack(Material.REDSTONE_BLOCK, MathUtils.randomRange(8, 12)));
