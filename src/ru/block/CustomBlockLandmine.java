@@ -84,7 +84,12 @@ public class CustomBlockLandmine extends CustomBlockItem {
 						for(Player p : WorldHelper.getPlayersDistance(location, 6).stream().filter(PlayerManager::isPlaying).collect(Collectors.toList())) {
 							FightHelper.setDamager(p, owner, 40, "заминировал");
 						}
-						location.getWorld().createExplosion(location, 4);
+						float power = 4;
+						if(MutatorManager.hyperExplosions.isActive()) {
+							location.getWorld().createExplosion(location, power * MutatorManager.hyperExplosions.getPowerMultiplier(), true);
+						} else {
+							location.getWorld().createExplosion(location, power);
+						}
 						remove();
 					}
 				} else {
@@ -93,7 +98,12 @@ public class CustomBlockLandmine extends CustomBlockItem {
 					for(Player p : WorldHelper.getPlayersDistance(location, 6).stream().filter(PlayerManager::isPlaying).collect(Collectors.toList())) {
 						FightHelper.setDamager(p, owner, 40, "заминировал");
 					}
-					location.getWorld().createExplosion(location, isSurrounded() ? 4 : 2);
+					float power = isSurrounded() ? 4 : 2;
+					if(MutatorManager.hyperExplosions.isActive()) {
+						location.getWorld().createExplosion(location, power * MutatorManager.hyperExplosions.getPowerMultiplier(), true);
+					} else {
+						location.getWorld().createExplosion(location, power);
+					}
 				}
 			}
 		}

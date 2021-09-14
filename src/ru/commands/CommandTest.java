@@ -1,9 +1,6 @@
 package ru.commands;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
@@ -23,8 +20,8 @@ public class CommandTest implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!sender.isOp()) return true;
 		Player p = (Player) sender;
-		UHCPlugin.log("Adding effect: 60");
-		p.getInventory().addItem(InventoryHelper.generatePotion(ChatColor.WHITE + "Potion of Life", Color.fromRGB(252, 119, 255), true, false, new PotionEffect(PotionEffectType.HEAL, 1, 1)));
+		p.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 0.5F);
+
 		return true;
 	}
 

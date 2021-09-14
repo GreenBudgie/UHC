@@ -46,8 +46,9 @@ public class MutatorApocalypse extends Mutator implements Listener {
 	}
 
 	private Location getRandomLocation() {
-		List<Player> availablePlayers = PlayerManager.getAliveOnlinePlayers();
-		availablePlayers.removeIf(player -> player.getLocation().getWorld() == WorldManager.getGameMapNether());
+		List<Player> availablePlayers = PlayerManager.getAliveOnlinePlayers().stream().filter(
+				player -> player.getLocation().getWorld() != WorldManager.getGameMapNether()).
+				toList();
 		if(availablePlayers.isEmpty()) return null;
 		Player target = MathUtils.choose(availablePlayers);
 		int x = target.getLocation().getBlockX() + MathUtils.randomRange(-15, 15);
