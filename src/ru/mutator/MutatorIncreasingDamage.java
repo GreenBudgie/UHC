@@ -52,12 +52,17 @@ public class MutatorIncreasingDamage extends Mutator implements Listener {
 
 	@Override
 	public boolean conflictsWith(Mutator another) {
-		return another == MutatorManager.doubleDamage;
+		return super.conflictsWith(another) || another == MutatorManager.doubleDamage;
 	}
 
 	@Override
 	public String getDescription() {
 		return "Чем дольше ты не получаешь урон, тем больше урона пройдет по тебе в следующий раз. Получение минимум 1 хп урона сбрасывает шкалу к нулю.";
+	}
+
+	@Override
+	public boolean containsBossBar() {
+		return true;
 	}
 
 	@Override

@@ -216,6 +216,11 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 	}
 
 	@Override
+	public boolean containsBossBar() {
+		return true;
+	}
+
+	@Override
 	public boolean canBeHidden() {
 		return false;
 	}

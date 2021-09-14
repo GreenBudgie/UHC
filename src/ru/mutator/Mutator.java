@@ -7,8 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import ru.UHC.PlayerManager;
-import ru.UHC.UHC;
-import ru.UHC.UHCPlayer;
 import ru.main.UHCPlugin;
 import ru.util.MathUtils;
 
@@ -117,6 +115,14 @@ public abstract class Mutator {
 	}
 
 	public boolean conflictsWith(Mutator another) {
+		return this.containsBossBar() && another.containsBossBar();
+	}
+
+	/**
+	 * Whether this mutator contains a boss bar.
+	 * Usually used to prevent multiple mutators with boss bars to appear.
+	 */
+	public boolean containsBossBar() {
 		return false;
 	}
 
