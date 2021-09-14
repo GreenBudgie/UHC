@@ -26,10 +26,7 @@ import ru.event.GameStartEvent;
 import ru.event.UHCPlayerRejoinEvent;
 import ru.items.CustomItems;
 import ru.main.UHCPlugin;
-import ru.util.ItemInfo;
-import ru.util.MathUtils;
-import ru.util.ParticleUtils;
-import ru.util.TaskManager;
+import ru.util.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -192,23 +189,18 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
         }
     }
 
-    private boolean immunity = false;
 
     @EventHandler
     public void reduceRegen(EntityPotionEffectEvent event) {
-        if(immunity) {
-            immunity = false;
-            return;
-        }
-        if(event.getCause() != EntityPotionEffectEvent.Cause.COMMAND) {
+        if(!event.isCancelled() && event.getCause() != EntityPotionEffectEvent.Cause.COMMAND) {
             if(event.getAction() == EntityPotionEffectEvent.Action.ADDED || event.getAction() == EntityPotionEffectEvent.Action.CHANGED) {
-                if(event.getEntity() instanceof Player player && hasClass(player)) {
+                if(event.getEntity() instanceof Player player && hasClass(player) && !EffectProcess.doIgnore(player, this)) {
                     PotionEffect effect = event.getNewEffect();
                     if(effect != null && effect.getType().equals(PotionEffectType.REGENERATION)) {
                         event.setCancelled(true);
+                        EffectProcess.ignoreCurrentTick(player, this);
                         PotionEffect halfEffect = new PotionEffect(effect.getType(), (int) (effect.getDuration() / 1.3),
                                 effect.getAmplifier(), effect.isAmbient(), effect.hasParticles(), effect.hasIcon());
-                        immunity = true;
                         player.addPotionEffect(halfEffect);
                     }
                 }
