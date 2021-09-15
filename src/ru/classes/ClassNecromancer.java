@@ -6,6 +6,7 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -28,26 +29,28 @@ public class ClassNecromancer extends UHCClass {
     public ItemInfo[] getAdvantages() {
         return new ItemInfo[] {
                 new ItemInfo("При убийстве игрока максимально возможное количество здоровья увеличивается на 2 сердца")
-                        .example("На старте игры у тебя 7 сердец. Убийство игрока увеличит это значение до 9 сердец. Однако, их нужно будет отрегенить."),
+                        .example("На старте игры у тебя 6 сердец. Убийство игрока увеличит это значение до 8 сердец. Однако, их нужно будет отрегенить."),
                 new ItemInfo("При смерти любого игрока во время игры регенерируется 1 сердце"),
                 new ItemInfo("При убийстве игрока регенерируется 2 сердца"),
                 new ItemInfo("При убийстве моба или игрока выдается эффект поглощения урона")
                         .extra("Ты получаешь 2 дополнительных сердца на одну минуту")
-                        .note("Работает даже при убийстве мирных мобов")
+                        .note("Работает даже при убийстве мирных мобов"),
+                new ItemInfo("Зомби и скелеты дружелюбны к тебе").
+                        note("Распространяется на зомби-пиглинов, визер-скелетов и др. Артефакты с них не выпадают. Однако, мобы, заспавненные с помощью Underworld Egg, будут агрессивны. ")
         };
     }
 
     @Override
     public ItemInfo[] getDisadvantages() {
         return new ItemInfo[] {
-                new ItemInfo("В начале игры максимальное количество здоровья ограничено в 7 сердец")
+                new ItemInfo("В начале игры максимальное количество здоровья ограничено в 6 сердец")
         };
     }
 
     @EventHandler
     public void gameInit(GameInitializeEvent event) {
         for(UHCPlayer uhcPlayer : getPlayersWithClass()) {
-            uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
+            uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(12);
         }
     }
 
@@ -78,6 +81,20 @@ public class ClassNecromancer extends UHCClass {
                 AttributeInstance maxHealth = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 maxHealth.setBaseValue(maxHealth.getBaseValue() + 4);
                 killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 0));
+            }
+        }
+    }
+
+    public boolean isFriendly(Entity entity) {
+        return entity instanceof AbstractSkeleton || entity instanceof Zombie;
+    }
+
+    @EventHandler
+    public void noEnemyTarget(EntityTargetLivingEntityEvent event) {
+        if(event.getTarget() instanceof Player target && hasClass(target) && isFriendly(event.getEntity())) {
+            if(!event.getEntity().hasMetadata("necromancer_owner")) {
+                event.setCancelled(true);
+
             }
         }
     }
