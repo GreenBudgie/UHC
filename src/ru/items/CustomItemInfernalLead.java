@@ -30,7 +30,7 @@ public class CustomItemInfernalLead extends RequesterCustomItem implements Block
 
 	@Override
 	public int getRedstonePrice() {
-		return 48;
+		return 40;
 	}
 
 	@Override

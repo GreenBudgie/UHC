@@ -65,7 +65,8 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 
 	@Override
 	public ItemInfo getDescription() {
-		return new ItemInfo("Динамит, который взрывается через полторы секунды после установки");
+		return new ItemInfo("Динамит, который взрывается через полторы секунды после установки").
+				note("Установившему динамит игроку и его тиммейту наносится в 4 раза меньше урона от взрыва, что и отличает этот блок от мины, которая наносит всем одинаковый урон.");
 	}
 
 	@Override

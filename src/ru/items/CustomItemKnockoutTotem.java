@@ -11,7 +11,7 @@ import ru.util.ItemInfo;
 public class CustomItemKnockoutTotem extends RequesterCustomItem implements BlockHolder {
 
 	public String getName() {
-		return ChatColor.GRAY + "" + ChatColor.BOLD +"Knockout Totem";
+		return ChatColor.GRAY + "" + ChatColor.BOLD + "Knockout Totem";
 	}
 
 	public Material getMaterial() {
@@ -21,8 +21,8 @@ public class CustomItemKnockoutTotem extends RequesterCustomItem implements Bloc
 	@Override
 	public ItemInfo getDescription() {
 		return new ItemInfo("Тотем отбрасывания. При установке разбрасывает в стороны всех живых существ и игроков, кроме тебя и тиммейта.")
-				.extra("Действует 45 секунд в радиусе 6 блоков, после этого исчезает")
-				.note("До ПВП не действует на игроков. Можно установить на арене.");
+				.extra("Действует 45 секунд в радиусе 8 блоков, после этого исчезает")
+				.note("Действует на игроков даже до ПВП. Можно установить на арене.");
 	}
 
 	@Override

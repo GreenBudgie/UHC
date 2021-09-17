@@ -51,7 +51,7 @@ public class CustomItemShieldBreaker extends RequesterCustomItem implements List
 
 	@Override
 	public int getLapisPrice() {
-		return 12;
+		return 8;
 	}
 
 }

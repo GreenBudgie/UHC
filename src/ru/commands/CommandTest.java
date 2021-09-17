@@ -13,6 +13,7 @@ import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.main.UHCPlugin;
 import ru.util.InventoryHelper;
+import ru.util.WorldHelper;
 
 public class CommandTest implements CommandExecutor {
 
@@ -20,7 +21,7 @@ public class CommandTest implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!sender.isOp()) return true;
 		Player p = (Player) sender;
-		p.playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 0.5F);
+		WorldHelper.chorusTeleport(p, 80);
 
 		return true;
 	}

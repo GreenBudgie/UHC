@@ -32,7 +32,7 @@ public class CustomItemSoulscriber extends RequesterCustomItem implements Listen
 	public void attack(EntityDamageByEntityEvent e) {
 		if(e.getEntity() instanceof Player victim && e.getDamager() instanceof Player attacker &&
 				!e.isCancelled() && e.getFinalDamage() > 0 && isEquals(attacker.getInventory().getItemInMainHand())) {
-			double regenHp = e.getFinalDamage() * 0.2;
+			double regenHp = e.getFinalDamage() * 0.25;
 			double maxHp = attacker.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 			if(!PlayerManager.isTeammates(victim, attacker)) {
 				attacker.setHealth(MathUtils.clamp(attacker.getHealth() + regenHp, 0, maxHp));
@@ -44,8 +44,8 @@ public class CustomItemSoulscriber extends RequesterCustomItem implements Listen
 
 	@Override
 	public ItemInfo getDescription() {
-		return new ItemInfo("При атаке противника регенерирует тебе 20% здоровья от нанесенного урона")
-				.example("Ты нанес 5хп урона противнику - твое здоровье пополнилось на 1хп")
+		return new ItemInfo("При атаке противника регенерирует тебе 25% здоровья от нанесенного урона")
+				.example("Ты нанес 4хп урона противнику - твое здоровье пополнилось на 1хп")
 				.note("Действует только на игроков. Можно зачарить!");
 	}
 

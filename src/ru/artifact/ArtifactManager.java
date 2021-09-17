@@ -192,7 +192,7 @@ public class ArtifactManager implements Listener {
 				if(entity instanceof Slime && !MathUtils.chance(20)) return;
 				Player killer = entity.getKiller();
 				if(ClassManager.DEMON.hasClass(killer) && entity.getWorld() == WorldManager.getGameMapNether()) return;
-				if(ClassManager.NECROMANCER.hasClass(killer) && ClassManager.NECROMANCER.isFriendly(killer)) return;
+				if(ClassManager.NECROMANCER.hasClass(killer) && ClassManager.NECROMANCER.isFriendly(entity)) return;
 				ItemStack item = CustomItems.darkArtifact.getItemStack();
 				item.setAmount(multiplier);
 				e.getDrops().add(item);

@@ -357,7 +357,10 @@ public class WorldHelper {
 			double d4 = MathUtils.clamp(y + (double) (rand.nextInt(range) - (range / 2)), 0.0D, entity.getWorld().getMaxHeight() - 1);
 			double d5 = z + (rand.nextDouble() - 0.5D) * range;
 			Location tpLoc = new Location(entity.getWorld(), d3, d4, d5);
-			if(entity.getWorld().getWorldBorder().isInside(tpLoc)) {
+			boolean aboveNetherCeiling =
+					entity.getWorld().getEnvironment() == World.Environment.NETHER &&
+					tpLoc.getY() > 127;
+			if(entity.getWorld().getWorldBorder().isInside(tpLoc) && !aboveNetherCeiling) {
 				if(((CraftLivingEntity) entity).getHandle().a(d3, d4, d5, false)) {
 					if(playSound) {
 						entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);

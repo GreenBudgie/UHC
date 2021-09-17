@@ -37,7 +37,7 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
     private final Map<UHCPlayer, Double> battleRage = new HashMap<>(); //From 0 to 1
     private final int MAX_MOBS_TO_KILL = 50;
     private final double BATTLE_RAGE_PER_KILL = 1D / MAX_MOBS_TO_KILL;
-    private final double MAX_DAMAGE_INCREASE = 1.3;
+    private final double MAX_DAMAGE_INCREASE = 1.75;
 
     @Override
     public String getName() {
@@ -49,11 +49,11 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
         return new ItemInfo[] {
                 new ItemInfo("20 сердец при старте игры"),
                 new ItemInfo("Гнилая плоть и сырое мясо безвредны"),
-                new ItemInfo("Ты начинаешь быстрее атаковать, когда ешь сырое мясо")
-                        .extra("Выдается спешка III на 10 секунд, что увеличивает скорость атаки на 30%"),
+                new ItemInfo("Ты получаешь сопротивление урону, когда ешь сырое мясо.")
+                        .extra("Эффект выдается на одну минуту. Поглощается 20% получаемого урона."),
                 new ItemInfo("Шкала Battle Rage: увеличивается урон при убийстве враждебных мобов")
                         .note("Не работает на мобов из спавнера")
-                        .extra("Максимальный буст урона равен 30%, для этого нужно убить 50 мобов")
+                        .extra("Максимальный буст урона равен 75%, для этого нужно убить 50 мобов")
                         .explanation("Буст урона сохраняется на всю игру и никуда не пропадает со временем")
         };
     }
@@ -69,9 +69,6 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
         };
     }
 
-    /**
-     * Gets the player soul flame value, or 0 if not found
-     */
     private double getBattleRage(UHCPlayer uhcPlayer) {
         return battleRage.getOrDefault(uhcPlayer, 0D);
     }
@@ -83,7 +80,7 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
     @Override
     public ItemStack[] getStartItems() {
         ItemStack shard = CustomItems.ancientShard.getItemStack();
-        shard.setAmount(3);
+        shard.setAmount(4);
         return new ItemStack[] {shard};
     }
 
@@ -159,7 +156,7 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
         if(hasClass(player)) {
             ItemStack item = event.getItem();
             if(Stream.of(rawMeat).anyMatch(meat -> item.getType() == meat)) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20 * 10, 2));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 60, 0));
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1, 0.5F);
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1, 0.5F);
                 TaskManager.invokeLater(() -> {

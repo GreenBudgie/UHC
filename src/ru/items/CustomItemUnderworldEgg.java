@@ -64,6 +64,9 @@ public class CustomItemUnderworldEgg extends ClassCustomItem implements Listener
 
 	private void spawnMob(Location center, EntityType type, Player owner) {
 		Monster monster = (Monster) center.getWorld().spawnEntity(center, type);
+		if(monster instanceof Zombie zombie) {
+			zombie.setAdult();
+		}
 		monster.setMetadata("necromancer_owner", new FixedMetadataValue(UHCPlugin.instance, owner.getName()));
 		monster.getWorld().strikeLightningEffect(monster.getLocation());
 		monster.setCustomName(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Undead Warrior");

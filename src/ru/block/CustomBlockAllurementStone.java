@@ -1,33 +1,35 @@
 package ru.block;
 
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import ru.UHC.FightHelper;
 import ru.UHC.PlayerManager;
-import ru.UHC.UHCPlayer;
 import ru.items.CustomItem;
 import ru.items.CustomItems;
 import ru.util.ParticleUtils;
-import ru.util.WorldHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomBlockKnockoutTotem extends CustomBlockTotem {
+public class CustomBlockAllurementStone extends CustomBlockTotem {
 
-    public CustomBlockKnockoutTotem(Location location, Player owner) {
+    public CustomBlockAllurementStone(Location location, Player owner) {
         super(location, owner);
     }
 
     @Override
     public CustomItem getRepresentingItem() {
-        return CustomItems.knockoutTotem;
+        return CustomItems.allurementStone;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        location.getWorld().playSound(location, Sound.BLOCK_ENDER_CHEST_OPEN, 1, 0.5f);
     }
 
     @Override
@@ -36,18 +38,12 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-        location.getWorld().playSound(location, Sound.ENTITY_EVOKER_PREPARE_ATTACK, 1, 0.5f);
-    }
-
-    @Override
     public void produceEffect() {
         if(ticksPassed % 2 == 0) {
-            ParticleUtils.createParticlesOutlineSphere(centerLocation, getEffectRadius(), Particle.SMOKE_NORMAL, null, 12);
-            ParticleUtils.createParticlesInside(getBlock(), Particle.END_ROD, null, 1);
+            ParticleUtils.createParticlesOutlineSphere(centerLocation, getEffectRadius(), Particle.END_ROD, null, 12);
+            ParticleUtils.createParticlesInside(getBlock(), Particle.PORTAL, null, 1);
         }
-        if(ticksPassed > 0 && ticksPassed % 20 == 0) {
+        if(ticksPassed > 0 && ticksPassed % 12 == 0) {
             List<LivingEntity> nearbyEntities = new ArrayList<>();
             List<LivingEntity> entities = location.getWorld().getLivingEntities();
             for(LivingEntity entity : entities) {
@@ -63,36 +59,32 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
                         playerLocation.getY() - centerLocation.getY(),
                         playerLocation.getZ() - centerLocation.getZ());
                 playerPointer.normalize();
-                playerPointer.multiply(1.8);
+                playerPointer.multiply(-1.6);
                 Vector currentVelocity = entity.getVelocity();
                 currentVelocity.add(playerPointer);
                 entity.setVelocity(currentVelocity);
-                ParticleUtils.createParticlesAround(entity, Particle.SMOKE_LARGE, null, 5);
-                entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_FIRECHARGE_USE, 0.5F, 1.5F);
-                if(entity instanceof Player player) {
-                    FightHelper.setDamager(player, owner, 70, "убил тотемом");
-                }
+                ParticleUtils.createParticlesAround(entity, Particle.CLOUD, null, 5);
+                entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_PHANTOM_FLAP, 0.5F, 2F);
             }
-            ParticleUtils.createParticlesOutlineSphere(centerLocation, getEffectRadius() / 3, Particle.SMOKE_LARGE, null, 20);
-            location.getWorld().playSound(location, Sound.BLOCK_ANVIL_LAND, 0.4F, 0.5F);
+            location.getWorld().playSound(location, Math.random() < 0.5 ? Sound.ENTITY_PHANTOM_AMBIENT : Sound.ENTITY_PHANTOM_HURT, 0.6F, 2F);
         }
     }
 
     @Override
     public void onEffectStop() {
         super.onEffectStop();
-        ParticleUtils.createParticlesInside(getBlock(), Particle.SMOKE_LARGE, null, 10);
-        location.getWorld().playSound(location, Sound.ITEM_AXE_STRIP, 1, 0.8f);
+        ParticleUtils.flash(getLocation());
+        location.getWorld().playSound(location, Sound.ENTITY_ITEM_PICKUP, 1, 0.6f);
     }
 
     @Override
     public int getEffectDuration() {
-        return 20 * 45;
+        return 20 * 30;
     }
 
     @Override
     public double getEffectRadius() {
-        return 8;
+        return 7;
     }
 
 }

@@ -1432,24 +1432,6 @@ public class UHC implements Listener {
 	}
 
 	@EventHandler
-	public void entityDeath(EntityDeathEvent e) {
-		Entity ent = e.getEntity();
-		if(ent.getType() == EntityType.ZOMBIE || ent.getType() == EntityType.ZOMBIE_VILLAGER) {
-			if(e.getDrops().stream().noneMatch(item -> item.getType() == Material.CARROT) && MathUtils.chance(50)) e.getDrops().add(new ItemStack(Material.CARROT));
-		}
-		if(ent instanceof Blaze) {
-			if(e.getDrops().stream().noneMatch(item -> item.getType() == Material.BLAZE_ROD)) e.getDrops().add(new ItemStack(Material.BLAZE_ROD));
-		}
-		if(ent instanceof MagmaCube) {
-			if(e.getDrops().stream().noneMatch(item -> item.getType() == Material.MAGMA_CREAM) && MathUtils.chance(50))
-				e.getDrops().add(new ItemStack(Material.MAGMA_CREAM));
-		}
-		if(ent instanceof WitherSkeleton) {
-			e.getDrops().add(new ItemStack(Material.NETHER_WART));
-		}
-	}
-
-	@EventHandler
 	public void death(PlayerDeathEvent e) {
 		e.setDeathMessage(null);
 		Player player = e.getEntity();

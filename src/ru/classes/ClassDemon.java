@@ -10,6 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.UHC.PlayerManager;
@@ -40,7 +41,9 @@ public class ClassDemon extends BarHolderUHCClass {
         return new ItemInfo[] {
                 new ItemInfo("Урон от огня, магмы и лавы снижен в 2 раза"),
                 new ItemInfo("Пиглины дружелюбны").note("Не распространяется на зомби-пиглинов и брутов"),
-                new ItemInfo("С кварцевой руды падает редстоун").extra("1-2 шт. за руду").note("Чар на удачу не влияет на количество"),
+                new ItemInfo("С кварцевой руды также падает редстоун").extra("1-2 шт. за руду").note("Чар на удачу не влияет на количество"),
+                new ItemInfo("Увеличен шанс дропа предметов с адских мобов. Также, с визер-скелетов падают адские бородавки.")
+                        .extra("С блейзов падают палки со 100% шансом. С адских слизней падает слизь с 50% шансом."),
                 new ItemInfo("Шкала Soul Flame, наполняется при получении урона от огня. Когда тебя атакуют, тратится одно деление шкалы и нападающий поджигается.")
                         .extra("1 ед. урона = 1/12 шкалы; Значит, шкала наполнится полностью при получении урона в 12 хп.")
                         .note("К урону от огня относится также урон от магмы и лавы. Поджигаются только атакующие игроки, на мобов не работает.")
@@ -112,6 +115,26 @@ public class ClassDemon extends BarHolderUHCClass {
             bar.setProgress(currentValue);
             int usesRemaining = (int) ((1 / soulFlameBurn) * currentValue);
             bar.setTitle(getBarTitle() + ChatColor.GRAY + " x" + ChatColor.GOLD + ChatColor.BOLD + usesRemaining);
+        }
+    }
+
+
+    @EventHandler
+    public void entityDeath(EntityDeathEvent event) {
+        LivingEntity entity = event.getEntity();
+        Player killer = entity.getKiller();
+        if(killer != null && hasClass(killer)) {
+            if(entity instanceof Blaze) {
+                if(event.getDrops().stream().noneMatch(item -> item.getType() == Material.BLAZE_ROD))
+                    event.getDrops().add(new ItemStack(Material.BLAZE_ROD));
+            }
+            if(entity instanceof MagmaCube) {
+                if(event.getDrops().stream().noneMatch(item -> item.getType() == Material.MAGMA_CREAM) && MathUtils.chance(50))
+                    event.getDrops().add(new ItemStack(Material.MAGMA_CREAM));
+            }
+            if(entity instanceof WitherSkeleton) {
+                event.getDrops().add(new ItemStack(Material.NETHER_WART));
+            }
         }
     }
 

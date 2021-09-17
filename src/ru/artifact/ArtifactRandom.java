@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import ru.UHC.GameType;
+import ru.UHC.PlayerManager;
 import ru.UHC.UHC;
 import ru.mutator.Mutator;
 import ru.mutator.MutatorManager;
@@ -59,8 +60,8 @@ public class ArtifactRandom extends Artifact {
 			addedInfo.append(artifact.getName()).append(i == 2 ? "" : (ChatColor.DARK_GRAY + ", "));
 			toAdd.remove(artifact);
 		}
-		if(player != null) {
-			player.sendMessage(ChatColor.YELLOW + "Были активированы артефакты: " + addedInfo);
+		for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+			currentPlayer.sendMessage(ChatColor.YELLOW + "Были активированы артефакты: " + addedInfo);
 		}
 		return true;
 	}

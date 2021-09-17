@@ -34,6 +34,7 @@ public class CustomItems {
 	public static CustomItemTerraTracer terraTracer = new CustomItemTerraTracer();
 	public static CustomItemAncientShard ancientShard = new CustomItemAncientShard();
 	public static CustomItemIceball iceball = new CustomItemIceball();
+	public static CustomItemAllurementStone allurementStone = new CustomItemAllurementStone();
 
 	public static void init() {
 		for(CustomItem item : items) {

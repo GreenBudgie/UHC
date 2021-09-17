@@ -30,13 +30,14 @@ public class ClassNecromancer extends UHCClass {
         return new ItemInfo[] {
                 new ItemInfo("При убийстве игрока максимально возможное количество здоровья увеличивается на 2 сердца")
                         .example("На старте игры у тебя 6 сердец. Убийство игрока увеличит это значение до 8 сердец. Однако, их нужно будет отрегенить."),
-                new ItemInfo("При смерти любого игрока во время игры регенерируется 1 сердце"),
-                new ItemInfo("При убийстве игрока регенерируется 2 сердца"),
+                new ItemInfo("При смерти любого игрока во время игры регенерируется 1 ед. здоровья"),
+                new ItemInfo("При убийстве игрока регенерируется 4 ед. здоровья"),
                 new ItemInfo("При убийстве моба или игрока выдается эффект поглощения урона")
-                        .extra("Ты получаешь 2 дополнительных сердца на одну минуту")
+                        .extra("Ты получаешь 2 дополнительных сердца на 45 секунд")
                         .note("Работает даже при убийстве мирных мобов"),
                 new ItemInfo("Зомби и скелеты дружелюбны к тебе").
-                        note("Распространяется на зомби-пиглинов, визер-скелетов и др. Артефакты с них не выпадают. Однако, мобы, заспавненные с помощью Underworld Egg, будут агрессивны. ")
+                        extra("Распространяется на зомби-пиглинов, визер-скелетов, хасков и стреев").
+                        note("Артефакты с этих мобов не выпадают. Мобы, заспавненные с помощью яйца некроманта, будут агрессивны.")
         };
     }
 
@@ -57,7 +58,7 @@ public class ClassNecromancer extends UHCClass {
     @Override
     public ItemStack[] getStartItems() {
         ItemStack egg = CustomItems.underworldEgg.getItemStack();
-        egg.setAmount(2);
+        egg.setAmount(1);
         return new ItemStack[] {egg};
     }
 
@@ -72,7 +73,7 @@ public class ClassNecromancer extends UHCClass {
         for(UHCPlayer uhcNecromancer : getAliveOnlinePlayersWithClass()) {
             if(uhcNecromancer == uhcPlayer) continue;
             Player necromancer = uhcNecromancer.getPlayer();
-            necromancer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 0));
+            necromancer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 60, 0));
         }
         UHCPlayer uhcKiller = event.getKiller();
         if(uhcKiller != null && uhcKiller.isAliveAndOnline()) {
@@ -111,7 +112,7 @@ public class ClassNecromancer extends UHCClass {
             if(killer != null && hasClass(killer)) {
                 ParticleUtils.createParticlesAround(entity, Particle.SPELL_MOB, Color.RED, 30);
                 entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_HOE_TILL, 1F, 0.5F);
-                killer.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 60, 0));
+                killer.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 45, 0));
             }
         }
     }
