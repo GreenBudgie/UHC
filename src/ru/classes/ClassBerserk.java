@@ -197,7 +197,7 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
                     if(effect != null && effect.getType().equals(PotionEffectType.REGENERATION)) {
                         event.setCancelled(true);
                         EffectProcess.ignoreCurrentTick(player, this);
-                        PotionEffect halfEffect = new PotionEffect(effect.getType(), (int) (effect.getDuration() / 1.3),
+                        PotionEffect halfEffect = new PotionEffect(effect.getType(), (int) (effect.getDuration() * 0.75),
                                 effect.getAmplifier(), effect.isAmbient(), effect.hasParticles(), effect.hasIcon());
                         player.addPotionEffect(halfEffect);
                     }

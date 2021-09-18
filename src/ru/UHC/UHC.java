@@ -1695,7 +1695,7 @@ public class UHC implements Listener {
 			e.setCancelled(true);
 		}
 		if(state.isInGame() && PlayerManager.isPlaying(p)) {
-			if(e.getBlock().getType() == Material.EMERALD_ORE && e.getExpToDrop() > 0) {
+			if((e.getBlock().getType() == Material.EMERALD_ORE || e.getBlock().getType() == Material.DEEPSLATE_EMERALD_ORE) && e.getExpToDrop() > 0) {
 				e.setDropItems(false);
 				ItemStack drop = MathUtils
 						.choose(new ItemStack(Material.DIAMOND, MathUtils.randomRange(1, 2)), new ItemStack(Material.REDSTONE, MathUtils.randomRange(24, 40)),

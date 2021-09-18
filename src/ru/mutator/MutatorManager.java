@@ -36,7 +36,6 @@ public class MutatorManager {
 	public static MutatorHaste haste = new MutatorHaste();
 	public static MutatorSimpleRequests simpleRequests = new MutatorSimpleRequests();
 	public static MutatorSmallMap smallMap = new MutatorSmallMap();
-	public static MutatorFlameFist flameFist = new MutatorFlameFist();
 	public static MutatorNoHunger noHunger = new MutatorNoHunger();
 	public static MutatorDeathTnt deathTnt = new MutatorDeathTnt();
 	public static MutatorSupply supply = new MutatorSupply();

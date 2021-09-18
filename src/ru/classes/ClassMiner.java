@@ -20,11 +20,13 @@ import ru.UHC.UHC;
 import ru.UHC.UHCPlayer;
 import ru.event.*;
 import ru.items.CustomItems;
+import ru.mutator.MutatorManager;
 import ru.util.ItemInfo;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
 import ru.util.TaskManager;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -42,7 +44,7 @@ public class ClassMiner extends BarHolderUHCClass {
     private final int NEEDED_COPPER = 50;
     private final double BONUS_PER_COPPER = 1D / NEEDED_COPPER;
 
-    private Material[] ORES = new Material[] {
+    private Material[] ORE_BLOCKS = new Material[] {
             Material.COAL_ORE,
             Material.DEEPSLATE_COAL_ORE,
             Material.IRON_ORE,
@@ -63,6 +65,18 @@ public class ClassMiner extends BarHolderUHCClass {
             Material.NETHER_GOLD_ORE,
             Material.ANCIENT_DEBRIS
     };
+
+    private Material[] ORE_DROPS_TO_INCREASE = new Material[] {
+            Material.COAL,
+            Material.RAW_IRON,
+            Material.REDSTONE,
+            Material.LAPIS_LAZULI,
+            Material.DIAMOND,
+            Material.RAW_GOLD,
+            Material.QUARTZ,
+            Material.GOLD_INGOT
+    };
+
     private Material[] INSTRUMENTS = new Material[] {
             Material.WOODEN_PICKAXE,
             Material.WOODEN_SHOVEL,
@@ -105,7 +119,9 @@ public class ClassMiner extends BarHolderUHCClass {
                 new ItemInfo("Все инструменты более прочные")
                         .extra("Инструменты не теряют прочность при использовании с шансом 50%")
                         .note("Не распространяется на оружие"),
-                new ItemInfo("В два раза больше опыта при добыче руды")
+                new ItemInfo("С любой руды падает падает на 1 предмет больше")
+                        .note("Также распространяется на железо и золото. Не работает на древние обломки.")
+                        .example("Ты выкопал алмазы обычной киркой - тебе дропнулось 2 алмаза. Ты выкопал алмазы с киркой на удачу 3, тебе повезло и должно было выпать 3 алмаза, но из-за класса выпало 4.")
         };
     }
 
@@ -252,8 +268,19 @@ public class ClassMiner extends BarHolderUHCClass {
                 updateFatigueEffects(uhcPlayer);
             }
         }
-        if(hasClass(player) && Stream.of(ORES).anyMatch(type -> type == block.getType())) {
-            event.setExpToDrop((int) (event.getExpToDrop() * 2));
+        if(hasClass(player) && Stream.of(ORE_BLOCKS).anyMatch(type -> type == block.getType())) {
+            ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
+            Collection<ItemStack> drops = block.getDrops(tool, player);
+            A:
+            for(ItemStack drop : drops) {
+                for(Material dropToIncrease : ORE_DROPS_TO_INCREASE) {
+                    if(dropToIncrease == drop.getType()) {
+                        block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(dropToIncrease));
+                        break A;
+                    }
+                }
+            }
+
             ParticleUtils.createParticlesInside(block, Particle.SPELL_MOB, Color.WHITE, 5);
             block.getWorld().playSound(block.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_HIT, 0.5f, 1);
             player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20 * 5, 0));
