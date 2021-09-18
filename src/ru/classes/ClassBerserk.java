@@ -37,7 +37,7 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
     private final Map<UHCPlayer, Double> battleRage = new HashMap<>(); //From 0 to 1
     private final int MAX_MOBS_TO_KILL = 50;
     private final double BATTLE_RAGE_PER_KILL = 1D / MAX_MOBS_TO_KILL;
-    private final double MAX_DAMAGE_INCREASE = 1.75;
+    private final double MAX_DAMAGE_INCREASE = 1.6;
 
     @Override
     public String getName() {
@@ -50,10 +50,11 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
                 new ItemInfo("20 сердец при старте игры"),
                 new ItemInfo("Гнилая плоть и сырое мясо безвредны"),
                 new ItemInfo("Ты получаешь сопротивление урону, когда ешь сырое мясо.")
-                        .extra("Эффект выдается на одну минуту. Поглощается 20% получаемого урона."),
+                        .extra("Эффект выдается на одну минуту. Поглощается 20% получаемого урона.")
+                        .note("К сырому мясу также относится гнилая плоть и рыба"),
                 new ItemInfo("Шкала Battle Rage: увеличивается урон при убийстве враждебных мобов")
                         .note("Не работает на мобов из спавнера")
-                        .extra("Максимальный буст урона равен 75%, для этого нужно убить 50 мобов")
+                        .extra("Максимальный буст урона равен 60%, для этого нужно убить 50 мобов")
                         .explanation("Буст урона сохраняется на всю игру и никуда не пропадает со временем")
         };
     }
@@ -61,8 +62,8 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
     @Override
     public ItemInfo[] getDisadvantages() {
         return new ItemInfo[] {
-                new ItemInfo("Может носить только кожаную броню, которая также может быть скрафчена из гнилой плоти")
-                        .note("Другую броню надеть можно, но при первом же получении урона она мгновенно сломается"),
+                new ItemInfo("Может носить только кожаную и кольчужную броню. Кольчуга может быть скрафчена из цепей.")
+                        .note("На всякий случай: цепи крафтятся из железного слитка и двух кусочков железа сверху и снизу."),
                 new ItemInfo("Нельзя атаковать мечами"),
                 new ItemInfo("Эффекты регенерации в полтора раза слабее")
                         .example("Золотые яблоки будут восстанавливать 3 хп вместо 4-х")
@@ -209,7 +210,11 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
             Material.LEATHER_HELMET,
             Material.LEATHER_CHESTPLATE,
             Material.LEATHER_LEGGINGS,
-            Material.LEATHER_BOOTS
+            Material.LEATHER_BOOTS,
+            Material.CHAINMAIL_HELMET,
+            Material.CHAINMAIL_CHESTPLATE,
+            Material.CHAINMAIL_LEGGINGS,
+            Material.CHAINMAIL_BOOTS
     };
 
     @EventHandler
@@ -283,19 +288,9 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
         return BarColor.RED;
     }
 
-    private ItemStack armorWithColor(Material armor) {
-        ItemStack item = new ItemStack(armor);
-        ItemMeta meta = item.getItemMeta();
-        if(meta instanceof LeatherArmorMeta leatherMeta) {
-            leatherMeta.setColor(Color.fromRGB(84, 79, 49));
-            item.setItemMeta(meta);
-        }
-        return item;
-    }
-
     private void registerRecipe(ShapedRecipe recipe, String... shape) {
         recipe.shape(shape);
-        recipe.setIngredient('l', Material.ROTTEN_FLESH);
+        recipe.setIngredient('l', Material.CHAIN);
         recipe.setIngredient('-', Material.AIR);
     }
 
@@ -303,32 +298,32 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
     public Recipe[] getClassRecipes() {
         ShapedRecipe helmet = new ShapedRecipe(
                 new NamespacedKey(UHCPlugin.instance, "berserk_helmet"),
-                armorWithColor(Material.LEATHER_HELMET));
+                new ItemStack(Material.CHAINMAIL_HELMET));
         registerRecipe(helmet, "lll", "l-l", "---");
 
         ShapedRecipe helmet2 = new ShapedRecipe(
                 new NamespacedKey(UHCPlugin.instance, "berserk_helmet2"),
-                armorWithColor(Material.LEATHER_HELMET));
+                new ItemStack(Material.CHAINMAIL_HELMET));
         registerRecipe(helmet2, "---", "lll", "l-l");
 
         ShapedRecipe chestplate = new ShapedRecipe(
                 new NamespacedKey(UHCPlugin.instance, "berserk_chestplate"),
-                armorWithColor(Material.LEATHER_CHESTPLATE));
+                new ItemStack(Material.CHAINMAIL_CHESTPLATE));
         registerRecipe(chestplate, "l-l", "lll", "lll");
 
         ShapedRecipe leggings = new ShapedRecipe(
                 new NamespacedKey(UHCPlugin.instance, "berserk_leggings"),
-                armorWithColor(Material.LEATHER_LEGGINGS));
+                new ItemStack(Material.CHAINMAIL_LEGGINGS));
         registerRecipe(leggings, "lll", "l-l", "l-l");
 
         ShapedRecipe boots = new ShapedRecipe(
                 new NamespacedKey(UHCPlugin.instance, "berserk_boots"),
-                armorWithColor(Material.LEATHER_BOOTS));
+                new ItemStack(Material.CHAINMAIL_BOOTS));
         registerRecipe(boots, "---", "l-l", "l-l");
 
         ShapedRecipe boots2 = new ShapedRecipe(
                 new NamespacedKey(UHCPlugin.instance, "berserk_boots2"),
-                armorWithColor(Material.LEATHER_BOOTS));
+                new ItemStack(Material.CHAINMAIL_BOOTS));
         registerRecipe(boots2, "l-l", "l-l", "---");
         
         return new Recipe[] {helmet, helmet2, chestplate, leggings, boots, boots2};

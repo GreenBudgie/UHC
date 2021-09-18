@@ -37,7 +37,7 @@ public class MutatorGoodDeath extends Mutator implements Listener {
 
 	@Override
 	public String getDescription() {
-		return "Когда кто-то из игроков умирает, всем остальным выдается эффект регенерации, восстанавливая 2 сердца";
+		return "Когда кто-то из игроков умирает, всем остальным выдается эффект регенерации, восстанавливая 1 сердце";
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
@@ -46,11 +46,11 @@ public class MutatorGoodDeath extends Mutator implements Listener {
 			if(uhcPlayer == event.getUHCPlayer()) continue;
 			if(uhcPlayer.isOnline()) {
 				Player player = uhcPlayer.getPlayer();
-				player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 50, 2));
+				player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 120, 0));
 				player.playSound(player.getLocation(), Sound.ITEM_FIRECHARGE_USE, 0.5F, 1F);
 				ParticleUtils.createParticlesInRange(player.getLocation(), 3, Particle.HEART, null, 15);
 			} else {
-				uhcPlayer.addOfflineHealth(4);
+				uhcPlayer.addOfflineHealth(2);
 			}
 		}
 	}

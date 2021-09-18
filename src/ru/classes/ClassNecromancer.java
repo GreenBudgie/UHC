@@ -70,10 +70,14 @@ public class ClassNecromancer extends UHCClass {
     @EventHandler
     public void handlePlayerDeathRegeneration(UHCPlayerDeathEvent event) {
         UHCPlayer uhcPlayer = event.getUHCPlayer();
-        for(UHCPlayer uhcNecromancer : getAliveOnlinePlayersWithClass()) {
+        for(UHCPlayer uhcNecromancer : getAlivePlayersWithClass()) {
             if(uhcNecromancer == uhcPlayer) continue;
-            Player necromancer = uhcNecromancer.getPlayer();
-            necromancer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 60, 0));
+            if(uhcNecromancer.isOnline()) {
+                Player necromancer = uhcNecromancer.getPlayer();
+                necromancer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 60, 0));
+            } else {
+                uhcNecromancer.addOfflineHealth(1);
+            }
         }
         UHCPlayer uhcKiller = event.getKiller();
         if(uhcKiller != null && uhcKiller.isAliveAndOnline()) {
@@ -95,7 +99,6 @@ public class ClassNecromancer extends UHCClass {
         if(event.getTarget() instanceof Player target && hasClass(target) && isFriendly(event.getEntity())) {
             if(!event.getEntity().hasMetadata("necromancer_owner")) {
                 event.setCancelled(true);
-
             }
         }
     }
