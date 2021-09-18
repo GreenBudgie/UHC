@@ -30,7 +30,7 @@ public class ArtifactRandom extends Artifact {
 
 	@Override
 	public int getStartingPrice() {
-		return 20;
+		return 22;
 	}
 
 	@Override

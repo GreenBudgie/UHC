@@ -23,7 +23,7 @@ public class ArtifactHunger extends Artifact {
 
 	@Override
 	public int getStartingPrice() {
-		return 13;
+		return 10;
 	}
 
 	@Override

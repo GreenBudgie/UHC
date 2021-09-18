@@ -24,7 +24,7 @@ public class ArtifactDamage extends Artifact {
 
 	@Override
 	public String getDescription() {
-		return "Дамажит всех игроков на 2 сердца. Использовавшего игрока дамажит на 2.5 сердца. Умереть нельзя.";
+		return "Дамажит всех игроков на 1.5 сердца. Использовавшего игрока дамажит на 2 сердца. Умереть нельзя.";
 	}
 
 	@Override
@@ -43,12 +43,12 @@ public class ArtifactDamage extends Artifact {
 			if(uhcCurrentPlayer.isOnline()) {
 				Player currentPlayer = uhcCurrentPlayer.getPlayer();
 				boolean doMaxDamage = player == null || player == currentPlayer;
-				double damage = MathUtils.clamp(doMaxDamage ? 5 : 4, 0, currentPlayer.getHealth() - 1);
+				double damage = MathUtils.clamp(doMaxDamage ? 4 : 3, 0, currentPlayer.getHealth() - 1);
 				currentPlayer.damage(damage);
 				currentPlayer.playSound(currentPlayer.getLocation(), Sound.ENTITY_VILLAGER_NO, 1F, 0.5F);
 				ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.SMOKE_LARGE, null, 15);
 			} else {
-				double damage = MathUtils.clamp(4, 0, uhcCurrentPlayer.getOfflineHealth() - 1);
+				double damage = MathUtils.clamp(3, 0, uhcCurrentPlayer.getOfflineHealth() - 1);
 				uhcCurrentPlayer.addOfflineHealth(-damage);
 			}
 		}

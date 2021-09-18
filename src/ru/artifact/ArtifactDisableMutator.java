@@ -29,7 +29,7 @@ public class ArtifactDisableMutator extends Artifact {
 
 	@Override
 	public int getStartingPrice() {
-		return 13;
+		return 12;
 	}
 
 	@Override
