@@ -24,8 +24,8 @@ import java.util.Map;
 
 public class MutatorIncreasingDamage extends Mutator implements Listener {
 
-	private final double MAX_DAMAGE_INCREASE = 2.5;
-	private final double INCREASE_PER_SECOND = 1 / 1000D;
+	private final double MAX_DAMAGE_INCREASE = 2;
+	private final double INCREASE_PER_SECOND = 1 / 1200D;
 
 	private final Map<UHCPlayer, Double> damageIncrease = new HashMap<>();
 	private final Map<Player, BossBar> bars = new HashMap<>();
@@ -57,7 +57,7 @@ public class MutatorIncreasingDamage extends Mutator implements Listener {
 
 	@Override
 	public String getDescription() {
-		return "Чем дольше ты не получаешь урон, тем больше урона пройдет по тебе в следующий раз. Получение минимум 1 хп урона сбрасывает шкалу к нулю.";
+		return "Чем дольше ты не получаешь урон, тем больше урона пройдет по тебе в следующий раз. Получение любого урона сбрасывает шкалу к нулю.";
 	}
 
 	@Override
@@ -187,7 +187,7 @@ public class MutatorIncreasingDamage extends Mutator implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void monitorDamage(EntityDamageEvent event) {
-		if(!event.isCancelled() && event.getEntity() instanceof Player player && PlayerManager.isPlaying(player) && event.getFinalDamage() >= 1) {
+		if(!event.isCancelled() && event.getEntity() instanceof Player player && PlayerManager.isPlaying(player) && event.getFinalDamage() > 0) {
 			UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
 			if(uhcPlayer != null) {
 				damageIncrease.put(uhcPlayer, 0D);

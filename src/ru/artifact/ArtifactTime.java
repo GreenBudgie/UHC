@@ -29,7 +29,7 @@ public class ArtifactTime extends Artifact {
 
 	@Override
 	public float getPriceIncreaseAmount() {
-		return 2;
+		return 3;
 	}
 
 	@Override
