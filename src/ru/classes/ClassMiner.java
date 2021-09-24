@@ -119,7 +119,7 @@ public class ClassMiner extends BarHolderUHCClass {
                 new ItemInfo("Все инструменты более прочные")
                         .extra("Инструменты не теряют прочность при использовании с шансом 50%")
                         .note("Не распространяется на оружие"),
-                new ItemInfo("С любой руды падает падает на 1 предмет больше")
+                new ItemInfo("С любой руды падает на 1 предмет больше с шансом 40%")
                         .note("Также распространяется на железо и золото. Не работает на древние обломки.")
                         .example("Ты выкопал алмазы обычной киркой - тебе дропнулось 2 алмаза. Ты выкопал алмазы с киркой на удачу 3, тебе повезло и должно было выпать 3 алмаза, но из-за класса выпало 4.")
         };
@@ -269,14 +269,16 @@ public class ClassMiner extends BarHolderUHCClass {
             }
         }
         if(hasClass(player) && Stream.of(ORE_BLOCKS).anyMatch(type -> type == block.getType())) {
-            ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
-            Collection<ItemStack> drops = block.getDrops(tool, player);
-            A:
-            for(ItemStack drop : drops) {
-                for(Material dropToIncrease : ORE_DROPS_TO_INCREASE) {
-                    if(dropToIncrease == drop.getType()) {
-                        block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(dropToIncrease));
-                        break A;
+            if(Math.random() < 0.4) {
+                ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
+                Collection<ItemStack> drops = block.getDrops(tool, player);
+                A:
+                for(ItemStack drop : drops) {
+                    for(Material dropToIncrease : ORE_DROPS_TO_INCREASE) {
+                        if(dropToIncrease == drop.getType()) {
+                            block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(dropToIncrease));
+                            break A;
+                        }
                     }
                 }
             }

@@ -13,15 +13,17 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import ru.UHC.PlayerManager;
-import ru.UHC.UHCPlayer;
-import ru.UHC.WorldManager;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import ru.UHC.*;
 import ru.event.GameStartEvent;
 import ru.event.UHCPlayerRejoinEvent;
 import ru.items.CustomItems;
+import ru.main.UHCPlugin;
 import ru.util.ItemInfo;
 import ru.util.MathUtils;
 import ru.util.ParticleUtils;
+import ru.util.TaskManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +32,7 @@ public class ClassDemon extends BarHolderUHCClass {
 
     private final Map<UHCPlayer, Double> soulFlame = new HashMap<>(); //From 0 to 1
     private final double soulFlameBurn = 1 / 6D; //How much soul flame progress to burn per hit
+    private final double soulFramePerBarProtection = 0.1; //Percentage of damage to absorb per one bar
 
     @Override
     public String getName() {
@@ -39,15 +42,14 @@ public class ClassDemon extends BarHolderUHCClass {
     @Override
     public ItemInfo[] getAdvantages() {
         return new ItemInfo[] {
-                new ItemInfo("Урон от огня, магмы и лавы снижен в 2 раза"),
+                new ItemInfo("Огнестойкость на всю игру"),
                 new ItemInfo("Пиглины дружелюбны").note("Не распространяется на зомби-пиглинов и брутов"),
                 new ItemInfo("С кварцевой руды также падает редстоун").extra("1-2 шт. за руду").note("Чар на удачу не влияет на количество"),
                 new ItemInfo("Увеличен шанс дропа предметов с адских мобов. Также, с визер-скелетов падают адские бородавки.")
                         .extra("С блейзов падают палки со 100% шансом. С адских слизней падает слизь с 50% шансом."),
-                new ItemInfo("Шкала Soul Flame, наполняется при получении урона от огня. Когда тебя атакуют, тратится одно деление шкалы и нападающий поджигается.")
-                        .extra("1 ед. урона = 1/12 шкалы; Значит, шкала наполнится полностью при получении урона в 12 хп.")
-                        .note("К урону от огня относится также урон от магмы и лавы. Поджигаются только атакующие игроки, на мобов не работает.")
-                        .example("Ты получил 6хп урона от лавы и наполнил шкалу на 3 заряда. Тебя атаковали. Атакующий поджегся, у тебя осталось 2 заряда.")
+                new ItemInfo("Шкала Soul Flame, наполняется при получении урона в аду. При получении урона тратится одно деление шкалы и этот урон немного снижается. Если тебя атаковали, то нападающий поджигается.")
+                        .extra("За 1 хп полученного урона шкала наполняется на 1/12. Всего у шкалы 6 делений. Одно деление шкалы равно 10% поглощаемого урона. Значит, максимальное поглощение - 60%")
+                        .example("Ты получил 6хп урона и наполнил шкалу на 3 заряда. Тебе атаковали на 10хп. Атакующий поджегся, а ты получил всего 4хп урона.")
         };
     }
 
@@ -60,6 +62,16 @@ public class ClassDemon extends BarHolderUHCClass {
         };
     }
 
+    @Override
+    public void onUpdate(UHCPlayer uhcPlayer) {
+        if(TaskManager.isSecUpdated() && (UHC.state.isInGame() || UHC.state == GameState.DEATHMATCH) && uhcPlayer.isAliveAndOnline()) {
+            Player player = uhcPlayer.getPlayer();
+            if(!player.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0));
+            }
+        }
+    }
+
     /**
      * Gets the player soul flame value, or 0 if not found
      */
@@ -67,8 +79,17 @@ public class ClassDemon extends BarHolderUHCClass {
         return soulFlame.getOrDefault(uhcPlayer, 0D);
     }
 
-    private void setSoulFlame(UHCPlayer uhcPlayer, double flame) {
+    public void setSoulFlame(UHCPlayer uhcPlayer, double flame) {
         soulFlame.put(uhcPlayer, flame);
+    }
+
+    private int getSoulFlamePercentageProtection(UHCPlayer uhcPlayer) {
+        return (int) (getSoulFlameRealProtection(uhcPlayer) * 100);
+    }
+
+    private double getSoulFlameRealProtection(UHCPlayer uhcPlayer) {
+        int barsFilled = (int) ((1 / soulFlameBurn) * getSoulFlame(uhcPlayer));
+        return barsFilled * soulFramePerBarProtection;
     }
 
     @Override
@@ -101,7 +122,7 @@ public class ClassDemon extends BarHolderUHCClass {
         }
     }
 
-    private void updateSoulFlame(UHCPlayer uhcPlayer, double previousValue) {
+    public void updateSoulFlame(UHCPlayer uhcPlayer, double previousValue) {
         BossBar bar = getBar(uhcPlayer);
         if(uhcPlayer.isAliveAndOnline() && bar != null) {
             double currentValue = getSoulFlame(uhcPlayer);
@@ -113,8 +134,10 @@ public class ClassDemon extends BarHolderUHCClass {
                 }
             }
             bar.setProgress(currentValue);
-            int usesRemaining = (int) ((1 / soulFlameBurn) * currentValue);
-            bar.setTitle(getBarTitle() + ChatColor.GRAY + " x" + ChatColor.GOLD + ChatColor.BOLD + usesRemaining);
+            bar.setTitle(getBarTitle() + ChatColor.GRAY + " -" +
+                    ChatColor.GOLD + ChatColor.BOLD + getSoulFlamePercentageProtection(uhcPlayer) +
+                    ChatColor.GRAY + "% " +
+                    ChatColor.GOLD + "урона");
         }
     }
 
@@ -138,18 +161,17 @@ public class ClassDemon extends BarHolderUHCClass {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void burnAttacker(EntityDamageByEntityEvent event) {
-        if(!event.isCancelled() && event.getEntity() instanceof Player victim && event.getDamager() instanceof Player attacker && hasClass(victim)) {
+        LivingEntity attacker = FightHelper.getDamagerOrShooter(event);
+        if(!event.isCancelled() && event.getEntity() instanceof Player victim && attacker != null && hasClass(victim)) {
             UHCPlayer uhcVictim = PlayerManager.asUHCPlayer(victim);
             double flame = getSoulFlame(uhcVictim);
-            if(uhcVictim != null && attacker.getFireTicks() == 0 & flame >= soulFlameBurn) {
+            if(uhcVictim != null && attacker.getFireTicks() <= 0 && flame >= soulFlameBurn) {
                 ParticleUtils.createParticlesAround(victim, Particle.FLAME, null, 10);
                 ParticleUtils.createParticlesAround(attacker, Particle.FLAME, null, 10);
                 attacker.getWorld().playSound(attacker.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1);
-                attacker.setFireTicks(60 + (int) (flame * 80));
-                setSoulFlame(uhcVictim, MathUtils.clamp(flame - soulFlameBurn, 0, 1));
-                updateSoulFlame(uhcVictim, flame);
+                attacker.setFireTicks(30 + (int) (flame * 40));
             }
         }
     }
@@ -173,19 +195,15 @@ public class ClassDemon extends BarHolderUHCClass {
         }
     }
 
-    private boolean isFireDamage(EntityDamageEvent.DamageCause cause) {
-        return cause == EntityDamageEvent.DamageCause.FIRE ||
-                cause == EntityDamageEvent.DamageCause.FIRE_TICK ||
-                cause == EntityDamageEvent.DamageCause.LAVA ||
-                cause == EntityDamageEvent.DamageCause.HOT_FLOOR;
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void damage(EntityDamageEvent event) {
-        if(!event.isCancelled() && event.getEntity() instanceof Player player && hasClass(player)) {
-            if(isFireDamage(event.getCause())) {
-                event.setDamage(event.getDamage() * 0.5);
-            }
+        if(!event.isCancelled() && event.getFinalDamage() > 0 && event.getEntity() instanceof Player player && hasClass(player)) {
+            UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
+            double flame = getSoulFlame(uhcPlayer);
+            double protection = getSoulFlameRealProtection(uhcPlayer);
+            event.setDamage(event.getDamage() - (event.getDamage() * protection));
+            setSoulFlame(uhcPlayer, MathUtils.clamp(flame - soulFlameBurn, 0, 1));
+            updateSoulFlame(uhcPlayer, flame);
             if(player.getWorld() == WorldManager.getGameMap()) {
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_HURT, 0.8f, 0.5f);
                 event.setDamage(event.getDamage() * 1.25);
@@ -197,7 +215,7 @@ public class ClassDemon extends BarHolderUHCClass {
     public void damageMonitor(EntityDamageEvent event) {
         if(!event.isCancelled() && event.getEntity() instanceof Player player && hasClass(player)) {
             UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
-            if(uhcPlayer != null && isFireDamage(event.getCause())) {
+            if(uhcPlayer != null && player.getWorld() == WorldManager.getGameMapNether()) {
                 double finalDamage = event.getFinalDamage();
                 double currentFlame = getSoulFlame(uhcPlayer);
                 setSoulFlame(uhcPlayer, MathUtils.clamp(currentFlame + finalDamage / 12, 0, 1));

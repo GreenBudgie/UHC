@@ -75,7 +75,6 @@ public class MutatorManager {
 	public static MutatorGamesWithFire gamesWithFire = new MutatorGamesWithFire();
 	public static MutatorAttackWeakness attackWeakness = new MutatorAttackWeakness();
 	public static MutatorHalfDamage halfDamage = new MutatorHalfDamage();
-	public static MutatorIncreasingDamage increasingDamage = new MutatorIncreasingDamage();
 	public static MutatorDeathCoordinates deathCoordinates = new MutatorDeathCoordinates();
 	public static MutatorImmunity immunity = new MutatorImmunity();
 	public static MutatorHyperExplosions hyperExplosions = new MutatorHyperExplosions();

@@ -1,7 +1,12 @@
 package ru.UHC;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +96,16 @@ public class FightHelper {
 
 	public static String padCrosses(String deathMessage) {
 		return ChatColor.DARK_RED + "" + ChatColor.BOLD + "\u274C " + ChatColor.RESET + deathMessage + ChatColor.DARK_RED + "" + ChatColor.BOLD + " \u274C";
+	}
+
+	public static LivingEntity getDamagerOrShooter(EntityDamageByEntityEvent event) {
+		Entity rawDamager = event.getDamager();
+		if(rawDamager instanceof Projectile projectile) {
+			ProjectileSource shooter = projectile.getShooter();
+			if(shooter instanceof LivingEntity damager) return damager;
+		}
+		if(rawDamager instanceof LivingEntity damager) return damager;
+		return null;
 	}
 
 	public static String getDeathMessage(Player victim) {

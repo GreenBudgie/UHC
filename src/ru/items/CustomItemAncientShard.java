@@ -61,9 +61,9 @@ public class CustomItemAncientShard extends ClassCustomItem implements Listener 
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void absorbDamage(EntityDamageEvent event) {
-		if(!event.isCancelled() && event.getEntity() instanceof Player player) {
+		if(!event.isCancelled() && event.getFinalDamage() > 0 && event.getEntity() instanceof Player player) {
 			UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
 			if(uhcPlayer != null && affectedPlayers.contains(uhcPlayer)) {
 				ParticleUtils.createParticlesOutlineSphere(player.getLocation(), 2, Particle.REDSTONE, Color.fromRGB(214, 37, 152), 90);

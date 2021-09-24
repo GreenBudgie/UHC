@@ -37,7 +37,7 @@ public class MutatorDoubleDamage extends Mutator implements Listener {
 
 	@Override
 	public boolean conflictsWith(Mutator another) {
-		return another == MutatorManager.halfDamage || another == MutatorManager.increasingDamage;
+		return another == MutatorManager.halfDamage;
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
