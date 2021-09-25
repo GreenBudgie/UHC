@@ -89,7 +89,7 @@ public class PlayerSummary implements ConfigurationSerializable {
      * In-game kills are more valuable than deathmatch kills, so its scalar is greater.
      */
     protected double getGameKillsPerformanceScalar() {
-        return 1.2;
+        return 1.1;
     }
 
     /**
@@ -123,7 +123,7 @@ public class PlayerSummary implements ConfigurationSerializable {
      * Place is the most valuable factor, so its scalar is the greatest.
      */
     protected double getPlacePerformanceScalar() {
-        return 1.4;
+        return 1.6;
     }
 
     /**

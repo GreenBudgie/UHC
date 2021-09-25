@@ -76,9 +76,11 @@ public class Rating {
      */
     public static void updateRatingSummaries() {
         ratingSummaries.clear();
+        int ratingGamesCount = 0;
         //Collecting all rating summaries
         for(GameSummary gameSummary : gameSummaries) {
             if(gameSummary.isRatingGame()) {
+                ratingGamesCount++;
                 for(PlayerSummary playerSummary : gameSummary.getPlayerSummaries()) {
                     PlayerRatingSummary summary = getRatingSummaryByName(playerSummary.getPlayerName());
                     if(summary == null) {
@@ -95,14 +97,17 @@ public class Rating {
             int kills = 0;
             int wins = 0;
             double performanceSum = 0;
-            for(PlayerSummary playerSummary : getAllSummariesInRatingGames(ratingSummary.getPlayerName())) {
+            List<PlayerSummary> playerSummaries = getAllSummariesInRatingGames(ratingSummary.getPlayerName());
+            for(PlayerSummary playerSummary : playerSummaries) {
                 games++;
                 if(playerSummary.isWinner()) wins++;
                 kills += playerSummary.getOverallKills();
                 performanceSum += playerSummary.getGamePerformance();
             }
+            double scalar = getPlayedGamesScalar();
+            double playedGamesFactor = (games / (double) ratingSummaries.size()) * scalar + (1 - scalar);
             double winRate = wins / (double) games;
-            double averagePerformance = performanceSum / games;
+            double averagePerformance = (performanceSum / games) * playedGamesFactor;
             ratingSummary.setGamesPlayed(games);
             ratingSummary.setGamesWon(wins);
             ratingSummary.setWinRate(winRate);
@@ -119,6 +124,14 @@ public class Rating {
             summary.setRatingPlace(i + 1);
             summary.generateRepresentingItem();
         }
+    }
+
+    /**
+     * This value represents how much overall played games count affects average efficiency.
+     * Smaller values affects efficiency less.
+     */
+    public static double getPlayedGamesScalar() {
+        return 0.5;
     }
 
     public static List<PlayerRatingSummary> getRatingSummaries() {
