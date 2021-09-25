@@ -45,11 +45,10 @@ public class ClassDemon extends BarHolderUHCClass {
                 new ItemInfo("Огнестойкость на всю игру"),
                 new ItemInfo("Пиглины дружелюбны").note("Не распространяется на зомби-пиглинов и брутов"),
                 new ItemInfo("С кварцевой руды также падает редстоун").extra("1-2 шт. за руду").note("Чар на удачу не влияет на количество"),
-                new ItemInfo("Увеличен шанс дропа предметов с адских мобов. Также, с визер-скелетов падают адские бородавки.")
-                        .extra("С блейзов падают палки со 100% шансом. С адских слизней падает слизь с 50% шансом."),
+                new ItemInfo("С блейзов падают палки со 100% шансом, а с визер-скелетов падают адские бородавки."),
                 new ItemInfo("Шкала Soul Flame, наполняется при получении урона в аду. При получении урона тратится одно деление шкалы и этот урон немного снижается. Если тебя атаковали, то нападающий поджигается.")
                         .extra("За 1 хп полученного урона шкала наполняется на 1/12. Всего у шкалы 6 делений. Одно деление шкалы равно 10% поглощаемого урона. Значит, максимальное поглощение - 60%")
-                        .example("Ты получил 6хп урона и наполнил шкалу на 3 заряда. Тебе атаковали на 10хп. Атакующий поджегся, а ты получил всего 4хп урона.")
+                        .example("Ты получил 6хп урона и наполнил шкалу на 3 заряда. Тебя атаковали на 10хп. Атакующий поджегся, а ты получил всего 7хп урона.")
         };
     }
 
@@ -150,10 +149,6 @@ public class ClassDemon extends BarHolderUHCClass {
             if(entity instanceof Blaze) {
                 if(event.getDrops().stream().noneMatch(item -> item.getType() == Material.BLAZE_ROD))
                     event.getDrops().add(new ItemStack(Material.BLAZE_ROD));
-            }
-            if(entity instanceof MagmaCube) {
-                if(event.getDrops().stream().noneMatch(item -> item.getType() == Material.MAGMA_CREAM) && MathUtils.chance(50))
-                    event.getDrops().add(new ItemStack(Material.MAGMA_CREAM));
             }
             if(entity instanceof WitherSkeleton) {
                 event.getDrops().add(new ItemStack(Material.NETHER_WART));

@@ -13,6 +13,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.UHC.PlayerManager;
 import ru.UHC.UHCPlayer;
+import ru.main.UHCPlugin;
 import ru.util.ItemInfo;
 import ru.event.GameEndEvent;
 import ru.util.ParticleUtils;
@@ -37,7 +38,8 @@ public class CustomItemAncientShard extends ClassCustomItem implements Listener 
 		UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
 		if(uhcPlayer != null) {
 			item.setAmount(item.getAmount() - 1);
-			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 9));
+			player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 0));
 			ParticleUtils.createParticlesOutlineSphere(player.getLocation(), 2, Particle.REDSTONE, Color.fromRGB(214, 37, 152), 50);
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ILLUSIONER_AMBIENT, 1F, 0.5F);
 			player.getWorld().playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_FALL, 1F, 0.5F);

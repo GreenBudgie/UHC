@@ -1398,7 +1398,7 @@ public class UHC implements Listener {
 
 				});
 			}
-			//Fixing stews to regenerate only 1 heart instead of 1.5 hearts
+			//Fixing stews to regenerate only 0.5 hearts instead of 1.5 hearts
 			if(item.getType() == Material.SUSPICIOUS_STEW) {
 				SuspiciousStewMeta meta = (SuspiciousStewMeta) item.getItemMeta();
 				if(meta.hasCustomEffect(PotionEffectType.REGENERATION)) {
@@ -1406,7 +1406,8 @@ public class UHC implements Listener {
 
 						PotionEffect regen = player.getPotionEffect(PotionEffectType.REGENERATION);
 						if(regen != null) {
-							player.addPotionEffect(new PotionEffect(regen.getType(), (int) (regen.getDuration() / 1.5), regen.getAmplifier(), regen.isAmbient(),
+							player.removePotionEffect(PotionEffectType.REGENERATION);
+							player.addPotionEffect(new PotionEffect(regen.getType(), 75, regen.getAmplifier(), regen.isAmbient(),
 									regen.hasParticles(), regen.hasIcon()));
 						}
 

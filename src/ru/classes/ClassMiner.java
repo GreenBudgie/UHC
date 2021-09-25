@@ -41,7 +41,7 @@ public class ClassMiner extends BarHolderUHCClass {
     private final double MAX_SPEED_REDUCTION = 0.8;
     private final double MIN_DAMAGE_REDUCTION = 0.9;
     private final double MAX_DAMAGE_REDUCTION = 0.7;
-    private final int NEEDED_COPPER = 50;
+    private final int NEEDED_COPPER = 40;
     private final double BONUS_PER_COPPER = 1D / NEEDED_COPPER;
 
     private Material[] ORE_BLOCKS = new Material[] {
