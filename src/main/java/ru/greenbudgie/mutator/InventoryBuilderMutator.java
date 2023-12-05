@@ -24,6 +24,9 @@ import java.util.stream.IntStream;
 
 public class InventoryBuilderMutator {
 
+	private static final String ARROW_RIGHT_HEAD_LINK = "http://textures.minecraft.net/texture/4ef356ad2aa7b1678aecb88290e5fa5a3427e5e456ff42fb515690c67517b8";
+	private static final String ARROW_LEFT_HEAD_LINK = "http://textures.minecraft.net/texture/6e8c3ce2aee6cf2faade7db37bbae73a36627ac1473fef75b410a0af97659f";
+
 	public static final String inventoryName = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Мутаторы";
 	private static Set<InventoryBuilderMutator> builders = new HashSet<>();
 
@@ -156,11 +159,11 @@ public class InventoryBuilderMutator {
 				.build();
 		inventory.setItem(FILTER_SLOT, filterItem);
 
-		ItemStack pgNextItem = InventoryHelper.generateHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGVmMzU2YWQyYWE3YjE2NzhhZWNiODgyOTBlNWZhNWEzNDI3ZTVlNDU2ZmY0MmZiNTE1NjkwYzY3NTE3YjgifX19");
+		ItemStack pgNextItem = InventoryHelper.generateHead(ARROW_RIGHT_HEAD_LINK);
 		ItemUtils.setName(pgNextItem, ChatColor.DARK_GREEN + "" + ChatColor.BOLD + ">>> " + ChatColor.AQUA + "След. страница");
 		inventory.setItem(PAGE_NEXT_SLOT, pgNextItem);
 
-		ItemStack pgPrevItem = InventoryHelper.generateHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmU4YzNjZTJhZWU2Y2YyZmFhZGU3ZGIzN2JiYWU3M2EzNjYyN2FjMTQ3M2ZlZjc1YjQxMGEwYWY5NzY1OWYifX19");
+		ItemStack pgPrevItem = InventoryHelper.generateHead(ARROW_LEFT_HEAD_LINK);
 		ItemUtils.setName(pgPrevItem, ChatColor.GOLD + "" + ChatColor.BOLD + "<<< " + ChatColor.DARK_AQUA + "Пред. страница");
 		inventory.setItem(PAGE_PREV_SLOT, pgPrevItem);
 

@@ -2,9 +2,6 @@ package ru.greenbudgie.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.nbt.*;
@@ -28,8 +25,11 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 
-import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -47,46 +47,28 @@ public class InventoryHelper {
 		return null;
 	}
 
-	@SuppressWarnings("deprecation")
-	public static ItemStack generateHeadByName(String owner) {
-		ItemStack head = new ItemStack(Material.PLAYER_HEAD);
-		SkullMeta meta = (SkullMeta) head.getItemMeta();
-		meta.setOwningPlayer(Bukkit.getOfflinePlayer(owner));
-		head.setItemMeta(meta);
-		return head;
-	}
+	private static final UUID RANDOM_UUID = UUID.fromString("92864445-51c5-4c3b-9039-517c9927d1b4");
 
-	@SuppressWarnings("deprecation")
-	private static boolean injectFieldValue(Class<?> sourceClass, Object instance, String fieldName, Object value) {
+	private static PlayerProfile createProfileWithTexture(String textureUrl) {
+		PlayerProfile profile = Bukkit.createPlayerProfile(RANDOM_UUID); // Get a new player profile
+		PlayerTextures textures = profile.getTextures();
+		URL urlObject;
 		try {
-			Field field = sourceClass.getDeclaredField(fieldName);
-			if (!field.isAccessible()) {
-				field.setAccessible(true);
-			}
-			try {
-				field.set(instance, value);
-			} finally {
-				if (!field.isAccessible()) {
-					field.setAccessible(false);
-				}
-			}
-			return true;
-		} catch (Exception ignored) {
+			urlObject = new URL(textureUrl);
+		} catch (MalformedURLException exception) {
+			throw new RuntimeException("Invalid URL", exception);
 		}
-		return false;
-	}
-
-	private static GameProfile createProfileWithTexture(String texture) {
-		GameProfile profile = new GameProfile(UUID.randomUUID(), "test");
-		PropertyMap propertyMap = profile.getProperties();
-		propertyMap.put("textures", new Property("textures", texture));
+		textures.setSkin(urlObject);
+		profile.setTextures(textures);
 		return profile;
 	}
 
-	public static ItemStack generateHead(String value) {
+	public static ItemStack generateHead(String textureUrl) {
+		PlayerProfile profile = createProfileWithTexture(textureUrl);
 		ItemStack head = new ItemStack(Material.PLAYER_HEAD);
-		ItemMeta meta = head.getItemMeta();
-		injectFieldValue(meta.getClass(), meta, "profile", createProfileWithTexture(value));
+		SkullMeta meta = (SkullMeta) head.getItemMeta();
+		Objects.requireNonNull(meta);
+		meta.setOwnerProfile(profile);
 		head.setItemMeta(meta);
 		return head;
 	}

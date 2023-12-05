@@ -23,6 +23,11 @@ import java.util.List;
 
 public abstract class UHCClass implements Listener {
 
+    private static final String PLUS_HEAD_LINK = "http://textures.minecraft.net/texture/b056bc1244fcff99344f12aba42ac23fee6ef6e3351d27d273c1572531f";
+    private static final String MINUS_HEAD_LINK = "http://textures.minecraft.net/texture/4e4b8b8d2362c864e062301487d94d3272a6b570afbf80c2c5b148c954579d46";
+    private static final ItemStack ADVANTAGE_ITEM = InventoryHelper.generateHead(PLUS_HEAD_LINK);
+    private static final ItemStack DISADVANTAGE_ITEM = InventoryHelper.generateHead(MINUS_HEAD_LINK);
+
     private ItemStack[] advantageItems;
     private ItemStack[] disadvantageItems;
 
@@ -80,7 +85,7 @@ public abstract class UHCClass implements Listener {
         this.advantageItems = new ItemStack[advantages.length];
         for(int i = 0; i < advantages.length; i++) {
             ItemInfo advantage = advantages[i];
-            ItemStack advantageItem = InventoryHelper.generateHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjA1NmJjMTI0NGZjZmY5OTM0NGYxMmFiYTQyYWMyM2ZlZTZlZjZlMzM1MWQyN2QyNzNjMTU3MjUzMWYifX19");
+            ItemStack advantageItem = ADVANTAGE_ITEM.clone();
             ItemUtils.setName(advantageItem, ChatColor.GREEN + "" + ChatColor.BOLD + "+");
             advantage.applyToItem(advantageItem);
             this.advantageItems[i] = advantageItem;
@@ -90,7 +95,7 @@ public abstract class UHCClass implements Listener {
         this.disadvantageItems = new ItemStack[disadvantages.length];
         for(int i = 0; i < disadvantages.length; i++) {
             ItemInfo disadvantage = disadvantages[i];
-            ItemStack disadvantageItem = InventoryHelper.generateHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGU0YjhiOGQyMzYyYzg2NGUwNjIzMDE0ODdkOTRkMzI3MmE2YjU3MGFmYmY4MGMyYzViMTQ4Yzk1NDU3OWQ0NiJ9fX0=");
+            ItemStack disadvantageItem = DISADVANTAGE_ITEM.clone();
             ItemUtils.setName(disadvantageItem, ChatColor.RED + "" + ChatColor.BOLD + "-");
             disadvantage.applyToItem(disadvantageItem);
             this.disadvantageItems[i] = disadvantageItem;
