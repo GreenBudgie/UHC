@@ -1,16 +1,13 @@
 package ru.UHC;
 
 import com.google.common.collect.Lists;
-import net.minecraft.world.item.trading.MerchantRecipe;
-import net.minecraft.world.item.trading.MerchantRecipeList;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftVillager;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -22,6 +19,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.inventory.TradeSelectEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.*;
@@ -1739,33 +1737,29 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void emeraldTrade(PlayerInteractEntityEvent e) {
-		if(e.getRightClicked().getType() == EntityType.VILLAGER) {
-			Villager villager = (Villager) e.getRightClicked();
-			if (!(villager instanceof CraftVillager)) {
-				return;
-			}
+		if(e.getRightClicked() instanceof Villager villager) {
+			List<MerchantRecipe> recipes = villager.getRecipes();
 			List<MerchantRecipe> newRecipes = new ArrayList<>();
-			MerchantRecipeList recipes = ((CraftVillager)villager).getHandle().getOffers();
-			Iterator<MerchantRecipe> recipeIterator;
-			for(recipeIterator = recipes.iterator(); recipeIterator.hasNext(); ) {
-				MerchantRecipe recipe = recipeIterator.next();
-				ItemStack copy = CraftItemStack.asBukkitCopy(recipe.getSellingItem());
-				if(copy.getType() == Material.EMERALD) {
-					ItemUtils.setLore(copy, ChatColor.DARK_RED + "" + ChatColor.BOLD + "Без бонусов!");
-					newRecipes.add(new MerchantRecipe(
-							recipe.getBuyItem1(),
-							recipe.getBuyItem2(),
-							CraftItemStack.asNMSCopy(copy),
-							recipe.getUses(),
-							recipe.getMaxUses(),
-							recipe.getXp(),
-							recipe.getPriceMultiplier(),
-							recipe.getDemand()
-					));
-					recipeIterator.remove();
+			for(MerchantRecipe recipe : recipes) {
+				var result = recipe.getResult();
+				if(result.getType() != Material.EMERALD) {
+					newRecipes.add(recipe);
+					continue;
 				}
+				ItemUtils.setLore(result, ChatColor.DARK_RED + "" + ChatColor.BOLD + "Без бонусов!");
+				var newRecipe = new MerchantRecipe(
+						result,
+						recipe.getUses(),
+						recipe.getMaxUses(),
+						recipe.hasExperienceReward(),
+						recipe.getVillagerExperience(),
+						recipe.getPriceMultiplier(),
+						recipe.getDemand(),
+						recipe.getSpecialPrice()
+				);
+				newRecipes.add(newRecipe);
 			}
-			recipes.addAll(newRecipes);
+			villager.setRecipes(newRecipes);
 		}
 	}
 

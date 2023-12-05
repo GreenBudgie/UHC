@@ -3,10 +3,11 @@ package ru.artifact;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.Player;
 import ru.drop.Drop;
 import ru.drop.Drops;
+
+import javax.annotation.Nullable;
 
 public class ArtifactDrop extends Artifact {
 

@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPosition;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
@@ -361,7 +361,7 @@ public class WorldHelper {
 					entity.getWorld().getEnvironment() == World.Environment.NETHER &&
 					tpLoc.getY() > 127;
 			if(entity.getWorld().getWorldBorder().isInside(tpLoc) && !aboveNetherCeiling) {
-				if(((CraftLivingEntity) entity).getHandle().a(d3, d4, d5, false)) {
+				if(((CraftLivingEntity) entity).getHandle().b(d3, d4, d5, false)) {
 					if(playSound) {
 						entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
 						entity.getWorld().playSound(new Location(entity.getWorld(), x, y, z), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);

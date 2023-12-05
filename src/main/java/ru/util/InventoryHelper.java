@@ -5,18 +5,18 @@ import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.nbt.*;
-import net.minecraft.network.chat.ChatMessageType;
 import net.minecraft.network.chat.IChatBaseComponent;
-import net.minecraft.network.protocol.game.PacketPlayOutChat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.EntityType;
@@ -79,7 +79,7 @@ public class InventoryHelper {
 	}
 
 	private static GameProfile createProfileWithTexture(String texture) {
-		GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+		GameProfile profile = new GameProfile(UUID.randomUUID(), "test");
 		PropertyMap propertyMap = profile.getProperties();
 		propertyMap.put("textures", new Property("textures", texture));
 		return profile;
@@ -274,7 +274,7 @@ public class InventoryHelper {
 	}
 
 	public static void sendActionBarMessage(Player p, String text) {
-		((CraftPlayer) p).getHandle().b.sendPacket(new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + text + "\"}"), ChatMessageType.c, p.getUniqueId()));
+		p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(text));
 	}
 
 	public static ItemStack addLore(ItemStack item, String... lore) {
@@ -389,22 +389,22 @@ public class InventoryHelper {
 	}
 
 	public static ItemStack addAttributes(ItemStack item, CustomAttribute... attributes) {
-		net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
-		NBTTagCompound nbt = (nmsItem.hasTag()) ? nmsItem.getTag() : new NBTTagCompound();
+		var nmsItem = CraftItemStack.asNMSCopy(item);
+		NBTTagCompound nbt = nmsItem.w();
 		NBTTagList modifiers = new NBTTagList();
 		for(CustomAttribute att : attributes) {
 			NBTTagCompound comp = new NBTTagCompound();
-			comp.set("AttributeName", NBTTagString.a(att.getName()));
-			comp.set("Name", NBTTagString.a(att.getName()));
-			comp.set("Amount", NBTTagDouble.a(att.getValue()));
-			comp.set("Operation", NBTTagInt.a(att.getOperation().ordinal()));
-			comp.set("UUIDLeast", NBTTagInt.a(894654));
-			comp.set("UUIDMost", NBTTagInt.a(2872));
-			comp.set("Slot", NBTTagString.a(att.getSlot().getName()));
+			comp.a("AttributeName", NBTTagString.a(att.getName()));
+			comp.a("Name", NBTTagString.a(att.getName()));
+			comp.a("Amount", NBTTagDouble.a(att.getValue()));
+			comp.a("Operation", NBTTagInt.a(att.getOperation().ordinal()));
+			comp.a("UUIDLeast", NBTTagInt.a(894654));
+			comp.a("UUIDMost", NBTTagInt.a(2872));
+			comp.a("Slot", NBTTagString.a(att.getSlot().getName()));
 			modifiers.add(comp);
 		}
-		nbt.set("AttributeModifiers", modifiers);
-		nmsItem.setTag(nbt);
+		nbt.a("AttributeModifiers", modifiers);
+		nmsItem.b(nbt);
 		return CraftItemStack.asBukkitCopy(nmsItem);
 	}
 

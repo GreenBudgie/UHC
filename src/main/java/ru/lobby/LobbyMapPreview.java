@@ -1,20 +1,17 @@
 package ru.lobby;
 
 import net.minecraft.world.level.material.MaterialMapColor;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_20_R2.util.CraftMagicNumbers;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.world.WorldInitEvent;
-import org.bukkit.event.world.WorldLoadEvent;
-import org.bukkit.event.world.WorldSaveEvent;
-import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCanvas;
@@ -23,12 +20,9 @@ import org.bukkit.map.MapView;
 import org.bukkit.util.NumberConversions;
 import ru.UHC.WorldManager;
 import ru.main.UHCPlugin;
-import ru.util.ParticleUtils;
 import ru.util.Region;
 
 import java.awt.*;
-import java.awt.Color;
-import java.io.File;
 import java.util.Map;
 
 public class LobbyMapPreview {
@@ -156,7 +150,7 @@ public class LobbyMapPreview {
 
     @SuppressWarnings("deprecation")
     private static byte getBlockColor(Block block) {
-        net.minecraft.world.level.block.Block nmsBlock = CraftMagicNumbers.getBlock(block.getType());
+        var nmsBlock = CraftMagicNumbers.getBlock(block.getType());
         MaterialMapColor mapColor = nmsBlock.s();
         Color color = new Color(mapColor.al);
         return MapPalette.matchColor(color);

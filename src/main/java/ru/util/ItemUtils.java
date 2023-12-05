@@ -1,20 +1,18 @@
 package ru.util;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
-import ru.main.UHCPlugin;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -134,10 +132,10 @@ public class ItemUtils {
 	 */
 	public static ItemStack setCustomValue(ItemStack item, String name, String value) {
 		name = "custom_" + name;
-		net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
-		NBTTagCompound nbt = nmsItem.getOrCreateTag();
-		nbt.setString(name, value);
-		nmsItem.setTag(nbt);
+		var nmsItem = CraftItemStack.asNMSCopy(item);
+		NBTTagCompound nbt = nmsItem.w();
+		nbt.a(name, value);
+		nmsItem.b(nbt);
 		return CraftItemStack.asBukkitCopy(nmsItem);
 	}
 
@@ -151,9 +149,9 @@ public class ItemUtils {
 	public static ItemStack removeCustomValue(ItemStack item, String name) {
 		name = "custom_" + name;
 		net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
-		NBTTagCompound nbt = nmsItem.getOrCreateTag();
-		nbt.remove(name);
-		nmsItem.setTag(nbt);
+		NBTTagCompound nbt = nmsItem.w();
+		nbt.r(name);
+		nmsItem.b(nbt);
 		return CraftItemStack.asBukkitCopy(nmsItem);
 	}
 
@@ -166,8 +164,8 @@ public class ItemUtils {
 	public static boolean hasCustomValue(ItemStack item, String name) {
 		name = "custom_" + name;
 		net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
-		NBTTagCompound nbt = nmsItem.getOrCreateTag();
-		return nbt.hasKey(name);
+		NBTTagCompound nbt = nmsItem.w();
+		return nbt.e(name);
 	}
 
 	/**
@@ -179,9 +177,9 @@ public class ItemUtils {
 	@Nullable
 	public static String getCustomValue(ItemStack item, String name) {
 		name = "custom_" + name;
-		net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
-		NBTTagCompound nbt = nmsItem.getOrCreateTag();
-		return nbt.hasKey(name) ? nbt.getString(name) : null;
+		var nmsItem = CraftItemStack.asNMSCopy(item);
+		NBTTagCompound nbt = nmsItem.w();
+		return nbt.b(name) ? nbt.l(name) : null;
 	}
 
 	public static ItemStack getHead(OfflinePlayer player) {
