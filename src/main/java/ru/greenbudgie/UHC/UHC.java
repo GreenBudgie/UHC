@@ -916,7 +916,6 @@ public class UHC implements Listener {
 				if(timeUntilShrink == 0) {
 					ArenaManager.Arena arena = ArenaManager.getCurrentArena();
 					WorldBorder arenaBorder = arena.getWorld().getWorldBorder();
-					arenaBorder.setSize(arena.getMaxBorderSize());
 					arenaBorder.setSize(arena.getMinBorderSize(), DEATHMATCH_ZONE_SHRINK_DURATION);
 					for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 						inGamePlayer.playSound(inGamePlayer.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1, 0.8f);
@@ -1799,8 +1798,18 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void tntArena(EntityExplodeEvent e) {
-		if(e.getEntityType() == EntityType.PRIMED_TNT && (state == GameState.DEATHMATCH || state == GameState.ENDING)) {
-			e.blockList().clear();
+		if(e.getEntityType() == EntityType.PRIMED_TNT) {
+			if (state == GameState.ENDING) {
+				e.blockList().clear();
+				return;
+			}
+			if (state != GameState.DEATHMATCH) {
+				return;
+			}
+			e.setYield(0);
+			if (!MutatorManager.interactiveArena.isActive()) {
+				e.blockList().clear();
+			}
 		}
 	}
 
