@@ -19,7 +19,7 @@ import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
 import org.bukkit.util.NumberConversions;
 import ru.greenbudgie.UHC.WorldManager;
-import ru.greenbudgie.main.UHCLogger;
+import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.Region;
 
 import java.awt.*;
@@ -31,17 +31,17 @@ public class LobbyMapPreview {
     protected static void init() {
         ConfigurationSection mapRegionSection = Lobby.getLobbyConfig().getConfigurationSection("mapPreviewRegion");
         if(mapRegionSection == null) {
-            UHCLogger.sendWarning("No map preview region specified in config");
+            UHCPlugin.warning("No map preview region specified in config");
             return;
         }
         Map<String, Object> rawRegion = mapRegionSection.getValues(false);
         Region previewRegion = Region.deserialize(rawRegion);
         if(previewRegion == null) {
-            UHCLogger.sendWarning("Invalid map preview region notation");
+            UHCPlugin.warning("Invalid map preview region notation");
             return;
         }
         if(previewRegion.is3D()) {
-            UHCLogger.sendWarning("Map preview region is not a flat area");
+            UHCPlugin.warning("Map preview region is not a flat area");
             return;
         }
         mapPreviewRegion = previewRegion;
@@ -152,7 +152,7 @@ public class LobbyMapPreview {
     private static byte getBlockColor(Block block) {
         var nmsBlock = CraftMagicNumbers.getBlock(block.getType());
         MaterialMapColor mapColor = nmsBlock.s();
-        Color color = new Color(mapColor.al);
+        Color color = new Color(mapColor.ak);
         return MapPalette.matchColor(color);
     }
 
@@ -160,10 +160,9 @@ public class LobbyMapPreview {
 
         private boolean needToRender = true;
         /**
-         * How many blocks to render per map pixel.
-         * Larger values make map
+         * How many blocks to render per map pixel
          */
-        private double scaling;
+        private final double scaling;
 
         protected CustomRenderer(double scaling) {
             this.scaling = scaling;

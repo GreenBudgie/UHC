@@ -3,7 +3,7 @@ package ru.greenbudgie.UHC;
 import org.bukkit.*;
 import ru.greenbudgie.lobby.LobbyMapPreview;
 import ru.greenbudgie.lobby.sign.SignManager;
-import ru.greenbudgie.main.UHCLogger;
+import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.TaskManager;
 
 import java.io.*;
@@ -163,7 +163,7 @@ public class WorldManager {
 			copyWorld(source, target);
 			new File(target.getCanonicalPath() + File.separator + "temp.info").createNewFile();
 		} catch(IOException e) {
-			UHCLogger.sendError("Cannot copy \"" + world.getName() + "\" as temp");
+			UHCPlugin.error("Cannot copy \"" + world.getName() + "\" as temp");
 		}
 		return Bukkit.createWorld(new WorldCreator(world.getName() + "Temp"));
 	}
@@ -197,7 +197,7 @@ public class WorldManager {
 	public static boolean deleteTempWorld(World world) {
 		try {
 			if(!(new File(world.getWorldFolder().getCanonicalPath() + File.separator + "temp.info").exists())) {
-				UHCLogger.sendWarning("Cannot delete \"" + world.getName() + "\": not a temp world");
+				UHCPlugin.warning("Cannot delete \"" + world.getName() + "\": not a temp world");
 				return false;
 			}
 			return deleteWorld(world.getWorldFolder());

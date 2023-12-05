@@ -9,7 +9,6 @@ import ru.greenbudgie.UHC.ArenaManager;
 import ru.greenbudgie.UHC.WorldManager;
 import ru.greenbudgie.lobby.sign.LobbySign;
 import ru.greenbudgie.lobby.sign.SignManager;
-import ru.greenbudgie.main.UHCLogger;
 import ru.greenbudgie.main.UHCPlugin;
 
 import java.io.File;
@@ -26,11 +25,11 @@ public class Lobby {
         try {
             if(!file.exists()) file.createNewFile();
         } catch(Exception e) {
-            UHCLogger.sendError("Cannot create lobby.yml file");
+            UHCPlugin.error("Cannot create lobby.yml file");
         }
         lobbyConfig = YamlConfiguration.loadConfiguration(file);
         if(!lobbyConfig.contains("signs")) {
-            UHCLogger.sendWarning("No lobby signs are declared in the config");
+            UHCPlugin.warning("No lobby signs are declared in the config");
             lobbyConfig.createSection("signs");
             toUpdate = true;
         }
@@ -38,7 +37,7 @@ public class Lobby {
         for(LobbySign lobbySign : SignManager.getSigns()) {
             if(!signsSection.contains(lobbySign.getConfigName()) ||
                     signsSection.getStringList(lobbySign.getConfigName()).isEmpty()) {
-                UHCLogger.sendWarning("There are no locations declared for sign type " + lobbySign.getConfigName());
+                UHCPlugin.warning("There are no locations declared for sign type " + lobbySign.getConfigName());
                 signsSection.set(lobbySign.getConfigName(), new ArrayList<>());
                 toUpdate = true;
             }
@@ -46,7 +45,7 @@ public class Lobby {
         try {
             if (toUpdate) lobbyConfig.save(file);
         } catch(Exception e) {
-            UHCLogger.sendError("Unable to save lobby.yml");
+            UHCPlugin.error("Unable to save lobby.yml");
         }
         SignManager.init();
         LobbyTeamBuilder.init();

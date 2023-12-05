@@ -59,7 +59,7 @@ public class TaskManager {
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(UHCPlugin.instance, task, delay);
 	}
 
-	@SuppressWarnings("deprecated")
+	@SuppressWarnings("deprecation")
 	public static void asyncInvokeLater(Runnable task, long delay) {
 		Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(UHCPlugin.instance, task, delay);
 	}

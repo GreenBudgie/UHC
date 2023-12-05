@@ -2,7 +2,7 @@ package ru.greenbudgie.lobby;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import ru.greenbudgie.main.UHCLogger;
+import ru.greenbudgie.main.UHCPlugin;
 
 import java.util.Map;
 
@@ -16,7 +16,7 @@ public abstract class LobbyGame {
         YamlConfiguration config = Lobby.getLobbyConfig();
         ConfigurationSection section = config.getConfigurationSection(getConfigName());
         if(section == null) {
-            UHCLogger.sendWarning(getConfigName() + " is not present in the config");
+            UHCPlugin.warning(getConfigName() + " is not present in the config");
             return;
         }
         Map<String, Object> values = section.getValues(false);

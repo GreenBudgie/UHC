@@ -26,7 +26,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import ru.greenbudgie.UHC.WorldManager;
 import ru.greenbudgie.lobby.sign.SignManager;
-import ru.greenbudgie.main.UHCLogger;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.*;
 
@@ -277,7 +276,7 @@ public class PvpArena extends LobbyGame implements Listener {
 			String locationStr = (String) value;
 			Location location = WorldHelper.translateToLocation(Lobby.getLobby(), locationStr);
 			if(location == null) {
-				UHCLogger.sendWarning(option + " is not present in " + getConfigName());
+				UHCPlugin.warning(option + " is not present in " + getConfigName());
 				return;
 			}
 			location.setWorld(Lobby.getLobby());
@@ -292,7 +291,7 @@ public class PvpArena extends LobbyGame implements Listener {
 			ConfigurationSection regionSection = (ConfigurationSection) value;
 			Region region = Region.deserialize(regionSection.getValues(false));
 			if(region == null) {
-				UHCLogger.sendWarning(option + " is not present in " + getConfigName());
+				UHCPlugin.warning(option + " is not present in " + getConfigName());
 				return;
 			}
 			region.setWorld(Lobby.getLobby());
