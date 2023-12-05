@@ -179,7 +179,7 @@ public class ItemUtils {
 		name = "custom_" + name;
 		var nmsItem = CraftItemStack.asNMSCopy(item);
 		NBTTagCompound nbt = nmsItem.w();
-		return nbt.b(name) ? nbt.l(name) : null;
+		return nbt.e(name) ? nbt.l(name) : null;
 	}
 
 	public static ItemStack getHead(OfflinePlayer player) {

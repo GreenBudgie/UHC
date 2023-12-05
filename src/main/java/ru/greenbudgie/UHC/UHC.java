@@ -716,7 +716,7 @@ public class UHC implements Listener {
 				if(preparingTimer == preparingMaxTime - 5) {
 					for(Player p : PlayerManager.getAliveOnlinePlayers()) {
 						p.sendTitle(getUHCLogo() + ChatColor.DARK_GRAY + " aka " + ChatColor.GOLD + "Битва Инвалидов",
-								ChatColor.DARK_GRAY + "v3.0", 5, 100, 20);
+								ChatColor.DARK_GRAY + "v4.0", 5, 100, 20);
 						p.sendMessage(
 								ChatColor.GRAY + "-------- " + getUHCLogo() + ChatColor.DARK_GRAY + " aka " + ChatColor.GOLD + "Битва Инвалидов" + ChatColor.GRAY
 										+ " --------");
