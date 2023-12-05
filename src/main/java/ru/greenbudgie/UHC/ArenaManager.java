@@ -3,7 +3,7 @@ package ru.greenbudgie.UHC;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import ru.greenbudgie.main.UHCPlugin;
+import ru.greenbudgie.main.UHCLogger;
 import ru.greenbudgie.util.MathUtils;
 
 import javax.annotation.Nullable;
@@ -27,16 +27,16 @@ public class ArenaManager {
             if(file.getName().startsWith("Arena")) {
                 World arenaWorld = Bukkit.createWorld(new WorldCreator(file.getName()));
                 if(arenaWorld == null) {
-                    UHCPlugin.warning("\"" + file.getName() + "\" has incorrect format");
+                    UHCLogger.sendWarning("\"" + file.getName() + "\" has incorrect format");
                     continue;
                 }
                 File configFile = new File(file.getAbsolutePath() + File.separator + "arena.yml");
                 if(!configFile.exists()) {
-                    UHCPlugin.warning("\"" + file.getName() + "\" has no config file; creating default");
+                    UHCLogger.sendWarning("\"" + file.getName() + "\" has no config file; creating default");
                     try {
                         configFile.createNewFile();
                     } catch(Exception e) {
-                        UHCPlugin.error("Unable to create default config for \"" + file.getName() + "\"");
+                        UHCLogger.sendError("Unable to create default config for \"" + file.getName() + "\"");
                         continue;
                     }
                 }
@@ -47,7 +47,7 @@ public class ArenaManager {
                     String parameterName = option.name();
                     Object parameter = arenaConfig.get(parameterName);
                     if(parameter == null) {
-                        UHCPlugin.warning("\"" + file.getName() + "\" config has no parameter " + parameterName);
+                        UHCLogger.sendWarning("\"" + file.getName() + "\" config has no parameter " + parameterName);
                         parameter = option.getDefaultValue();
                         arenaConfig.set(parameterName, parameter);
                         toUpdate = true;
@@ -57,7 +57,7 @@ public class ArenaManager {
                 try {
                     arena = Arena.deserialize(arenaWorld, arenaConfig.getValues(false));
                 } catch(Exception e) {
-                    UHCPlugin.error("Unable to setup \"" + file.getName() + "\"");
+                    UHCLogger.sendError("Unable to setup \"" + file.getName() + "\"");
                     e.printStackTrace();
                     continue;
                 }
@@ -65,7 +65,7 @@ public class ArenaManager {
                     try {
                         arenaConfig.save(configFile);
                     } catch(Exception e) {
-                        UHCPlugin.error("Unable to save config of \"" + file.getName() + "\"");
+                        UHCLogger.sendError("Unable to save config of \"" + file.getName() + "\"");
                     }
                 }
                 if(file.getName().endsWith("Temp")) {
@@ -268,7 +268,7 @@ public class ArenaManager {
                 try {
                     configFile.createNewFile();
                 } catch(Exception exception) {
-                    UHCPlugin.error("Unable to update config for \"" + getName() + "\"");
+                    UHCLogger.sendError("Unable to update config for \"" + getName() + "\"");
                     exception.printStackTrace();
                     return false;
                 }
@@ -280,7 +280,7 @@ public class ArenaManager {
             try {
                 arenaConfig.save(configFile);
             } catch(Exception exception) {
-                UHCPlugin.error("Unable to update config for \"" + getName() + "\"");
+                UHCLogger.sendError("Unable to update config for \"" + getName() + "\"");
                 exception.printStackTrace();
                 return false;
             }

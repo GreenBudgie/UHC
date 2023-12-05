@@ -12,7 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.lobby.Lobby;
-import ru.greenbudgie.main.UHCPlugin;
+import ru.greenbudgie.main.UHCLogger;
 import ru.greenbudgie.util.WorldHelper;
 
 import java.util.ArrayList;
@@ -51,18 +51,18 @@ public class SignManager implements Listener {
 		for(String signName : map.keySet()) {
 			LobbySign sign = getSignByName(signName);
 			if(sign == null) {
-				UHCPlugin.warning("There are no such sign type " + signName);
+				UHCLogger.sendWarning("There are no such sign type " + signName);
 				continue;
 			}
 			List<String> locations = signsSection.getStringList(signName);
 			for(String locationString : locations) {
 				Location location = WorldHelper.translateToLocation(Lobby.getLobby(), locationString);
 				if(location == null) {
-					UHCPlugin.warning("Illegal sign location notation: " + locationString);
+					UHCLogger.sendWarning("Illegal sign location notation: " + locationString);
 					continue;
 				}
 				if(!(location.getBlock().getState() instanceof Sign)) {
-					UHCPlugin.warning("No sign at specified location: " + locationString + "(" + signName + ")");
+					UHCLogger.sendWarning("No sign at specified location: " + locationString + "(" + signName + ")");
 					continue;
 				}
 				sign.addLocation(location);

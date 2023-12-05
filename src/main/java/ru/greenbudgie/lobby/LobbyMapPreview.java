@@ -19,7 +19,7 @@ import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
 import org.bukkit.util.NumberConversions;
 import ru.greenbudgie.UHC.WorldManager;
-import ru.greenbudgie.main.UHCPlugin;
+import ru.greenbudgie.main.UHCLogger;
 import ru.greenbudgie.util.Region;
 
 import java.awt.*;
@@ -31,17 +31,17 @@ public class LobbyMapPreview {
     protected static void init() {
         ConfigurationSection mapRegionSection = Lobby.getLobbyConfig().getConfigurationSection("mapPreviewRegion");
         if(mapRegionSection == null) {
-            UHCPlugin.warning("No map preview region specified in config");
+            UHCLogger.sendWarning("No map preview region specified in config");
             return;
         }
         Map<String, Object> rawRegion = mapRegionSection.getValues(false);
         Region previewRegion = Region.deserialize(rawRegion);
         if(previewRegion == null) {
-            UHCPlugin.warning("Invalid map preview region notation");
+            UHCLogger.sendWarning("Invalid map preview region notation");
             return;
         }
         if(previewRegion.is3D()) {
-            UHCPlugin.warning("Map preview region is not a flat area");
+            UHCLogger.sendWarning("Map preview region is not a flat area");
             return;
         }
         mapPreviewRegion = previewRegion;

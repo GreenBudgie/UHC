@@ -1,138 +1,81 @@
-package ru.greenbudgie.main;
+package ru.greenbudgie.main
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
-import ru.greenbudgie.UHC.PlayerOptionHolder;
-import ru.greenbudgie.UHC.RecipeHandler;
-import ru.greenbudgie.UHC.UHC;
-import ru.greenbudgie.artifact.ArtifactManager;
-import ru.greenbudgie.classes.ClassManager;
-import ru.greenbudgie.commands.*;
-import ru.greenbudgie.items.CustomItems;
-import ru.greenbudgie.items.CustomItemsListener;
-import ru.greenbudgie.lobby.sign.SignManager;
-import ru.greenbudgie.mutator.InventoryBuilderMutator;
-import ru.greenbudgie.rating.InventoryBuilderRating;
-import ru.greenbudgie.rating.Rating;
-import ru.greenbudgie.requester.ItemRequester;
-import ru.greenbudgie.util.InventoryHelper;
-import ru.greenbudgie.util.TaskManager;
+import org.bukkit.Bukkit
+import org.bukkit.command.CommandExecutor
+import org.bukkit.plugin.java.JavaPlugin
+import ru.greenbudgie.UHC.PlayerOptionHolder
+import ru.greenbudgie.UHC.RecipeHandler
+import ru.greenbudgie.UHC.UHC
+import ru.greenbudgie.artifact.ArtifactManager
+import ru.greenbudgie.classes.ClassManager
+import ru.greenbudgie.commands.*
+import ru.greenbudgie.items.CustomItems
+import ru.greenbudgie.items.CustomItemsListener
+import ru.greenbudgie.lobby.sign.SignManager
+import ru.greenbudgie.mutator.InventoryBuilderMutator
+import ru.greenbudgie.rating.InventoryBuilderRating
+import ru.greenbudgie.rating.Rating
+import ru.greenbudgie.requester.ItemRequester
+import ru.greenbudgie.util.TaskManager
 
-public class UHCPlugin extends JavaPlugin {
+class UHCPlugin : JavaPlugin() {
+    override fun onEnable() {
+        instance = this
+        UHCLogger.log = logger
 
-	public static UHCPlugin instance;
+        registerCommand("test", CommandTest())
+        registerCommand("gm", CommandGM())
+        registerCommand("start", CommandStart())
+        registerCommand("end", CommandEnd())
+        registerCommand("lobby", CommandLobby())
+        registerCommand("arena", CommandArena())
+        registerCommand("skip", CommandSkip())
+        registerCommand("map", CommandMap())
+        registerCommand("rating", CommandRating())
+        registerCommand("drop", CommandDrop())
+        registerCommand("customitem", CommandCustomItem())
+        registerCommand("timer", CommandTimer())
+        registerCommand("mutator", CommandMutator())
+        registerCommand("optmutator", CommandOptMutator())
+        registerCommand("inv", CommandInv())
+        registerCommand("class", CommandClass())
+        registerCommand("teammate", CommandTeammate())
+        registerCommand("worldtime", CommandWorldTime())
+        registerCommand("editarena", CommandEditArena())
+        registerCommand("requests", CommandRequests())
+        registerCommand("artifacts", CommandArtifacts())
 
-	public void onEnable() {
-		instance = this;
-		registerCommand("test", new CommandTest());
-		registerCommand("gm", new CommandGM());
-		registerCommand("start", new CommandStart());
-		registerCommand("end", new CommandEnd());
-		registerCommand("lobby", new CommandLobby());
-		registerCommand("arena", new CommandArena());
-		registerCommand("skip", new CommandSkip());
-		registerCommand("map", new CommandMap());
-		registerCommand("rating", new CommandRating());
-		registerCommand("drop", new CommandDrop());
-		registerCommand("customitem", new CommandCustomItem());
-		registerCommand("timer", new CommandTimer());
-		registerCommand("mutator", new CommandMutator());
-		registerCommand("optmutator", new CommandOptMutator());
-		registerCommand("inv", new CommandInv());
-		registerCommand("class", new CommandClass());
-		registerCommand("teammate", new CommandTeammate());
-		registerCommand("worldtime", new CommandWorldTime());
-		registerCommand("editarena", new CommandEditArena());
-		registerCommand("requests", new CommandRequests());
-		registerCommand("artifacts", new CommandArtifacts());
+        val pluginManager = Bukkit.getPluginManager()
+        pluginManager.registerEvents(UHC(), this)
+        pluginManager.registerEvents(SignManager(), this)
+        pluginManager.registerEvents(RecipeHandler(), this)
+        pluginManager.registerEvents(CustomItemsListener(), this)
+        pluginManager.registerEvents(ItemRequester(), this)
+        pluginManager.registerEvents(ArtifactManager(), this)
 
-		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvents(new UHC(), this);
-		pm.registerEvents(new SignManager(), this);
-		pm.registerEvents(new RecipeHandler(), this);
-		pm.registerEvents(new CustomItemsListener(), this);
-		pm.registerEvents(new ItemRequester(), this);
-		pm.registerEvents(new ArtifactManager(), this);
-		InventoryBuilderMutator.registerListener();
-		InventoryBuilderRating.registerListener();
+        InventoryBuilderMutator.registerListener()
+        InventoryBuilderRating.registerListener()
+        UHC.init()
+        CustomItems.init()
+        ItemRequester.init()
+        ArtifactManager.init()
+        ClassManager.init()
+        Rating.loadFromConfig()
+        TaskManager.init()
+    }
 
-		UHC.init();
-		CustomItems.init();
-		ItemRequester.init();
-		ArtifactManager.init();
-		ClassManager.init();
-		Rating.loadFromConfig();
+    private fun registerCommand(commandName: String, executor: CommandExecutor) {
+        val command = getCommand(commandName)
+        command?.setExecutor(executor)
+    }
 
-		TaskManager.init();
-	}
-	
-	private void registerCommand(String commandName, CommandExecutor executor) {
-		PluginCommand command = this.getCommand(commandName);
-		if(command != null) command.setExecutor(executor);
-	}
+    override fun onDisable() {
+        PlayerOptionHolder.saveOptions()
+    }
 
-	public void onDisable() {
-		PlayerOptionHolder.saveOptions();
-	}
+    companion object {
 
-	/**
-	 * Sends an error message to every online OP player
-	 */
-	public static void error(String s) {
-		sendToOps(ChatColor.GRAY + "[" +
-				ChatColor.DARK_RED + ChatColor.BOLD + "ERROR" +
-				ChatColor.RESET + ChatColor.GRAY + "] " +
-				ChatColor.WHITE + s);
-	}
+		lateinit var instance: UHCPlugin
 
-	/**
-	 * Sends a warning message to every online OP player
-	 */
-	public static void warning(String s) {
-		sendToOps(ChatColor.GRAY + "[" +
-				ChatColor.GOLD + ChatColor.BOLD + "WARNING" +
-				ChatColor.RESET + ChatColor.GRAY + "] " +
-				ChatColor.WHITE + s);
-	}
-
-	/**
-	 * Sends an informative message to every online OP player
-	 */
-	public static void info(String s) {
-		sendToOps(ChatColor.GRAY + "[" +
-				ChatColor.WHITE + ChatColor.BOLD + "INFO" +
-				ChatColor.RESET + ChatColor.GRAY + "] " +
-				ChatColor.WHITE + s);
-	}
-
-	public static void sendToOps(String s) {
-		for(Player player : Bukkit.getOnlinePlayers()) {
-			if(player.isOp()) {
-				player.sendMessage(s);
-			}
-		}
-	}
-
-	public static void log(Object... toLog) {
-		for(Object obj : toLog) {
-			for(Player player : Bukkit.getOnlinePlayers()) {
-				if(obj == null) obj = "null";
-				player.sendMessage(obj.toString());
-			}
-		}
-	}
-
-	public static void logActBar(Player player, Object toLog) {
-		InventoryHelper.sendActionBarMessage(player, toLog.toString());
-	}
-
-	public static void log() {
-		log("log");
-	}
-
+    }
 }
