@@ -351,29 +351,39 @@ public class WorldHelper {
 		double x = entity.getLocation().getX();
 		double y = entity.getLocation().getY();
 		double z = entity.getLocation().getZ();
-		Random rand = new Random();
+		World world = entity.getWorld();
+		Random random = new Random();
 		for(int i = 0; i < range; ++i) {
-			double d3 = x + (rand.nextDouble() - 0.5D) * range;
-			double d4 = MathUtils.clamp(y + (double) (rand.nextInt(range) - (range / 2)), 0.0D, entity.getWorld().getMaxHeight() - 1);
-			double d5 = z + (rand.nextDouble() - 0.5D) * range;
-			Location tpLoc = new Location(entity.getWorld(), d3, d4, d5);
-			boolean aboveNetherCeiling =
-					entity.getWorld().getEnvironment() == World.Environment.NETHER &&
-					tpLoc.getY() > 127;
-			if(entity.getWorld().getWorldBorder().isInside(tpLoc) && !aboveNetherCeiling) {
-				if(((CraftLivingEntity) entity).getHandle().b(d3, d4, d5, false)) {
-					if(playSound) {
-						entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
-						entity.getWorld().playSound(new Location(entity.getWorld(), x, y, z), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
-					}
-					break;
+			double tpX = x + randomInRange(range, random);
+			double tpY = MathUtils.clamp(
+					y + randomInRange(range, random),
+					world.getMinHeight() + 1,
+					world.getMaxHeight() - 1);
+			double tpZ = z + randomInRange(range, random);
+			Location tpLoc = new Location(world, tpX, tpY, tpZ);
+			boolean aboveNetherCeiling = world.getEnvironment() == World.Environment.NETHER && tpLoc.getY() > 127;
+			if (aboveNetherCeiling) {
+				continue;
+			}
+			if(!world.getWorldBorder().isInside(tpLoc)) {
+				continue;
+			}
+			if(((CraftLivingEntity) entity).getHandle().b(tpX, tpY, tpZ, false)) {
+				if(playSound) {
+					world.playSound(entity.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
+					world.playSound(new Location(world, x, y, z), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
 				}
+				break;
 			}
 		}
 	}
 
 	public static void chorusTeleport(LivingEntity e, int range) {
 		chorusTeleport(e, range, true);
+	}
+
+	private static double randomInRange(int range, Random random) {
+		return (random.nextDouble() - 0.5) * range;
 	}
 
 	public static boolean hasFullBlocksAbove(Location l) {
