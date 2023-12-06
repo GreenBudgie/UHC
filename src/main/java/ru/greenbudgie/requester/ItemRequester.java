@@ -53,12 +53,12 @@ public class ItemRequester implements Listener {
 		putItem(CustomItems.soulscriber, 25);
 
 		putItem(CustomItems.shieldBreaker, 30);
-		putItem(CustomItems.allurementStone, 31);
-		putItem(CustomItems.tnt, 32);
+		putItem(CustomItems.terraDrill, 31);
+		putItem(CustomItems.allurementStone, 32);
 
-		putItem(CustomItems.heavenMembrane, 39);
-		putItem(CustomItems.tracker, 40);
-		putItem(CustomItems.terraDrill, 41);
+		putItem(CustomItems.tnt, 39);
+		putItem(CustomItems.heavenMembrane, 40);
+		putItem(CustomItems.tracker, 41);
 	}
 
 	private static void putItem(RequesterCustomItem item, int slot) {

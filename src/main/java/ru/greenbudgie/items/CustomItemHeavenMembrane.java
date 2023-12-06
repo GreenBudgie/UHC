@@ -15,7 +15,7 @@ import ru.greenbudgie.util.ParticleUtils;
 public class CustomItemHeavenMembrane extends RequesterCustomItem {
 
 	public String getName() {
-		return ChatColor.AQUA + "" + ChatColor.ITALIC + "Heaven Membrane";
+		return ChatColor.AQUA + "" + ChatColor.BOLD + "Heaven Membrane";
 	}
 
 	public Material getMaterial() {

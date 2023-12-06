@@ -10,7 +10,7 @@ import ru.greenbudgie.util.ItemInfo;
 public class CustomItemLandmine extends RequesterCustomItem implements BlockHolder {
 
 	public String getName() {
-		return ChatColor.DARK_RED + "Landmine";
+		return ChatColor.DARK_RED + "" + ChatColor.BOLD + "Landmine";
 	}
 
 	public Material getMaterial() {

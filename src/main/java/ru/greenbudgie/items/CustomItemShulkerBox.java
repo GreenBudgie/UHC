@@ -7,7 +7,7 @@ import ru.greenbudgie.util.ItemInfo;
 public class CustomItemShulkerBox extends RequesterCustomItem {
 
 	public String getName() {
-		return ChatColor.GREEN + "" + ChatColor.ITALIC + "Shulker Box";
+		return ChatColor.GREEN + "Shulker Box";
 	}
 
 	public Material getMaterial() {

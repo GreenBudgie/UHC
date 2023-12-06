@@ -10,8 +10,7 @@ import ru.greenbudgie.util.ItemInfo;
 public class CustomItemInfernalLead extends RequesterCustomItem implements BlockHolder {
 
 	public String getName() {
-		return ChatColor.DARK_RED + "" + ChatColor.BOLD + "Infernal" +
-				ChatColor.GOLD + ChatColor.BOLD + " Lead";
+		return ChatColor.GOLD + "" + ChatColor.BOLD + "Infernal Lead";
 	}
 
 	public Material getMaterial() {

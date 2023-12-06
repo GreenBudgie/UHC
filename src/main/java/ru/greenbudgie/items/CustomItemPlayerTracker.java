@@ -27,7 +27,7 @@ public class CustomItemPlayerTracker extends RequesterCustomItem {
 
 	@Override
 	public int getLapisPrice() {
-		return 20;
+		return 32;
 	}
 
 }

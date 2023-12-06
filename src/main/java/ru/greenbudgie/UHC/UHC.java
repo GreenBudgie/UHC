@@ -1571,7 +1571,7 @@ public class UHC implements Listener {
 			}
 			String joinMessage = ChatColor.GREEN + "" + ChatColor.BOLD + "+ " +
 					ChatColor.RESET + ChatColor.GOLD + player.getName() +
-					ChatColor.YELLOW + " присоединился";
+					ChatColor.GRAY + " присоединился";
 			for(Player currentPlayer : Lobby.getPlayersInLobbyAndArenas()) {
 				currentPlayer.sendMessage(joinMessage);
 			}

@@ -19,7 +19,7 @@ import ru.greenbudgie.util.ParticleUtils;
 public class CustomItemInstantTnt extends RequesterCustomItem implements Listener {
 
 	public String getName() {
-		return ChatColor.RED + "Instant TNT";
+		return ChatColor.RED + "" + ChatColor.BOLD + "Instant TNT";
 	}
 
 	public Material getMaterial() {
