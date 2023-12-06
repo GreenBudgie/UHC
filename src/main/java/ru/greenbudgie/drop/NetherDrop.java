@@ -54,7 +54,7 @@ public class NetherDrop extends ChestBasedDrop {
         int z = MathUtils.randomRange(
                 center.getBlockZ() - size,
                 center.getBlockZ() + size);
-        int y = MathUtils.randomRange(7, 16);
+        int y = MathUtils.randomRange(7, 20);
         return new Location(WorldManager.getGameMapNether(), x, y, z);
     }
 

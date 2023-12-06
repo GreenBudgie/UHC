@@ -55,7 +55,8 @@ public class CaveDrop extends ChestBasedDrop {
         int z = MathUtils.randomRange(
                 WorldManager.spawnLocation.getBlockZ() - size,
                 WorldManager.spawnLocation.getBlockZ() + size);
-        int y = MathUtils.randomRange(7, 16);
+        int minHeight = WorldManager.getGameMap().getMinHeight();
+        int y = MathUtils.randomRange(minHeight, 0);
         return new Location(WorldManager.getGameMap(), x, y, z);
     }
 
