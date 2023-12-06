@@ -1,11 +1,13 @@
 package ru.greenbudgie.lobby.sign;
 
-import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.lobby.Lobby;
+
+import static org.bukkit.ChatColor.*;
 
 public class LobbySignGameDuo extends LobbySign {
 
@@ -22,11 +24,12 @@ public class LobbySignGameDuo extends LobbySign {
 
     @Override
     public void updateText(Sign sign) {
-        sign.setLine(1, ChatColor.DARK_BLUE + "Режим:");
+        var side = sign.getSide(Side.FRONT);
+        side.setLine(1, GRAY + "Режим");
         if(!UHC.isDuo) {
-            sign.setLine(2, ChatColor.DARK_AQUA + "Соло");
+            side.setLine(2, AQUA + "" + BOLD + "Соло");
         } else {
-            sign.setLine(2, ChatColor.DARK_PURPLE + "Дуо");
+            side.setLine(2, LIGHT_PURPLE + "" + BOLD + "Дуо");
         }
     }
 

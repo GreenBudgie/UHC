@@ -1,10 +1,12 @@
 package ru.greenbudgie.lobby.sign;
 
-import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.UHC.GameType;
+
+import static org.bukkit.ChatColor.GRAY;
 
 public class LobbySignGameType extends LobbySign {
 
@@ -20,8 +22,9 @@ public class LobbySignGameType extends LobbySign {
 
     @Override
     public void updateText(Sign sign) {
-        sign.setLine(1, ChatColor.DARK_BLUE + "Тип игры:");
-        sign.setLine(2, GameType.getType().getDescription());
+        var side = sign.getSide(Side.FRONT);
+        side.setLine(1, GRAY + "Тип игры");
+        side.setLine(2, GameType.getType().getDescription());
     }
 
 }

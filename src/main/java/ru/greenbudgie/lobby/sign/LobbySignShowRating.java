@@ -1,10 +1,13 @@
 package ru.greenbudgie.lobby.sign;
 
-import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.rating.InventoryBuilderRating;
+
+import static org.bukkit.ChatColor.DARK_AQUA;
+import static org.bukkit.ChatColor.GRAY;
 
 public class LobbySignShowRating extends LobbySign {
 
@@ -32,8 +35,9 @@ public class LobbySignShowRating extends LobbySign {
 
     @Override
     public void updateText(Sign sign) {
-        sign.setLine(1, ChatColor.DARK_AQUA + "Рейтинг");
-        sign.setLine(2, ChatColor.GRAY + "/rating");
+        var side = sign.getSide(Side.FRONT);
+        side.setLine(1, DARK_AQUA + "Рейтинг");
+        side.setLine(2, GRAY + "/rating");
     }
 
 }

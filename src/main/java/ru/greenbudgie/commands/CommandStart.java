@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import ru.greenbudgie.UHC.UHC;
+import ru.greenbudgie.UHC.configuration.FastStart;
 import ru.greenbudgie.util.MathUtils;
 
 import java.util.List;
@@ -20,7 +21,9 @@ public class CommandStart implements CommandExecutor, TabCompleter {
 		if(UHC.playing) {
 			sender.sendMessage(ChatColor.RED + "Игра уже идет");
 		} else {
-			if(args.length >= 1 && args[0].equalsIgnoreCase("fast")) UHC.fastStart = 1;
+			if (args.length >= 1 && args[0].equalsIgnoreCase("fast")) {
+				UHC.fastStart = FastStart.NO_MUTATORS;
+			}
 			UHC.startGame();
 		}
 		return true;

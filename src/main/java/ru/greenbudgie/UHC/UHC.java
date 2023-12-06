@@ -26,6 +26,9 @@ import org.bukkit.inventory.meta.SuspiciousStewMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.*;
+import ru.greenbudgie.UHC.configuration.FastStart;
+import ru.greenbudgie.UHC.configuration.GameDuration;
+import ru.greenbudgie.UHC.configuration.MapSize;
 import ru.greenbudgie.artifact.ArtifactManager;
 import ru.greenbudgie.block.CustomBlockManager;
 import ru.greenbudgie.classes.ClassManager;
@@ -71,12 +74,12 @@ public class UHC implements Listener {
 	public static int endTimer = 0;
 	//V 2.0
 	public static boolean isDuo = false;
-	public static int mapSize = 1;
-	public static int gameDuration = 1;
+	public static MapSize mapSize = MapSize.DEFAULT;
+	public static GameDuration gameDuration = GameDuration.DEFAULT;
 	public static boolean generating = false;
 	public static boolean isRatingGame = true;
 	public static String timerInfo = "";
-	public static int fastStart = 0; //0 - disabled, 1 - without mutators, 2 - with mutators
+	public static FastStart fastStart = FastStart.DISABLED;
 	private static int mutatorCount = 0;
 	private static Mutator prevMutator = null;
 	private static BossBar voteBar = Bukkit.createBossBar("", BarColor.RED, BarStyle.SOLID);
@@ -396,8 +399,8 @@ public class UHC implements Listener {
 			ItemRequester.requestedItems.forEach(RequestedItem::deleteStands);
 			ItemRequester.requestedItems.clear();
 			MutatorManager.deactivateMutators();
-			mapSize = 1;
-			gameDuration = 1;
+			mapSize = MapSize.DEFAULT;
+			gameDuration = GameDuration.DEFAULT;
 			isRatingGame = true;
 			clearPlatformRegion();
 			platformRegion = null;
@@ -492,7 +495,7 @@ public class UHC implements Listener {
 			scoreboardTimeUntilNextTeam = scoreboardMaxTimeUntilNextTeam;
 			refreshScoreboards();
 
-			if(UHC.fastStart == 0) {
+			if(UHC.fastStart == FastStart.DISABLED) {
 				for(UHCPlayer uplayer : PlayerManager.getPlayers()) {
 					voteBar.addPlayer(uplayer.getPlayer());
 				}
@@ -569,11 +572,11 @@ public class UHC implements Listener {
 	}
 
 	public static int getNoPVPDuration() {
-		return gameDuration == 0 ? 10 : (gameDuration == 1 ? 15 : 20);
+		return gameDuration.getNoPvpDurationMinutes();
 	}
 
 	public static int getGameDuration() {
-		return gameDuration == 0 ? 35 : (gameDuration == 1 ? 55 : 70);
+		return gameDuration.getGameDurationMinutes();
 	}
 
 	public static void endVote() {
@@ -1074,7 +1077,7 @@ public class UHC implements Listener {
 	}
 
 	public static int getMapSize() {
-		return mapSize == 0 ? 36 : (mapSize == 1 ? 52 : (mapSize == 2 ? 68 : 512));
+		return mapSize.getSize();
 	}
 
 	public static void draw() {
@@ -1205,7 +1208,7 @@ public class UHC implements Listener {
 
 	public static void endPreparing() {
 		state = GameState.OUTBREAK;
-		if(UHC.fastStart != 1) {
+		if(UHC.fastStart != FastStart.NO_MUTATORS) {
 			if(MutatorManager.activeMutators.size() != mutatorCount) {
 				int size = MutatorManager.activeMutators.size();
 				for(int i = 0; i < mutatorCount - size; i++) {

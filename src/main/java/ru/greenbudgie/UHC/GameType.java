@@ -1,13 +1,13 @@
 package ru.greenbudgie.UHC;
 
-import org.bukkit.ChatColor;
+import static org.bukkit.ChatColor.*;
 
 public enum GameType {
 
-    DEFAULT(ChatColor.GREEN + "Стандартная", true, true),
-    ONLY_CLASSES(ChatColor.DARK_GREEN + "Только классы", false, true),
-    ONLY_MUTATORS(ChatColor.LIGHT_PURPLE + "Только мутаторы", true, false),
-    BORING(ChatColor.GRAY + "Скучная", false, false);
+    DEFAULT(GREEN + "" + BOLD +"Стандартная", true, true),
+    NO_MUTATORS(DARK_GREEN + "" + BOLD + "Без мутаторов", false, true),
+    NO_CLASSES(LIGHT_PURPLE + "" + BOLD + "Без классов", true, false),
+    BORING(GRAY + "" + BOLD + "Скучная", false, false);
 
     private static GameType type = DEFAULT;
 

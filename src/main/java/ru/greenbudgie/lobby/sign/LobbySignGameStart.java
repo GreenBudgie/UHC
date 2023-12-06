@@ -1,11 +1,13 @@
 package ru.greenbudgie.lobby.sign;
 
-import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.UHC.WorldManager;
+
+import static org.bukkit.ChatColor.*;
 
 public class LobbySignGameStart extends LobbySign {
 
@@ -23,12 +25,20 @@ public class LobbySignGameStart extends LobbySign {
 
     @Override
     public void updateText(Sign sign) {
+        var side = sign.getSide(Side.FRONT);
         if(UHC.playing) {
-            sign.setLine(1, ChatColor.DARK_BLUE + "Игра идет...");
-        } else {
-            sign.setLine(1, (WorldManager.hasMap() ? ChatColor.DARK_GREEN : ChatColor.GRAY) + "Начать игру");
-            if(!WorldManager.hasMap()) sign.setLine(2, ChatColor.RED + "Мир не создан");
+            side.setLine(1, RED + "" + BOLD + "Игра идет");
+            return;
         }
+        var startGameColor = WorldManager.hasMap() ? GREEN : DARK_GRAY;
+        side.setLine(
+                1,
+                GRAY + "| " + startGameColor + BOLD + "Начать игру" + RESET + GRAY + " |"
+        );
+        if(!WorldManager.hasMap()) {
+            side.setLine(2, RED + "Мир не создан");
+        }
+
     }
 
 }

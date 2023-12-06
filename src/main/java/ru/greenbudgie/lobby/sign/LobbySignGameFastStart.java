@@ -1,10 +1,13 @@
 package ru.greenbudgie.lobby.sign;
 
-import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.UHC.UHC;
+import ru.greenbudgie.UHC.configuration.FastStart;
+
+import static org.bukkit.ChatColor.*;
 
 public class LobbySignGameFastStart extends LobbySign {
 
@@ -15,20 +18,23 @@ public class LobbySignGameFastStart extends LobbySign {
 
     @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
-        UHC.fastStart = UHC.fastStart == 2 ? 0 : UHC.fastStart + 1;
+        UHC.fastStart =  UHC.fastStart.nextValue();
     }
 
     @Override
     public void updateText(Sign sign) {
-        sign.setLine(1, ChatColor.DARK_BLUE + "Быстрый старт");
-        sign.setLine(2, UHC.fastStart > 0 ?
-                (ChatColor.DARK_GREEN + "Включен") :
-                (ChatColor.DARK_GRAY + "Отключен"));
-        sign.setLine(3, UHC.fastStart == 0 ?
-                "" :
-                (UHC.fastStart == 2 ?
-                        (ChatColor.DARK_AQUA + "С мутаторами") :
-                        (ChatColor.DARK_RED + "Без мутаторов")));
+        var side = sign.getSide(Side.FRONT);
+        side.setLine(1, GRAY + "Быстрый старт");
+        side.setLine(2, UHC.fastStart != FastStart.DISABLED ?
+                (GREEN + "" + BOLD +"Включен") :
+                (DARK_GRAY + "" + BOLD + "Отключен"));
+        if (UHC.fastStart == FastStart.DISABLED) {
+            side.setLine(3, "");
+            return;
+        }
+        side.setLine(3, UHC.fastStart == FastStart.WITH_MUTATORS ?
+                        (LIGHT_PURPLE + "С мутаторами") :
+                        (RED + "Без мутаторов"));
     }
 
 }

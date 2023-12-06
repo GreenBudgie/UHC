@@ -94,10 +94,10 @@ public class WorldManager {
 
 	public static void updateBorder() {
 		WorldBorder border = gameMap.getWorldBorder();
-		if(UHC.mapSize != 3) {
-			border.setSize(UHC.getMapSize() * Bukkit.getOnlinePlayers().size());
-		} else {
+		if (UHC.mapSize.isFixedSize()) {
 			border.setSize(UHC.getMapSize());
+		} else {
+			border.setSize(UHC.getMapSize() * Bukkit.getOnlinePlayers().size());
 		}
 		border.setWarningTime(0);
 		border.setWarningDistance(0);

@@ -1,10 +1,13 @@
 package ru.greenbudgie.lobby.sign;
 
-import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.lobby.LobbyGameManager;
+
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.GRAY;
 
 public class LobbySignTeleportToArena extends LobbySign {
 
@@ -30,8 +33,11 @@ public class LobbySignTeleportToArena extends LobbySign {
 
     @Override
     public void updateText(Sign sign) {
-        sign.setLine(1, ChatColor.DARK_AQUA + "Телепорт");
-        sign.setLine(2, ChatColor.DARK_AQUA + "на арену");
+        var side = sign.getSide(Side.FRONT);
+        side.setLine(0, GRAY + "---");
+        side.setLine(1, AQUA + "Телепорт");
+        side.setLine(2, AQUA + "на ПВП арену");
+        side.setLine(3, GRAY + "---");
     }
 
 }

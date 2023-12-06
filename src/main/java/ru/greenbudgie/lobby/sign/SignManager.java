@@ -47,11 +47,15 @@ public class SignManager implements Listener {
 
 	public static void init() {
 		ConfigurationSection signsSection = Lobby.getLobbyConfig().getConfigurationSection("signs");
+		if (signsSection == null) {
+			UHCPlugin.error("Signs configuration is not present in config");
+			return;
+		}
 		Map<String, Object> map = signsSection.getValues(false);
 		for(String signName : map.keySet()) {
 			LobbySign sign = getSignByName(signName);
 			if(sign == null) {
-				UHCPlugin.warning("There are no such sign type " + signName);
+				UHCPlugin.warning("There is no such sign type " + signName);
 				continue;
 			}
 			List<String> locations = signsSection.getStringList(signName);

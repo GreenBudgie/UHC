@@ -1,10 +1,12 @@
 package ru.greenbudgie.lobby.sign;
 
-import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.UHC.UHC;
+
+import static org.bukkit.ChatColor.*;
 
 public class LobbySignGameDuration extends LobbySign {
 
@@ -15,26 +17,32 @@ public class LobbySignGameDuration extends LobbySign {
 
     @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
-        if(UHC.gameDuration >= 2) UHC.gameDuration = 0;
-        else UHC.gameDuration++;
+        UHC.gameDuration = UHC.gameDuration.nextDuration();
     }
 
     @Override
     public void updateText(Sign sign) {
-        sign.setLine(0, ChatColor.DARK_BLUE + "Длит. игры:");
+        var side = sign.getSide(Side.FRONT);
+        side.setLine(0, GRAY + "Длительность");
 
-        sign.setLine(1, (UHC.gameDuration == 0 ?
-                (ChatColor.DARK_GREEN + "Короткая") :
-                (UHC.gameDuration == 1 ?
-                        (ChatColor.DARK_AQUA + "Обычная") :
-                        (ChatColor.DARK_RED + "Долгая"))) +
-                ChatColor.DARK_BLUE + ", " + (UHC.getNoPVPDuration() + UHC.getGameDuration()) + "мин");
+        String durationInfo = switch (UHC.gameDuration) {
+            case SHORT -> GREEN + "" + BOLD + "Быстрая";
+            case DEFAULT -> AQUA + "" + BOLD + "Обычная";
+            case LONG -> RED + "" + BOLD + "Долгая";
+        };
+        int fullDuration = UHC.getNoPVPDuration() + UHC.getGameDuration();
 
-        sign.setLine(2, ChatColor.DARK_AQUA + String.valueOf(UHC.getNoPVPDuration()) +
-                ChatColor.DARK_BLUE + " минут без пвп");
+        side.setLine(1, durationInfo + RESET + GRAY + ", " + fullDuration + "мин");
 
-        sign.setLine(3, ChatColor.DARK_AQUA + String.valueOf(UHC.getGameDuration()) +
-                ChatColor.DARK_BLUE + " минут до ДМ");
+        side.setLine(
+                2,
+                AQUA + "" + BOLD + UHC.getNoPVPDuration() + RESET + GRAY + " минут до ПВП"
+        );
+
+        side.setLine(
+                3,
+                AQUA + "" + BOLD + UHC.getGameDuration() + GRAY + " минут до ДМ"
+        );
     }
 
 }

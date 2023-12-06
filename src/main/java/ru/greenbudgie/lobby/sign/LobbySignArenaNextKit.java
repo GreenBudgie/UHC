@@ -1,11 +1,13 @@
 package ru.greenbudgie.lobby.sign;
 
-import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.lobby.LobbyGameManager;
 import ru.greenbudgie.util.InventoryHelper;
+
+import static org.bukkit.ChatColor.*;
 
 public class LobbySignArenaNextKit extends LobbySign {
 
@@ -23,7 +25,7 @@ public class LobbySignArenaNextKit extends LobbySign {
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
         LobbyGameManager.PVP_ARENA.setKillsToNextKit(8);
         LobbyGameManager.PVP_ARENA.setCurrentKit(LobbyGameManager.PVP_ARENA.getRandomKit());
-        String text = ChatColor.GREEN + "Новый набор: " + ChatColor.LIGHT_PURPLE +
+        String text = DARK_AQUA + "Новый набор" + GRAY + ": " + LIGHT_PURPLE + BOLD +
                 LobbyGameManager.PVP_ARENA.getCurrentKit().getName();
         InventoryHelper.sendActionBarMessage(clicker, text);
         for(Player player : LobbyGameManager.PVP_ARENA.getPlayersOnArena()) {
@@ -33,10 +35,11 @@ public class LobbySignArenaNextKit extends LobbySign {
 
     @Override
     public void updateText(Sign sign) {
-        sign.setLine(0, ChatColor.DARK_BLUE + "Убийств до");
-        sign.setLine(1, ChatColor.DARK_BLUE + "след. набора:");
-        sign.setLine(2, ChatColor.DARK_AQUA + "" + LobbyGameManager.PVP_ARENA.getKillsToNextKit());
-        sign.setLine(3, ChatColor.DARK_GREEN + "<Сменить>");
+        var side = sign.getSide(Side.FRONT);
+        side.setLine(0, AQUA + "Убийств до");
+        side.setLine(1, AQUA + "след. набора");
+        side.setLine(2, AQUA + "" + BOLD + LobbyGameManager.PVP_ARENA.getKillsToNextKit());
+        side.setLine(3, GRAY + "<" + WHITE + BOLD + "Сменить" + RESET + GRAY + ">");
     }
 
 }

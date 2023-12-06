@@ -1,10 +1,12 @@
 package ru.greenbudgie.lobby.sign;
 
-import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.UHC.WorldManager;
+
+import static org.bukkit.ChatColor.*;
 
 public class LobbySignMapGenerate extends LobbySign {
 
@@ -20,12 +22,13 @@ public class LobbySignMapGenerate extends LobbySign {
 
     @Override
     public void updateText(Sign sign) {
+        var side = sign.getSide(Side.FRONT);
         if(WorldManager.hasMap()) {
-            sign.setLine(1, ChatColor.DARK_GREEN + "Мир создан");
-            sign.setLine(2, ChatColor.DARK_BLUE + "<Пересоздать>");
+            side.setLine(1, AQUA + "Мир создан");
+            side.setLine(2, GRAY + "<" + GREEN + BOLD + "Пересоздать" + RESET + GRAY + ">");
         } else {
-            sign.setLine(1, ChatColor.DARK_RED + "Мир не создан");
-            sign.setLine(2, ChatColor.DARK_BLUE + "<Сгенерировать>");
+            side.setLine(1, DARK_AQUA + "Мир не создан");
+            side.setLine(2, GRAY + "<" + DARK_GREEN + BOLD + "Пересоздать" + RESET + GRAY + ">");
         }
     }
 
