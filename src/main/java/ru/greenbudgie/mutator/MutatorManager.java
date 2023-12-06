@@ -53,7 +53,6 @@ public class MutatorManager {
 	public static MutatorJump jump = new MutatorJump();
 	public static MutatorUnexpectedRequests unexpectedRequests = new MutatorUnexpectedRequests();
 	public static MutatorInfiniteBows infiniteBows = new MutatorInfiniteBows();
-	public static MutatorChorusDamage chorusDamage = new MutatorChorusDamage();
 	public static MutatorSkeletons skeletons = new MutatorSkeletons();
 	public static MutatorInteractiveArena interactiveArena = new MutatorInteractiveArena();
 	public static MutatorLessHealth lessHealth = new MutatorLessHealth();
@@ -73,7 +72,6 @@ public class MutatorManager {
 	public static MutatorRandomEffects randomEffects = new MutatorRandomEffects();
 	public static MutatorMoreRegen moreRegen = new MutatorMoreRegen();
 	public static MutatorGamesWithFire gamesWithFire = new MutatorGamesWithFire();
-	public static MutatorAttackWeakness attackWeakness = new MutatorAttackWeakness();
 	public static MutatorHalfDamage halfDamage = new MutatorHalfDamage();
 	public static MutatorDeathCoordinates deathCoordinates = new MutatorDeathCoordinates();
 	public static MutatorImmunity immunity = new MutatorImmunity();

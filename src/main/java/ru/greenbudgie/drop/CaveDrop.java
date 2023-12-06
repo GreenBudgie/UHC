@@ -20,7 +20,7 @@ public class CaveDrop extends ChestBasedDrop {
 
     @Override
     public int getDefaultDropDelay() {
-        return 960;
+        return 720;
     }
 
     @Override

@@ -78,7 +78,7 @@ public class MutatorRestrictions extends Mutator implements Listener {
 	}
 
 	private void punishInterrupter(Player p) {
-		p.damage(3);
+		p.damage(2);
 		p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.5F, 1F);
 	}
 

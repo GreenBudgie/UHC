@@ -24,7 +24,7 @@ public class AirDrop extends Drop {
 
     @Override
     public int getDefaultDropDelay() {
-        return 720;
+        return 600;
     }
 
     @Override
