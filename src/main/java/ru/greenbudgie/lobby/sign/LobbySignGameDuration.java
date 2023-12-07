@@ -5,6 +5,8 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.UHC.UHC;
+import ru.greenbudgie.UHC.configuration.EnumCycler;
+import ru.greenbudgie.UHC.configuration.GameDuration;
 
 import static org.bukkit.ChatColor.*;
 
@@ -17,7 +19,7 @@ public class LobbySignGameDuration extends LobbySign {
 
     @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
-        UHC.gameDuration = UHC.gameDuration.nextDuration();
+        UHC.gameDuration = EnumCycler.nextValue(UHC.gameDuration, GameDuration.values());
     }
 
     @Override

@@ -12,8 +12,6 @@ import java.util.Arrays;
 
 public class WorldManager {
 
-	private static final double mapSizeScalar = Math.sqrt(2);
-
 	public static boolean keepMap = true;
 	public static Location spawnLocation;
 	private static World lobby, gameMap, gameMapNether;
@@ -96,12 +94,7 @@ public class WorldManager {
 
 	public static void updateBorder() {
 		WorldBorder border = gameMap.getWorldBorder();
-		if (UHC.mapSize.isFixedSize()) {
-			border.setSize(UHC.getMapSize());
-		} else {
-			double scalar = Bukkit.getOnlinePlayers().size() / mapSizeScalar;
-			border.setSize(UHC.getMapSize() * scalar);
-		}
+		border.setSize(UHC.mapSize.getWorldBorderSideSize(Bukkit.getOnlinePlayers().size()));
 		border.setWarningTime(0);
 		border.setWarningDistance(0);
 		border.setDamageBuffer(0);

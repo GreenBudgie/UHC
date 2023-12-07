@@ -5,10 +5,19 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.UHC.UHC;
+import ru.greenbudgie.UHC.configuration.EnumCycler;
+import ru.greenbudgie.UHC.configuration.MapSize;
+import ru.greenbudgie.util.NumericalCases;
 
 import static org.bukkit.ChatColor.*;
 
 public class LobbySignGameMapSize extends LobbySign {
+
+    private static final NumericalCases chunkCases = new NumericalCases(
+            "чанк",
+            "чанка",
+            "чанков"
+    );
 
     @Override
     public String getConfigName() {
@@ -17,7 +26,7 @@ public class LobbySignGameMapSize extends LobbySign {
 
     @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
-        UHC.mapSize = UHC.mapSize.nextValue();
+        UHC.mapSize = EnumCycler.nextValue(UHC.mapSize, MapSize.values());
     }
 
     @Override
@@ -29,15 +38,13 @@ public class LobbySignGameMapSize extends LobbySign {
             case SMALL -> GREEN + "" + BOLD + "Маленький";
             case DEFAULT -> AQUA + "" + BOLD + "Обычный";
             case BIG -> RED + "" + BOLD + "Большой";
-            case FIXED -> LIGHT_PURPLE + "" + BOLD + "Постоянный";
         };
 
+        int chunksPerPlayer = UHC.mapSize.getChunksPerPlayer();
+
         side.setLine(1, sizeInfo);
-        if (UHC.mapSize.isFixedSize()) {
-            side.setLine(2, AQUA + "" + BOLD + UHC.getMapSize() + GRAY + " бл.");
-        } else {
-            side.setLine(2, AQUA + "" + BOLD + UHC.getMapSize() + GRAY + " бл. на игрока");
-        }
+        side.setLine(2, AQUA + "" + BOLD + chunksPerPlayer + RESET + GRAY + " " + chunkCases.byNumber(chunksPerPlayer));
+        side.setLine(3, GRAY + "на игрока");
     }
 
 }

@@ -5,6 +5,7 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.UHC.UHC;
+import ru.greenbudgie.UHC.configuration.EnumCycler;
 import ru.greenbudgie.UHC.configuration.FastStart;
 
 import static org.bukkit.ChatColor.*;
@@ -18,7 +19,7 @@ public class LobbySignGameFastStart extends LobbySign {
 
     @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
-        UHC.fastStart =  UHC.fastStart.nextValue();
+        UHC.fastStart =  EnumCycler.nextValue(UHC.fastStart, FastStart.values());
     }
 
     @Override

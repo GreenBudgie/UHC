@@ -22,12 +22,4 @@ public enum GameDuration {
         return gameDurationMinutes;
     }
 
-    public GameDuration nextDuration() {
-        return switch (this) {
-            case SHORT -> DEFAULT;
-            case DEFAULT -> LONG;
-            case LONG -> SHORT;
-        };
-    }
-
 }
