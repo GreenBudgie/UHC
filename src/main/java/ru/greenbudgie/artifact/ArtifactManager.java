@@ -72,7 +72,7 @@ public class ArtifactManager implements Listener {
 	}
 
 	private static boolean isPreview(Player player) {
-		return !PlayerManager.isPlaying(player) || !UHC.state.isInGame();
+		return !PlayerManager.isPlaying(player) || !UHC.state.isGameActive();
 	}
 
 	public static void openArtifactInventory(Player player) {
@@ -126,7 +126,7 @@ public class ArtifactManager implements Listener {
 		Player player = e.getPlayer();
 		ItemStack item = e.getItem();
 		if(PlayerManager.isPlaying(player) &&
-				UHC.state.isInGame() &&
+				UHC.state.isGameActive() &&
 				CustomItems.darkArtifact.isEquals(item) &&
 				(e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR)) {
 			openArtifactInventory(e.getPlayer());
@@ -159,7 +159,7 @@ public class ArtifactManager implements Listener {
 			if (artifact.getType() != item.getType()) {
 				continue;
 			}
-			if (getArtifactCount(player) < artifact.getCurrentPrice()) {
+			if (!artifact.canUse(player)) {
 				player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
 				continue;
 			}

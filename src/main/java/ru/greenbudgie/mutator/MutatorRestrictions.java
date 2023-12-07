@@ -85,7 +85,7 @@ public class MutatorRestrictions extends Mutator implements Listener {
 
 	@Override
 	public void update() {
-		if(UHC.state.isInGame() || UHC.state == GameState.DEATHMATCH) {
+		if(UHC.state.isBeforeDeathmatch() || UHC.state == GameState.DEATHMATCH) {
 			if(TaskManager.isSecUpdated()) {
 				if(restriction == null) {
 					timeToRestrict--;

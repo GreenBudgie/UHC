@@ -67,7 +67,7 @@ public class CustomItemsListener implements Listener {
 						boolean toCancel = true;
 						boolean pvpIsOn = ArenaManager.getCurrentArena().getWorld().getPVP();
 						boolean isDeathmatch = UHC.state == GameState.DEATHMATCH;
-						boolean canPlaceNow = UHC.state.isInGame();
+						boolean canPlaceNow = UHC.state.isBeforeDeathmatch();
 						if(canPlaceNow || (isDeathmatch && holder.canPlaceOnDeathmatch() && pvpIsOn)) {
 							toCancel = !holder.placeBlock(e.getBlock().getLocation(), e.getPlayer());
 						}

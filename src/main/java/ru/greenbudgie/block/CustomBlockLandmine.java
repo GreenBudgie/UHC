@@ -118,7 +118,7 @@ public class CustomBlockLandmine extends CustomBlockItem {
 
 	@EventHandler
 	public void place(BlockPlaceEvent e) {
-		if(PlayerManager.isPlaying(e.getPlayer()) && UHC.state.isInGame()) {
+		if(PlayerManager.isPlaying(e.getPlayer()) && UHC.state.isBeforeDeathmatch()) {
 			ItemStack item = e.getItemInHand();
 			if(item.getType() == Material.DIRT) {
 				Block under = e.getBlock().getLocation().clone().add(0, -1, 0).getBlock();

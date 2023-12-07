@@ -58,7 +58,7 @@ public class MutatorDeathCoordinates extends Mutator implements Listener {
 	public void handlePlayerDeath(UHCPlayerDeathEvent event) {
 		UHCPlayer uhcPlayer = event.getUHCPlayer();
 		Location location = uhcPlayer.getLocation();
-		if(UHC.state.isInGame() && location != null) {
+		if(UHC.state.isBeforeDeathmatch() && location != null) {
 			Block signBlock = getSignBlockBelow(location);
 			if(signBlock != null) {
 				signBlock.setType(Material.CRIMSON_SIGN);

@@ -21,7 +21,7 @@ public abstract class ItemBasedMutator extends Mutator implements Listener {
 
 	@Override
 	public void onChoose() {
-		if(UHC.state.isInGame()) {
+		if(UHC.state.isBeforeDeathmatch()) {
 			List<ItemStack> items = getItemsToAdd();
 			for(UHCPlayer uhcPlayer : PlayerManager.getAlivePlayers()) {
 				if(uhcPlayer.isOnline()) {

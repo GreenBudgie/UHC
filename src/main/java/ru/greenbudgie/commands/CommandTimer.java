@@ -18,7 +18,7 @@ public class CommandTimer implements CommandExecutor, TabCompleter {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!sender.isOp()) return true;
 		Player p = (Player) sender;
-		if(!UHC.state.isInGame() && UHC.state != GameState.DEATHMATCH) {
+		if(!UHC.state.isBeforeDeathmatch() && UHC.state != GameState.DEATHMATCH) {
 			sender.sendMessage(ChatColor.RED + "Возможно выполнение только во время OUTBREAK, GAME и DEATHMATCH");
 			return true;
 		}

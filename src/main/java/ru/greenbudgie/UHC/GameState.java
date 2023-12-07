@@ -8,8 +8,16 @@ public enum GameState {
 		return this == VOTE || this == PREPARING;
 	}
 
-	public boolean isInGame() {
+	public boolean isBeforeDeathmatch() {
 		return this == OUTBREAK || this == GAME;
+	}
+
+	public boolean isDeathmatch() {
+		return this == DEATHMATCH;
+	}
+
+	public boolean isGameActive() {
+		return isBeforeDeathmatch() || isDeathmatch();
 	}
 
 }

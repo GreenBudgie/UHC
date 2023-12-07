@@ -15,7 +15,7 @@ public class CommandMutator implements CommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = (Player) sender;
-		if(UHC.state.isInGame() || UHC.state == GameState.DEATHMATCH) {
+		if(UHC.state.isBeforeDeathmatch() || UHC.state == GameState.DEATHMATCH) {
 			player.sendMessage(ChatColor.GOLD + "Активные мутаторы " + ChatColor.DARK_GRAY + "(" + ChatColor.DARK_AQUA + MutatorManager.activeMutators.size()
 					+ ChatColor.DARK_GRAY + ")" + ChatColor.GOLD + ":");
 			for(Mutator mutator : MutatorManager.activeMutators) {

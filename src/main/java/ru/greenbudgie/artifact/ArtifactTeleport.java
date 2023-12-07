@@ -49,4 +49,8 @@ public class ArtifactTeleport extends Artifact {
 		return Material.CHORUS_FRUIT;
 	}
 
+	@Override
+	public boolean canBeUsedOnClosedArena() {
+		return false;
+	}
 }

@@ -4,10 +4,13 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import ru.greenbudgie.UHC.ArenaManager;
 import ru.greenbudgie.UHC.PlayerManager;
+import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.util.ItemUtils;
 import ru.greenbudgie.util.NumericalCases;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static org.bukkit.ChatColor.*;
@@ -20,7 +23,7 @@ public abstract class Artifact {
 			"артефактов"
 	);
 	public static final String ARTIFACT_CHAT_COLOR = RED + "" + BOLD;
-	public static final String ARTIFACT_SYMBOL = "⚡";
+	public static final String ARTIFACT_SYMBOL = DARK_RED + "" + BOLD + "⚡";
 
 	private float currentPrice = getStartingPrice();
 
@@ -33,6 +36,18 @@ public abstract class Artifact {
 	public abstract String getDescription();
 
 	public abstract int getStartingPrice();
+
+	public boolean canBeUsedOnArena() {
+		return true;
+	}
+
+	public boolean canBeUsedOnClosedArena() {
+		return true;
+	}
+
+	public boolean canBeUsedByMutator() {
+		return true;
+	}
 
 	public int getCurrentPrice() {
 		return (int) Math.floor(currentPrice);
@@ -48,6 +63,23 @@ public abstract class Artifact {
 	public abstract float getPriceIncreaseAmount();
 
 	public abstract boolean onUse(@Nullable Player player);
+
+	public boolean canUse(@Nonnull Player player) {
+		boolean enoughArtifacts = ArtifactManager.getArtifactCount(player) >= getCurrentPrice();
+		if (!enoughArtifacts) {
+			return false;
+		}
+		if (UHC.state.isBeforeDeathmatch()) {
+			return true;
+		}
+		if (!canBeUsedOnArena()) {
+			return false;
+		}
+		if (canBeUsedOnClosedArena()) {
+			return true;
+		}
+		return ArenaManager.getCurrentArena().isOpen();
+	}
 
 	public boolean use(@Nullable Player player) {
 		if(player != null) {
@@ -83,6 +115,7 @@ public abstract class Artifact {
 		ItemStack item = ItemUtils.builder(getType())
 				.withName(ARTIFACT_CHAT_COLOR + getName())
 				.withSplittedLore(GRAY + getDescription())
+				.withLore(getCanBeUsedOnArenaString())
 				.withLore(getPriceString())
 				.build();
 		if (getPriceIncreaseAmount() == 0) {
@@ -100,6 +133,16 @@ public abstract class Artifact {
 			added = GRAY + " (" + DARK_AQUA + "+" + (current - starting) + GRAY + ")";
 		}
 		return AQUA + "" + BOLD + current + RESET + RED + " " + artifactCases.byNumber(current) + added;
+	}
+
+	private String getCanBeUsedOnArenaString() {
+		if (canBeUsedOnArena()) {
+			if (!canBeUsedOnClosedArena()) {
+				return DARK_GREEN + "" + ITALIC + "Может быть использован на открытой арене!";
+			}
+			return DARK_GREEN + "" + ITALIC + "Может быть использован на арене!";
+		}
+		return GOLD + "" + ITALIC + "Не может быть использован на арене";
 	}
 
 	private String getPriceIncreaseString() {
@@ -125,7 +168,7 @@ public abstract class Artifact {
 	}
 
 	public static String padSymbols(String input) {
-		return DARK_RED + "" + BOLD + ARTIFACT_SYMBOL + " " + RESET + input + " " + DARK_RED + BOLD + ARTIFACT_SYMBOL;
+		return ARTIFACT_SYMBOL + " " + RESET + input + " " + ARTIFACT_SYMBOL;
 	}
 
 }

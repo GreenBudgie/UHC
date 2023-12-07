@@ -137,7 +137,7 @@ public class ClassMiner extends BarHolderUHCClass {
 
     @Override
     public void onUpdate(UHCPlayer uhcPlayer) {
-        if(TaskManager.isSecUpdated() && (UHC.state.isInGame() || UHC.state == GameState.DEATHMATCH) && uhcPlayer.isAliveAndOnline()) {
+        if(TaskManager.isSecUpdated() && (UHC.state.isBeforeDeathmatch() || UHC.state == GameState.DEATHMATCH) && uhcPlayer.isAliveAndOnline()) {
             Player player = uhcPlayer.getPlayer();
             if(!player.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, Integer.MAX_VALUE, 0));

@@ -52,7 +52,7 @@ public class MutatorUnexpectedRequests extends Mutator {
 
 	@Override
 	public void update() {
-		if(UHC.state.isInGame()) {
+		if(UHC.state.isBeforeDeathmatch()) {
 			if(TaskManager.isSecUpdated()) {
 				if(timeToNextRequest > 0) {
 					timeToNextRequest--;

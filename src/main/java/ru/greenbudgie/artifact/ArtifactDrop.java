@@ -47,4 +47,8 @@ public class ArtifactDrop extends Artifact {
 		return Material.BEACON;
 	}
 
+	@Override
+	public boolean canBeUsedOnArena() {
+		return false;
+	}
 }

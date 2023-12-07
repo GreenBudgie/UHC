@@ -75,4 +75,13 @@ public class ArtifactChaos extends Artifact {
 		return Material.RABBIT_FOOT;
 	}
 
+	@Override
+	public boolean canBeUsedOnArena() {
+		return false;
+	}
+
+	@Override
+	public boolean canBeUsedByMutator() {
+		return false;
+	}
 }

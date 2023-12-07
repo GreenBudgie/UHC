@@ -64,7 +64,7 @@ public class MutatorOneForAll extends Mutator implements Listener {
 
 	@Override
 	public void update() {
-		if(UHC.state.isInGame()) {
+		if(UHC.state.isBeforeDeathmatch()) {
 			if(TaskManager.isSecUpdated()) {
 				timer--;
 				if(timer <= 0) {

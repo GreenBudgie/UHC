@@ -48,4 +48,8 @@ public class ArtifactTimeLeap extends Artifact {
 		return Material.SUNFLOWER;
 	}
 
+	@Override
+	public boolean canBeUsedOnArena() {
+		return false;
+	}
 }

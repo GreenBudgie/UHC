@@ -62,7 +62,7 @@ public class ClassDemon extends BarHolderUHCClass {
 
     @Override
     public void onUpdate(UHCPlayer uhcPlayer) {
-        if(TaskManager.isSecUpdated() && (UHC.state.isInGame() || UHC.state == GameState.DEATHMATCH) && uhcPlayer.isAliveAndOnline()) {
+        if(TaskManager.isSecUpdated() && (UHC.state.isBeforeDeathmatch() || UHC.state == GameState.DEATHMATCH) && uhcPlayer.isAliveAndOnline()) {
             Player player = uhcPlayer.getPlayer();
             if(!player.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0));

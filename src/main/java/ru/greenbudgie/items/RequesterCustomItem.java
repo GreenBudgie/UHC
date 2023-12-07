@@ -19,11 +19,12 @@ public abstract class RequesterCustomItem extends CustomItem {
 
 	public boolean canRequest(Player p) {
 		int lapisPrice = MutatorManager.simpleRequests.isActive() ? 0 : getLapisPrice();
-		return (p.getLocation().getBlockY() >= p.getWorld().getHighestBlockYAt(p.getLocation())
-				|| MutatorManager.requestAnywhere.isActive() ||
-				p.getWorld().getEnvironment() == World.Environment.NETHER)
-				&& ItemRequester.getRedstone(p) >= getRedstonePrice()
-				&& ItemRequester.getLapis(p) >= lapisPrice;
+		boolean isEnoughRedstone = ItemRequester.getRedstone(p) >= getRedstonePrice();
+		boolean isEnoughLapis = ItemRequester.getLapis(p) >= lapisPrice;
+		boolean canRequestHere = p.getLocation().getBlockY() >= p.getWorld().getHighestBlockYAt(p.getLocation())
+				|| MutatorManager.requestAnywhere.isActive()
+				|| p.getWorld().getEnvironment() == World.Environment.NETHER;
+		return isEnoughRedstone && isEnoughLapis && canRequestHere;
 	}
 
 	/**

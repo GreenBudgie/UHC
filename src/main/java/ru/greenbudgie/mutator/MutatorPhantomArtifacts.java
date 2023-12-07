@@ -1,11 +1,14 @@
 package ru.greenbudgie.mutator;
 
 import org.bukkit.Material;
+import ru.greenbudgie.UHC.ArenaManager;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.artifact.Artifact;
 import ru.greenbudgie.artifact.ArtifactManager;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.TaskManager;
+
+import java.util.List;
 
 public class MutatorPhantomArtifacts extends Mutator {
 
@@ -42,17 +45,34 @@ public class MutatorPhantomArtifacts extends Mutator {
 
 	@Override
 	public void update() {
-		if(UHC.state.isInGame()) {
+		if(UHC.state.isBeforeDeathmatch() || UHC.state.isDeathmatch()) {
 			if(TaskManager.isSecUpdated()) {
 				if(timer > 0) {
 					timer--;
 				} else {
-					Artifact artifact = MathUtils.choose(ArtifactManager.artifacts);
+					List<Artifact> availableArtifacts = getAvailableArtifacts();
+					Artifact artifact = MathUtils.choose(availableArtifacts);
 					artifact.use(null);
 					reset();
 				}
 			}
 		}
+	}
+
+	private List<Artifact> getAvailableArtifacts() {
+		List<Artifact> availableArtifacts = ArtifactManager.artifacts
+				.stream()
+				.filter(Artifact::canBeUsedByMutator)
+				.toList();
+		if (!UHC.state.isDeathmatch()) {
+			return availableArtifacts;
+		}
+		List<Artifact> arenaArtifacts = availableArtifacts.stream().filter(Artifact::canBeUsedOnArena).toList();
+		boolean isArenaOpen = ArenaManager.getCurrentArena().isOpen();
+		if (isArenaOpen) {
+			return arenaArtifacts;
+		}
+		return arenaArtifacts.stream().filter(Artifact::canBeUsedOnClosedArena).toList();
 	}
 
 }

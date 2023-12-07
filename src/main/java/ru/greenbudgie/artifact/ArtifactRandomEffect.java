@@ -85,7 +85,7 @@ public class ArtifactRandomEffect extends Artifact {
 		for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
 			PotionEffect chosenEffect = MathUtils.choose(effects);
 			currentPlayer.addPotionEffect(chosenEffect);
-			ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.SMOKE_NORMAL, null, 20);
+			ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.SMOKE_NORMAL, null, 25);
 		}
 		for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 			currentPlayer.playSound(currentPlayer.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1F, 0.9F);

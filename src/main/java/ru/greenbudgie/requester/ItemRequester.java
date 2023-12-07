@@ -77,7 +77,7 @@ public class ItemRequester implements Listener {
 	private static final int[] lapisDecorativeSlots = new int[] {27, 35, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53};
 
 	private static boolean isPreview(Player player) {
-		return !PlayerManager.isPlaying(player) || !UHC.state.isInGame();
+		return !PlayerManager.isPlaying(player) || !UHC.state.isBeforeDeathmatch();
 	}
 
 	public static void openRequesterInventory(Player player) {
@@ -158,7 +158,7 @@ public class ItemRequester implements Listener {
 	public void openInventory(PlayerInteractEvent e) {
 		Player player = e.getPlayer();
 		ItemStack item = e.getItem();
-		if(PlayerManager.isPlaying(player) && UHC.state.isInGame() && item != null && item.getType() == Material.REDSTONE && (e.getAction() == Action.RIGHT_CLICK_BLOCK
+		if(PlayerManager.isPlaying(player) && UHC.state.isBeforeDeathmatch() && item != null && item.getType() == Material.REDSTONE && (e.getAction() == Action.RIGHT_CLICK_BLOCK
 				|| e.getAction() == Action.RIGHT_CLICK_AIR)) {
 			openRequesterInventory(player);
 			player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.5F);

@@ -138,7 +138,7 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 	@Override
 	public void update() {
 		if(TaskManager.isSecUpdated()) {
-			if(UHC.state.isInGame()) {
+			if(UHC.state.isBeforeDeathmatch()) {
 				for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
 					UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(currentPlayer);
 					if(uhcPlayer != null) {

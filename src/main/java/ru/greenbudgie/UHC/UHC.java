@@ -201,7 +201,7 @@ public class UHC implements Listener {
 			teamCountScore.setScore(c++);
 		}
 
-		if(state.isInGame()) {
+		if(state.isBeforeDeathmatch()) {
 			final boolean show = state == GameState.OUTBREAK;
 			for(Drop drop : new Drop[] {Drops.NETHERDROP, Drops.CAVEDROP, Drops.AIRDROP}) {
 				if(drop.getTimer() <= deathmatchTimer || show) {
@@ -872,7 +872,7 @@ public class UHC implements Listener {
 				}
 			}
 		}
-		if(state.isInGame() || state == GameState.DEATHMATCH) {
+		if(state.isBeforeDeathmatch() || state == GameState.DEATHMATCH) {
 			MutatorManager.updateMutators();
 		}
 		if(state == GameState.OUTBREAK) {
@@ -1704,7 +1704,7 @@ public class UHC implements Listener {
 		if((state.isPreGame() || state == GameState.ENDING) && PlayerManager.isPlaying(e.getPlayer())) {
 			e.setCancelled(true);
 		}
-		if(state.isInGame() && PlayerManager.isPlaying(p)) {
+		if(state.isBeforeDeathmatch() && PlayerManager.isPlaying(p)) {
 			if((e.getBlock().getType() == Material.EMERALD_ORE || e.getBlock().getType() == Material.DEEPSLATE_EMERALD_ORE) && e.getExpToDrop() > 0) {
 				e.setDropItems(false);
 				ItemStack drop = MathUtils
@@ -1738,7 +1738,7 @@ public class UHC implements Listener {
 	@EventHandler
 	public void spectatorOpenInv(PlayerInteractEntityEvent e) {
 		Player p = e.getPlayer();
-		if((state.isInGame() || state == GameState.DEATHMATCH) &&
+		if((state.isBeforeDeathmatch() || state == GameState.DEATHMATCH) &&
 				e.getHand() == EquipmentSlot.HAND && e.getRightClicked() instanceof Player clicked && PlayerManager.isSpectator(p)) {
 			if(PlayerManager.isPlaying(clicked)) {
 				viewInventory(p, clicked);
@@ -1785,7 +1785,7 @@ public class UHC implements Listener {
 			e.setCancelled(true);
 		}
 		ItemStack item = e.getItem();
-		if(state.isInGame() && PlayerManager.isPlaying(p) && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) && item != null
+		if(state.isBeforeDeathmatch() && PlayerManager.isPlaying(p) && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) && item != null
 				&& item.getType() == Material.EMERALD && ItemUtils.getLore(item).isEmpty()) {
 			ItemStack drop = MathUtils
 					.choose(new ItemStack(Material.DIAMOND, MathUtils.randomRange(1, 2)), new ItemStack(Material.REDSTONE, MathUtils.randomRange(24, 40)),

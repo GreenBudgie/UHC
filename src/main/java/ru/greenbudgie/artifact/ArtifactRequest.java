@@ -59,4 +59,9 @@ public class ArtifactRequest extends Artifact {
 		return Material.PHANTOM_MEMBRANE;
 	}
 
+	@Override
+	public boolean canBeUsedOnArena() {
+		return false;
+	}
+
 }
