@@ -30,13 +30,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.bukkit.ChatColor.*;
+
 public class ItemRequester implements Listener {
 
+	public static final String REQUEST_SYMBOL = DARK_AQUA + "" + BOLD + "☁";
+	
 	public static final NumericalCases REDSTONE_CASES = new NumericalCases("редстоун", "редстоуна", "редстоуна");
 	public static final NumericalCases LAPIS_CASES = new NumericalCases("лазурит", "лазурита", "лазурита");
 	public static List<RequestedItem> requestedItems = new ArrayList<>();
 	public static Map<Integer, RequesterCustomItem> requesterCustomItems = new HashMap<>();
-	private static final String INVENTORY_NAME = ChatColor.DARK_AQUA + "Запросы";
+	private static final String INVENTORY_NAME = padSymbols(DARK_AQUA + "Запросы");
 
 	public static void init() {
 		putItem(CustomItems.shulkerBox, 11);
@@ -61,6 +65,10 @@ public class ItemRequester implements Listener {
 		putItem(CustomItems.tracker, 41);
 	}
 
+	public static String padSymbols(String input) {
+		return REQUEST_SYMBOL + " " + input + RESET + " " + REQUEST_SYMBOL;
+	}
+
 	private static void putItem(RequesterCustomItem item, int slot) {
 		requesterCustomItems.put(slot, item);
 	}
@@ -79,11 +87,11 @@ public class ItemRequester implements Listener {
 			inventory = Bukkit.createInventory(player, 54, INVENTORY_NAME);
 		} else {
 			inventory = Bukkit.createInventory(player, 54,
-					INVENTORY_NAME + ChatColor.DARK_GRAY + " (" +
-							ChatColor.RED + getRedstone(player) +
-							ChatColor.DARK_GRAY + " / " +
-							ChatColor.BLUE + getLapis(player) +
-							ChatColor.DARK_GRAY + ")");
+					INVENTORY_NAME + DARK_GRAY + " (" +
+							RED + getRedstone(player) +
+							DARK_GRAY + " / " +
+							BLUE + getLapis(player) +
+							DARK_GRAY + ")");
 		}
 		ItemStack redstone = new ItemStack(Material.REDSTONE);
 		for(int redstoneSlot : redstoneDecorativeSlots) {

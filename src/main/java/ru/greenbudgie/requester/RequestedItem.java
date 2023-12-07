@@ -1,6 +1,9 @@
 package ru.greenbudgie.requester;
 
-import org.bukkit.*;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -14,42 +17,48 @@ import ru.greenbudgie.util.WorldHelper;
 
 import javax.annotation.Nullable;
 
+import static org.bukkit.ChatColor.*;
+
 public class RequestedItem {
 
-	private Location location;
-	private ItemStack item;
+	private final Location location;
+	private final ItemStack item;
 	private int timeToDrop;
 	private int droppingTimer = 60;
 	private boolean dropping = false;
 	private boolean done = false;
-	private ArmorStand info;
-	private ArmorStand timer;
+	private final ArmorStand info;
+	private final ArmorStand timer;
 
 	public RequestedItem(Location loc, ItemStack item) {
 		this.location = loc.clone().add(0, 1.5, 0);
 		this.item = item;
-		this.timeToDrop = 30;
+		this.timeToDrop = 25;
 		info = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
 		hideStand(info);
-		info.setCustomName(ChatColor.AQUA + "Запрос" + ChatColor.GRAY + ": " + item.getItemMeta().getDisplayName());
+		String customName = ItemRequester.padSymbols(AQUA + "Запрос" + GRAY + ": " + item.getItemMeta().getDisplayName());
+		info.setCustomName(customName);
 		timer = (ArmorStand) location.getWorld().spawnEntity(location.clone().add(0, -0.3, 0), EntityType.ARMOR_STAND);
 		hideStand(timer);
-		timer.setCustomName(ChatColor.AQUA + "" + timeToDrop);
+		timer.setCustomName(AQUA + "" + timeToDrop);
 	}
 
 	public void announce(@Nullable Player requester) {
 		for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 			String distanceInfo = "";
 			if(requester == null || inGamePlayer != requester) {
-				distanceInfo = ChatColor.WHITE + " (" + (location.getWorld() == inGamePlayer.getWorld() ?
-						(ChatColor.AQUA + String.valueOf((int) location.distance(inGamePlayer.getLocation()))) :
-						WorldHelper.getEnvironmentNamePrepositional(location.getWorld().getEnvironment(), ChatColor.GRAY)) + ChatColor.WHITE + ")";
+				distanceInfo = WHITE + " (" + (location.getWorld() == inGamePlayer.getWorld() ?
+						(AQUA + String.valueOf((int) location.distance(inGamePlayer.getLocation()))) :
+						WorldHelper.getEnvironmentNamePrepositional(location.getWorld().getEnvironment(), GRAY)) + WHITE + ")";
 			}
-			inGamePlayer.sendMessage(
-					ChatColor.LIGHT_PURPLE + "Был сделан запрос: " +
-							ChatColor.DARK_AQUA + location.getBlockX() +
-							ChatColor.WHITE + ", " + ChatColor.DARK_AQUA +
-							location.getBlockZ() + distanceInfo);
+			String message = ItemRequester.padSymbols(
+					AQUA + "Был сделан запрос" +
+							GRAY + ": " +
+							DARK_AQUA + location.getBlockX() +
+							WHITE + ", " + DARK_AQUA +
+							location.getBlockZ() + distanceInfo
+			);
+			inGamePlayer.sendMessage(message);
 		}
 	}
 
@@ -74,7 +83,8 @@ public class RequestedItem {
 			if(!dropping) {
 				dropping = true;
 				timer.remove();
-				info.setCustomName(ChatColor.GREEN + "Предмет прибывает...");
+				String customName = ItemRequester.padSymbols(AQUA + "Предмет прибывает");
+				info.setCustomName(customName);
 				location.getWorld().playSound(location, Sound.BLOCK_BEACON_DEACTIVATE, 0.1F, 0.5F);
 			}
 			droppingTimer--;
@@ -104,7 +114,7 @@ public class RequestedItem {
 		} else {
 			if(TaskManager.isSecUpdated()) {
 				timeToDrop--;
-				timer.setCustomName(ChatColor.DARK_AQUA + "" + timeToDrop);
+				timer.setCustomName(DARK_AQUA + "" + timeToDrop);
 				location.getWorld().playSound(location, Sound.BLOCK_NOTE_BLOCK_HAT, 0.1F, timeToDrop % 2 == 0 ? 1F : 0.8F);
 			}
 		}
