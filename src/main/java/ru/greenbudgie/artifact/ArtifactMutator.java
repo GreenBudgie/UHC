@@ -1,10 +1,10 @@
 package ru.greenbudgie.artifact;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import ru.greenbudgie.UHC.GameType;
+import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.mutator.MutatorManager;
 
 import javax.annotation.Nullable;
@@ -13,7 +13,7 @@ public class ArtifactMutator extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.DARK_RED + "Преображение Игры";
+		return "Преображение Игры";
 	}
 
 	@Override
@@ -34,12 +34,14 @@ public class ArtifactMutator extends Artifact {
 	@Override
 	public boolean onUse(@Nullable Player player) {
 		if(!GameType.getType().allowsMutators()) return false;
-		if(MutatorManager.activeMutators.size() < 6) {
-			if(player != null) player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.8F, 1F);
-			MutatorManager.activateRandomArtifactMutator();
-			return true;
+		if(MutatorManager.activeMutators.size() >= 6) {
+			return false;
 		}
-		return false;
+		MutatorManager.activateRandomArtifactMutator();
+		for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+			currentPlayer.playSound(currentPlayer.getLocation(), Sound.ITEM_FIRECHARGE_USE, 0.8F, 0.5F);
+		}
+		return true;
 	}
 
 	@Override

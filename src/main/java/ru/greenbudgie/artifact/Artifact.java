@@ -14,6 +14,14 @@ import static org.bukkit.ChatColor.*;
 
 public abstract class Artifact {
 
+	private static final NumericalCases artifactCases = new NumericalCases(
+			"артефакт",
+			"артефакта",
+			"артефактов"
+	);
+	public static final String ARTIFACT_CHAT_COLOR = RED + "" + BOLD;
+	public static final String ARTIFACT_SYMBOL = "⚡";
+
 	private float currentPrice = getStartingPrice();
 
 	public Artifact() {
@@ -27,7 +35,7 @@ public abstract class Artifact {
 	public abstract int getStartingPrice();
 
 	public int getCurrentPrice() {
-		return Math.round(currentPrice);
+		return (int) Math.floor(currentPrice);
 	}
 
 	public void resetPrice() {
@@ -45,7 +53,8 @@ public abstract class Artifact {
 		if(player != null) {
 			if(onUse(player)) {
 				for(Player receiver : PlayerManager.getInGamePlayersAndSpectators()) {
-					receiver.sendMessage(GOLD + player.getName() + YELLOW + " призвал силу артефакта " + BOLD + DARK_RED + getName());
+					String message = padSymbols(GOLD + player.getName() + GRAY + " призвал артефакт " + ARTIFACT_CHAT_COLOR + getName());
+					receiver.sendMessage(message);
 					if(receiver != player) {
 						receiver.playSound(receiver.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 0.5F, 0.5F);
 					}
@@ -53,12 +62,13 @@ public abstract class Artifact {
 				currentPrice += getPriceIncreaseAmount();
 				return true;
 			} else {
-				player.sendMessage(DARK_RED + "" + BOLD + "Невозможно активировать этот артефакт!");
+				player.sendMessage(DARK_RED + "" + BOLD + "Невозможно призвать этот артефакт!");
 			}
 		} else {
 			if(onUse(null)) {
 				for(Player receiver : PlayerManager.getInGamePlayersAndSpectators()) {
-					receiver.sendMessage(YELLOW + "Призвана сила артефакта " + BOLD + DARK_RED + getName());
+					String message = padSymbols(GRAY + "Призвана сила артефакта " + ARTIFACT_CHAT_COLOR + getName());
+					receiver.sendMessage(message);
 					receiver.playSound(receiver.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, 0.5F, 0.5F);
 				}
 				return true;
@@ -70,18 +80,37 @@ public abstract class Artifact {
 	public abstract Material getType();
 
 	public ItemStack getItem() {
-		return ItemUtils.builder(getType()).withName(getName()).withSplittedLore(YELLOW + getDescription()).withLore(getPriceString()).build();
+		ItemStack item = ItemUtils.builder(getType())
+				.withName(ARTIFACT_CHAT_COLOR + getName())
+				.withSplittedLore(GRAY + getDescription())
+				.withLore(getPriceString())
+				.build();
+		if (getPriceIncreaseAmount() == 0) {
+			return item;
+		}
+		ItemUtils.addLore(item, getPriceIncreaseString());
+		return item;
 	}
 
 	private String getPriceString() {
-		NumericalCases cases = new NumericalCases("артефакт", "артефакта", "артефактов");
 		int starting = getStartingPrice();
 		int current = getCurrentPrice();
 		String added = "";
 		if(starting != current) {
 			added = GRAY + " (" + DARK_AQUA + "+" + (current - starting) + GRAY + ")";
 		}
-		return AQUA + "" + BOLD + current + RESET + GOLD + " " + cases.byNumber(current) + added;
+		return AQUA + "" + BOLD + current + RESET + RED + " " + artifactCases.byNumber(current) + added;
+	}
+
+	private String getPriceIncreaseString() {
+		float priceIncrease = getPriceIncreaseAmount();
+		String formattedPriceIncrease;
+		if(priceIncrease == (int) priceIncrease) {
+			formattedPriceIncrease = String.format("%d", (int) priceIncrease);
+		} else {
+			formattedPriceIncrease = String.format("%s", priceIncrease);
+		}
+		return GRAY + "+" + AQUA + BOLD + formattedPriceIncrease + GOLD + " к цене за использование";
 	}
 
 	public ItemStack getItemFor(Player p) {
@@ -93,6 +122,10 @@ public abstract class Artifact {
 			ItemUtils.addLore(artifact, false, DARK_RED + "" + BOLD + "Недостаточно артефактов");
 		}
 		return artifact;
+	}
+
+	public static String padSymbols(String input) {
+		return DARK_RED + "" + BOLD + ARTIFACT_SYMBOL + " " + RESET + input + " " + DARK_RED + BOLD + ARTIFACT_SYMBOL;
 	}
 
 }

@@ -1,6 +1,5 @@
 package ru.greenbudgie.artifact;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -13,11 +12,14 @@ import ru.greenbudgie.util.MathUtils;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static org.bukkit.ChatColor.GRAY;
+import static org.bukkit.ChatColor.LIGHT_PURPLE;
+
 public class ArtifactDisableMutator extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.RED + "Менее Дикая Игра";
+		return "Менее Дикая Игра";
 	}
 
 	@Override
@@ -40,12 +42,11 @@ public class ArtifactDisableMutator extends Artifact {
 		if(!GameType.getType().allowsMutators()) return false;
 		List<Mutator> mutators = MutatorManager.getMutatorsForDeactivation();
 		if(mutators.size() > 0) {
-			if(player != null) {
-				player.playSound(player.getLocation(), Sound.ITEM_TOTEM_USE, 0.8F, 1.2F);
-			}
 			Mutator mutator = MathUtils.choose(mutators);
 			for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
-				currentPlayer.sendMessage(ChatColor.YELLOW + "Был деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + mutator.getName());
+				String message = padSymbols(GRAY + "Был деактивирован мутатор " + LIGHT_PURPLE + mutator.getName());
+				currentPlayer.sendMessage(message);
+				currentPlayer.playSound(currentPlayer.getLocation(), Sound.ITEM_TOTEM_USE, 0.8F, 1.2F);
 			}
 			mutator.deactivate();
 			return true;

@@ -1,6 +1,5 @@
 package ru.greenbudgie.artifact;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -17,12 +16,12 @@ public class ArtifactHealth extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.GREEN + "Добродетель";
+		return "Добродетель";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Выдает всем игрокам эффект регенерации, восстанавливая 2 сердца. Использовавшему артефакт игроку восстанавливает 1.5 сердца.";
+		return "Выдает всем игрокам эффект регенерации, восстанавливая 2 сердца. Использовавшему артефакт игроку восстанавливает 1 сердце.";
 	}
 
 	@Override
@@ -32,7 +31,7 @@ public class ArtifactHealth extends Artifact {
 
 	@Override
 	public float getPriceIncreaseAmount() {
-		return 1;
+		return 1.5F;
 	}
 
 	@Override
@@ -41,12 +40,14 @@ public class ArtifactHealth extends Artifact {
 			if(uhcCurrentPlayer.isOnline()) {
 				Player currentPlayer = uhcCurrentPlayer.getPlayer();
 				boolean applyMaxHeal = player != null && player != currentPlayer;
-				currentPlayer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, applyMaxHeal ? 50 : 38, 2));
+				currentPlayer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, applyMaxHeal ? 50 : 28, 2));
 				ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.HEART, null, 15);
-				currentPlayer.playSound(currentPlayer.getLocation(), Sound.ENTITY_VILLAGER_YES, 1F, 1F);
 			} else {
 				uhcCurrentPlayer.addOfflineHealth(4);
 			}
+		}
+		for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+			currentPlayer.playSound(currentPlayer.getLocation(), Sound.ENTITY_VILLAGER_YES, 1F, 1F);
 		}
 		return true;
 	}

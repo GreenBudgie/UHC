@@ -1,6 +1,5 @@
 package ru.greenbudgie.artifact;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -14,14 +13,17 @@ import javax.annotation.Nullable;
 
 public class ArtifactDamage extends Artifact {
 
+    private static final int SELF_DAMAGE = 6;
+    private static final int DAMAGE = 4;
+
     @Override
     public String getName() {
-        return ChatColor.DARK_GRAY + "Злодеяние";
+        return "Злодеяние";
     }
 
     @Override
     public String getDescription() {
-        return "Дамажит всех игроков на 1.5 сердца. Использовавшего игрока дамажит на 2 сердца. Умереть нельзя.";
+        return "Наносит всем игрокам урон в 2 сердца. Использовавший игрок получает урон в 3 сердца. Умереть от этого артефакта нельзя.";
     }
 
     @Override
@@ -31,7 +33,7 @@ public class ArtifactDamage extends Artifact {
 
     @Override
     public float getPriceIncreaseAmount() {
-        return 1;
+        return 1.5F;
     }
 
     @Override
@@ -39,15 +41,17 @@ public class ArtifactDamage extends Artifact {
         for(UHCPlayer uhcCurrentPlayer : PlayerManager.getAlivePlayers()) {
             if(uhcCurrentPlayer.isOnline()) {
                 Player currentPlayer = uhcCurrentPlayer.getPlayer();
-                boolean doMaxDamage = player == null || player == currentPlayer;
-                double damage = MathUtils.clamp(doMaxDamage ? 4 : 3, 0, currentPlayer.getHealth() - 1);
+                boolean isSelfDamage = player == currentPlayer;
+                double damage = MathUtils.clamp(isSelfDamage ? SELF_DAMAGE : DAMAGE, 0, currentPlayer.getHealth() - 1);
                 currentPlayer.damage(damage);
-                currentPlayer.playSound(currentPlayer.getLocation(), Sound.ENTITY_VILLAGER_NO, 1F, 0.5F);
                 ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.SMOKE_LARGE, null, 15);
             } else {
-                double damage = MathUtils.clamp(3, 0, uhcCurrentPlayer.getOfflineHealth() - 1);
+                double damage = MathUtils.clamp(DAMAGE, 0, uhcCurrentPlayer.getOfflineHealth() - 1);
                 uhcCurrentPlayer.addOfflineHealth(-damage);
             }
+        }
+        for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+            currentPlayer.playSound(currentPlayer.getLocation(), Sound.ENTITY_VILLAGER_NO, 1F, 0.5F);
         }
         return true;
     }

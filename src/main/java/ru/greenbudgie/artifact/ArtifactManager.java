@@ -1,7 +1,6 @@
 package ru.greenbudgie.artifact;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.*;
@@ -31,6 +30,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.bukkit.ChatColor.*;
+
 public class ArtifactManager implements Listener {
 
 	public static List<Artifact> artifacts = new ArrayList<>();
@@ -38,17 +39,17 @@ public class ArtifactManager implements Listener {
 	public static ArtifactTeleport teleport = new ArtifactTeleport();
 	public static ArtifactHealth health = new ArtifactHealth();
 	public static ArtifactDrop drop = new ArtifactDrop();
-	public static ArtifactTime time = new ArtifactTime();
+	public static ArtifactRandomEffect randomEffect = new ArtifactRandomEffect();
 	public static ArtifactMutator mutator = new ArtifactMutator();
 	public static ArtifactDamage damage = new ArtifactDamage();
 	public static ArtifactDisableMutator disableMutator = new ArtifactDisableMutator();
-	public static ArtifactRandom random = new ArtifactRandom();
+	public static ArtifactChaos chaos = new ArtifactChaos();
 	public static ArtifactHunger hunger = new ArtifactHunger();
 	public static ArtifactRequest request = new ArtifactRequest();
 
 	private static final Map<Integer, Artifact> inventoryArtifacts = new HashMap<>();
 
-	private static final String INVENTORY_NAME = ChatColor.DARK_RED + "" + ChatColor.BOLD + "Силы артефактов";
+	private static final String INVENTORY_NAME = Artifact.padSymbols(RED + "" + BOLD + "Силы артефактов");
 
 	public static void init() {
 		putArtifact(timeLeap, 11);
@@ -58,12 +59,12 @@ public class ArtifactManager implements Listener {
 		putArtifact(mutator, 15);
 
 		putArtifact(disableMutator, 20);
-		putArtifact(time, 21);
+		putArtifact(randomEffect, 21);
 		putArtifact(teleport, 22);
 		putArtifact(health, 23);
 		putArtifact(damage, 24);
 
-		putArtifact(random, 40);
+		putArtifact(chaos, 40);
 	}
 
 	private static void putArtifact(Artifact artifact, int slot) {
@@ -82,9 +83,9 @@ public class ArtifactManager implements Listener {
 		} else {
 			int count = getArtifactCount(player);
 			inventory = Bukkit.createInventory(player, 54, INVENTORY_NAME +
-					ChatColor.DARK_GRAY + " (" +
-					ChatColor.RED + ChatColor.BOLD + count +
-					ChatColor.DARK_GRAY + ")");
+					DARK_GRAY + " (" +
+					RED + BOLD + count +
+					DARK_GRAY + ")");
 		}
 		ItemStack blackGlass = ItemUtils.builder(Material.BLACK_STAINED_GLASS_PANE).withName(" ").build();
 		for(int slot = 0; slot < 54; slot++) {
@@ -143,39 +144,43 @@ public class ArtifactManager implements Listener {
 	@EventHandler
 	public void invClick(InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
-		if(event.getView().getTitle().startsWith(INVENTORY_NAME)) {
-			if(!isPreview(player) && event.getClickedInventory() != null && event.getClickedInventory() == event.getView().getTopInventory()) {
-				ItemStack item = event.getCurrentItem();
-				if(item != null) {
-					for(Artifact artifact : artifacts) {
-						if(artifact.getType() == item.getType()) {
-							if(getArtifactCount(player) >= artifact.getCurrentPrice()) {
-								int priceBefore = artifact.getCurrentPrice();
-								if(artifact.use(player)) {
-									//Reopening other players' inventories to reset prices
-									for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
-										if(currentPlayer != player) {
-											InventoryView openInv = currentPlayer.getOpenInventory();
-											if(openInv.getTitle().startsWith(INVENTORY_NAME)) {
-												currentPlayer.closeInventory();
-												openArtifactInventory(currentPlayer);
-											}
-										}
-									}
-									removeArtifacts(player, priceBefore);
-								} else {
-									player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
-								}
-								player.closeInventory();
-								break;
-							} else {
-								player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
-							}
+		if (!event.getView().getTitle().startsWith(INVENTORY_NAME)) {
+			return;
+		}
+		event.setCancelled(true);
+		if (isPreview(player) || event.getClickedInventory() == null || event.getClickedInventory() != event.getView().getTopInventory()) {
+			return;
+		}
+		ItemStack item = event.getCurrentItem();
+		if (item == null) {
+			return;
+		}
+		for(Artifact artifact : artifacts) {
+			if (artifact.getType() != item.getType()) {
+				continue;
+			}
+			if (getArtifactCount(player) < artifact.getCurrentPrice()) {
+				player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
+				continue;
+			}
+			int priceBefore = artifact.getCurrentPrice();
+			if(artifact.use(player)) {
+				//Reopening other players' inventories to reset prices
+				for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
+					if(currentPlayer != player) {
+						InventoryView openInv = currentPlayer.getOpenInventory();
+						if(openInv.getTitle().startsWith(INVENTORY_NAME)) {
+							currentPlayer.closeInventory();
+							openArtifactInventory(currentPlayer);
 						}
 					}
 				}
+				removeArtifacts(player, priceBefore);
+			} else {
+				player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.5F);
 			}
-			event.setCancelled(true);
+			player.closeInventory();
+			break;
 		}
 	}
 

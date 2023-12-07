@@ -1,6 +1,5 @@
 package ru.greenbudgie.artifact;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import ru.greenbudgie.UHC.PlayerManager;
@@ -13,7 +12,7 @@ public class ArtifactTeleport extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.LIGHT_PURPLE + "Переброска";
+		return "Переброска";
 	}
 
 	@Override

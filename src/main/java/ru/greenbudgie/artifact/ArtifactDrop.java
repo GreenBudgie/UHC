@@ -1,9 +1,9 @@
 package ru.greenbudgie.artifact;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.drop.Drop;
 import ru.greenbudgie.drop.Drops;
 
@@ -13,12 +13,12 @@ public class ArtifactDrop extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.DARK_AQUA + "Раздача";
+		return "Раздача";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Изменяет позицию выпадения всех дропов (аирдропа, кейвдропа и незердропа) и сокращает время их ожидания в 3 раза.";
+		return "Сокращает время ожидания всех дропов (аирдропа, кейвдропа и незердропа) в 3 раза";
 	}
 
 	@Override
@@ -34,11 +34,10 @@ public class ArtifactDrop extends Artifact {
 	@Override
 	public boolean onUse(@Nullable Player player) {
 		for(Drop drop : Drops.DROPS) {
-			drop.setLocation(drop.getRandomLocation());
 			drop.setTimer(drop.getTimer() / 3);
 		}
-		if(player != null) {
-			player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1.5F);
+		for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+			currentPlayer.playSound(currentPlayer.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1.5F);
 		}
 		return true;
 	}

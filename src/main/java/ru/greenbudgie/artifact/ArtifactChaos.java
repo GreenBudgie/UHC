@@ -1,7 +1,6 @@
 package ru.greenbudgie.artifact;
 
 import com.google.common.collect.Lists;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import ru.greenbudgie.UHC.GameType;
@@ -12,11 +11,13 @@ import ru.greenbudgie.util.MathUtils;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ArtifactRandom extends Artifact {
+import static org.bukkit.ChatColor.*;
+
+public class ArtifactChaos extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.DARK_PURPLE + "Хаос";
+		return "Хаос";
 	}
 
 	@Override
@@ -31,13 +32,19 @@ public class ArtifactRandom extends Artifact {
 
 	@Override
 	public float getPriceIncreaseAmount() {
-		return 0;
+		return 0.5F;
 	}
 
 	@Override
 	public boolean onUse(@Nullable Player player) {
-		List<Artifact> toAdd = Lists.newArrayList(ArtifactManager.timeLeap, ArtifactManager.drop, ArtifactManager.teleport, ArtifactManager.time,
-				ArtifactManager.hunger, ArtifactManager.request);
+		List<Artifact> toAdd = Lists.newArrayList(
+				ArtifactManager.timeLeap,
+				ArtifactManager.drop,
+				ArtifactManager.teleport,
+				ArtifactManager.randomEffect,
+				ArtifactManager.hunger,
+				ArtifactManager.request
+		);
 		toAdd.add(MathUtils.choose(ArtifactManager.health, ArtifactManager.damage));
 		boolean canAddMutator = false;
 		boolean canRemoveMutator = false;
@@ -53,11 +60,12 @@ public class ArtifactRandom extends Artifact {
 		for(int i = 0; i < 3; i++) {
 			Artifact artifact = MathUtils.choose(toAdd);
 			artifact.onUse(player);
-			addedInfo.append(artifact.getName()).append(i == 2 ? "" : (ChatColor.DARK_GRAY + ", "));
+			addedInfo.append(RED + "" + BOLD + artifact.getName()).append(i == 2 ? "" : (DARK_GRAY + ", "));
 			toAdd.remove(artifact);
 		}
 		for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
-			currentPlayer.sendMessage(ChatColor.YELLOW + "Были активированы артефакты: " + addedInfo);
+			String message = padSymbols(GRAY + "Были активированы артефакты " + addedInfo);
+			currentPlayer.sendMessage(message);
 		}
 		return true;
 	}

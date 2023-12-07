@@ -1,9 +1,9 @@
 package ru.greenbudgie.artifact;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.WorldManager;
 import ru.greenbudgie.mutator.MutatorManager;
 
@@ -13,7 +13,7 @@ public class ArtifactTimeLeap extends Artifact {
 
 	@Override
 	public String getName() {
-		return ChatColor.YELLOW + "Временная Петля";
+		return "Временная Петля";
 	}
 
 	@Override
@@ -35,9 +35,10 @@ public class ArtifactTimeLeap extends Artifact {
 	public boolean onUse(@Nullable Player player) {
 		if(MutatorManager.isActive(MutatorManager.eternalNight) || MutatorManager.isActive(MutatorManager.eternalDay)) {
 			return false;
-		} else {
-			WorldManager.getGameMap().setTime(WorldManager.getGameMap().getTime() + 12000);
-			if(player != null) player.playSound(player.getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 1F, 0.8F);
+		}
+		WorldManager.getGameMap().setTime(WorldManager.getGameMap().getTime() + 12000);
+		for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+			currentPlayer.playSound(currentPlayer.getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, 1F, 0.8F);
 		}
 		return true;
 	}
