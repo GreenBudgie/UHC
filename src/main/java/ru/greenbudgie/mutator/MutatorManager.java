@@ -76,6 +76,7 @@ public class MutatorManager {
 	public static MutatorDeathCoordinates deathCoordinates = new MutatorDeathCoordinates();
 	public static MutatorImmunity immunity = new MutatorImmunity();
 	public static MutatorHyperExplosions hyperExplosions = new MutatorHyperExplosions();
+	public static MutatorNoMeleeDamage noMeleeDamage = new MutatorNoMeleeDamage();
 
 	public static void init() {
 		Bukkit.getPluginManager().registerEvents(new Listener() {

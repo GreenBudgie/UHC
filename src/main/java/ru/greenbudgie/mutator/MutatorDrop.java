@@ -23,7 +23,7 @@ public class MutatorDrop extends Mutator {
 
 	@Override
 	public String getDescription() {
-		return "Все дропы (аирдроп, кейвдроп и незердроп) спавнятся в два раза чаще";
+		return "Все дропы (аирдроп, кейвдроп и незердроп) выпадают в два раза чаще";
 	}
 
 	@Override

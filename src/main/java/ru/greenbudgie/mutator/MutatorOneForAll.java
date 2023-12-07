@@ -1,6 +1,5 @@
 package ru.greenbudgie.mutator;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -12,6 +11,9 @@ import ru.greenbudgie.util.TaskManager;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.bukkit.ChatColor.GOLD;
+import static org.bukkit.ChatColor.LIGHT_PURPLE;
 
 public class MutatorOneForAll extends Mutator implements Listener {
 
@@ -73,12 +75,12 @@ public class MutatorOneForAll extends Mutator implements Listener {
 						activatedMutator.activate(false, null);
 						timer = MathUtils.randomRange(400, 600);
 						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
-							p.sendTitle(" ", ChatColor.GOLD + "Добавлен мутатор: " + ChatColor.LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
+							p.sendTitle(" ", GOLD + "Добавлен мутатор: " + LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
 							p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1F);
 						}
 					} else { //FIXME NuLL
 						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
-							p.sendTitle(" ", ChatColor.GOLD + "Деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
+							p.sendTitle(" ", GOLD + "Деактивирован мутатор: " + LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
 							p.playSound(p.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1F, 1F);
 						}
 						activatedMutator.deactivate();

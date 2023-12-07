@@ -1,7 +1,6 @@
 package ru.greenbudgie.mutator;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
@@ -26,6 +25,8 @@ import ru.greenbudgie.event.UHCPlayerLeaveEvent;
 import ru.greenbudgie.event.UHCPlayerRejoinEvent;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.TaskManager;
+
+import static org.bukkit.ChatColor.*;
 
 public class MutatorRestrictions extends Mutator implements Listener {
 
@@ -90,19 +91,19 @@ public class MutatorRestrictions extends Mutator implements Listener {
 					timeToRestrict--;
 					if(timeToRestrict == 3) {
 						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
-							p.sendTitle(ChatColor.RED + "Я", "", 0, 30, 10);
+							p.sendTitle(RED + "Я", "", 0, 30, 10);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.1F, 1F);
 						}
 					}
 					if(timeToRestrict == 2) {
 						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
-							p.sendTitle(ChatColor.RED + "Я ВАМ", "", 0, 30, 10);
+							p.sendTitle(RED + "Я ВАМ", "", 0, 30, 10);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.2F, 1.1F);
 						}
 					}
 					if(timeToRestrict == 1) {
 						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
-							p.sendTitle(ChatColor.RED + "Я ВАМ ЗАПРЕЩАЮ", "", 0, 30, 10);
+							p.sendTitle(RED + "Я ВАМ ЗАПРЕЩАЮ", "", 0, 30, 10);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.3F, 1.2F);
 						}
 					}
@@ -110,10 +111,10 @@ public class MutatorRestrictions extends Mutator implements Listener {
 						Restriction restriction = MathUtils.choose(Restriction.values());
 						this.restriction = restriction;
 						bar.removeAll();
-						bar.setTitle(ChatColor.DARK_RED + "Я ВАМ ЗАПРЕЩАЮ: " + ChatColor.RED + restriction.getDescription());
+						bar.setTitle(DARK_RED + "Я ВАМ ЗАПРЕЩАЮ: " + RED + restriction.getDescription());
 						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 							bar.addPlayer(p);
-							p.sendTitle(ChatColor.DARK_RED + "Я ВАМ ЗАПРЕЩАЮ", ChatColor.RED + restriction.getDescription(), 0, 50, 15);
+							p.sendTitle(DARK_RED + "Я ВАМ ЗАПРЕЩАЮ", RED + restriction.getDescription(), 0, 50, 15);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 1F, 0.8F);
 						}
 						bar.setVisible(true);
@@ -125,7 +126,7 @@ public class MutatorRestrictions extends Mutator implements Listener {
 					bar.setProgress(timeToAllow / 20.0);
 					if(timeToAllow <= 0) {
 						for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
-							p.sendTitle(ChatColor.GREEN + "Я ВАМ РАЗРЕШАЮ", ChatColor.DARK_GREEN + restriction.getDescription(), 0, 50, 15);
+							p.sendTitle(GREEN + "Я ВАМ РАЗРЕШАЮ", DARK_GREEN + restriction.getDescription(), 0, 50, 15);
 							p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 1F, 0.8F);
 						}
 						restriction = null;

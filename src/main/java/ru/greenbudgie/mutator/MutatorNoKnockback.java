@@ -14,7 +14,7 @@ public class MutatorNoKnockback extends Mutator implements Listener {
 
 	@Override
 	public Material getItemToShow() {
-		return Material.WOODEN_SWORD;
+		return Material.SLIME_BALL;
 	}
 
 	@Override

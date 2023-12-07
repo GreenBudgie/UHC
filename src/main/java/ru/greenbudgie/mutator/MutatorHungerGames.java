@@ -6,7 +6,7 @@ public class MutatorHungerGames extends Mutator {
 
 	@Override
 	public Material getItemToShow() {
-		return Material.DIAMOND_SWORD;
+		return Material.CLOCK;
 	}
 
 	@Override

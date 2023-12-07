@@ -2,7 +2,6 @@ package ru.greenbudgie.mutator;
 
 import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -22,13 +21,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+import static org.bukkit.ChatColor.*;
+
 public class InventoryBuilderMutator {
 
 	private static final String ARROW_RIGHT_HEAD_LINK = "http://textures.minecraft.net/texture/4ef356ad2aa7b1678aecb88290e5fa5a3427e5e456ff42fb515690c67517b8";
 	private static final String ARROW_LEFT_HEAD_LINK = "http://textures.minecraft.net/texture/6e8c3ce2aee6cf2faade7db37bbae73a36627ac1473fef75b410a0af97659f";
 
-	public static final String inventoryName = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Мутаторы";
-	private static Set<InventoryBuilderMutator> builders = new HashSet<>();
+	public static final String inventoryName = Mutator.MUTATOR_NAME_COLOR + "Мутаторы";
+	private static final Set<InventoryBuilderMutator> builders = new HashSet<>();
 
 	//Some inner inventory constants
 	private static final int MUTATOR_ROWS = 4;
@@ -143,57 +144,57 @@ public class InventoryBuilderMutator {
 	}
 
 	private String getPagesInfo(int pages) {
-		return ChatColor.DARK_GREEN + "" + ChatColor.BOLD + page + ChatColor.DARK_GRAY + " / " + ChatColor.DARK_GREEN + pages;
+		return DARK_GREEN + "" + BOLD + page + DARK_GRAY + " / " + DARK_GREEN + pages;
 	}
 
 	private void placeOptionalItems(Inventory inventory) {
 		ItemStack sortItem = ItemUtils.builder(sort.itemToShow)
-				.withName(ChatColor.GOLD + "Сортировка")
-				.withLore(ChatColor.YELLOW + "" + ChatColor.BOLD + sort.description)
+				.withName(GOLD + "Сортировка")
+				.withLore(YELLOW + "" + BOLD + sort.description)
 				.build();
 		inventory.setItem(SORT_SLOT, sortItem);
 
 		ItemStack filterItem = ItemUtils.builder(filter.itemToShow)
-				.withName(ChatColor.DARK_AQUA + "Фильтр")
-				.withLore(ChatColor.AQUA + "" + ChatColor.BOLD + filter.description)
+				.withName(DARK_AQUA + "Фильтр")
+				.withLore(AQUA + "" + BOLD + filter.description)
 				.build();
 		inventory.setItem(FILTER_SLOT, filterItem);
 
 		ItemStack pgNextItem = InventoryHelper.generateHead(ARROW_RIGHT_HEAD_LINK);
-		ItemUtils.setName(pgNextItem, ChatColor.DARK_GREEN + "" + ChatColor.BOLD + ">>> " + ChatColor.AQUA + "След. страница");
+		ItemUtils.setName(pgNextItem, DARK_GREEN + "" + BOLD + ">>> " + AQUA + "След. страница");
 		inventory.setItem(PAGE_NEXT_SLOT, pgNextItem);
 
 		ItemStack pgPrevItem = InventoryHelper.generateHead(ARROW_LEFT_HEAD_LINK);
-		ItemUtils.setName(pgPrevItem, ChatColor.GOLD + "" + ChatColor.BOLD + "<<< " + ChatColor.DARK_AQUA + "Пред. страница");
+		ItemUtils.setName(pgPrevItem, GOLD + "" + BOLD + "<<< " + DARK_AQUA + "Пред. страница");
 		inventory.setItem(PAGE_PREV_SLOT, pgPrevItem);
 
-		inventory.setItem(RESET_SLOT, ItemUtils.builder(Material.BARRIER).withName(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Сбросить настройки").build());
-		inventory.setItem(RESET_PREFERRED_SLOT, ItemUtils.builder(Material.RED_DYE).withName(ChatColor.RED + "" + ChatColor.BOLD + "Убрать предпочтения").build());
+		inventory.setItem(RESET_SLOT, ItemUtils.builder(Material.BARRIER).withName(DARK_RED + "" + BOLD + "Сбросить настройки").build());
+		inventory.setItem(RESET_PREFERRED_SLOT, ItemUtils.builder(Material.RED_DYE).withName(RED + "" + BOLD + "Убрать предпочтения").build());
 	}
 
 	private ItemStack getMutatorItem(Mutator mutator) {
 		ItemStack item = ItemUtils.builder(mutator.getItemToShow())
-				.withName(ChatColor.LIGHT_PURPLE + mutator.getName())
-				.withSplittedLore(ChatColor.YELLOW + mutator.getDescription())
+				.withName(Mutator.MUTATOR_NAME_COLOR + mutator.getName())
+				.withSplittedLore(GRAY + mutator.getDescription())
 				.build();
-		if(mutator.canBeHidden()) ItemUtils.addLore(item, ChatColor.GRAY + "" + ChatColor.ITALIC + "Может быть скрыт");
+		if(mutator.canBeHidden()) ItemUtils.addLore(item, WHITE + "" + ITALIC + "Может быть скрыт");
 		if(isOP()) {
 			if(mutator.isActive()) {
 				ItemUtils.addGlow(item);
-				ItemUtils.addLore(item, false, ChatColor.RED + "" + ChatColor.BOLD + "<ДЕАКТИВИРОВАТЬ>");
+				ItemUtils.addLore(item, false, RED + "" + BOLD + "<ДЕАКТИВИРОВАТЬ>");
 			} else {
-				ItemUtils.addLore(item, false, ChatColor.GREEN + "" + ChatColor.BOLD + "<АКТИВИРОВАТЬ>");
+				ItemUtils.addLore(item, false, GREEN + "" + BOLD + "<АКТИВИРОВАТЬ>");
 			}
 		} else {
 			if(mutator.isPreferredBy(player.getName())) {
 				ItemUtils.addGlow(item);
-				ItemUtils.addLore(item, false, ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Предпочитаемый");
+				ItemUtils.addLore(item, false, DARK_PURPLE + "" + BOLD + "Предпочитаемый");
 			} else {
-				ItemUtils.addLore(item, false, ChatColor.DARK_AQUA + "<Сделать предпочитаемым>");
+				ItemUtils.addLore(item, false, DARK_AQUA + "<Сделать предпочитаемым>");
 			}
 			int preferenceCount = MutatorManager.getPlayersWhoPrefersMutator(mutator).size();
 			if(preferenceCount == 0) {
-				ItemUtils.addLore(item, false, ChatColor.GOLD + "Нет предпочтений");
+				ItemUtils.addLore(item, false, GOLD + "Нет предпочтений");
 			} else {
 				String prefer = new NumericalCases("Предпочитает ", "Предпочитают ", "Предпочитают ").byNumber(preferenceCount);
 				String player = new NumericalCases(" игрок", " игрока", " игроков").byNumber(preferenceCount);
@@ -202,13 +203,13 @@ public class InventoryBuilderMutator {
 				double otherSize = otherMutators.size();
 				int percent = (int) ((1 - (otherSize / MutatorManager.getAvailablePreferredMutatorsWeighted().size())) * 100);
 				ItemUtils.addLore(item, false,
-						ChatColor.GOLD + prefer + ChatColor.AQUA + ChatColor.BOLD + preferenceCount + ChatColor.RESET +
-								ChatColor.GOLD + player + ChatColor.GRAY + ", " + ChatColor.GREEN + "шанс " + ChatColor.DARK_GREEN +
-								ChatColor.BOLD + percent + ChatColor.RESET + ChatColor.GRAY + "%");
+						GOLD + prefer + AQUA + BOLD + preferenceCount + RESET +
+								GOLD + player + GRAY + ", " + GREEN + "шанс " + DARK_GREEN +
+								BOLD + percent + RESET + GRAY + "%");
 			}
 		}
 		if(mutator.conflictsWithClasses())
-			ItemUtils.addLore(item, ChatColor.DARK_RED + "" + ChatColor.BOLD + "Недоступен при игре с классами");
+			ItemUtils.addLore(item, DARK_RED + "" + BOLD + "Недоступен при игре с классами");
 		return item;
 	}
 
@@ -261,13 +262,13 @@ public class InventoryBuilderMutator {
 				for(Mutator mutator : MutatorManager.mutators) {
 					if(item.getType() == mutator.getItemToShow()) {
 						if(mutator.isActive()) {
-							player.sendMessage(ChatColor.GOLD + "Деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + mutator.getName());
+							player.sendMessage(GOLD + "Деактивирован мутатор: " + LIGHT_PURPLE + mutator.getName());
 							player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
 							mutator.deactivate();
 							player.closeInventory();
 						} else {
 							if(MutatorManager.doesMutatorConflictsWithActive(mutator)) {
-								player.sendMessage(ChatColor.RED + "Мутатор конфликтует с активными");
+								player.sendMessage(RED + "Мутатор конфликтует с активными");
 								player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
 							} else {
 								player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 1F);
@@ -287,7 +288,7 @@ public class InventoryBuilderMutator {
 							reopenAll();
 						} else {
 							if(MutatorManager.preferredMutators.getOrDefault(player.getName(), new HashSet<>()).size() >= 3) {
-								InventoryHelper.sendActionBarMessage(player, ChatColor.DARK_RED + "" + ChatColor.BOLD + "Нельзя выбрать более трех предпочитаемых мутаторов");
+								InventoryHelper.sendActionBarMessage(player, DARK_RED + "" + BOLD + "Нельзя выбрать более трех предпочитаемых мутаторов");
 								player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
 							} else {
 								player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 1F);

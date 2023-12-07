@@ -1,7 +1,6 @@
 package ru.greenbudgie.mutator;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -12,7 +11,11 @@ import ru.greenbudgie.util.MathUtils;
 
 import java.util.HashSet;
 
+import static org.bukkit.ChatColor.*;
+
 public abstract class Mutator {
+
+	public static final String MUTATOR_NAME_COLOR = LIGHT_PURPLE + "" + BOLD;
 
 	private boolean isHidden = false;
 
@@ -21,7 +24,7 @@ public abstract class Mutator {
 	}
 
 	public void hide() {
-		if(canBeHidden() && MathUtils.chance(20)) {
+		if(canBeHidden() && MathUtils.chance(15)) {
 			isHidden = true;
 		}
 	}
@@ -61,8 +64,7 @@ public abstract class Mutator {
 	}
 
 	/**
-	 * Whether this mutator can be randomly chosen even if arena is closed.
-	 * Ex: interactive arena cannot
+	 * Whether this mutator can be randomly chosen even if arena is closed
 	 */
 	public boolean canWorkIfArenaIsClosed() {
 		return true;
@@ -73,7 +75,7 @@ public abstract class Mutator {
 		if(applyHiding) hide();
 		for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 			if(!isHidden && preference != null) {
-				p.sendMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Предпочтение " + ChatColor.GOLD + preference + ChatColor.DARK_GRAY + ":");
+				p.sendMessage(DARK_PURPLE + "" + BOLD + "Предпочтение " + GOLD + preference + DARK_GRAY + ":");
 			}
 			p.sendMessage(getInfo());
 		}
@@ -101,10 +103,10 @@ public abstract class Mutator {
 
 	public final String getInfo() {
 		if(isHidden) {
-			return ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "Скрытый Мутатор" + ChatColor.DARK_GRAY + "] " + ChatColor.DARK_PURPLE + "Нет информации";
+			return DARK_GRAY + "[" + DARK_RED + "Скрытый Мутатор" + DARK_GRAY + "] " + DARK_PURPLE + "Нет информации";
 		} else {
-			return ChatColor.DARK_GRAY + "[" + ChatColor.RED + "Мутатор" + ChatColor.DARK_GRAY + "] " + ChatColor.LIGHT_PURPLE + getName() + ChatColor.GRAY + ": "
-					+ ChatColor.YELLOW + getDescription();
+			return DARK_GRAY + "[" + RED + "Мутатор" + DARK_GRAY + "] " + MUTATOR_NAME_COLOR + getName() + GRAY + ": "
+					+ GRAY + getDescription();
 		}
 	}
 

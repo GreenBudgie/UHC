@@ -48,12 +48,12 @@ public class MutatorHaste extends Mutator {
 
 	@Override
 	public Material getItemToShow() {
-		return Material.GOLDEN_PICKAXE;
+		return Material.SUGAR;
 	}
 
 	@Override
 	public String getName() {
-		return "Гипершахтер";
+		return "Гиперскорость";
 	}
 
 	@Override

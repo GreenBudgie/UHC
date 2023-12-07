@@ -21,6 +21,8 @@ import ru.greenbudgie.util.TaskManager;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.bukkit.ChatColor.*;
+
 public class MutatorImmunity extends Mutator implements Listener {
 
 	public BossBar bar;
@@ -72,7 +74,7 @@ public class MutatorImmunity extends Mutator implements Listener {
 
 	private String getBarTitle() {
 		if(immunity == null) return "";
-		return ChatColor.AQUA + "Иммунитет" + ChatColor.GRAY + ": " + ChatColor.DARK_AQUA + ChatColor.BOLD + immunity.description;
+		return AQUA + "Иммунитет" + GRAY + ": " + DARK_AQUA + BOLD + immunity.description;
 	}
 
 	@Override

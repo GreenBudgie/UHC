@@ -64,7 +64,7 @@ public class ArtifactChaos extends Artifact {
 			toAdd.remove(artifact);
 		}
 		for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
-			String message = padSymbols(GRAY + "Были активированы артефакты " + addedInfo);
+			String message = padSymbols(GRAY + "Были призваны артефакты " + addedInfo);
 			currentPlayer.sendMessage(message);
 		}
 		return true;

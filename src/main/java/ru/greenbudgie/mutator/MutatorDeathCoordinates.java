@@ -1,6 +1,5 @@
 package ru.greenbudgie.mutator;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,6 +12,8 @@ import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.UHC.UHCPlayer;
 import ru.greenbudgie.event.UHCPlayerDeathEvent;
 import ru.greenbudgie.util.WorldHelper;
+
+import static org.bukkit.ChatColor.*;
 
 public class MutatorDeathCoordinates extends Mutator implements Listener {
 
@@ -62,24 +63,24 @@ public class MutatorDeathCoordinates extends Mutator implements Listener {
 			if(signBlock != null) {
 				signBlock.setType(Material.CRIMSON_SIGN);
 				Sign sign = (Sign) signBlock.getState();
-				sign.setLine(0, ChatColor.WHITE + "Трагически");
-				sign.setLine(1, ChatColor.WHITE + "погиб");
-				sign.setLine(2, ChatColor.WHITE + uhcPlayer.getNickname());
-				sign.setLine(3, ChatColor.WHITE + "" + ChatColor.BOLD + "RIP");
+				sign.setLine(0, WHITE + "Трагически");
+				sign.setLine(1, WHITE + "погиб");
+				sign.setLine(2, WHITE + uhcPlayer.getNickname());
+				sign.setLine(3, WHITE + "" + BOLD + "RIP");
 				sign.update(true, false);
 			}
 			String dimension =
-					ChatColor.GRAY + " (" +
-					WorldHelper.getEnvironmentNamePrepositional(location.getWorld().getEnvironment(), ChatColor.WHITE) +
-					ChatColor.GRAY + ")";
+					GRAY + " (" +
+					WorldHelper.getEnvironmentNamePrepositional(location.getWorld().getEnvironment(), WHITE) +
+					GRAY + ")";
 			String locationInfo =
-					ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "> " +
-					ChatColor.GRAY + "Координаты " +
-					ChatColor.AQUA + uhcPlayer.getNickname() +
-					ChatColor.GRAY + ": " +
-					ChatColor.WHITE + location.getBlockX() +
-					ChatColor.GRAY + ", " + ChatColor.WHITE + location.getBlockY() +
-					ChatColor.GRAY + ", " + ChatColor.WHITE + location.getBlockZ();
+					DARK_GRAY + "" + BOLD + "> " +
+					GRAY + "Координаты " +
+					AQUA + uhcPlayer.getNickname() +
+					GRAY + ": " +
+					WHITE + location.getBlockX() +
+					GRAY + ", " + WHITE + location.getBlockY() +
+					GRAY + ", " + WHITE + location.getBlockZ();
 			for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
 				if(player.getWorld() != location.getWorld()) {
 					player.sendMessage(locationInfo + dimension);

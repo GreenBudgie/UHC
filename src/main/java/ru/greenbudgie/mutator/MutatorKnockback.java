@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
@@ -14,7 +15,7 @@ public class MutatorKnockback extends Mutator implements Listener {
 
 	@Override
 	public Material getItemToShow() {
-		return Material.IRON_SWORD;
+		return Material.PISTON;
 	}
 
 	@Override
@@ -34,18 +35,18 @@ public class MutatorKnockback extends Mutator implements Listener {
 
 	@Override
 	public boolean conflictsWith(Mutator another) {
-		return another == MutatorManager.noKnockback;
+		return another == MutatorManager.noKnockback || another == MutatorManager.noMeleeDamage;
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void attack(EntityDamageByEntityEvent e) {
-		if(e.getDamager() instanceof Player && e.getFinalDamage() > 0 && e.getEntity() instanceof LivingEntity) {
-			if(e.getEntity() instanceof Player) {
-				Player p1 = (Player) e.getDamager();
-				Player p2 = (Player) e.getEntity();
-				if(PlayerManager.isTeammates(p1, p2)) return;
+		if(e.getDamager() instanceof Player damager
+				&& e.getFinalDamage() > 0
+				&& !e.isCancelled()
+				&& e.getEntity() instanceof LivingEntity ent) {
+			if(e.getEntity() instanceof Player player) {
+				if(PlayerManager.isTeammates(damager, player)) return;
 			}
-			LivingEntity ent = (LivingEntity) e.getEntity();
 			Location locP = e.getDamager().getLocation();
 			Location locO = ent.getLocation();
 
