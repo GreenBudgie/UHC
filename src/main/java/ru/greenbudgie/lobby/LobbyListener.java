@@ -24,6 +24,7 @@ import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import ru.greenbudgie.UHC.UHC;
+import ru.greenbudgie.lobby.game.LobbyGameManager;
 import ru.greenbudgie.util.TaskManager;
 
 public class LobbyListener implements Listener {

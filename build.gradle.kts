@@ -1,5 +1,5 @@
 group = "ru.greenbudgie.uhc"
-version = "1.0.0"
+version = "4.0.0"
 description = "Ultra Hardcore minecraft plugin with many custom features"
 
 plugins {

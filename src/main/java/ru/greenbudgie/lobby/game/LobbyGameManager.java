@@ -1,4 +1,7 @@
-package ru.greenbudgie.lobby;
+package ru.greenbudgie.lobby.game;
+
+import ru.greenbudgie.lobby.game.arena.LobbyGamePvpArena;
+import ru.greenbudgie.lobby.game.parkour.LobbyGameParkour;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,9 +10,11 @@ public class LobbyGameManager {
 
     protected static List<LobbyGame> lobbyGames = new ArrayList<>();
 
-    public static final PvpArena PVP_ARENA = new PvpArena();
+    public static final LobbyGamePvpArena PVP_ARENA = new LobbyGamePvpArena();
 
-    protected static void init() {
+    public static final LobbyGameParkour PARKOUR = new LobbyGameParkour();
+
+    public static void init() {
         for(LobbyGame game : lobbyGames) {
             game.parseConfig();
             game.postSetup();

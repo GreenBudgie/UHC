@@ -42,8 +42,8 @@ import ru.greenbudgie.items.BlockHolder;
 import ru.greenbudgie.items.CustomItem;
 import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.lobby.Lobby;
-import ru.greenbudgie.lobby.LobbyGameManager;
 import ru.greenbudgie.lobby.LobbyTeamBuilder;
+import ru.greenbudgie.lobby.game.LobbyGameManager;
 import ru.greenbudgie.lobby.sign.SignManager;
 import ru.greenbudgie.mutator.Mutator;
 import ru.greenbudgie.mutator.MutatorManager;
@@ -1581,7 +1581,9 @@ public class UHC implements Listener {
 					RESET + GOLD + player.getName() +
 					GRAY + " присоединился";
 			for(Player currentPlayer : Lobby.getPlayersInLobbyAndArenas()) {
-				currentPlayer.sendMessage(joinMessage);
+				if (currentPlayer != player) {
+					currentPlayer.sendMessage(joinMessage);
+				}
 			}
 			player.sendMessage(joinMessage);
 			TaskManager.invokeLater(() -> {

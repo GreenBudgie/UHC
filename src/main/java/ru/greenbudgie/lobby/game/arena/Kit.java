@@ -1,9 +1,10 @@
-package ru.greenbudgie.lobby;
+package ru.greenbudgie.lobby.game.arena;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import ru.greenbudgie.lobby.game.LobbyGameManager;
 import ru.greenbudgie.util.InventoryHelper;
 import ru.greenbudgie.util.ItemUtils;
 

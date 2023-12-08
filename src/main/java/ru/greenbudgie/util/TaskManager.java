@@ -2,7 +2,7 @@ package ru.greenbudgie.util;
 
 import org.bukkit.Bukkit;
 import ru.greenbudgie.UHC.UHC;
-import ru.greenbudgie.lobby.LobbyGameManager;
+import ru.greenbudgie.lobby.game.LobbyGameManager;
 import ru.greenbudgie.main.UHCPlugin;
 
 public class TaskManager {

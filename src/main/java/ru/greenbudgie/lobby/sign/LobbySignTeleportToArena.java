@@ -4,7 +4,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
-import ru.greenbudgie.lobby.LobbyGameManager;
+import ru.greenbudgie.lobby.game.LobbyGameManager;
 
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.GRAY;

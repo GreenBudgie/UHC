@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.lobby.Lobby;
-import ru.greenbudgie.lobby.LobbyGameManager;
+import ru.greenbudgie.lobby.game.LobbyGameManager;
 
 public class CommandLobby implements CommandExecutor {
 

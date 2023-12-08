@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import ru.greenbudgie.UHC.ArenaManager;
 import ru.greenbudgie.UHC.WorldManager;
+import ru.greenbudgie.lobby.game.LobbyGameManager;
 import ru.greenbudgie.lobby.sign.LobbySign;
 import ru.greenbudgie.lobby.sign.SignManager;
 import ru.greenbudgie.main.UHCPlugin;
@@ -64,7 +65,7 @@ public class Lobby {
     }
 
     public static boolean isInLobby(Player player) {
-        return getLobby().getPlayers().contains(player);
+        return player.getWorld() == getLobby();
     }
 
     public static boolean isWatchingArena(Player player) {

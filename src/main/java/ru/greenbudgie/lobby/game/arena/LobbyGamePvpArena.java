@@ -1,4 +1,4 @@
-package ru.greenbudgie.lobby;
+package ru.greenbudgie.lobby.game.arena;
 
 import com.google.common.collect.Lists;
 import org.bukkit.*;
@@ -25,13 +25,15 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import ru.greenbudgie.UHC.WorldManager;
+import ru.greenbudgie.lobby.Lobby;
+import ru.greenbudgie.lobby.game.LobbyGame;
 import ru.greenbudgie.lobby.sign.SignManager;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.*;
 
 import java.util.*;
 
-public class PvpArena extends LobbyGame implements Listener {
+public class LobbyGamePvpArena extends LobbyGame implements Listener {
 
 	private boolean isOpen = true;
 	private boolean isDuel = false;
@@ -43,7 +45,7 @@ public class PvpArena extends LobbyGame implements Listener {
 	private int killsToNextKit = 8;
 	private Region enterRegion, leaveRegion, closeRegion;
 
-	protected PvpArena() {
+	public LobbyGamePvpArena() {
 		Bukkit.getPluginManager().registerEvents(this, UHCPlugin.instance);
 	}
 
