@@ -89,11 +89,6 @@ public class UHC implements Listener {
 	private static int scoreboardCurrentTeamIndex;
 	private static int scoreboardTimeUntilNextTeam;
 	private static final int scoreboardMaxTimeUntilNextTeam = 3;
-	/**
-	 * Used to ensure that time reduce will only happen once
-	 * when there is only 3 teams left
-	 */
-	private static boolean reduceTimeOnFewTeams = true;
 
 	private static final String UHC_LOGO =
 			RED + "" + BOLD + "U" +
@@ -423,7 +418,6 @@ public class UHC implements Listener {
 				Bukkit.broadcastMessage(RED + "Карта не сгенерирована!");
 				return;
 			}
-			reduceTimeOnFewTeams = true;
 			if(GameType.getType().allowsMutators()) {
 				mutatorCount = MathUtils.chance(30) ? 4 : (MathUtils.chance(65) ? 3 : 2);
 			} else {
@@ -882,16 +876,7 @@ public class UHC implements Listener {
 				timerInfo = GOLD + "До ПВП" + GRAY + ": " + AQUA + BOLD + MathUtils.formatTime(outbreakTimer);
 				if(outbreakTimer == 0 || skip) {
 					skip = false;
-					state = GameState.GAME;
-					deathmatchTimer = 60 * getGameDuration();
-					WorldManager.getGameMap().setPVP(true);
-					WorldManager.getGameMapNether().setPVP(true);
-					for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
-						p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1F, 0.5F);
-						p.sendTitle(DARK_RED + "" + BOLD + "ПВП " + GOLD + BOLD + "Включено" + GRAY + "!",
-								YELLOW + "До дезматча " + AQUA + BOLD + getGameDuration() +
-										RESET + YELLOW + " минут", 10, 60, 30);
-					}
+					enablePvpAndSwitchState();
 				}
 			}
 		}
@@ -1166,42 +1151,37 @@ public class UHC implements Listener {
 	}
 
 	public static void recalculateTimeOnPlayerDeath() {
-		int aliveTeams = PlayerManager.getAliveTeams().size();
 		int alivePlayers = PlayerManager.getAlivePlayers().size();
-		boolean fewTeams = isDuo && aliveTeams <= 3;
 		boolean fewPlayers = alivePlayers <= 4 && alivePlayers > 1;
-		if(state == GameState.OUTBREAK && (fewPlayers || fewTeams)) {
-			state = GameState.GAME;
-			deathmatchTimer = 60 * getGameDuration();
-			WorldManager.getGameMap().setPVP(true);
-			for(Player inGamePlayer : PlayerManager.getAliveOnlinePlayers()) {
-				inGamePlayer.playSound(inGamePlayer.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1F, 0.5F);
-				inGamePlayer.sendTitle(GOLD + "ПВП Включено!", "", 10, 60, 30);
-			}
+		if (!fewPlayers) {
+			return;
 		}
-		int minTime = 600;
-		if(state == GameState.GAME && deathmatchTimer > minTime && (fewPlayers || fewTeams)) {
-			boolean timeChanged = false;
-			if((alivePlayers == 4 || aliveTeams == 3) && reduceTimeOnFewTeams) {
-				deathmatchTimer = (int) Math.max(deathmatchTimer / 1.3, minTime);
-				reduceTimeOnFewTeams = false;
-				timeChanged = true;
-			} else if(alivePlayers == 3) {
-				deathmatchTimer = (int) Math.max(deathmatchTimer / 1.5, minTime);
-				timeChanged = true;
-			} else if(alivePlayers == 2) {
-				deathmatchTimer = (int) Math.max(deathmatchTimer / 1.7, minTime);
-				timeChanged = true;
+		if(state == GameState.OUTBREAK) {
+			int minOutbreakTime = 60;
+			if (outbreakTimer < minOutbreakTime) {
+				return;
 			}
-			if(timeChanged) {
-				for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
-					player.playSound(player.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 0.5F, 1.2F);
-					String remainInfo = new NumericalCases("остался ", "осталось ", "осталось ").byNumber(alivePlayers);
-					String playerInfo = new NumericalCases(" игрок.", " игрока.", " игроков.").byNumber(alivePlayers);
-					player.sendMessage(GOLD + "В живых " + remainInfo + AQUA + BOLD + alivePlayers +
-							GOLD + playerInfo + RED + BOLD + " Время сокращено!");
-				}
+			int outbreakTimeDecrease = 150;
+			outbreakTimer = Math.max(outbreakTimer - outbreakTimeDecrease, minOutbreakTime);
+			announceTimeChanged(alivePlayers);
+			return;
+		}
+		if(state == GameState.GAME) {
+			int minGameTime = 600;
+			if (deathmatchTimer < minGameTime) {
+				return;
 			}
+			int gameTimeDecrease = 300;
+			deathmatchTimer = Math.max(deathmatchTimer - gameTimeDecrease, minGameTime);
+			announceTimeChanged(alivePlayers);
+		}
+	}
+
+	private static void announceTimeChanged(int alivePlayersNumber) {
+		for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
+			player.playSound(player.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 0.5F, 1.2F);
+			player.sendMessage(GRAY + "В живых осталось " + AQUA + BOLD + alivePlayersNumber +
+					GRAY + " игрока. " + DARK_RED + BOLD + "Время сокращено!");
 		}
 	}
 
@@ -1368,6 +1348,19 @@ public class UHC implements Listener {
 		currentInventory.setItem(size - 9 + 3, targetInventory.getBoots());
 		currentInventory.setItem(size - 1, targetInventory.getItemInOffHand());
 		observer.openInventory(currentInventory);
+	}
+
+	private static void enablePvpAndSwitchState() {
+		state = GameState.GAME;
+		deathmatchTimer = 60 * getGameDuration();
+		WorldManager.getGameMap().setPVP(true);
+		WorldManager.getGameMapNether().setPVP(true);
+		for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
+			p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1F, 0.5F);
+			p.sendTitle(DARK_RED + "" + BOLD + "ПВП " + GOLD + BOLD + "Включено" + GRAY + "!",
+					YELLOW + "До дезматча " + AQUA + BOLD + getGameDuration() +
+							RESET + YELLOW + " минут", 10, 60, 30);
+		}
 	}
 
 	@EventHandler
