@@ -33,6 +33,8 @@ import ru.greenbudgie.util.*;
 
 import java.util.*;
 
+import static org.bukkit.ChatColor.*;
+
 public class LobbyGamePvpArena extends LobbyGame implements Listener {
 
 	private boolean isOpen = true;
@@ -214,7 +216,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		ItemStack damagingLiquid = ItemUtils.potionBuilder().
 				asLingering().
 				withColor(Color.BLACK).
-				withName(ChatColor.DARK_GRAY + "Damaging Liquid").
+				withName(DARK_GRAY + "Damaging Liquid").
 				withEffects(new PotionEffect(PotionEffectType.HARM, 1, 0)).
 				build();
 		wizardKit3.addItem(damagingLiquid);
@@ -228,7 +230,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		wizardKit3.addItem(ItemUtils.potionBuilder().
 				asDrinkable().
 				withColor(Color.AQUA).
-				withName(ChatColor.AQUA + "" + ChatColor.BOLD + "Power Potion").
+				withName(AQUA + "" + BOLD + "Power Potion").
 				withEffects(
 						new PotionEffect(PotionEffectType.REGENERATION, 160, 1),
 						new PotionEffect(PotionEffectType.ABSORPTION, 160, 0),
@@ -347,7 +349,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		onArenaEnter(p1);
 		onArenaEnter(p2);
 		for(Player player : getNearArenaPlayers()) {
-			player.sendTitle(" ", ChatColor.GOLD + p1.getName() + ChatColor.RED + ChatColor.BOLD + " VS " + ChatColor.RESET + ChatColor.GOLD + p2.getName(),
+			player.sendTitle(" ", GOLD + p1.getName() + RED + BOLD + " VS " + RESET + GOLD + p2.getName(),
 					5, 40, 10);
 			player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 0.5F, 1F);
 			heal(player);
@@ -358,9 +360,11 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		duelingPlayer1 = null;
 		duelingPlayer2 = null;
 		for(Player player : getNearArenaPlayers()) {
-			player.sendTitle(" ", ChatColor.GOLD + winner.getName() + ChatColor.YELLOW + " замачил " + ChatColor.GOLD + loser.getName(), 5,
+			player.sendTitle(" ", GOLD + winner.getName() + YELLOW + " замачил " + GOLD + loser.getName(), 5,
 					60, 20);
 		}
+		int winnerHealth = (int) Math.round(winner.getHealth());
+		InventoryHelper.sendActionBarMessage(loser, GRAY + "У противника осталось " + DARK_RED + BOLD + winnerHealth + GRAY + " ХП");
 		heal(winner);
 		Firework firework = (Firework) winner.getWorld().spawnEntity(winner.getLocation(), EntityType.FIREWORK);
 		FireworkMeta meta = firework.getFireworkMeta();
@@ -371,7 +375,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		isDuel = false;
 	}
 
-	public Player getRival(Player p) {
+	public Player getOpponent(Player p) {
 		if(!isDuel || p == null || duelingPlayer1 == null || duelingPlayer2 == null) return null;
 		if(duelingPlayer1 == p) return duelingPlayer2;
 		if(duelingPlayer2 == p) return duelingPlayer1;
@@ -412,14 +416,14 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 			onArena.remove(p);
 			p.getInventory().clear();
 			if(isDueling(p)) {
-				Player rival = getRival(p);
-				if(rival != null) {
-					endDuel(rival, p);
+				Player opponent = getOpponent(p);
+				if(opponent != null) {
+					endDuel(opponent, p);
 				}
 			} else {
-				InventoryHelper.sendActionBarMessage(p, ChatColor.GRAY + "> " +
-						ChatColor.GOLD + ChatColor.BOLD + "Ты вышел с арены" +
-						ChatColor.RESET + ChatColor.GRAY + " <");
+				InventoryHelper.sendActionBarMessage(p, GRAY + "> " +
+						GOLD + BOLD + "Ты вышел с арены" +
+						RESET + GRAY + " <");
 				p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_ELYTRA, 0.5F, 0.8F);
 			}
 		}
@@ -432,19 +436,20 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		if(!isOnArena(player)) {
 			if(!isOpen && !isDueling(player)) {
 				player.teleport(spawnLocation);
-				InventoryHelper.sendActionBarMessage(player, ChatColor.DARK_RED + "Подожди, арена закрыта");
+				InventoryHelper.sendActionBarMessage(player, DARK_RED + "Подожди, арена закрыта");
 				player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
 			} else if(isDuel && !isDueling(player)) {
 				player.teleport(spawnLocation);
-				InventoryHelper.sendActionBarMessage(player, ChatColor.DARK_RED + "Сейчас идет дуэль");
+				InventoryHelper.sendActionBarMessage(player, DARK_RED + "Сейчас идет дуэль");
 				player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
 			} else {
 				currentKit.give(player);
-				InventoryHelper.sendActionBarMessage(player, ChatColor.GRAY + "> " +
-						ChatColor.RED + ChatColor.BOLD + "Ты зашел на арену" +
-						ChatColor.RESET + ChatColor.GRAY + " <");
+				InventoryHelper.sendActionBarMessage(player, GRAY + "> " +
+						RED + BOLD + "Ты зашел на арену" +
+						RESET + GRAY + " <");
 				player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_CHAIN, 0.5F, 1F);
 				onArena.add(player);
+				Bukkit.getPluginManager().callEvent(new PvpArenaEnterEvent(player));
 			}
 		}
 	}
@@ -454,9 +459,9 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 			List<Player> waiting = getDuelWaitingPlayers();
 			for(Player p : waiting) {
 				if(waiting.size() == 1) {
-					InventoryHelper.sendActionBarMessage(p, ChatColor.GRAY + "Ожидаем второго игрока...");
+					InventoryHelper.sendActionBarMessage(p, GRAY + "Ожидаем второго игрока...");
 				} else if(waiting.size() >= 2 && !onArena.isEmpty()) {
-					InventoryHelper.sendActionBarMessage(p, ChatColor.GRAY + "Ожидаем окончания битвы на арене...");
+					InventoryHelper.sendActionBarMessage(p, GRAY + "Ожидаем окончания битвы на арене...");
 				}
 			}
 			if(waiting.size() >= 2) {
@@ -548,7 +553,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void death(PlayerDeathEvent e) {
 		Player player = e.getEntity();
-		if(Lobby.getLobby().getPlayers().contains(player) && isOnArena(player)) {
+		if(Lobby.isInLobby(player) && isOnArena(player)) {
 			onArenaLeave(player);
 			killsToNextKit--;
 			if(killsToNextKit <= 0) {
@@ -556,8 +561,8 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 				currentKit = getRandomKit();
 				for(Player currentPlayer : onArena) {
 					InventoryHelper.sendActionBarMessage(currentPlayer,
-							ChatColor.GOLD + "В следующий раз будет выдан новый набор: " +
-									ChatColor.LIGHT_PURPLE + currentKit.getName());
+							GOLD + "В следующий раз будет выдан новый набор: " +
+									LIGHT_PURPLE + currentKit.getName());
 				}
 			}
 			Player killer = player.getKiller();

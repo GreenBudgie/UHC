@@ -14,10 +14,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.event.GameInitializeEvent;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.lobby.game.LobbyGame;
+import ru.greenbudgie.lobby.game.arena.PvpArenaEnterEvent;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.WorldHelper;
 
@@ -142,6 +144,16 @@ public class LobbyGameParkour extends LobbyGame implements Listener {
         if (block.getState() instanceof Sign) {
             block.removeMetadata(BEST_TIME_METADATA_KEY, UHCPlugin.instance);
         }
+    }
+
+    @EventHandler
+    public void pluginDisable(PluginDisableEvent event) {
+        endAllSessions();
+    }
+
+    @EventHandler
+    public void endSessionOnArenaEnter(PvpArenaEnterEvent event) {
+        endParkourSession(event.getPlayer());
     }
 
     private void startParkourSession(Player player, Block startBlock) {
