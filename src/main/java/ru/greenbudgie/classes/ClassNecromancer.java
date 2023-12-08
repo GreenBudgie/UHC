@@ -20,6 +20,8 @@ import ru.greenbudgie.util.ParticleUtils;
 
 public class ClassNecromancer extends UHCClass {
 
+    private final double MAX_CLASS_HP = 16;
+
     @Override
     public String getName() {
         return ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Некромант";
@@ -29,7 +31,7 @@ public class ClassNecromancer extends UHCClass {
     public ItemInfo[] getAdvantages() {
         return new ItemInfo[] {
                 new ItemInfo("При убийстве игрока максимально возможное количество здоровья увеличивается на 2 сердца")
-                        .example("На старте игры у тебя 6 сердец. Убийство игрока увеличит это значение до 8 сердец. Однако, их нужно будет отрегенить."),
+                        .example("На старте игры у тебя 8 сердец. Убийство игрока увеличит это значение до 10 сердец. Однако, их нужно будет отрегенить."),
                 new ItemInfo("При смерти любого игрока во время игры регенерируется 1 ед. здоровья"),
                 new ItemInfo("При убийстве игрока регенерируется 4 ед. здоровья"),
                 new ItemInfo("При убийстве моба или игрока выдается эффект поглощения урона")
@@ -44,14 +46,14 @@ public class ClassNecromancer extends UHCClass {
     @Override
     public ItemInfo[] getDisadvantages() {
         return new ItemInfo[] {
-                new ItemInfo("В начале игры максимальное количество здоровья ограничено в 6 сердец")
+                new ItemInfo("В начале игры максимальное количество здоровья ограничено в 8 сердец")
         };
     }
 
     @EventHandler
     public void gameInit(GameInitializeEvent event) {
         for(UHCPlayer uhcPlayer : getPlayersWithClass()) {
-            uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(12);
+            uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(MAX_CLASS_HP);
         }
     }
 

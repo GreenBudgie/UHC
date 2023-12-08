@@ -43,7 +43,6 @@ import ru.greenbudgie.items.CustomItem;
 import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.lobby.LobbyTeamBuilder;
-import ru.greenbudgie.lobby.game.LobbyGameManager;
 import ru.greenbudgie.lobby.sign.SignManager;
 import ru.greenbudgie.mutator.Mutator;
 import ru.greenbudgie.mutator.MutatorManager;
@@ -109,6 +108,8 @@ public class UHC implements Listener {
 	private static final int PREPARING_MAX_TIME_WITH_MUTATORS = 35;
 	private static final int PREPARING_MAX_TIME_NO_MUTATORS = 15;
 	private static int preparingMaxTime;
+
+	public static final double DEFAULT_MAX_PLAYER_HP = 26;
 
 	public static void init() {
 		WorldManager.init();
@@ -451,8 +452,8 @@ public class UHC implements Listener {
 			summary.setType(GameType.getType());
 
 			for(Player player : Bukkit.getOnlinePlayers()) {
-				LobbyGameManager.PVP_ARENA.onArenaLeave(player);
-				UHCPlayer uhcPlayer = PlayerManager.registerPlayer(player);
+				PlayerManager.registerPlayer(player);
+				player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(DEFAULT_MAX_PLAYER_HP);
 				resetPlayer(player);
 				player.setNoDamageTicks(600);
 				player.setGameMode(GameMode.ADVENTURE);

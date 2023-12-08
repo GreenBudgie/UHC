@@ -25,6 +25,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import ru.greenbudgie.UHC.WorldManager;
+import ru.greenbudgie.event.GameInitializeEvent;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.lobby.game.LobbyGame;
 import ru.greenbudgie.lobby.sign.SignManager;
@@ -584,6 +585,16 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 	}
 
 	@EventHandler
+	public void leaveArenaOnGameStart(GameInitializeEvent event) {
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			if(isOnArena(player)) {
+				onArenaLeave(player);
+			}
+		}
+		openIfClosed();
+	}
+
+	@EventHandler
 	public void onPluginDisable(PluginDisableEvent event) {
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			if(isOnArena(player)) {
@@ -591,6 +602,10 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 				onArenaLeave(player);
 			}
 		}
+		openIfClosed();
+	}
+
+	private void openIfClosed() {
 		if(!isOpen()) {
 			openArena();
 		}

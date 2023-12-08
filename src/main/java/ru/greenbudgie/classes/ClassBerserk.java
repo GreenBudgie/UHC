@@ -36,6 +36,7 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
     private final int MAX_MOBS_TO_KILL = 50;
     private final double BATTLE_RAGE_PER_KILL = 1D / MAX_MOBS_TO_KILL;
     private final double MAX_DAMAGE_INCREASE = 1.6;
+    private final double MAX_CLASS_HP = 40;
 
     @Override
     public String getName() {
@@ -91,7 +92,7 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
     @EventHandler
     public void gameInit(GameInitializeEvent event) {
         for(UHCPlayer uhcPlayer : getPlayersWithClass()) {
-            uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(40);
+            uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(MAX_CLASS_HP);
             UHC.heal(uhcPlayer.getPlayer());
         }
     }
