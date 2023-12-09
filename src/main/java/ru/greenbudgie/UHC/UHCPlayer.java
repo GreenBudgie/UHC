@@ -449,7 +449,7 @@ public class UHCPlayer {
     public void moveToSpectators() {
         state = State.SPECTATING;
         if(player != null) {
-            if(player.getLastDamageCause() != null && player.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.VOID) {
+            if(player.getLocation().getY() < player.getWorld().getMinHeight()) {
                 player.teleport(player.getWorld().getSpawnLocation());
             }
             PlayerManager.addSpectator(player);

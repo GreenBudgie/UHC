@@ -370,6 +370,7 @@ public class UHC implements Listener {
 
 	public static void endGame() {
 		if(playing) {
+			playing = false;
 			Bukkit.getPluginManager().callEvent(new GameEndEvent());
 
 			if(Rating.getCurrentGameSummary().isWorthSaving()) {
@@ -404,7 +405,6 @@ public class UHC implements Listener {
 			platformRegion = null;
 			if(!WorldManager.keepMap && !state.isPreGame()) WorldManager.removeMap();
 			state = GameState.STOPPED;
-			playing = false;
 			SignManager.updateTextOnSigns();
 			refreshLobbyScoreboard();
 		} else {
@@ -1722,12 +1722,34 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void noTeleport(PlayerTeleportEvent e) {
-		World world = e.getTo().getWorld();
-		boolean isGameWorld = world == WorldManager.getGameMap() ||
-				world == WorldManager.getGameMapNether() ||
-				(ArenaManager.getCurrentArena() != null && world == ArenaManager.getCurrentArena().getWorld());
-		if(e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE && !isGameWorld) {
-			e.setCancelled(true);
+		if (!playing) {
+			return;
+		}
+		Location from = e.getFrom();
+		Location to = e.getTo();
+		if (to == null) {
+			return;
+		}
+		World fromWorld = from.getWorld();
+		World toWorld = to.getWorld();
+		if (fromWorld == toWorld) {
+			return;
+		}
+		Player player = e.getPlayer();
+		boolean isFromLobby = Lobby.isInLobbyOrWatchingArena(player);
+		boolean isFromGame = PlayerManager.isInGame(player);
+		boolean isToLobby = toWorld == Lobby.getLobby() || ArenaManager.getArenaWorlds().contains(toWorld);
+		boolean isToGameWorld = toWorld == WorldManager.getGameMap() ||
+				toWorld == WorldManager.getGameMapNether() ||
+				(ArenaManager.getCurrentArena() != null && toWorld == ArenaManager.getCurrentArena().getWorld());
+		if (isFromLobby && isToGameWorld) {
+			e.setTo(from);
+			e.getPlayer().sendMessage(RED + "Нельзя телепортироваться к игроку через команду! Используй табличку <наблюдать>!");
+			return;
+		}
+		if (isFromGame && isToLobby) {
+			e.setTo(from);
+			e.getPlayer().sendMessage(RED + "Чтобы телепортироваться в лобби, используй /lobby!");
 		}
 	}
 

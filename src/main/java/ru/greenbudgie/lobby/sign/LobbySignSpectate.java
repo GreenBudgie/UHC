@@ -1,9 +1,11 @@
 package ru.greenbudgie.lobby.sign;
 
+import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
+import ru.greenbudgie.UHC.ArenaManager;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.UHC.WorldManager;
@@ -31,7 +33,13 @@ public class LobbySignSpectate extends LobbySign {
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
         if(UHC.playing) {
             PlayerManager.addSpectator(clicker);
-            clicker.teleport(WorldManager.spawnLocation);
+            Location teleportLocation;
+            if (UHC.state.isDeathmatch()) {
+                teleportLocation = ArenaManager.getCurrentArena().getWorld().getSpawnLocation();
+            } else {
+                teleportLocation = WorldManager.spawnLocation;
+            }
+            clicker.teleport(teleportLocation);
             UHC.refreshScoreboards();
             for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
                 inGamePlayer.sendMessage(GOLD + clicker.getName() + AQUA + " присоединился к наблюдателям");

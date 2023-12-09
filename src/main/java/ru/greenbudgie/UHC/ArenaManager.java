@@ -160,6 +160,14 @@ public class ArenaManager {
     }
 
     /**
+     * Gets the list of arena worlds.
+     * This does not include temp (current) arena world.
+     */
+    public static List<World> getArenaWorlds() {
+        return arenas.stream().map(Arena::getWorld).toList();
+    }
+
+    /**
      * Gets the list of enabled arenas.
      * This does not include temp (current) arena.
      */
