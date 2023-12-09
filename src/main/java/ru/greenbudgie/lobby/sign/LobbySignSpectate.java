@@ -5,10 +5,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
-import ru.greenbudgie.UHC.ArenaManager;
-import ru.greenbudgie.UHC.PlayerManager;
-import ru.greenbudgie.UHC.UHC;
-import ru.greenbudgie.UHC.WorldManager;
+import ru.greenbudgie.UHC.*;
 
 import static org.bukkit.ChatColor.*;
 
@@ -39,6 +36,7 @@ public class LobbySignSpectate extends LobbySign {
             } else {
                 teleportLocation = WorldManager.spawnLocation;
             }
+            SafeTeleport.allowTeleport(clicker);
             clicker.teleport(teleportLocation);
             UHC.refreshScoreboards();
             for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {

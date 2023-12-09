@@ -6,9 +6,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.greenbudgie.UHC.PlayerManager;
+import ru.greenbudgie.UHC.SafeTeleport;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.lobby.game.LobbyGameManager;
+
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.GOLD;
 
 public class CommandLobby implements CommandExecutor {
 
@@ -21,8 +25,12 @@ public class CommandLobby implements CommandExecutor {
 				LobbyGameManager.PVP_ARENA.onArenaLeave(player);
 			}
 			boolean inGame = PlayerManager.isInGame(player);
+			SafeTeleport.allowTeleport(player);
 			player.teleport(Lobby.getLobby().getSpawnLocation());
 			if(inGame) {
+				for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+					inGamePlayer.sendMessage(AQUA + "Наблюдатель " + GOLD + player.getName() + AQUA + " вышел в лобби");
+				}
 				PlayerManager.removeSpectator(player);
 				UHC.refreshScoreboards();
 			}

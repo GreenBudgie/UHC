@@ -1736,6 +1736,10 @@ public class UHC implements Listener {
 			return;
 		}
 		Player player = e.getPlayer();
+		if (SafeTeleport.isTeleportAllowed(player)) {
+			SafeTeleport.restrictTeleport(player);
+			return;
+		}
 		boolean isFromLobby = Lobby.isInLobbyOrWatchingArena(player);
 		boolean isFromGame = PlayerManager.isInGame(player);
 		boolean isToLobby = toWorld == Lobby.getLobby() || ArenaManager.getArenaWorlds().contains(toWorld);
