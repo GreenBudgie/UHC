@@ -7,6 +7,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.greenbudgie.UHC.AutoOreSmelting;
 import ru.greenbudgie.UHC.PlayerOptionHolder;
 import ru.greenbudgie.UHC.RecipeHandler;
 import ru.greenbudgie.UHC.UHC;
@@ -62,6 +63,7 @@ public class UHCPlugin extends JavaPlugin {
 		pm.registerEvents(new CustomItemsListener(), this);
 		pm.registerEvents(new ItemRequester(), this);
 		pm.registerEvents(new ArtifactManager(), this);
+		pm.registerEvents(new AutoOreSmelting(), this);
 		InventoryBuilderMutator.registerListener();
 		InventoryBuilderRating.registerListener();
 
