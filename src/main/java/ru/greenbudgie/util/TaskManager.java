@@ -1,6 +1,7 @@
 package ru.greenbudgie.util;
 
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitScheduler;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.lobby.game.LobbyGameManager;
 import ru.greenbudgie.main.UHCPlugin;
@@ -13,6 +14,8 @@ public class TaskManager {
 	public static long fullSeconds = 0;
 	public static int min = 0;
 	public static long fullMinutes = 0;
+
+	private static final BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 
 	public static void init() {
 		UHCPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(UHCPlugin.instance, () -> {
@@ -52,11 +55,7 @@ public class TaskManager {
 	}
 
 	public static void invokeLater(Runnable task) {
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(UHCPlugin.instance, task);
-	}
-
-	public static void invokeLater(Runnable task, long delay) {
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(UHCPlugin.instance, task, delay);
+		Bukkit.getServer().getScheduler().runTask(UHCPlugin.instance, task);
 	}
 
 	@SuppressWarnings("deprecation")

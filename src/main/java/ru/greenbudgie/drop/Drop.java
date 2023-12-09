@@ -1,9 +1,13 @@
 package ru.greenbudgie.drop;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import ru.greenbudgie.mutator.MutatorManager;
+import ru.greenbudgie.util.LocationFormatter;
+
+import javax.annotation.Nullable;
+
+import static org.bukkit.ChatColor.*;
 
 public abstract class Drop {
 
@@ -32,24 +36,33 @@ public abstract class Drop {
 
     public void update() {}
 
-    public String getCoordinatesInfo() {
-        String comma = ChatColor.WHITE + ", ";
-        return ChatColor.DARK_AQUA + "" + location.getBlockX() + comma +
-                ChatColor.DARK_AQUA + location.getBlockY() + comma +
-                ChatColor.DARK_AQUA + location.getBlockZ();
+    public String getCoordinatesInfo(@Nullable Location playerLocation) {
+        if (playerLocation == null) {
+            return LocationFormatter.format(location, DARK_AQUA, WHITE);
+        }
+        return LocationFormatter.formatToWithDistanceAndArrow(
+                playerLocation,
+                location,
+                DARK_AQUA,
+                WHITE,
+                AQUA,
+                DARK_GRAY,
+                AQUA,
+                false
+        );
     }
 
     public String getSpawnMessage() {
-        return ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "\u222B " + ChatColor.RESET +
-                getName() + ChatColor.DARK_AQUA + " заспавнен!" +
-                ChatColor.DARK_GRAY + "" + ChatColor.BOLD + " \u222B";
+        return DARK_GRAY + "" + BOLD + "∫ " + RESET +
+                getName() + DARK_AQUA + " заспавнен!" +
+                DARK_GRAY + "" + BOLD + " ∫";
     }
 
     public String getChatDropCoordinatesInfo() {
-        String vertLine = ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "\u222B" + ChatColor.RESET;
+        String vertLine = DARK_GRAY + "" + BOLD + "∫" + RESET;
         return vertLine + " " + getName() +
-                ChatColor.AQUA + " заспавнен на: " +
-                getCoordinatesInfo() + " " + vertLine;
+                AQUA + " заспавнен на: " +
+                getCoordinatesInfo(null) + " " + vertLine;
     }
 
     public int getTimer() {

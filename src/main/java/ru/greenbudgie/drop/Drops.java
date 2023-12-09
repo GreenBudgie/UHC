@@ -54,8 +54,8 @@ public class Drops {
         drops.add(InventoryHelper
                 .generatePotion(ChatColor.WHITE + "Potion of Power", Color.fromRGB(100, 0, 0), new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 1200, 0)));
         drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Sharp Vial", Color.BLACK, true, false, new PotionEffect(PotionEffectType.HARM, 1, 1)));
-        drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Liquid Helium", Color.WHITE, true, false, new PotionEffect(PotionEffectType.LEVITATION, 400, 0)));
-        drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Everseeing Potion", Color.BLUE, false, false, new PotionEffect(PotionEffectType.NIGHT_VISION, 1200, 0)));
+        drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Liquid Helium", Color.WHITE, true, false, new PotionEffect(PotionEffectType.LEVITATION, 450, 0)));
+        drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Everseeing Potion", Color.BLUE, false, false, new PotionEffect(PotionEffectType.NIGHT_VISION, 24000, 0)));
 
         drops.add(new ItemStack(Material.GOLDEN_APPLE, 2));
         drops.add(new ItemStack(Material.DIAMOND_BLOCK, MathUtils.randomRange(1, 2)));

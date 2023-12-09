@@ -52,10 +52,7 @@ import ru.greenbudgie.requester.ItemRequester;
 import ru.greenbudgie.requester.RequestedItem;
 import ru.greenbudgie.util.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -199,9 +196,12 @@ public class UHC implements Listener {
 
 		if(state.isBeforeDeathmatch()) {
 			final boolean show = state == GameState.OUTBREAK;
+			Location playerLocation = player.getLocation();
 			for(Drop drop : new Drop[] {Drops.NETHERDROP, Drops.CAVEDROP, Drops.AIRDROP}) {
 				if(drop.getTimer() <= deathmatchTimer || show) {
-					Score locationScore = gameInfo.getScore(DARK_GRAY + "- " + drop.getCoordinatesInfo());
+					Score locationScore = gameInfo.getScore(
+							DARK_GRAY + "- " + drop.getCoordinatesInfo(playerLocation)
+					);
 					locationScore.setScore(c++);
 					Score textScore = gameInfo.getScore(
 								drop.getName() +
@@ -211,7 +211,6 @@ public class UHC implements Listener {
 					textScore.setScore(c++);
 				}
 			}
-			Location playerLocation = player.getLocation();
 			Score playerLocationScore = gameInfo.getScore(
 					GRAY + "Ты: " +
 					GRAY + BOLD + playerLocation.getBlockX() +
@@ -502,7 +501,7 @@ public class UHC implements Listener {
 				voteTimer = 20;
 			} else {
 				state = GameState.PREPARING;
-				preparingTimer = 3;
+				preparingTimer = 1;
 			}
 			playing = true;
 			ArenaManager.getCurrentArena().getWorld().setPVP(false);
@@ -974,38 +973,37 @@ public class UHC implements Listener {
 		if(playing && state == GameState.GAME || state == GameState.OUTBREAK) {
 			Drops.update();
 		}
-		if(TaskManager.ticksPassed(5) && playing) {
+		if(TaskManager.ticksPassed(4) && playing) {
 			for(Player onlinePlayer : PlayerManager.getAliveOnlinePlayers()) {
 				UHCPlayer teammate = PlayerManager.getUHCTeammate(onlinePlayer);
 				if(teammate != null && teammate.isAlive()) {
 					Location teammateLocation = teammate.getLocation();
 					if(teammateLocation == null) continue;
-					String slash = GRAY + " | ";
-					String comma = GRAY + ", ";
-					String distanceInfo =
-							onlinePlayer.getWorld() == teammateLocation.getWorld() ?
-							String.valueOf(((int) teammateLocation.distance(onlinePlayer.getLocation()))) :
-							(WorldHelper.getEnvironmentNamePrepositional(teammateLocation.getWorld().getEnvironment(), GRAY));
-					String locationInfo =
-							DARK_AQUA + "" + teammateLocation.getBlockX() + comma +
-							DARK_AQUA + teammateLocation.getBlockY() + comma +
-							DARK_AQUA + teammateLocation.getBlockZ() +
-							DARK_GRAY + " (" +
-							AQUA + distanceInfo +
-							DARK_GRAY + ")";
+					String separator = GRAY + " | ";
+					String locationInfo = LocationFormatter.formatToWithDistance(
+							onlinePlayer.getLocation(),
+							teammateLocation,
+							DARK_AQUA,
+							GRAY,
+							AQUA,
+							DARK_GRAY,
+							true
+					);
 					String teammateInfo =
-							GOLD + teammate.getNickname() + slash +
+							GOLD + teammate.getNickname() + separator +
 							RED + ((int) Math.round(teammate.getRealOrOfflineHealth())) +
-							DARK_RED + " \u2764" + slash +
+							DARK_RED + " ❤" + separator +
 							locationInfo;
 					if(onlinePlayer.getWorld() == teammateLocation.getWorld())
-						teammateInfo += AQUA + " " + getArrow(onlinePlayer.getLocation(), teammateLocation);
+						teammateInfo += AQUA + " " + LocationFormatter.getArrowPointingTo(onlinePlayer.getLocation(), teammateLocation);
 					InventoryHelper.sendActionBarMessage(onlinePlayer, teammateInfo);
 				}
 			}
+			for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+				updateGameScoreboard(inGamePlayer);
+			}
 		}
 		if(TaskManager.isSecUpdated() && playing) {
-
 			List<PlayerTeam> aliveTeams = PlayerManager.getAliveTeams();
 			if(aliveTeams.size() > 0) {
 				if(scoreboardCurrentTeamIndex >= aliveTeams.size()) scoreboardCurrentTeamIndex = 0;
@@ -1017,9 +1015,6 @@ public class UHC implements Listener {
 				}
 			}
 
-			for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
-				updateGameScoreboard(inGamePlayer);
-			}
 			for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
 				ItemStack compassMainHand = currentPlayer.getInventory().getItemInMainHand();
 				ItemStack compassOffHand = currentPlayer.getInventory().getItemInOffHand();
@@ -1029,7 +1024,7 @@ public class UHC implements Listener {
 							.filter(anotherPlayer -> anotherPlayer.getWorld() == currentPlayer.getWorld()
 									&& anotherPlayer != currentPlayer
 									&& (!PlayerManager.isTeammates(anotherPlayer, currentPlayer)))
-							.collect(Collectors.toList());
+							.toList();
 					double dist = Double.MAX_VALUE;
 					Player nearest = null;
 					for(Player anotherPlayer : list) {
@@ -1042,36 +1037,14 @@ public class UHC implements Listener {
 					if(nearest != null) {
 						currentPlayer.setCompassTarget(nearest.getLocation());
 					}
+				} else {
+					Location compassLocation = Optional
+							.ofNullable(currentPlayer.getBedSpawnLocation())
+							.orElse(currentPlayer.getWorld().getSpawnLocation());
+					currentPlayer.setCompassTarget(compassLocation);
 				}
 			}
 		}
-	}
-
-	private static char getArrow(Location l1, Location l2) {
-		double x1 = l1.getX();
-		double z1 = l1.getZ();
-		double x2 = l2.getX();
-		double z2 = l2.getZ();
-		double playerLookAngle = l1.getYaw();
-		playerLookAngle = playerLookAngle % 360.0D;
-		double teammateAngle = Math.atan2(z2 - z1, x2 - x1);
-		double finalAngle = (Math.PI - (Math.toRadians(playerLookAngle - 90.0D) - teammateAngle)) % (Math.PI * 2);
-		if(finalAngle < 0) finalAngle = 2 * Math.PI + finalAngle;
-		char[] arrows = new char[] {'\u2191', '\u2B08', '\u2192', '\u2B0A', '\u2193', '\u2B0B', '\u2190', '\u2B09', '\u2191'};
-		double step = Math.PI / 4;
-		double range = Math.PI / 8;
-		char arrow = ' ';
-		for(int i = 0; i < arrows.length; i++) {
-			double currentAngle = i * step;
-			if(inRange(finalAngle, currentAngle - range, currentAngle + range)) {
-				arrow = arrows[i];
-			}
-		}
-		return arrow;
-	}
-
-	private static boolean inRange(double num, double min, double max) {
-		return num >= min && num <= max;
 	}
 
 	public static void draw() {
@@ -1790,6 +1763,7 @@ public class UHC implements Listener {
 						recipe.getDemand(),
 						recipe.getSpecialPrice()
 				);
+				newRecipe.setIngredients(recipe.getIngredients());
 				newRecipes.add(newRecipe);
 			}
 			villager.setRecipes(newRecipes);

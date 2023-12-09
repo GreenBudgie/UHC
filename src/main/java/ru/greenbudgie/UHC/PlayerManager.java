@@ -35,25 +35,25 @@ public class PlayerManager {
         if(GameType.getType().allowsClasses()) {
             uhcPlayer.setUHCClass(ClassManager.getClassInLobby(player));
         }
-        if(UHC.isDuo) {
-            Player teammate = LobbyTeamBuilder.getTeammate(player);
-            if(teammate != null) {
-                UHCPlayer uhcTeammate = asUHCPlayer(teammate);
-                if(uhcTeammate != null) {
-                    uhcPlayer.setTeammate(uhcTeammate);
-                    uhcTeammate.setTeammate(uhcPlayer);
-                }
-                PlayerTeam teammateTeam = getTeamWithMember(teammate);
-                if(teammateTeam == null) {
-                    teams.add(new PlayerTeam(uhcPlayer));
-                } else {
-                    teammateTeam.addTeammate(uhcPlayer);
-                }
-            } else {
-                teams.add(new PlayerTeam(uhcPlayer));
-            }
-        } else {
+        if (!UHC.isDuo) {
             teams.add(new PlayerTeam(uhcPlayer));
+            return uhcPlayer;
+        }
+        Player teammate = LobbyTeamBuilder.getTeammate(player);
+        if (teammate == null) {
+            teams.add(new PlayerTeam(uhcPlayer));
+            return uhcPlayer;
+        }
+        UHCPlayer uhcTeammate = asUHCPlayer(teammate);
+        if(uhcTeammate != null) {
+            uhcPlayer.setTeammate(uhcTeammate);
+            uhcTeammate.setTeammate(uhcPlayer);
+        }
+        PlayerTeam teammateTeam = getTeamWithMember(teammate);
+        if(teammateTeam == null) {
+            teams.add(new PlayerTeam(uhcPlayer));
+        } else {
+            teammateTeam.addTeammate(uhcPlayer);
         }
         return uhcPlayer;
     }
