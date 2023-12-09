@@ -35,7 +35,7 @@ public class MutatorKnockback extends Mutator implements Listener {
 
 	@Override
 	public boolean conflictsWith(Mutator another) {
-		return another == MutatorManager.noKnockback || another == MutatorManager.noMeleeDamage;
+		return another == MutatorManager.lowMeleeDamage;
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

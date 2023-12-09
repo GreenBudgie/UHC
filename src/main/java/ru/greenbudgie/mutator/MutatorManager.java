@@ -62,7 +62,6 @@ public class MutatorManager {
 	public static MutatorRestrictions restrictions = new MutatorRestrictions();
 	public static MutatorTotems totems = new MutatorTotems();
 	public static MutatorRequestAnywhere requestAnywhere = new MutatorRequestAnywhere();
-	public static MutatorNoKnockback noKnockback = new MutatorNoKnockback();
 	public static MutatorBinding binding = new MutatorBinding();
 	public static MutatorDamageFly damageFly = new MutatorDamageFly();
 	public static MutatorOverpoweredMobs overpoweredMobs = new MutatorOverpoweredMobs();
@@ -76,7 +75,7 @@ public class MutatorManager {
 	public static MutatorDeathCoordinates deathCoordinates = new MutatorDeathCoordinates();
 	public static MutatorImmunity immunity = new MutatorImmunity();
 	public static MutatorHyperExplosions hyperExplosions = new MutatorHyperExplosions();
-	public static MutatorNoMeleeDamage noMeleeDamage = new MutatorNoMeleeDamage();
+	public static MutatorLowMeleeDamage lowMeleeDamage = new MutatorLowMeleeDamage();
 
 	public static void init() {
 		Bukkit.getPluginManager().registerEvents(new Listener() {
