@@ -132,7 +132,7 @@ public class ArenaManager {
         WorldBorder arenaBorder = arena.getWorld().getWorldBorder();
         arenaBorder.setDamageBuffer(1);
         arenaBorder.setWarningDistance(1);
-        arenaBorder.setSize(arena.getMaxBorderSize() * 4);
+        arenaBorder.setSize(arena.getMaxBorderSize());
     }
 
     public static void switchChosenArena() {
