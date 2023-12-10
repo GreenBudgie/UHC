@@ -82,8 +82,8 @@ public class ArtifactRandomEffect extends Artifact {
 
 	@Override
 	public boolean onUse(@Nullable Player player) {
+		PotionEffect chosenEffect = MathUtils.choose(effects);
 		for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
-			PotionEffect chosenEffect = MathUtils.choose(effects);
 			currentPlayer.addPotionEffect(chosenEffect);
 			ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.SMOKE_NORMAL, null, 25);
 		}

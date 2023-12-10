@@ -1,19 +1,30 @@
 package ru.greenbudgie.block;
 
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.RespawnAnchor;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.generator.structure.StructureType;
+import org.bukkit.util.StructureSearchResult;
 import org.bukkit.util.Vector;
 import ru.greenbudgie.items.CustomItem;
 import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.util.ParticleUtils;
+import ru.greenbudgie.util.WorldHelper;
+
+import static org.bukkit.ChatColor.*;
 
 public class CustomBlockInfernalLead extends CustomBlockItem {
 
     private Location nearestFortress;
     private Location fortressPointingLocation;
+    private ArmorStand infoStand;
 
     public CustomBlockInfernalLead(Location location) {
         super(location);
@@ -22,8 +33,16 @@ public class CustomBlockInfernalLead extends CustomBlockItem {
     @Override
     public void onCreate() {
         World world = location.getWorld();
-        int radius = (int) (world.getWorldBorder().getSize() / 3);
-        nearestFortress = world.locateNearestStructure(location, StructureType.NETHER_FORTRESS, radius, false);
+        int radius = (int) (world.getWorldBorder().getSize() / 2);
+        StructureSearchResult searchResult = world.locateNearestStructure(
+                location,
+                StructureType.FORTRESS,
+                radius,
+                false
+        );
+        if (searchResult != null) {
+            nearestFortress = searchResult.getLocation();
+        }
         location.getWorld().playSound(location, Sound.ITEM_TRIDENT_THUNDER, 0.5F, 2F);
         ParticleUtils.createParticlesInsideSphere(centerLocation, 2, Particle.LAVA, null, 20);
     }
@@ -87,6 +106,7 @@ public class CustomBlockInfernalLead extends CustomBlockItem {
                 block.setBlockData(anchor);
                 block.getState().update();
             }
+            createInfoStand();
         }
         if(ticksPassed >= maxTick && ticksPassed % 5 == 0 && fortressPointingLocation != null) {
             ParticleUtils.createLine(centerLocation, fortressPointingLocation, Particle.SOUL_FIRE_FLAME, 4, null);
@@ -96,6 +116,40 @@ public class CustomBlockInfernalLead extends CustomBlockItem {
     @Override
     public CustomItem getRepresentingItem() {
         return CustomItems.infernalLead;
+    }
+
+    @Override
+    public void onRemove() {
+        removeInfoStand();
+    }
+
+    private void createInfoStand() {
+        infoStand = (ArmorStand) location.getWorld().spawnEntity(
+                location.clone().add(0.5, 1.2, 0.5),
+                EntityType.ARMOR_STAND
+        );
+        hideStand(infoStand);
+        String customName;
+        if (nearestFortress == null) {
+            customName = DARK_RED + "" + BOLD + "Крепость не найдена!";
+        } else {
+            int distance = (int) WorldHelper.distanceNoY(nearestFortress, location);
+            customName = RED + "" + BOLD + distance;
+        }
+        infoStand.setCustomName(customName);
+    }
+
+    private void removeInfoStand() {
+        if (infoStand != null) {
+            infoStand.remove();
+        }
+    }
+
+    private void hideStand(ArmorStand stand) {
+        stand.setGravity(false);
+        stand.setMarker(true);
+        stand.setVisible(false);
+        stand.setCustomNameVisible(true);
     }
 
 }

@@ -20,6 +20,7 @@ public class CustomItemInfernalLead extends RequesterCustomItem implements Block
 	@Override
 	public ItemInfo getDescription() {
 		return new ItemInfo("При установке показывает расположение ближайшей крепости в аду")
+				.extra("Также показывает дистанцию до крепости")
 				.note("Можно использовать неограниченное количество раз. Однако, для этого нужно суметь его сломать, ведь блок имеет прочность обсидиана.");
 	}
 

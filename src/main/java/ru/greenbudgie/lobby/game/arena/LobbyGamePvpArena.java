@@ -25,7 +25,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import ru.greenbudgie.UHC.WorldManager;
-import ru.greenbudgie.event.GameInitializeEvent;
+import ru.greenbudgie.event.BeforeGameInitializeEvent;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.lobby.game.LobbyGame;
 import ru.greenbudgie.lobby.sign.SignManager;
@@ -585,7 +585,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 	}
 
 	@EventHandler
-	public void leaveArenaOnGameStart(GameInitializeEvent event) {
+	public void leaveArenaOnGameStart(BeforeGameInitializeEvent event) {
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			if(isOnArena(player)) {
 				onArenaLeave(player);

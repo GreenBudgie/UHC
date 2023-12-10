@@ -19,7 +19,7 @@ import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.UHC.UHCPlayer;
-import ru.greenbudgie.event.GameInitializeEvent;
+import ru.greenbudgie.event.AfterGameInitializeEvent;
 import ru.greenbudgie.event.GameStartEvent;
 import ru.greenbudgie.event.UHCPlayerRejoinEvent;
 import ru.greenbudgie.items.CustomItems;
@@ -90,7 +90,7 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
     }
 
     @EventHandler
-    public void gameInit(GameInitializeEvent event) {
+    public void gameInit(AfterGameInitializeEvent event) {
         for(UHCPlayer uhcPlayer : getPlayersWithClass()) {
             uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(MAX_CLASS_HP);
             UHC.heal(uhcPlayer.getPlayer());

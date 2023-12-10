@@ -35,8 +35,9 @@ import ru.greenbudgie.classes.ClassManager;
 import ru.greenbudgie.classes.UHCClass;
 import ru.greenbudgie.drop.Drop;
 import ru.greenbudgie.drop.Drops;
+import ru.greenbudgie.event.AfterGameInitializeEvent;
+import ru.greenbudgie.event.BeforeGameInitializeEvent;
 import ru.greenbudgie.event.GameEndEvent;
-import ru.greenbudgie.event.GameInitializeEvent;
 import ru.greenbudgie.event.GameStartEvent;
 import ru.greenbudgie.items.BlockHolder;
 import ru.greenbudgie.items.CustomItem;
@@ -417,6 +418,7 @@ public class UHC implements Listener {
 				Bukkit.broadcastMessage(RED + "Карта не сгенерирована!");
 				return;
 			}
+			Bukkit.getPluginManager().callEvent(new BeforeGameInitializeEvent());
 			if(GameType.getType().allowsMutators()) {
 				mutatorCount = MathUtils.chance(30) ? 4 : (MathUtils.chance(65) ? 3 : 2);
 			} else {
@@ -507,7 +509,7 @@ public class UHC implements Listener {
 			ArenaManager.getCurrentArena().getWorld().setPVP(false);
 			SignManager.updateTextOnSigns();
 
-			Bukkit.getPluginManager().callEvent(new GameInitializeEvent());
+			Bukkit.getPluginManager().callEvent(new AfterGameInitializeEvent());
 		} else {
 			Bukkit.broadcastMessage(RED + "Игра уже идет");
 		}

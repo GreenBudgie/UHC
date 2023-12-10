@@ -4,10 +4,10 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when the UHC game initializes, right after all preparations are done:
- * players are set up and teleported, platform generated, e.t.c.
+ * Called after the UHC game is initialized, right after all preparations are done:
+ * players are set up and teleported, platform generated, game state changed to VOTE e.t.c.
  */
-public class GameInitializeEvent extends Event {
+public class AfterGameInitializeEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 

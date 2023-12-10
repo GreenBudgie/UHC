@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.ItemStack;
-import ru.greenbudgie.event.GameInitializeEvent;
+import ru.greenbudgie.event.BeforeGameInitializeEvent;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.lobby.game.LobbyGame;
 import ru.greenbudgie.lobby.game.arena.PvpArenaEnterEvent;
@@ -131,7 +131,7 @@ public class LobbyGameParkour extends LobbyGame implements Listener {
     }
 
     @EventHandler
-    public void endSessionsOnGameStart(GameInitializeEvent event) {
+    public void endSessionsOnGameStart(BeforeGameInitializeEvent event) {
         endAllSessions();
     }
 

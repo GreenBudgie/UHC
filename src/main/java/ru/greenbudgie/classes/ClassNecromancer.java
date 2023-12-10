@@ -12,7 +12,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.FightHelper;
 import ru.greenbudgie.UHC.UHCPlayer;
-import ru.greenbudgie.event.GameInitializeEvent;
+import ru.greenbudgie.event.AfterGameInitializeEvent;
 import ru.greenbudgie.event.UHCPlayerDeathEvent;
 import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.util.ItemInfo;
@@ -51,7 +51,7 @@ public class ClassNecromancer extends UHCClass {
     }
 
     @EventHandler
-    public void gameInit(GameInitializeEvent event) {
+    public void gameInit(AfterGameInitializeEvent event) {
         for(UHCPlayer uhcPlayer : getPlayersWithClass()) {
             uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(MAX_CLASS_HP);
         }

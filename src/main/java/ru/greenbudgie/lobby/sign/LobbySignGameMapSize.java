@@ -38,6 +38,7 @@ public class LobbySignGameMapSize extends LobbySign {
             case SMALL -> GREEN + "" + BOLD + "Маленький";
             case DEFAULT -> AQUA + "" + BOLD + "Обычный";
             case BIG -> RED + "" + BOLD + "Большой";
+            case EXTREME -> DARK_RED + "" + BOLD + "Гигантский";
         };
 
         int chunksPerPlayer = UHC.mapSize.getChunksPerPlayer();

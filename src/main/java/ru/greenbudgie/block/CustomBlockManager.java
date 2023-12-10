@@ -21,6 +21,7 @@ public class CustomBlockManager {
         for(CustomBlock block : customBlocks) {
             block.remove();
         }
+        customBlocks.clear();
     }
 
     public static void updateBlocks() {
