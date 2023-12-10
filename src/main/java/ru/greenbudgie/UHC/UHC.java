@@ -1585,10 +1585,18 @@ public class UHC implements Listener {
 	@EventHandler
 	public void craft(PrepareItemCraftEvent e) {
 		Recipe recipe = e.getRecipe();
-		if(recipe != null && e.getRecipe().getResult().getType() == Material.EMERALD_BLOCK) {
+		if (recipe == null) {
+			return;
+		}
+		if(recipe.getResult().getType() == Material.EMERALD_BLOCK) {
 			if(Stream.of(e.getInventory().getMatrix()).anyMatch(item -> !ItemUtils.getLore(item).isEmpty())) {
 				recipe.getResult().setAmount(0);
 			}
+		}
+		if (recipe.getResult().getType() == Material.NETHERITE_INGOT) {
+			e.getInventory().setResult(
+					ItemUtils.addSplittedLore(recipe.getResult(), Messages.NETHERITE_TRIM_IS_NOT_REQUIRED)
+			);
 		}
 	}
 
@@ -1691,21 +1699,30 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void breakBlock(BlockBreakEvent e) {
-		Player p = e.getPlayer();
+		Player player = e.getPlayer();
 		if((state.isPreGame() || state == GameState.ENDING) && PlayerManager.isPlaying(e.getPlayer())) {
 			e.setCancelled(true);
 		}
-		if(state.isBeforeDeathmatch() && PlayerManager.isPlaying(p)) {
+		if(state.isBeforeDeathmatch() && PlayerManager.isPlaying(player)) {
 			if((e.getBlock().getType() == Material.EMERALD_ORE || e.getBlock().getType() == Material.DEEPSLATE_EMERALD_ORE) && e.getExpToDrop() > 0) {
 				e.setDropItems(false);
-				ItemStack drop = MathUtils
-						.choose(new ItemStack(Material.DIAMOND, MathUtils.randomRange(1, 2)), new ItemStack(Material.REDSTONE, MathUtils.randomRange(24, 40)),
-								new ItemStack(Material.GOLD_INGOT, MathUtils.randomRange(5, 8)));
+				ItemStack drop = MathUtils.choose(
+						new ItemStack(Material.DIAMOND, MathUtils.randomRange(1, 2)),
+						new ItemStack(Material.REDSTONE, MathUtils.randomRange(24, 40)),
+						new ItemStack(Material.GOLD_INGOT, MathUtils.randomRange(5, 8)),
+						new ItemStack(Material.LAPIS_LAZULI, MathUtils.randomRange(7, 12))
+				);
 				e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), drop);
+				player.playSound(
+						player.getLocation(),
+						Sound.BLOCK_NOTE_BLOCK_CHIME,
+						0.5F,
+						(float) MathUtils.randomRangeDouble(1.5, 2)
+				);
 				e.setExpToDrop(e.getExpToDrop() * 5);
 			}
 		}
-		if(PlayerManager.isPlaying(p) && state == GameState.DEATHMATCH) {
+		if(PlayerManager.isPlaying(player) && state == GameState.DEATHMATCH) {
 			Material brokenType = e.getBlock().getType();
 			boolean isFireExtinguish = brokenType == Material.FIRE || brokenType == Material.SOUL_FIRE;
 			if (isFireExtinguish) {
@@ -1799,27 +1816,57 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void interact(PlayerInteractEvent e) {
-		Player p = e.getPlayer();
-		if(state == GameState.VOTE && PlayerManager.isPlaying(p) && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-			ItemStack item = p.getInventory().getItemInMainHand();
+		Player player = e.getPlayer();
+		if(state == GameState.VOTE && PlayerManager.isPlaying(player) && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+			ItemStack item = player.getInventory().getItemInMainHand();
 			if(item.getType() != Material.AIR) {
-				passVote(p, item.getType() == Material.LIME_DYE);
+				passVote(player, item.getType() == Material.LIME_DYE);
 			}
 			e.setCancelled(true);
 		}
 		ItemStack item = e.getItem();
-		if(state.isBeforeDeathmatch() && PlayerManager.isPlaying(p) && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) && item != null
-				&& item.getType() == Material.EMERALD && ItemUtils.getLore(item).isEmpty()) {
-			ItemStack drop = MathUtils
-					.choose(new ItemStack(Material.DIAMOND, MathUtils.randomRange(1, 2)), new ItemStack(Material.REDSTONE, MathUtils.randomRange(24, 40)),
-							new ItemStack(Material.GOLD_INGOT, MathUtils.randomRange(5, 8)));
-			item.setAmount(item.getAmount() - 1);
-			p.playSound(p.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5F, 1F);
-			p.getWorld().dropItemNaturally(p.getLocation(), drop);
+		if(state.isBeforeDeathmatch()
+				&& PlayerManager.isPlaying(player)
+				&& (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)
+				&& item != null) {
+			if (item.getType() == Material.EMERALD && ItemUtils.getLore(item).isEmpty()) {
+				useEmerald(player, item);
+			}
+			if (item.getType() == Material.NETHERITE_INGOT) {
+				useNetheriteIngot(player);
+			}
 		}
-		if(state == GameState.PREPARING && PlayerManager.isPlaying(p)) {
+		if(state == GameState.PREPARING && PlayerManager.isPlaying(player)) {
 			e.setCancelled(true);
 		}
+	}
+
+	private void useEmerald(Player player, ItemStack item) {
+		ItemStack drop = MathUtils.choose(
+				new ItemStack(Material.DIAMOND, MathUtils.randomRange(1, 2)),
+				new ItemStack(Material.REDSTONE, MathUtils.randomRange(24, 40)),
+				new ItemStack(Material.GOLD_INGOT, MathUtils.randomRange(5, 8)),
+				new ItemStack(Material.LAPIS_LAZULI, MathUtils.randomRange(7, 12))
+		);
+		item.setAmount(item.getAmount() - 1);
+		player.playSound(
+				player.getLocation(),
+				Sound.BLOCK_NOTE_BLOCK_CHIME,
+				0.5F,
+				(float) MathUtils.randomRangeDouble(1.5, 2)
+		);
+		player.getWorld().dropItemNaturally(player.getLocation().add(-0.5, 0.5, -0.5), drop);
+	}
+
+	private void useNetheriteIngot(Player player) {
+		player.playSound(
+				player.getLocation(),
+				Sound.BLOCK_NOTE_BLOCK_XYLOPHONE,
+				0.5F,
+				(float) MathUtils.randomRangeDouble(0.5, 1)
+		);
+		ItemStack template = new ItemStack(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE);
+		player.getWorld().dropItemNaturally(player.getLocation().add(-0.5, 0.5, -0.5), template);
 	}
 
 	@EventHandler

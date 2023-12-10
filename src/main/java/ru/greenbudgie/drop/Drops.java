@@ -11,7 +11,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.util.InventoryHelper;
+import ru.greenbudgie.util.ItemUtils;
 import ru.greenbudgie.util.MathUtils;
+import ru.greenbudgie.util.Messages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,8 +72,8 @@ public class Drops {
         drops.add(MathUtils.choose(books));
 
         ItemStack boots = new ItemStack(Material.DIAMOND_BOOTS);
-        boots.addEnchantment(Enchantment.PROTECTION_FALL, MathUtils.randomRange(2, 3));
-        boots.addEnchantment(Enchantment.DEPTH_STRIDER, MathUtils.randomRange(1, 3));
+        boots.addEnchantment(Enchantment.PROTECTION_FALL, MathUtils.randomRange(3, 4));
+        boots.addEnchantment(Enchantment.DEPTH_STRIDER, MathUtils.randomRange(2, 3));
         drops.add(boots);
 
         ItemStack pants = new ItemStack(Material.DIAMOND_LEGGINGS);
@@ -90,7 +92,7 @@ public class Drops {
         drops.add(helmet);
 
         ItemStack bow = new ItemStack(Material.BOW);
-        bow.addEnchantment(Enchantment.ARROW_DAMAGE, MathUtils.randomRange(1, 2));
+        bow.addEnchantment(Enchantment.ARROW_DAMAGE, MathUtils.randomRange(2, 4));
         if(MathUtils.chance(50)) bow.addEnchantment(Enchantment.ARROW_FIRE, 1);
         if(MathUtils.chance(25)) bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
         drops.add(bow);
@@ -132,10 +134,14 @@ public class Drops {
             drops.add(new ItemStack(Material.NETHERITE_SWORD));
             drops.add(new ItemStack(Material.NETHERITE_AXE));
             drops.add(new ItemStack(Material.NETHERITE_PICKAXE));
-            drops.add(new ItemStack(Material.NETHERITE_INGOT));
+            drops.add(
+                    ItemUtils.builder(Material.NETHERITE_INGOT)
+                            .withSplittedLore(Messages.NETHERITE_TRIM_IS_NOT_REQUIRED)
+                            .build()
+            );
         }
         ItemStack artifact = CustomItems.darkArtifact.getItemStack();
-        artifact.setAmount(MathUtils.randomRange(10, 18));
+        artifact.setAmount(MathUtils.randomRange(14, 24));
         drops.add(artifact);
         return drops;
     }
