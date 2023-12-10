@@ -1439,7 +1439,7 @@ public class UHC implements Listener {
 		boolean local = mes.startsWith(".");
 		if(local) mes = mes.substring(1);
 		String suffix = GOLD + sender.getName() + WHITE + ": " + mes;
-		String prefix = LIGHT_PURPLE + "<Локально> ";
+		String localPrefix = LIGHT_PURPLE + "<Локально> ";
 		for(Player receiver : Bukkit.getOnlinePlayers()) {
 			if(!local) {
 				if(Lobby.isInLobbyOrWatchingArena(sender) && PlayerManager.isInGame(receiver)) {
@@ -1459,7 +1459,10 @@ public class UHC implements Listener {
 				if((Lobby.isInLobbyOrWatchingArena(sender) && Lobby.isInLobbyOrWatchingArena(receiver)) ||
 						(PlayerManager.isSpectator(sender) && PlayerManager.isSpectator(receiver)) ||
 						(!isDuo && PlayerManager.isPlaying(sender) && PlayerManager.isPlaying(receiver))) {
-					receiver.sendMessage(prefix + suffix);
+					receiver.sendMessage(localPrefix + suffix);
+					continue;
+				}
+				if (!PlayerManager.isPlaying(sender)) {
 					continue;
 				}
 				Player teammate = PlayerManager.getTeammate(sender);
@@ -1605,7 +1608,8 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void emptyBucket(PlayerBucketEmptyEvent e) {
-		if(PlayerManager.isPlaying(e.getPlayer()) && state == GameState.DEATHMATCH && !MutatorManager.interactiveArena.isActive()) {
+		if(PlayerManager.isPlaying(e.getPlayer()) && state.isDeathmatch() && ArenaManager.isPvpDisabled()) {
+			e.getPlayer().sendMessage(Messages.CANNOT_INTERACT_WITH_ARENA_NOW);
 			e.setCancelled(true);
 		}
 		if(state == GameState.VOTE || state == GameState.PREPARING) {
@@ -1615,7 +1619,8 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void fillBucket(PlayerBucketFillEvent e) {
-		if(PlayerManager.isPlaying(e.getPlayer()) && state == GameState.DEATHMATCH && !MutatorManager.interactiveArena.isActive()) {
+		if(PlayerManager.isPlaying(e.getPlayer()) && state.isDeathmatch() && ArenaManager.isPvpDisabled()) {
+			e.getPlayer().sendMessage(Messages.CANNOT_INTERACT_WITH_ARENA_NOW);
 			e.setCancelled(true);
 		}
 		if(state == GameState.VOTE || state == GameState.PREPARING) {
@@ -1626,6 +1631,10 @@ public class UHC implements Listener {
 	@EventHandler
 	public void portal(PlayerPortalEvent e) {
 		Player player = e.getPlayer();
+		if (state.isDeathmatch()) {
+			e.setCancelled(true);
+			return;
+		}
 		if(PlayerManager.isPlaying(player)) {
 			Location loc = player.getLocation();
 			if(player.getWorld().getEnvironment() == World.Environment.NETHER) {
@@ -1650,19 +1659,32 @@ public class UHC implements Listener {
 	}
 
 	@EventHandler
-	public void place(BlockPlaceEvent e) {
-		Player p = e.getPlayer();
-		if(PlayerManager.isPlaying(p) && (state == GameState.PREPARING || state == GameState.VOTE)) {
-			e.setCancelled(true);
+	public void place(BlockPlaceEvent event) {
+		Player p = event.getPlayer();
+		if(PlayerManager.isPlaying(p) && state.isPreGame()) {
+			event.setCancelled(true);
 		}
-		if(PlayerManager.isPlaying(p) && state == GameState.DEATHMATCH) {
-			CustomItem customItem = CustomItems.getCustomItem(e.getItemInHand());
+		if(PlayerManager.isPlaying(p) && state.isDeathmatch()) {
+			ItemStack itemInHand = event.getItemInHand();
+			boolean isIgnite = itemInHand.getType() == Material.FLINT_AND_STEEL;
+			if (ArenaManager.isPvpDisabled()) {
+				if (isIgnite) {
+					p.sendMessage(Messages.CANNOT_INTERACT_WITH_ARENA_NOW);
+					event.setCancelled(true);
+					return;
+				}
+				if (!MutatorManager.interactiveArena.isActive()) {
+					event.setCancelled(true);
+					return;
+				}
+			}
+			CustomItem customItem = CustomItems.getCustomItem(itemInHand);
 			boolean canPlaceOnArena = false;
 			if(customItem instanceof BlockHolder holder) {
 				if(holder.canPlaceOnDeathmatch()) canPlaceOnArena = true;
 			}
-			if(!CustomItems.tnt.isEquals(e.getItemInHand()) && !MutatorManager.interactiveArena.isActive() && !canPlaceOnArena) {
-				e.setCancelled(true);
+			if(!CustomItems.tnt.isEquals(itemInHand) && !MutatorManager.interactiveArena.isActive() && !canPlaceOnArena) {
+				event.setCancelled(true);
 			}
 		}
 	}
@@ -1684,6 +1706,11 @@ public class UHC implements Listener {
 			}
 		}
 		if(PlayerManager.isPlaying(p) && state == GameState.DEATHMATCH) {
+			Material brokenType = e.getBlock().getType();
+			boolean isFireExtinguish = brokenType == Material.FIRE || brokenType == Material.SOUL_FIRE;
+			if (isFireExtinguish) {
+				return;
+			}
 			if(MutatorManager.interactiveArena.isActive()) {
 				e.setDropItems(false);
 				e.setExpToDrop(0);
@@ -1804,18 +1831,18 @@ public class UHC implements Listener {
 	}
 
 	@EventHandler
-	public void tntArena(EntityExplodeEvent e) {
-		if(e.getEntityType() == EntityType.PRIMED_TNT) {
+	public void tntArena(EntityExplodeEvent event) {
+		if(event.getEntityType() == EntityType.PRIMED_TNT) {
 			if (state == GameState.ENDING) {
-				e.blockList().clear();
+				event.blockList().clear();
 				return;
 			}
 			if (state != GameState.DEATHMATCH) {
 				return;
 			}
-			e.setYield(0);
+			event.setYield(0);
 			if (!MutatorManager.interactiveArena.isActive()) {
-				e.blockList().clear();
+				event.blockList().clear();
 			}
 		}
 	}

@@ -125,6 +125,7 @@ public class ArenaManager {
             currentArena = chosenArena.cloneAsTemp();
         }
         resetArenaBorder(currentArena);
+        currentArena.getWorld().setGameRule(GameRule.DO_TILE_DROPS, false);
         needsUpdate = false;
     }
 
@@ -192,6 +193,14 @@ public class ArenaManager {
      */
     public static Arena getCurrentArena() {
         return currentArena;
+    }
+
+    /**
+     * Whether PVP on the current deathmatch arena is off.
+     * Note: it is off in the first 15 seconds of the deathmatch
+     */
+    public static boolean isPvpDisabled() {
+        return !currentArena.getWorld().getPVP();
     }
 
     public enum ArenaOptions {

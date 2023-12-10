@@ -9,8 +9,8 @@ import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.UHC.ArenaManager;
-import ru.greenbudgie.UHC.GameState;
 import ru.greenbudgie.UHC.UHC;
+import ru.greenbudgie.util.Messages;
 
 public class CustomItemsListener implements Listener {
 
@@ -66,12 +66,15 @@ public class CustomItemsListener implements Listener {
 					if(item instanceof BlockHolder holder) {
 						boolean toCancel = true;
 						boolean pvpIsOn = ArenaManager.getCurrentArena().getWorld().getPVP();
-						boolean isDeathmatch = UHC.state == GameState.DEATHMATCH;
+						boolean isDeathmatch = UHC.state.isDeathmatch();
 						boolean canPlaceNow = UHC.state.isBeforeDeathmatch();
 						if(canPlaceNow || (isDeathmatch && holder.canPlaceOnDeathmatch() && pvpIsOn)) {
 							toCancel = !holder.placeBlock(e.getBlock().getLocation(), e.getPlayer());
 						}
-						if(toCancel) e.setCancelled(true);
+						if(toCancel) {
+							e.getPlayer().sendMessage(Messages.CANNOT_INTERACT_WITH_ARENA_NOW);
+							e.setCancelled(true);
+						}
 					}
 				}
 			}

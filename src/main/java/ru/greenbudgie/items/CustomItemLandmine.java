@@ -20,13 +20,13 @@ public class CustomItemLandmine extends RequesterCustomItem implements BlockHold
 	@Override
 	public ItemInfo getDescription() {
 		return new ItemInfo("Мина, которая активируется при приближении врага к ней")
-				.extra("Радиус активации: 5 блоков, задержка перед взрывом - 1.5 секунды. Сила взрыва примерно равна динамиту.")
-				.note("Можно зарыть под землю и поставить блок грязи сверху - он сразу зарастет травой");
+				.extra("Радиус активации: 5 блоков, задержка перед взрывом - 1.5 секунды. Сила взрыва примерно равна динамиту. Можно установить на арене! Взрывается сильнее, если окружена блоками со всех сторон, т.е. полностью зарыта.")
+				.note("Нанесет тебе и тиммейту столько же урона, сколько и врагу, если будешь рядом! Можно зарыть под землю и поставить блок грязи сверху - он сразу зарастет травой.");
 	}
 
 	@Override
 	public int getRedstonePrice() {
-		return 64;
+		return 80;
 	}
 
 	@Override
@@ -42,6 +42,6 @@ public class CustomItemLandmine extends RequesterCustomItem implements BlockHold
 
 	@Override
 	public boolean canPlaceOnDeathmatch() {
-		return false;
+		return true;
 	}
 }

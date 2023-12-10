@@ -14,6 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import ru.greenbudgie.UHC.*;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.ItemInfo;
+import ru.greenbudgie.util.Messages;
 import ru.greenbudgie.util.ParticleUtils;
 
 public class CustomItemInstantTnt extends RequesterCustomItem implements Listener {
@@ -42,6 +43,7 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 			tnt.setMetadata("owner", new FixedMetadataValue(UHCPlugin.instance, p.getName()));
 			b.setType(Material.AIR);
 		} else {
+			p.sendMessage(Messages.CANNOT_INTERACT_WITH_ARENA_NOW);
 			e.setCancelled(true);
 		}
 	}

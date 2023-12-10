@@ -80,6 +80,7 @@ public class CustomBlockLandmine extends CustomBlockItem {
 			}
 			fuseTicks--;
 			if(fuseTicks <= 0) {
+				boolean breakBlocks = MutatorManager.interactiveArena.isActive() || UHC.state.isBeforeDeathmatch();
 				if(detonated) {
 					secondExplodeTicks--;
 					if(secondExplodeTicks <= 0) {
@@ -88,23 +89,24 @@ public class CustomBlockLandmine extends CustomBlockItem {
 						}
 						float power = 4;
 						if(MutatorManager.hyperExplosions.isActive()) {
-							location.getWorld().createExplosion(location, power * MutatorManager.hyperExplosions.getPowerMultiplier(), true);
+							location.getWorld().createExplosion(location, power * MutatorManager.hyperExplosions.getPowerMultiplier(), true, breakBlocks);
 						} else {
-							location.getWorld().createExplosion(location, power);
+							location.getWorld().createExplosion(location, power, false, breakBlocks);
 						}
 						remove();
 					}
 				} else {
 					detonated = true;
 					location.getBlock().setType(Material.AIR);
-					for(Player p : WorldHelper.getPlayersDistance(location, 6).stream().filter(PlayerManager::isPlaying).collect(Collectors.toList())) {
-						FightHelper.setDamager(p, owner, 40, "заминировал");
-					}
 					float power = isSurrounded() ? 4 : 2;
 					if(MutatorManager.hyperExplosions.isActive()) {
-						location.getWorld().createExplosion(location, power * MutatorManager.hyperExplosions.getPowerMultiplier(), true);
+						location.getWorld().createExplosion(location, power * MutatorManager.hyperExplosions.getPowerMultiplier(), true, breakBlocks);
 					} else {
-						location.getWorld().createExplosion(location, power);
+						location.getWorld().createExplosion(location, power, false, breakBlocks);
+					}
+					for(Player p : WorldHelper.getPlayersDistance(location, 6).stream().filter(PlayerManager::isPlaying).toList()) {
+						FightHelper.setDamager(p, owner, 40, "заминировал");
+						p.setNoDamageTicks(0);
 					}
 				}
 			}
@@ -118,17 +120,20 @@ public class CustomBlockLandmine extends CustomBlockItem {
 
 	@EventHandler
 	public void place(BlockPlaceEvent e) {
-		if(PlayerManager.isPlaying(e.getPlayer()) && UHC.state.isBeforeDeathmatch()) {
-			ItemStack item = e.getItemInHand();
-			if(item.getType() == Material.DIRT) {
-				Block under = e.getBlock().getLocation().clone().add(0, -1, 0).getBlock();
-				if(equals(under)) {
-					e.getBlock().setType(Material.GRASS_BLOCK);
-					ParticleUtils.createParticlesOutline(e.getBlock(), Particle.VILLAGER_HAPPY, null, 20);
-					e.getBlock().getWorld().playSound(e.getBlock().getLocation(), Sound.BLOCK_CHORUS_FLOWER_GROW, 1F, 1F);
-				}
-			}
+		if (!PlayerManager.isPlaying(e.getPlayer()) || !UHC.state.isBeforeDeathmatch()) {
+			return;
 		}
+		ItemStack item = e.getItemInHand();
+		if (item.getType() != Material.DIRT) {
+			return;
+		}
+		Block under = e.getBlock().getLocation().clone().add(0, -1, 0).getBlock();
+		if (!equals(under)) {
+			return;
+		}
+		e.getBlock().setType(Material.GRASS_BLOCK);
+		ParticleUtils.createParticlesOutline(e.getBlock(), Particle.VILLAGER_HAPPY, null, 20);
+		e.getBlock().getWorld().playSound(e.getBlock().getLocation(), Sound.BLOCK_CHORUS_FLOWER_GROW, 1F, 1F);
 	}
 
 }
