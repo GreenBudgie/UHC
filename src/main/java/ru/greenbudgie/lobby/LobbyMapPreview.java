@@ -17,7 +17,6 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
-import org.bukkit.util.NumberConversions;
 import ru.greenbudgie.UHC.WorldManager;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.Region;
@@ -180,17 +179,7 @@ public class LobbyMapPreview {
                         World world = map.getWorld();
                         if(world != null) {
                             Block block = world.getHighestBlockAt(realX, realZ);
-                            Location blockLocation = block.getLocation();
-                            Location spawnLocation = map.getWorld().getSpawnLocation();
-                            double distanceToSpawnSq =
-                                    NumberConversions.square(blockLocation.getX() - spawnLocation.getX()) +
-                                    NumberConversions.square(blockLocation.getZ() - spawnLocation.getZ());
-                            byte color;
-                            if(distanceToSpawnSq <= 16 / scaling) {
-                                color = MapPalette.matchColor(Color.RED);
-                            } else {
-                                color = getBlockColor(block);
-                            }
+                            byte color = getBlockColor(block);
                             canvas.setPixel(x, z, color);
                         }
                     }

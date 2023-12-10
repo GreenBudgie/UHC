@@ -27,6 +27,7 @@ public class CommandLobby implements CommandExecutor {
 			boolean inGame = PlayerManager.isInGame(player);
 			SafeTeleport.allowTeleport(player);
 			player.teleport(Lobby.getLobby().getSpawnLocation());
+			player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
 			if(inGame) {
 				for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 					inGamePlayer.sendMessage(AQUA + "Наблюдатель " + GOLD + player.getName() + AQUA + " вышел в лобби");
