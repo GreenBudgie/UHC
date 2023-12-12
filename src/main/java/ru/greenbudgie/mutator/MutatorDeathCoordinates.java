@@ -4,6 +4,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -58,35 +60,37 @@ public class MutatorDeathCoordinates extends Mutator implements Listener {
 	public void handlePlayerDeath(UHCPlayerDeathEvent event) {
 		UHCPlayer uhcPlayer = event.getUHCPlayer();
 		Location location = uhcPlayer.getLocation();
-		if(UHC.state.isBeforeDeathmatch() && location != null) {
-			Block signBlock = getSignBlockBelow(location);
-			if(signBlock != null) {
-				signBlock.setType(Material.CRIMSON_SIGN);
-				Sign sign = (Sign) signBlock.getState();
-				sign.setLine(0, WHITE + "Трагически");
-				sign.setLine(1, WHITE + "погиб");
-				sign.setLine(2, WHITE + uhcPlayer.getNickname());
-				sign.setLine(3, WHITE + "" + BOLD + "RIP");
-				sign.update(true, false);
-			}
-			String dimension =
-					GRAY + " (" +
-					WorldHelper.getEnvironmentNamePrepositional(location.getWorld().getEnvironment(), WHITE) +
-					GRAY + ")";
-			String locationInfo =
-					DARK_GRAY + "" + BOLD + "> " +
-					GRAY + "Координаты " +
-					AQUA + uhcPlayer.getNickname() +
-					GRAY + ": " +
-					WHITE + location.getBlockX() +
-					GRAY + ", " + WHITE + location.getBlockY() +
-					GRAY + ", " + WHITE + location.getBlockZ();
-			for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
-				if(player.getWorld() != location.getWorld()) {
-					player.sendMessage(locationInfo + dimension);
-				} else {
-					player.sendMessage(locationInfo);
-				}
+		if (!UHC.state.isBeforeDeathmatch() || location == null) {
+			return;
+		}
+		Block signBlock = getSignBlockBelow(location);
+		if(signBlock != null) {
+			signBlock.setType(Material.CRIMSON_SIGN);
+			Sign sign = (Sign) signBlock.getState();
+			SignSide side = sign.getSide(Side.FRONT);
+			side.setLine(0, WHITE + "Трагически");
+			side.setLine(1, WHITE + "погиб");
+			side.setLine(2, WHITE + uhcPlayer.getNickname());
+			side.setLine(3, WHITE + "" + BOLD + "RIP");
+			sign.update(true, false);
+		}
+		String dimension =
+				GRAY + " (" +
+				WorldHelper.getEnvironmentNamePrepositional(location.getWorld().getEnvironment(), WHITE) +
+				GRAY + ")";
+		String locationInfo =
+				DARK_GRAY + "" + BOLD + "> " +
+				GRAY + "Координаты " +
+				AQUA + uhcPlayer.getNickname() +
+				GRAY + ": " +
+				WHITE + location.getBlockX() +
+				GRAY + ", " + WHITE + location.getBlockY() +
+				GRAY + ", " + WHITE + location.getBlockZ();
+		for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
+			if(player.getWorld() != location.getWorld()) {
+				player.sendMessage(locationInfo + dimension);
+			} else {
+				player.sendMessage(locationInfo);
 			}
 		}
 	}

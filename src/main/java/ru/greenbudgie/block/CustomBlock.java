@@ -13,8 +13,6 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.WorldHelper;
 
@@ -63,25 +61,6 @@ public abstract class CustomBlock implements Listener {
      */
     public boolean removeIfRealBlockNotPresent() {
         return true;
-    }
-
-    /**
-     * Writes the given value to block's metadata.
-     */
-    public void setData(String name, Object value) {
-        getBlock().setMetadata(name, new FixedMetadataValue(UHCPlugin.instance, value));
-    }
-
-    /**
-     * Gets the value from block's metadata by the given name.
-     * @return Value, or null if not found
-     */
-    public Object getData(String name) {
-        List<MetadataValue> data = getBlock().getMetadata(name);
-        for(MetadataValue value : data) {
-            if(value.getOwningPlugin() == UHCPlugin.instance) return value.value();
-        }
-        return null;
     }
 
     /**
@@ -217,14 +196,20 @@ public abstract class CustomBlock implements Listener {
     @EventHandler
     public void noPistonMove(BlockPistonExtendEvent event) {
         for(Block block : event.getBlocks()) {
-            if(equals(event.getBlock())) event.setCancelled(true);
+            if(equals(block)) {
+                event.setCancelled(true);
+                return;
+            }
         }
     }
 
     @EventHandler
     public void noPistonMove(BlockPistonRetractEvent event) {
         for(Block block : event.getBlocks()) {
-            if(equals(event.getBlock())) event.setCancelled(true);
+            if(equals(block)) {
+                event.setCancelled(true);
+                return;
+            }
         }
     }
 

@@ -14,6 +14,7 @@ import java.util.List;
 
 public class MutatorApocalypse extends Mutator implements Listener {
 
+	private static final int RANGE = 14;
 	private int timeToDrop = 0;
 
 	@Override
@@ -51,26 +52,28 @@ public class MutatorApocalypse extends Mutator implements Listener {
 				toList();
 		if(availablePlayers.isEmpty()) return null;
 		Player target = MathUtils.choose(availablePlayers);
-		int x = target.getLocation().getBlockX() + MathUtils.randomRange(-15, 15);
-		int z = target.getLocation().getBlockZ() + MathUtils.randomRange(-15, 15);
+		int x = target.getLocation().getBlockX() + MathUtils.randomRange(-RANGE, RANGE);
+		int z = target.getLocation().getBlockZ() + MathUtils.randomRange(-RANGE, RANGE);
 		int y = WorldManager.getGameMap().getMaxHeight() - 1;
 		return new Location(WorldManager.getGameMap(), x, y, z);
 	}
 
 	@Override
 	public void update() {
-		if(TaskManager.isSecUpdated()) {
-			timeToDrop--;
-			if(timeToDrop <= 0) {
-				Location dropLocation = getRandomLocation();
-				boolean closedArena = UHC.state == GameState.DEATHMATCH && !ArenaManager.getCurrentArena().isOpen();
-				if(dropLocation != null && !closedArena) {
-					TNTPrimed tnt = (TNTPrimed) dropLocation.getWorld().spawnEntity(dropLocation, EntityType.PRIMED_TNT);
-					tnt.setFuseTicks(12 * 20);
-				}
-				reset();
-			}
+		if (!TaskManager.isSecUpdated()) {
+			return;
 		}
+		timeToDrop--;
+		if (timeToDrop > 0) {
+			return;
+		}
+		Location dropLocation = getRandomLocation();
+		boolean closedArena = UHC.state == GameState.DEATHMATCH && !ArenaManager.getCurrentArena().isOpen();
+		if(dropLocation != null && !closedArena) {
+			TNTPrimed tnt = (TNTPrimed) dropLocation.getWorld().spawnEntity(dropLocation, EntityType.PRIMED_TNT);
+			tnt.setFuseTicks(12 * 20);
+		}
+		reset();
 	}
 
 }

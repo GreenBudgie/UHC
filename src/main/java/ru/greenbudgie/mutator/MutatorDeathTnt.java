@@ -36,12 +36,13 @@ public class MutatorDeathTnt extends Mutator implements Listener {
 	@EventHandler
 	public void dig(EntityDeathEvent e) {
 		LivingEntity ent = e.getEntity();
-		if(ent.getKiller() != null) {
-			ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_TNT_PRIMED, 1F, 1.5F);
-			TNTPrimed tnt = (TNTPrimed) ent.getWorld().spawnEntity(ent.getLocation(), EntityType.PRIMED_TNT);
-			tnt.setVelocity(new Vector(MathUtils.randomRangeDouble(-0.2, 0.2), MathUtils.randomRangeDouble(1, 1.2), MathUtils.randomRangeDouble(-0.2, 0.2)));
-			tnt.setFuseTicks(80);
+		if (ent.getKiller() == null) {
+			return;
 		}
+		ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_TNT_PRIMED, 1F, 1.5F);
+		TNTPrimed tnt = (TNTPrimed) ent.getWorld().spawnEntity(ent.getLocation(), EntityType.PRIMED_TNT);
+		tnt.setVelocity(new Vector(MathUtils.randomRangeDouble(-0.2, 0.2), MathUtils.randomRangeDouble(1, 1.2), MathUtils.randomRangeDouble(-0.2, 0.2)));
+		tnt.setFuseTicks(80);
 	}
 
 

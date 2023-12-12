@@ -18,6 +18,7 @@ public abstract class Mutator {
 	public static final String MUTATOR_NAME_COLOR = LIGHT_PURPLE + "" + BOLD;
 
 	private boolean isHidden = false;
+	private boolean isActive = false;
 
 	public Mutator() {
 		MutatorManager.mutators.add(this);
@@ -71,6 +72,7 @@ public abstract class Mutator {
 	}
 
 	public final void activate(boolean applyHiding, String preference) {
+		isActive = true;
 		MutatorManager.activeMutators.add(this);
 		if(applyHiding) hide();
 		for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
@@ -86,19 +88,20 @@ public abstract class Mutator {
 	}
 
 	public final boolean isActive() {
-		return MutatorManager.isActive(this);
+		return isActive;
 	}
 
 	public void onDeactivate() {
 	}
 
 	public final void deactivate() {
-		onDeactivate();
+		isActive = false;
 		if(this instanceof Listener) {
 			HandlerList.unregisterAll((Listener) this);
 		}
 		MutatorManager.activeMutators.remove(this);
 		isHidden = false;
+		onDeactivate();
 	}
 
 	public final String getInfo() {

@@ -33,7 +33,7 @@ public class ArtifactTimeLeap extends Artifact {
 
 	@Override
 	public boolean onUse(@Nullable Player player) {
-		if(MutatorManager.isActive(MutatorManager.eternalNight) || MutatorManager.isActive(MutatorManager.eternalDay)) {
+		if(MutatorManager.eternalNight.isActive() || MutatorManager.eternalDay.isActive()) {
 			return false;
 		}
 		WorldManager.getGameMap().setTime(WorldManager.getGameMap().getTime() + 12000);

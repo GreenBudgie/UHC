@@ -6,7 +6,6 @@ import com.google.common.collect.Sets;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import ru.greenbudgie.UHC.ArenaManager;
@@ -26,7 +25,7 @@ public class MutatorManager {
 	public static MutatorApples apples = new MutatorApples();
 	public static MutatorGlowing glowing = new MutatorGlowing();
 	public static MutatorHungerGames hungerGames = new MutatorHungerGames();
-	public static MutatorDrop airdrop = new MutatorDrop();
+	public static MutatorMoreDrops moreDrops = new MutatorMoreDrops();
 	public static MutatorNoShields noShields = new MutatorNoShields();
 	public static MutatorDoubleDamage doubleDamage = new MutatorDoubleDamage();
 	public static MutatorKitStart kitStart = new MutatorKitStart();
@@ -102,8 +101,16 @@ public class MutatorManager {
 	}
 
 	public static void updateMutators() {
-		List<Mutator> copy = Lists.newArrayList(activeMutators); //Prevents concurrent modifications
-		copy.forEach(Mutator::update);
+		// A copy prevents concurrent modifications
+		List<Mutator> activeMutatorsCopy = Lists.newArrayList(activeMutators);
+		for (Mutator mutator : activeMutatorsCopy) {
+			// Some mutators might be deactivated by other mutators in the update process,
+			// so we need to consider it here and do not update them
+			if (!mutator.isActive()) {
+				continue;
+			}
+			mutator.update();
+		}
 	}
 
 	public static boolean hasPreferences(Mutator mutator) {
@@ -191,10 +198,6 @@ public class MutatorManager {
 		throw new IllegalArgumentException("Cannot choose a mutator from an empty list");
 	}
 
-	public static boolean isActive(Mutator mutator) {
-		return activeMutators.contains(mutator);
-	}
-
 	public static Mutator byClassName(String name) {
 		return mutators.stream().filter(mutator -> mutator.getClass().getSimpleName().endsWith(name)).findFirst().orElse(null);
 	}
@@ -227,12 +230,8 @@ public class MutatorManager {
 	public static void deactivateMutators() {
 		List<Mutator> copy = Lists.newArrayList(activeMutators); //Prevents concurrent modifications
 		for(Mutator mutator : copy) {
-			mutator.onDeactivate();
-			if(mutator instanceof Listener) {
-				HandlerList.unregisterAll((Listener) mutator);
-			}
+			mutator.deactivate();
 		}
-		activeMutators.clear();
 	}
 
 	public static String getMessageFromCurrentMutators() {

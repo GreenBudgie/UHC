@@ -47,5 +47,4 @@ public class MutatorBinding extends Mutator implements Listener {
 		}
 	}
 
-
 }

@@ -4,7 +4,7 @@ import org.bukkit.Material;
 import ru.greenbudgie.drop.Drop;
 import ru.greenbudgie.drop.Drops;
 
-public class MutatorDrop extends Mutator {
+public class MutatorMoreDrops extends Mutator {
 
 	@Override
 	public Material getItemToShow() {

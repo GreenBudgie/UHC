@@ -29,7 +29,7 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 
 	private Location meetingLoc;
 	public BossBar bar;
-	private final int maxCooldown = 600;
+	private final int maxCooldown = 840;
 	private int cooldown = maxCooldown;
 	private int meetingDelay = 10;
 	private boolean isMeeting = false;
@@ -55,7 +55,7 @@ public class MutatorMeetingPlace extends Mutator implements Listener {
 
 	@Override
 	public String getDescription() {
-		return "Каждые десять минут все игроки должны собраться в центре карты (не обязательно на поверхности), иначе будут убиты. В аду безопасно!";
+		return "Каждые 14 минут все игроки должны собраться в центре карты (не обязательно на поверхности), иначе будут убиты. В аду безопасно!";
 	}
 
 	private String getPos() {

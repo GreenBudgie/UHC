@@ -9,37 +9,48 @@ import ru.greenbudgie.UHC.UHCPlayer;
 
 public abstract class EffectBasedMutator extends Mutator {
 
-	public abstract PotionEffectType getEffect();
-	public abstract int getAmplifier();
+	public abstract EffectEntry[] getEffects();
 
 	@Override
 	public void onChoose() {
-		for(Player p : PlayerManager.getAliveOnlinePlayers()) {
-			p.addPotionEffect(new PotionEffect(getEffect(), 999999, getAmplifier(), false, false));
+		for (Player player : PlayerManager.getAliveOnlinePlayers()) {
+			for (EffectEntry effectEntry : getEffects()) {
+				player.addPotionEffect(effectEntry.getEffect());
+			}
 		}
 	}
 
 	@Override
 	public void onDeactivate() {
-		for(Player p : PlayerManager.getAliveOnlinePlayers()) {
-			p.removePotionEffect(getEffect());
+		for(Player player : PlayerManager.getAliveOnlinePlayers()) {
+			for (EffectEntry effectEntry : getEffects()) {
+				player.removePotionEffect(effectEntry.type());
+			}
 		}
 	}
 
 	@Override
 	public void update() {
-		for(UHCPlayer uhcPlayer : PlayerManager.getAlivePlayers()) {
-			if(uhcPlayer.isOnline()) {
+		for (UHCPlayer uhcPlayer : PlayerManager.getAlivePlayers()) {
+			if (uhcPlayer.isOnline()) {
 				Player player = uhcPlayer.getPlayer();
-				if(!player.hasPotionEffect(getEffect())) {
-					player.addPotionEffect(new PotionEffect(getEffect(), 999999, getAmplifier(), false, false));
-				}
-			} else if(applyToOfflinePlayerGhosts()) {
-				ArmorStand ghost = uhcPlayer.getGhost();
-				if(ghost != null) {
-					if(!ghost.hasPotionEffect(getEffect())) {
-						ghost.addPotionEffect(new PotionEffect(getEffect(), 999999, getAmplifier(), false, false));
+				for (EffectEntry effectEntry : getEffects()) {
+					if(!player.hasPotionEffect(effectEntry.type())) {
+						player.addPotionEffect(effectEntry.getEffect());
 					}
+				}
+				continue;
+			}
+			if (!applyToOfflinePlayerGhosts()) {
+				continue;
+			}
+			ArmorStand ghost = uhcPlayer.getGhost();
+			if (ghost == null) {
+				continue;
+			}
+			for (EffectEntry effectEntry : getEffects()) {
+				if(!ghost.hasPotionEffect(effectEntry.type())) {
+					ghost.addPotionEffect(effectEntry.getEffect());
 				}
 			}
 		}
@@ -52,6 +63,20 @@ public abstract class EffectBasedMutator extends Mutator {
 
 	public boolean applyToOfflinePlayerGhosts() {
 		return false;
+	}
+
+	public record EffectEntry(PotionEffectType type, int amplifier) {
+
+		public PotionEffect getEffect() {
+			return new PotionEffect(
+					type,
+					PotionEffect.INFINITE_DURATION,
+					amplifier,
+					false,
+					false
+			);
+		}
+
 	}
 
 }

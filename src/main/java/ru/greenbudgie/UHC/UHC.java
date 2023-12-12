@@ -233,12 +233,12 @@ public class UHC implements Listener {
 	private static void registerHpInfo(Player playerToShowInfo, String name, Scoreboard board, DisplaySlot slot) {
 		Objective hpInfo = board.getObjective(name);
 		if(hpInfo != null) hpInfo.unregister();
-		hpInfo = board.registerNewObjective(name, "health", RED + "\u2764");
+		hpInfo = board.registerNewObjective(name, Criteria.HEALTH, RED + "❤");
 		for(Player player : PlayerManager.getAliveOnlinePlayers()) {
 			Score hp = hpInfo.getScore(player.getName());
 			hp.setScore((int) player.getHealth());
 		}
-		if(PlayerManager.isSpectator(playerToShowInfo) || MutatorManager.isActive(MutatorManager.healthDisplay)) {
+		if(PlayerManager.isSpectator(playerToShowInfo) || MutatorManager.healthDisplay.isActive()) {
 			hpInfo.setDisplaySlot(slot);
 		} else {
 			hpInfo.setDisplaySlot(null);
@@ -1185,7 +1185,7 @@ public class UHC implements Listener {
 
 		clearPlatformRegion();
 		for(Player player : PlayerManager.getAliveOnlinePlayers()) {
-			if(MutatorManager.isActive(MutatorManager.hungerGames)) {
+			if(MutatorManager.hungerGames.isActive()) {
 				player.sendTitle(RED + "" + BOLD + "Игра " + GOLD + BOLD + "началась!",
 						YELLOW + "У тебя " + DARK_RED + BOLD + "ОДНА СУКА МИНУТА" +
 								YELLOW + " на развитие без ПВП", 10, 60, 30);
@@ -1213,7 +1213,7 @@ public class UHC implements Listener {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 160, 9, true, true, true));
 		}
 		Bukkit.getPluginManager().callEvent(new GameStartEvent());
-		if(MutatorManager.isActive(MutatorManager.hungerGames)) {
+		if(MutatorManager.hungerGames.isActive()) {
 			outbreakTimer = 60;
 		} else {
 			outbreakTimer = 60 * getNoPVPDuration();

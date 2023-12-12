@@ -35,6 +35,10 @@ public class MutatorChemistBattle extends ItemBasedMutator {
 
 	@Override
 	public List<ItemStack> getItemsToAdd() {
-		return Lists.newArrayList(new ItemStack(Material.BREWING_STAND), new ItemStack(Material.BLAZE_POWDER, 1), new ItemStack(Material.NETHER_WART, 8));
+		return Lists.newArrayList(
+				new ItemStack(Material.BREWING_STAND),
+				new ItemStack(Material.BLAZE_POWDER, 1),
+				new ItemStack(Material.NETHER_WART, 8)
+		);
 	}
 }

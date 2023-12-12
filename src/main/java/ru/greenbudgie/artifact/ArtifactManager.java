@@ -188,7 +188,7 @@ public class ArtifactManager implements Listener {
 	public void dropArtifact(EntityDeathEvent e) {
 		LivingEntity entity = e.getEntity();
 		if(entity.getKiller() != null) {
-			int multiplier = MutatorManager.isActive(MutatorManager.doubleArtifacts) ? 2 : 1;
+			int multiplier = MutatorManager.doubleArtifacts.isActive() ? 2 : 1;
 			if(entity instanceof Monster ||
 					entity instanceof Slime ||
 					entity instanceof Shulker ||

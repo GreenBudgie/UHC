@@ -26,11 +26,6 @@ public class MutatorGlowing extends EffectBasedMutator {
 	}
 
 	@Override
-	public boolean canBeHidden() {
-		return false;
-	}
-
-	@Override
 	public boolean conflictsWith(Mutator another) {
 		return another == MutatorManager.invisible;
 	}
@@ -41,12 +36,8 @@ public class MutatorGlowing extends EffectBasedMutator {
 	}
 
 	@Override
-	public PotionEffectType getEffect() {
-		return PotionEffectType.GLOWING;
+	public EffectEntry[] getEffects() {
+		return new EffectEntry[] { new EffectEntry(PotionEffectType.GLOWING, 0) };
 	}
 
-	@Override
-	public int getAmplifier() {
-		return 0;
-	}
 }

@@ -40,14 +40,14 @@ public class CommandOptMutator implements CommandExecutor, TabCompleter {
 				Mutator mutator = MutatorManager.byClassName(args[1]);
 				if(mutator != null) {
 					if(args[0].equalsIgnoreCase("activate")) {
-						if(MutatorManager.isActive(mutator)) {
+						if(mutator.isActive()) {
 							sender.sendMessage(ChatColor.RED + "Данный мутатор уже активен");
 						} else {
 							mutator.activate(false, null);
 						}
 					}
 					if(args[0].equalsIgnoreCase("deactivate")) {
-						if(!MutatorManager.isActive(mutator)) {
+						if(!mutator.isActive()) {
 							sender.sendMessage(ChatColor.RED + "Данный мутатор уже неактивен");
 						} else {
 							sender.sendMessage(ChatColor.GOLD + "Деактивирован мутатор: " + ChatColor.LIGHT_PURPLE + mutator.getName());
@@ -72,11 +72,11 @@ public class CommandOptMutator implements CommandExecutor, TabCompleter {
 			}
 			if(args.length == 2) {
 				if(args[0].equalsIgnoreCase("activate")) {
-					return MathUtils.getListOfStringsMatchingLastWord(args, MutatorManager.mutators.stream().filter(mutator -> !MutatorManager.isActive(mutator))
+					return MathUtils.getListOfStringsMatchingLastWord(args, MutatorManager.mutators.stream().filter(mutator -> !mutator.isActive())
 							.map(mutator -> mutator.getClass().getSimpleName().replaceAll("Mutator", "")).collect(Collectors.toList()));
 				}
 				if(args[0].equalsIgnoreCase("deactivate")) {
-					return MathUtils.getListOfStringsMatchingLastWord(args, MutatorManager.mutators.stream().filter(MutatorManager::isActive)
+					return MathUtils.getListOfStringsMatchingLastWord(args, MutatorManager.mutators.stream().filter(Mutator::isActive)
 							.map(mutator -> mutator.getClass().getSimpleName().replaceAll("Mutator", "")).collect(Collectors.toList()));
 				}
 			}

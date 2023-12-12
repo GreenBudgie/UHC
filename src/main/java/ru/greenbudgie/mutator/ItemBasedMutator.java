@@ -21,21 +21,22 @@ public abstract class ItemBasedMutator extends Mutator implements Listener {
 
 	@Override
 	public void onChoose() {
-		if(UHC.state.isBeforeDeathmatch()) {
-			List<ItemStack> items = getItemsToAdd();
-			for(UHCPlayer uhcPlayer : PlayerManager.getAlivePlayers()) {
-				if(uhcPlayer.isOnline()) {
-					Player player = uhcPlayer.getPlayer();
-					Map<Integer, ItemStack> notEnoughSpace = player.getInventory().addItem(items.toArray(new ItemStack[0]));
-					for(ItemStack item : notEnoughSpace.values()) {
-						Item drop = player.getWorld().dropItem(player.getLocation(), item);
-						drop.setPickupDelay(0);
-					}
-				} else {
-					for(ItemStack item : items) {
-						Item drop = uhcPlayer.getLocation().getWorld().dropItem(uhcPlayer.getLocation(), item);
-						drop.setPickupDelay(0);
-					}
+		if (!UHC.state.isBeforeDeathmatch()) {
+			return;
+		}
+		List<ItemStack> items = getItemsToAdd();
+		for(UHCPlayer uhcPlayer : PlayerManager.getAlivePlayers()) {
+			if(uhcPlayer.isOnline()) {
+				Player player = uhcPlayer.getPlayer();
+				Map<Integer, ItemStack> notEnoughSpace = player.getInventory().addItem(items.toArray(new ItemStack[0]));
+				for(ItemStack item : notEnoughSpace.values()) {
+					Item drop = player.getWorld().dropItem(player.getLocation(), item);
+					drop.setPickupDelay(0);
+				}
+			} else {
+				for(ItemStack item : items) {
+					Item drop = uhcPlayer.getLocation().getWorld().dropItem(uhcPlayer.getLocation(), item);
+					drop.setPickupDelay(0);
 				}
 			}
 		}

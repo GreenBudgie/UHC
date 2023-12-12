@@ -34,24 +34,35 @@ public class MutatorMoreRegen extends Mutator implements Listener {
 
 	@EventHandler
 	public void increaseRegen(EntityPotionEffectEvent event) {
-		if(!event.isCancelled() && event.getEntity() instanceof Player player && !EffectProcess.doIgnore(player, this)) {
-			if(PlayerManager.isPlaying(player)) {
-				if(event.getAction() == EntityPotionEffectEvent.Action.ADDED || event.getAction() == EntityPotionEffectEvent.Action.CHANGED) {
-					PotionEffect effect = event.getNewEffect();
-					if(effect != null && effect.getType().equals(PotionEffectType.REGENERATION)) {
-						event.setCancelled(true);
-						EffectProcess.ignoreCurrentTick(player, this);
-						player.addPotionEffect(new PotionEffect(
-								PotionEffectType.REGENERATION,
-								effect.getDuration() * 2,
-								effect.getAmplifier(),
-								effect.isAmbient(),
-								effect.hasParticles(),
-								effect.hasIcon()));
-					}
-				}
-			}
+		if (event.isCancelled()) {
+			return;
 		}
+		if (!(event.getEntity() instanceof Player player)) {
+			return;
+		}
+		if (EffectProcess.doIgnore(player, this)) {
+			return;
+		}
+		if (!PlayerManager.isPlaying(player)) {
+			return;
+		}
+		if (event.getAction() != EntityPotionEffectEvent.Action.ADDED
+				&& event.getAction() != EntityPotionEffectEvent.Action.CHANGED) {
+			return;
+		}
+		PotionEffect effect = event.getNewEffect();
+		if (effect == null || !effect.getType().equals(PotionEffectType.REGENERATION)) {
+			return;
+		}
+		event.setCancelled(true);
+		EffectProcess.ignoreCurrentTick(player, this);
+		player.addPotionEffect(new PotionEffect(
+				PotionEffectType.REGENERATION,
+				effect.getDuration() * 2,
+				effect.getAmplifier(),
+				effect.isAmbient(),
+				effect.hasParticles(),
+				effect.hasIcon()));
 	}
 
 }

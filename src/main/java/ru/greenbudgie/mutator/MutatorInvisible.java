@@ -31,12 +31,8 @@ public class MutatorInvisible extends EffectBasedMutator {
 	}
 
 	@Override
-	public PotionEffectType getEffect() {
-		return PotionEffectType.INVISIBILITY;
+	public EffectEntry[] getEffects() {
+		return new EffectEntry[] { new EffectEntry(PotionEffectType.INVISIBILITY, 0) };
 	}
 
-	@Override
-	public int getAmplifier() {
-		return 0;
-	}
 }

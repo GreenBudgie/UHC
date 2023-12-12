@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class EffectProcess {
 
-    private static Set<Map.Entry<Player, Listener>> processes = new HashSet<>();
+    private static final Set<Map.Entry<Player, Listener>> processes = new HashSet<>();
 
     /**
      * Tells the specified listener to ignore any EntityPotionEffectEvent at the current tick
@@ -21,7 +21,7 @@ public class EffectProcess {
      */
     public static void ignoreCurrentTick(Player player, Listener listener) {
         processes.add(Maps.immutableEntry(player, listener));
-        TaskManager.invokeLater(() -> processes.clear());
+        TaskManager.invokeLater(processes::clear);
     }
 
     /**

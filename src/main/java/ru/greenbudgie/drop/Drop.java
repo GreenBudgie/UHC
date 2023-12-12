@@ -25,7 +25,7 @@ public abstract class Drop {
 
     public void setup() {
         timer = getDefaultDropDelay();
-        if(MutatorManager.isActive(MutatorManager.airdrop))
+        if(MutatorManager.moreDrops.isActive())
             timer /= 2;
         location = getRandomLocation();
     }
