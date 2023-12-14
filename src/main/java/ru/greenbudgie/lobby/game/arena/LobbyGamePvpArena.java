@@ -294,12 +294,11 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 			}
 		} else if(Arrays.asList(regionBased).contains(option)) {
 			ConfigurationSection regionSection = (ConfigurationSection) value;
-			Region region = Region.deserialize(regionSection.getValues(false));
+			Region region = Region.deserialize(regionSection.getValues(false), Lobby.getLobby());
 			if(region == null) {
 				UHCPlugin.warning(option + " is not present in " + getConfigName());
 				return;
 			}
-			region.setWorld(Lobby.getLobby());
 			switch(option) {
 				case "enterRegion" -> enterRegion = region;
 				case "leaveRegion" -> leaveRegion = region;
@@ -413,22 +412,23 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 	 * Calls when a player leaves an arena in any way: walking out, using /lobby, quitting or dying
 	 */
 	public void onArenaLeave(Player p) {
-		if(isOnArena(p)) {
-			onArena.remove(p);
-			p.getInventory().clear();
-			if(isDueling(p)) {
-				Player opponent = getOpponent(p);
-				if(opponent != null) {
-					endDuel(opponent, p);
-				}
-			} else {
-				InventoryHelper.sendActionBarMessage(p, GRAY + "> " +
-						GOLD + BOLD + "Ты вышел с арены" +
-						RESET + GRAY + " <");
-				p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_ELYTRA, 0.5F, 0.8F);
-			}
-		}
-	}
+        if (!isOnArena(p)) {
+            return;
+        }
+        onArena.remove(p);
+        p.getInventory().clear();
+        if(isDueling(p)) {
+            Player opponent = getOpponent(p);
+            if(opponent != null) {
+                endDuel(opponent, p);
+            }
+        } else {
+            InventoryHelper.sendActionBarMessage(p, GRAY + "> " +
+                    GOLD + BOLD + "Ты вышел с арены" +
+                    RESET + GRAY + " <");
+            p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_ELYTRA, 0.5F, 0.8F);
+        }
+    }
 
 	/**
 	 * Calls when a player enters an arena in any way
@@ -540,7 +540,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 	@EventHandler
 	public void move(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
-		if(Lobby.getLobby().getPlayers().contains(player)) {
+		if(Lobby.isInLobby(player)) {
 			Location to = e.getTo();
 			if(isOnArena(player) && leaveRegion.isInside(to)) {
 				onArenaLeave(player);
@@ -554,35 +554,36 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void death(PlayerDeathEvent e) {
 		Player player = e.getEntity();
-		if(Lobby.isInLobby(player) && isOnArena(player)) {
-			onArenaLeave(player);
-			killsToNextKit--;
-			if(killsToNextKit <= 0) {
-				killsToNextKit = 8;
-				currentKit = getRandomKit();
-				for(Player currentPlayer : onArena) {
-					InventoryHelper.sendActionBarMessage(currentPlayer,
-							GOLD + "В следующий раз будет выдан новый набор: " +
-									LIGHT_PURPLE + currentKit.getName());
-				}
-			}
-			Player killer = player.getKiller();
-			if(killer != null && isOnArena(killer)) {
-				heal(killer);
-				killer.getInventory().clear();
-				currentKit.give(killer);
-				killer.playSound(killer.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.8F, 1F);
-			}
-			for(Arrow arrow : player.getWorld().getEntitiesByClass(Arrow.class)) {
-				if(arrow.isInBlock()) {
-					arrow.remove();
-				}
-			}
-			SignManager.updateTextOnSigns();
-			player.teleport(spawnLocation);
-			TaskManager.invokeLater(() -> player.setVelocity(new Vector(0, 0, 0)));
-		}
-	}
+        if (!Lobby.isInLobby(player) || !isOnArena(player)) {
+            return;
+        }
+        onArenaLeave(player);
+        killsToNextKit--;
+        if(killsToNextKit <= 0) {
+            killsToNextKit = 8;
+            currentKit = getRandomKit();
+            for(Player currentPlayer : onArena) {
+                InventoryHelper.sendActionBarMessage(currentPlayer,
+                        GOLD + "В следующий раз будет выдан новый набор: " +
+                                LIGHT_PURPLE + currentKit.getName());
+            }
+        }
+        Player killer = player.getKiller();
+        if(killer != null && isOnArena(killer)) {
+            heal(killer);
+            killer.getInventory().clear();
+            currentKit.give(killer);
+            killer.playSound(killer.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.8F, 1F);
+        }
+        for(Arrow arrow : player.getWorld().getEntitiesByClass(Arrow.class)) {
+            if(arrow.isInBlock()) {
+                arrow.remove();
+            }
+        }
+        SignManager.updateTextOnSigns();
+        player.teleport(spawnLocation);
+        TaskManager.invokeLater(() -> player.setVelocity(new Vector(0, 0, 0)));
+    }
 
 	@EventHandler
 	public void leaveArenaOnGameStart(BeforeGameInitializeEvent event) {

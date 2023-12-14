@@ -7,10 +7,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.greenbudgie.UHC.AutoOreSmelting;
-import ru.greenbudgie.UHC.PlayerOptionHolder;
-import ru.greenbudgie.UHC.RecipeHandler;
-import ru.greenbudgie.UHC.UHC;
+import ru.greenbudgie.UHC.*;
 import ru.greenbudgie.artifact.ArtifactManager;
 import ru.greenbudgie.classes.ClassManager;
 import ru.greenbudgie.commands.*;
@@ -55,6 +52,7 @@ public class UHCPlugin extends JavaPlugin {
 		registerCommand("editarena", new CommandEditArena());
 		registerCommand("requests", new CommandRequests());
 		registerCommand("artifacts", new CommandArtifacts());
+		registerCommand("watch", new CommandWatch());
 
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new UHC(), this);
@@ -64,6 +62,9 @@ public class UHCPlugin extends JavaPlugin {
 		pm.registerEvents(new ItemRequester(), this);
 		pm.registerEvents(new ArtifactManager(), this);
 		pm.registerEvents(new AutoOreSmelting(), this);
+		pm.registerEvents(new SpectatorManager(), this);
+		pm.registerEvents(new PlayerInventoryView(), this);
+		pm.registerEvents(new SafeTeleport(), this);
 		InventoryBuilderMutator.registerListener();
 		InventoryBuilderRating.registerListener();
 

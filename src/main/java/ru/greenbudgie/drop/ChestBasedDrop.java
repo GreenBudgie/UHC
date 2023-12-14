@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.ParticleUtils;
+import ru.greenbudgie.util.Region;
 import ru.greenbudgie.util.TaskManager;
 
 import java.util.List;
@@ -19,15 +20,21 @@ import java.util.Set;
 
 public abstract class ChestBasedDrop extends Drop {
 
+    private Region dropRegion;
+
+    @Override
+    public void setup() {
+        super.setup();
+        dropRegion = new Region(
+                location.clone().add(-1, -1, -1),
+                location.clone().add(1, 1, 1)
+        );
+    }
+
     @Override
     public void drop() {
-        for(int x = -1; x <= 1; x++) {
-            for(int y = -1; y <= 1; y++) {
-                for(int z = -1; z <= 1; z++) {
-                    Block block = location.clone().add(x, y, z).getBlock();
-                    block.setType(getCasing());
-                }
-            }
+        for (Block blockInside : dropRegion.getBlocksInside()) {
+            blockInside.setType(getCasing());
         }
         Block chestBlock = location.getBlock();
         chestBlock.setType(Material.CHEST);
@@ -44,7 +51,7 @@ public abstract class ChestBasedDrop extends Drop {
             inv.setItem(slot, i < getMainItemsCount() ? Drops.getRandomDrop() : getRandomFiller());
         }
         location.getWorld().playSound(location, Sound.ITEM_FIRECHARGE_USE, 1F, 0.5F);
-        ParticleUtils.createParticlesInRange(location, 1.5, Particle.FLAME, null, 40);
+        ParticleUtils.createParticlesOnRegionEdges(dropRegion, Particle.FLAME, 4, null);
         for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
             p.sendTitle(" ", getSpawnMessage(), 5, 40, 20);
             p.sendMessage(getChatDropCoordinatesInfo());
@@ -70,14 +77,15 @@ public abstract class ChestBasedDrop extends Drop {
 
     @Override
     public void update() {
-        if(TaskManager.isSecUpdated()) {
-            if(timer <= 0) {
-                drop();
-                setup();
-            } else {
-                ParticleUtils.createParticlesInRange(location, 1.5, Particle.SMOKE_NORMAL, null, 10);
-                timer--;
-            }
+        if (!TaskManager.isSecUpdated()) {
+            return;
+        }
+        if(timer <= 0) {
+            drop();
+            setup();
+        } else {
+            ParticleUtils.createParticlesOnRegionEdges(dropRegion, Particle.SMOKE_NORMAL, 4, null);
+            timer--;
         }
     }
 

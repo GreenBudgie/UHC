@@ -23,8 +23,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.bukkit.ChatColor.*;
+
 public class UHCPlayer {
 
+    private final OfflinePlayer offlinePlayer;
     private final String nickname;
     private Player player;
     private State state = State.PLAYING;
@@ -45,6 +48,7 @@ public class UHCPlayer {
     public UHCPlayer(Player player) {
         this.player = player;
         this.nickname = player.getName();
+        this.offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
     }
 
     public void leave() {
@@ -54,8 +58,8 @@ public class UHCPlayer {
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 2, 1);
                 for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
                     player.sendMessage(
-                            FightHelper.padCrosses(ChatColor.GOLD + nickname +
-                                    ChatColor.RED + " вылетел с серва"));
+                            FightHelper.padCrosses(GOLD + nickname +
+                                    RED + " вылетел с серва"));
                 }
                 moveToSpectators();
                 if(PlayerManager.getAlivePlayers().size() <= 0) {
@@ -65,7 +69,7 @@ public class UHCPlayer {
                 moveToSpectators();
             } else {
                 for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
-                    player.sendMessage(ChatColor.GOLD + nickname + ChatColor.RED + " вышел из игры");
+                    player.sendMessage(RED + "" + BOLD + "- " + GOLD + nickname + RED + " вышел из игры");
                 }
                 if(!player.isOnGround()) {
                     int playerY = player.getLocation().getBlockY();
@@ -101,14 +105,14 @@ public class UHCPlayer {
             state = State.PLAYING;
             setTabPrefix();
             for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
-                player.sendMessage(ChatColor.GOLD + nickname + ChatColor.DARK_GREEN + " вернулся в игру");
+                player.sendMessage(DARK_GREEN + "" + BOLD + "+ " + GOLD + nickname + DARK_GREEN + " вернулся в игру");
             }
             player.setHealth(offlineHealth);
             Bukkit.getPluginManager().callEvent(new UHCPlayerRejoinEvent(this));
         } else if(state == State.LEFT_AND_DEAD) {
             moveToSpectators();
             for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
-                player.sendMessage(ChatColor.GOLD + nickname + ChatColor.DARK_GREEN + " вернулся в игру, к сожалению, мертвым");
+                player.sendMessage(DARK_GREEN + "" + BOLD + "+ " + GOLD + nickname + DARK_GREEN + " вернулся в игру, к сожалению, мертвым");
             }
         }
     }
@@ -121,7 +125,7 @@ public class UHCPlayer {
 
     public void setTabPrefix() {
         if(isAliveAndOnline() && uhcClass != null) {
-            player.setPlayerListName(uhcClass.getTabPrefix() + ChatColor.AQUA + " " + player.getName());
+            player.setPlayerListName(uhcClass.getTabPrefix() + AQUA + " " + player.getName());
         }
     }
 
@@ -152,7 +156,7 @@ public class UHCPlayer {
 
     private void createGhost() {
         ArmorStand stand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
-        stand.setCustomName(ChatColor.AQUA + this.nickname);
+        stand.setCustomName(AQUA + this.nickname);
         stand.setCustomNameVisible(false);
         stand.setGravity(false);
         stand.setBasePlate(false);
@@ -241,9 +245,9 @@ public class UHCPlayer {
             }
             if(aliveTeams <= 2 && aliveTeams >= 1) {
                 String placeText = winningPlace == 3 ?
-                        ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "третье" :
-                        ChatColor.AQUA + "" + ChatColor.BOLD + "второе";
-                String info = ChatColor.YELLOW + "Ты занял " + placeText + ChatColor.RESET + ChatColor.YELLOW + " место!";
+                        DARK_AQUA + "" + BOLD + "третье" :
+                        AQUA + "" + BOLD + "второе";
+                String info = YELLOW + "Ты занял " + placeText + RESET + YELLOW + " место!";
                 sendMessage(info);
                 if(teammate != null) {
                     teammate.sendMessage(info);
@@ -284,7 +288,7 @@ public class UHCPlayer {
         boolean golden = UHC.state == GameState.OUTBREAK;
         ItemStack apple = ItemUtils.
                 builder(golden ? Material.GOLDEN_APPLE : Material.APPLE).
-                withName(golden ? (ChatColor.DARK_GREEN + "Золотое бонусное яблоко") : (ChatColor.GREEN + "Бонусное яблоко")).
+                withName(golden ? (DARK_GREEN + "Золотое бонусное яблоко") : (GREEN + "Бонусное яблоко")).
                 withGlow(!golden).
                 build();
         apple = ItemUtils.setCustomValue(apple, "owner", nickname);
@@ -294,7 +298,7 @@ public class UHCPlayer {
     private void showDeathMessage() {
         if(deadByTime) {
             for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
-                inGamePlayer.sendMessage(FightHelper.padCrosses(ChatColor.GOLD + nickname + ChatColor.RED + " не успел вернуться в игру"));
+                inGamePlayer.sendMessage(FightHelper.padCrosses(GOLD + nickname + RED + " не успел вернуться в игру"));
             }
             return;
         }
@@ -304,15 +308,15 @@ public class UHCPlayer {
                 for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
                     inGamePlayer.sendMessage(FightHelper.getDeathMessage(player));
                 }
-                String taunt = ChatColor.DARK_AQUA + " " + MathUtils.choose("тебя унизил", "умнее тебя", "не такой тупой, как кажется",
+                String taunt = DARK_AQUA + " " + MathUtils.choose("тебя унизил", "умнее тебя", "не такой тупой, как кажется",
                         "иногда проявляет себя", "играет в кубики лучше тебя", "обосрал тебя", "убил тебя", "просто повезло");
-                player.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Тебя замачили!", ChatColor.GOLD + killer.getNickname() + taunt, 10, 60, 20);
+                player.sendTitle(DARK_RED + "" + BOLD + "Тебя замачили!", GOLD + killer.getNickname() + taunt, 10, 60, 20);
             } else {
                 for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
                     String deathMessage = FightHelper.padCrosses(
-                            ChatColor.GOLD + killer.getNickname() +
-                            ChatColor.RED + " замачил отлучившегося " +
-                            ChatColor.GOLD + this.nickname);
+                            GOLD + killer.getNickname() +
+                            RED + " замачил отлучившегося " +
+                            GOLD + this.nickname);
                     inGamePlayer.sendMessage(deathMessage);
                 }
             }
@@ -323,12 +327,12 @@ public class UHCPlayer {
                         inGamePlayer.sendMessage(UHC.getDeathMessage(player, player.getLastDamageCause().getCause()));
                     }
                 }
-                player.sendTitle(ChatColor.DARK_RED + "Ты погиб!", "", 10, 60, 20);
+                player.sendTitle(DARK_RED + "Ты погиб!", "", 10, 60, 20);
             } else {
                 for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
                     String deathMessage = FightHelper.padCrosses(
-                            ChatColor.GOLD + this.nickname +
-                                    ChatColor.RED + " погиб, не находясь на сервере");
+                            GOLD + this.nickname +
+                                    RED + " погиб, не находясь на сервере");
                     inGamePlayer.sendMessage(deathMessage);
                 }
             }
@@ -452,7 +456,8 @@ public class UHCPlayer {
             if(player.getLocation().getY() < player.getWorld().getMinHeight()) {
                 player.teleport(player.getWorld().getSpawnLocation());
             }
-            PlayerManager.addSpectator(player);
+            SpectatorManager.preparePlayerToSpectate(player);
+            PlayerManager.registerSpectator(player);
         }
     }
 
@@ -503,6 +508,10 @@ public class UHCPlayer {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public OfflinePlayer getOfflinePlayer() {
+        return offlinePlayer;
     }
 
     public Player getPlayer() {

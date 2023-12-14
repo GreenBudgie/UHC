@@ -5,8 +5,8 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 
 /**
- * Called when a new spectator enters the game
- * Note: this method will also be called when the player becomes spectator after his death
+ * Called when a new spectator is added to the game.
+ * Note: this method will also be called when the player becomes spectator after his death.
  */
 public class SpectatorJoinEvent extends PlayerEvent {
 

@@ -49,14 +49,14 @@ public class Drops {
     public static List<ItemStack> getDrops() {
         List<ItemStack> drops = new ArrayList<>();
         drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Potion of Life", Color.FUCHSIA, new PotionEffect(PotionEffectType.HEAL, 1, 1)));
-        drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Toxic Vial", Color.GREEN, true, false, new PotionEffect(PotionEffectType.POISON, 240, 0)));
+        drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Toxic Vial", Color.GREEN, true, false, new PotionEffect(PotionEffectType.POISON, 200, 1)));
         drops.add(InventoryHelper
                 .generatePotion(ChatColor.WHITE + "Sightbreaker Potion", Color.GRAY, true, false, new PotionEffect(PotionEffectType.BLINDNESS, 400, 0)));
-        drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Potion of Quickhand", Color.YELLOW, new PotionEffect(PotionEffectType.FAST_DIGGING, 9600, 0)));
+        drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Potion of Quickhand", Color.YELLOW, new PotionEffect(PotionEffectType.FAST_DIGGING, 9600, 1)));
         drops.add(InventoryHelper
                 .generatePotion(ChatColor.WHITE + "Potion of Power", Color.fromRGB(100, 0, 0), new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 1200, 0)));
         drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Sharp Vial", Color.BLACK, true, false, new PotionEffect(PotionEffectType.HARM, 1, 1)));
-        drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Liquid Helium", Color.WHITE, true, false, new PotionEffect(PotionEffectType.LEVITATION, 450, 0)));
+        drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Liquid Helium", Color.WHITE, true, false, new PotionEffect(PotionEffectType.LEVITATION, 600, 0)));
         drops.add(InventoryHelper.generatePotion(ChatColor.WHITE + "Everseeing Potion", Color.BLUE, false, false, new PotionEffect(PotionEffectType.NIGHT_VISION, 24000, 0)));
 
         drops.add(new ItemStack(Material.GOLDEN_APPLE, 2));

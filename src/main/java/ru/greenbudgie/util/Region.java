@@ -9,21 +9,30 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Entity;
-import org.bukkit.util.BoundingBox;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
- * Represents a region between two {@link Location locations}. Every method in this class is represented by integer (block) coordinates
+ * Represents a region between two {@link Location locations}.
+ * Every method in this class is represented by integer (block) coordinates.
+ * <p>
+ * Region itself and its locations are immutable.
+ * They are cloned in constructor and their clones are returned from getters.
+ * <p>
+ * A region might not have a world specified. It can still perform some calculations based on coordinates,
+ * but it cannot get the data from world: blocks, entities, particles e.t.c.
  */
 public class Region implements ConfigurationSerializable {
 
-	private Location start, end;
+	private final Location start;
+    private final Location end;
 	private int x1, y1, z1, x2, y2, z2;
+	private final boolean hasWorld;
 
 	/**
 	 * Creates a new region using start and end locations. Worlds in these locations can be null
@@ -31,37 +40,23 @@ public class Region implements ConfigurationSerializable {
 	 * @param end End Location
 	 */
 	public Region(Location start, Location end) {
-		if(start == null || end == null) throw new IllegalArgumentException("Cannot create a region: start and end locations cannot be null");
-		this.start = start;
-		this.end = end;
-		setCoords();
+		if(start == null || end == null)
+			throw new IllegalArgumentException("Cannot create a region: start and end locations cannot be null");
+		this.start = start.clone();
+		this.end = end.clone();
+		setCoordinates();
+		hasWorld = start.getWorld() != null && end.getWorld() != null && (start.getWorld() == end.getWorld());
 	}
 
 	/**
-	 * Creates new region from the given bounding box. If points at the BoundingBox are represented by double values the region will not be 100% accurate
-	 * @param box Bounding box to use
-	 */
-	public Region(BoundingBox box) {
-		this.start = new Location(null, box.getMinX(), box.getMinY(), box.getMinZ());
-		this.end = new Location(null, box.getMaxX(), box.getMaxY(), box.getMaxZ());
-		setCoords();
-	}
-
-	/**
-	 * Creates a copy of a region
-	 * @param toClone A region to make a copy from
-	 */
-	public Region(Region toClone) {
-		this(toClone.start.clone(), toClone.end.clone());
-	}
-
-	/**
-	 * Deserealizes a region from the given config. If config is invalid it returns null
+	 * Deserializes a region from the given config. If config is invalid it returns null
 	 * @param args Config
-	 * @return Deserealized region, or null
+	 * @param world The world with which to create this region. If null, it will be set from config.
+	 *              If the config does not provide the world, it will be null.
+	 * @return Deserialized region, or null
 	 */
 	@Nullable
-	public static Region deserialize(Map<String, Object> args) {
+	public static Region deserialize(Map<String, Object> args, @Nullable World world) {
 		Location start, end;
 
 		try {
@@ -69,21 +64,22 @@ public class Region implements ConfigurationSerializable {
 				String str = String.valueOf(args.get("start"));
 				String[] pos = str.split(" ");
 				if(pos.length == 3) {
-					start = new Location(null, Integer.parseInt(pos[0]), Integer.parseInt(pos[1]), Integer.parseInt(pos[2]));
+					start = new Location(world, Integer.parseInt(pos[0]), Integer.parseInt(pos[1]), Integer.parseInt(pos[2]));
 				} else return null;
 			} else return null;
 			if(args.containsKey("end")) {
 				String str = String.valueOf(args.get("end"));
 				String[] pos = str.split(" ");
 				if(pos.length == 3) {
-					end = new Location(null, Integer.parseInt(pos[0]), Integer.parseInt(pos[1]), Integer.parseInt(pos[2]));
+					end = new Location(world, Integer.parseInt(pos[0]), Integer.parseInt(pos[1]), Integer.parseInt(pos[2]));
 				} else return null;
 			} else return null;
-			Region region = new Region(start, end);
 			if(args.containsKey("world")) {
-				region.setWorld(Bukkit.getWorld(String.valueOf(args.get("world"))));
+				World worldFromConfig = Bukkit.getWorld(String.valueOf(args.get("world")));
+				start.setWorld(worldFromConfig);
+				end.setWorld(worldFromConfig);
 			}
-			return region;
+            return new Region(start, end);
 		} catch(Exception e) {
 			return null;
 		}
@@ -91,44 +87,47 @@ public class Region implements ConfigurationSerializable {
 
 	/**
 	 * Gets the world of the region
-	 * @return World of the region, or null
+	 * @return World of the region, or null if was not specified on region creation
 	 */
 	@Nullable
 	public World getWorld() {
-		if(hasWorld()) {
+		if(hasWorld) {
 			return start.getWorld();
-		} else return null;
+		}
+		return null;
 	}
 
 	/**
-	 * Sets the world for both locations
-	 * @param world New world
-	 */
-	public void setWorld(World world) {
-		start.setWorld(world);
-		end.setWorld(world);
-	}
-
-	/**
-	 * Gets the random location inside of a region
-	 * @return Random location inside of a region
+	 * Gets the random location inside a region. If the region has a world, it will be set to this location.
+	 * @return Random location inside a region
 	 */
 	public Location getRandomInsideLocation() {
-		return new Location(getWorld(), MathUtils.randomRangeDouble(x1, x2 + 1), MathUtils.randomRangeDouble(y1, y2 + 1),
-				MathUtils.randomRangeDouble(z1, z2 + 1));
+		return new Location(
+				getWorld(),
+				MathUtils.randomRangeDouble(x1, x2 + 1),
+				MathUtils.randomRangeDouble(y1, y2 + 1),
+				MathUtils.randomRangeDouble(z1, z2 + 1)
+		);
 	}
 
 	/**
-	 * Gets the random location of a block (integer) inside of a region
-	 * @return Random block location inside of a region
+	 * Gets the random location of a block (integer) inside a region.
+	 * If the region has a world, it will be set to this location.
+	 * @return Random block location inside a region
 	 */
 	public Location getRandomInsideBlockLocation() {
-		return new Location(getWorld(), MathUtils.randomRange(x1, x2), MathUtils.randomRange(y1, y2), MathUtils.randomRange(z1, z2));
+		return new Location(
+				getWorld(),
+				MathUtils.randomRange(x1, x2),
+				MathUtils.randomRange(y1, y2),
+				MathUtils.randomRange(z1, z2)
+		);
 	}
 
 	/**
-	 * Gets the random location of an air block (integer) inside of a region
-	 * @return Random air block location inside of a region
+	 * Gets the random location of an air block (integer) inside a region.
+	 * If the region has a world, it will be set to this location.
+	 * @return Random air block location inside a region
 	 */
 	public Location getRandomInsideAirBlockLocation() {
 		return MathUtils.choose(getAirBlocksInside()).getLocation();
@@ -143,27 +142,11 @@ public class Region implements ConfigurationSerializable {
 	}
 
 	/**
-	 * Sets the start (min) X location
-	 * @param x1 Start X location
-	 */
-	public void setX1(int x1) {
-		this.x1 = x1;
-	}
-
-	/**
 	 * Gets the start (min) Y location
 	 * @return Start Y location
 	 */
 	public int getY1() {
 		return y1;
-	}
-
-	/**
-	 * Sets the start (min) Y location
-	 * @param y1 Start Y location
-	 */
-	public void setY1(int y1) {
-		this.y1 = y1;
 	}
 
 	/**
@@ -175,27 +158,11 @@ public class Region implements ConfigurationSerializable {
 	}
 
 	/**
-	 * Sets the start (min) Z location
-	 * @param z1 Start Z location
-	 */
-	public void setZ1(int z1) {
-		this.z1 = z1;
-	}
-
-	/**
 	 * Gets the end (max) X location
 	 * @return End X location
 	 */
 	public int getX2() {
 		return x2;
-	}
-
-	/**
-	 * Sets the end (max) X location
-	 * @param x2 End X location
-	 */
-	public void setX2(int x2) {
-		this.x2 = x2;
 	}
 
 	/**
@@ -207,14 +174,6 @@ public class Region implements ConfigurationSerializable {
 	}
 
 	/**
-	 * Sets the end (max) Y location
-	 * @param y2 End Y location
-	 */
-	public void setY2(int y2) {
-		this.y2 = y2;
-	}
-
-	/**
 	 * Gets the end (max) Z location
 	 * @return End Z location
 	 */
@@ -223,69 +182,25 @@ public class Region implements ConfigurationSerializable {
 	}
 
 	/**
-	 * Sets the end (max) Z location
-	 * @param z2 End Z location
-	 */
-	public void setZ2(int z2) {
-		this.z2 = z2;
-	}
-
-	/**
-	 * Gets the start location
-	 * @return Start location
+	 * Gets a copy of the start location
+	 * @return Copy of start location
 	 */
 	public Location getStartLocation() {
-		return start;
+		return start.clone();
 	}
 
 	/**
-	 * Sets the start location
-	 * @param start New start location
-	 */
-	public void setStartLocation(Location start) {
-		this.start = start;
-		setCoords();
-	}
-
-	/**
-	 * Gets the end location
-	 * @return End location
+	 * Gets a copy the end location
+	 * @return Copy of end location
 	 */
 	public Location getEndLocation() {
-		return end;
+		return end.clone();
 	}
 
-	/**
-	 * Sets the end location
-	 * @param end New end location
-	 */
-	public void setEndLocation(Location end) {
-		this.end = end;
-		setCoords();
-	}
-
-	/**
-	 * Checks if this region has a stored world
-	 * @return Whether this region has stored world
-	 */
-	public boolean hasWorld() {
-		return start.getWorld() != null && end.getWorld() != null && (start.getWorld() == end.getWorld());
-	}
-
-	/**
-	 * Validates the worlds in its locations. If the worlds are different or null it throws an exception
-	 */
 	public void validateWorlds() {
-		if(start.getWorld() == null || end.getWorld() == null || (start.getWorld() != end.getWorld()))
+		if(!hasWorld) {
 			throw new IllegalStateException("Worlds must be present in locations to use this method!");
-	}
-
-	public BoundingBox toBoundingBox() {
-		return BoundingBox.of(start, end.clone().add(1, 1, 1));
-	}
-
-	public boolean intersects(BoundingBox box) {
-		return toBoundingBox().overlaps(box);
+		}
 	}
 
 	@Override
@@ -293,14 +208,14 @@ public class Region implements ConfigurationSerializable {
 		Map<String, Object> result = new LinkedHashMap<>();
 		result.put("start", x1 + " " + y1 + " " + z1);
 		result.put("end", x2 + " " + y2 + " " + z2);
-		if(hasWorld()) result.put("world", start.getWorld().getName());
+		if(hasWorld) result.put("world", start.getWorld().getName());
 		return result;
 	}
 
 	/**
 	 * Writes the coordinates to variables to maintain region easier
 	 */
-	void setCoords() {
+	void setCoordinates() {
 		x1 = Math.min(start.getBlockX(), end.getBlockX());
 		y1 = Math.min(start.getBlockY(), end.getBlockY());
 		z1 = Math.min(start.getBlockZ(), end.getBlockZ());
@@ -315,82 +230,97 @@ public class Region implements ConfigurationSerializable {
 		end.setZ(z2);
 	}
 
+	private ListMultimap<Location, Location> faces;
+
 	/**
 	 * Gets the faces of the region
 	 * @return A multimap containing linked locations representing the start and the end locations of the face rectangle
 	 */
 	public ListMultimap<Location, Location> getFaces() {
+		if (faces != null) {
+			return faces;
+		}
 		ListMultimap<Location, Location> map = ArrayListMultimap.create();
-		Location l = start.clone();
+		Location start = this.start.clone();
 
-		map.put(l, l.clone().add(getXSideLength(), getHeight(), 0));
-		map.put(l, l.clone().add(0, getHeight(), getZSideLength()));
-		map.put(l, l.clone().add(getXSideLength(), 0, getZSideLength()));
-		Location end = l.clone().add(getXSideLength(), getHeight(), getZSideLength());
-		map.put(l.clone().add(getXSideLength(), 0, 0), end);
-		map.put(l.clone().add(0, getHeight(), 0), end);
-		map.put(l.clone().add(0, 0, getZSideLength()), end);
+		map.put(start, start.clone().add(getXSideLength(), getHeight(), 0));
+		map.put(start, start.clone().add(0, getHeight(), getZSideLength()));
+		map.put(start, start.clone().add(getXSideLength(), 0, getZSideLength()));
+		Location end = start.clone().add(getXSideLength(), getHeight(), getZSideLength());
+		map.put(start.clone().add(getXSideLength(), 0, 0), end);
+		map.put(start.clone().add(0, getHeight(), 0), end);
+		map.put(start.clone().add(0, 0, getZSideLength()), end);
 
+		faces = map;
 		return map;
 	}
+
+	private ListMultimap<Location, Location> edges;
 
 	/**
 	 * Gets the edges of the region
 	 * @return A multimap containing linked locations representing line segments of each edge
 	 */
 	public ListMultimap<Location, Location> getEdges() {
+		if (edges != null) {
+			return edges;
+		}
 		ListMultimap<Location, Location> map = ArrayListMultimap.create();
-		Location l = start.clone();
+		Location start = this.start.clone();
 
 		if(isPoint()) {
+			edges = map;
 			return map;
 		}
 		if(isLine()) {
-			map.put(start.clone(), end.clone());
+			map.put(this.start.clone(), end.clone());
+			edges = map;
 			return map;
 		}
 		if(isFlat()) {
-			map.put(l.clone(), l.clone().add(getXSideLength(), 0, 0));
-			l.add(getXSideLength(), 0, 0);
-			map.put(l.clone(), l.clone().add(0, 0, getZSideLength()));
-			l.add(0, 0, getZSideLength());
-			map.put(l.clone(), l.clone().add(-getXSideLength(), 0, 0));
-			l.add(-getXSideLength(), 0, 0);
-			map.put(l.clone(), l.clone().add(0, 0, -getZSideLength()));
+			map.put(start.clone(), start.clone().add(getXSideLength(), 0, 0));
+			start.add(getXSideLength(), 0, 0);
+			map.put(start.clone(), start.clone().add(0, 0, getZSideLength()));
+			start.add(0, 0, getZSideLength());
+			map.put(start.clone(), start.clone().add(-getXSideLength(), 0, 0));
+			start.add(-getXSideLength(), 0, 0);
+			map.put(start.clone(), start.clone().add(0, 0, -getZSideLength()));
+			edges = map;
 			return map;
 		}
 
-		map.put(l.clone(), l.clone().add(0, getHeight(), 0));
-		map.put(l.clone(), l.clone().add(getXSideLength(), 0, 0));
+		map.put(start.clone(), start.clone().add(0, getHeight(), 0));
+		map.put(start.clone(), start.clone().add(getXSideLength(), 0, 0));
 
-		l.add(getXSideLength(), 0, 0);
+		start.add(getXSideLength(), 0, 0);
 
-		map.put(l.clone(), l.clone().add(0, getHeight(), 0));
-		map.put(l.clone(), l.clone().add(0, 0, getZSideLength()));
+		map.put(start.clone(), start.clone().add(0, getHeight(), 0));
+		map.put(start.clone(), start.clone().add(0, 0, getZSideLength()));
 
-		l.add(0, 0, getZSideLength());
+		start.add(0, 0, getZSideLength());
 
-		map.put(l.clone(), l.clone().add(0, getHeight(), 0));
-		map.put(l.clone(), l.clone().add(-getXSideLength(), 0, 0));
+		map.put(start.clone(), start.clone().add(0, getHeight(), 0));
+		map.put(start.clone(), start.clone().add(-getXSideLength(), 0, 0));
 
-		l.add(-getXSideLength(), 0, 0);
+		start.add(-getXSideLength(), 0, 0);
 
-		map.put(l.clone(), l.clone().add(0, getHeight(), 0));
-		map.put(l.clone(), l.clone().add(0, 0, -getZSideLength()));
+		map.put(start.clone(), start.clone().add(0, getHeight(), 0));
+		map.put(start.clone(), start.clone().add(0, 0, -getZSideLength()));
 
-		l.add(0, getHeight(), -getZSideLength());
+		start.add(0, getHeight(), -getZSideLength());
 
-		map.put(l.clone(), l.clone().add(getXSideLength(), 0, 0));
-		l.add(getXSideLength(), 0, 0);
+		map.put(start.clone(), start.clone().add(getXSideLength(), 0, 0));
+		start.add(getXSideLength(), 0, 0);
 
-		map.put(l.clone(), l.clone().add(0, 0, getZSideLength()));
-		l.add(0, 0, getZSideLength());
+		map.put(start.clone(), start.clone().add(0, 0, getZSideLength()));
+		start.add(0, 0, getZSideLength());
 
-		map.put(l.clone(), l.clone().add(-getXSideLength(), 0, 0));
-		l.add(-getXSideLength(), 0, 0);
+		map.put(start.clone(), start.clone().add(-getXSideLength(), 0, 0));
+		start.add(-getXSideLength(), 0, 0);
 
-		map.put(l.clone(), l.clone().add(0, 0, -getZSideLength()));
+		map.put(start.clone(), start.clone().add(0, 0, -getZSideLength()));
 
+		edges = map;
 		return map;
 	}
 
@@ -466,76 +396,88 @@ public class Region implements ConfigurationSerializable {
 		return getXSideLength() * getHeight() * getZSideLength();
 	}
 
+	private Set<Location> locationsInside;
+
 	/**
-	 * Gets the list of blocks that are inside or on the edges of a region. This method uses {@link #validateWorlds() world validation}
-	 * @return List of blocks
+	 * Gets the list of locations that are inside or on the edges of a region.
+	 * @return Set of locations
+	 */
+	public Set<Location> getLocationsInside() {
+		if (locationsInside != null) {
+			return locationsInside;
+		}
+		Set<Location> locations = new HashSet<>();
+		for(int x = x1; x <= x2; x++) {
+			for(int y = y1; y <= y2; y++) {
+				for(int z = z1; z <= z2; z++) {
+					locations.add(new Location(start.getWorld(), x, y, z));
+				}
+			}
+		}
+		locationsInside = locations;
+		return locations;
+	}
+
+	/**
+	 * Gets the list of blocks that are inside or on the edges of a region.
+	 * This method requires a world to be present.
+	 * @return Set of blocks
 	 */
 	public Set<Block> getBlocksInside() {
 		validateWorlds();
-		Set<Block> blocks = new HashSet<>();
-		for(int x = x1; x <= x2; x++) {
-			for(int y = y1; y <= y2; y++) {
-				for(int z = z1; z <= z2; z++) {
-					blocks.add(new Location(start.getWorld(), x, y, z).getBlock());
-				}
-			}
-		}
-		return blocks;
+		return getLocationsInside().stream().map(Location::getBlock).collect(Collectors.toSet());
 	}
 
 	/**
-	 * Gets the list of air blocks that are inside or on the edges of a region. This method uses {@link #validateWorlds() world validation}
-	 * @return List of air blocks
+	 * Gets the list of air blocks that are inside or on the edges of a region.
+	 * This method requires a world to be present.
+	 * @return Set of air blocks
 	 */
 	public Set<Block> getAirBlocksInside() {
 		validateWorlds();
-		Set<Block> blocks = new HashSet<>();
-		for(int x = x1; x <= x2; x++) {
-			for(int y = y1; y <= y2; y++) {
-				for(int z = z1; z <= z2; z++) {
-					Block currentBlock = new Location(start.getWorld(), x, y, z).getBlock();
-					if(currentBlock.getType() == Material.AIR) blocks.add(currentBlock);
-				}
-			}
-		}
-		return blocks;
+		return getLocationsInside().stream()
+				.map(Location::getBlock)
+				.filter(block -> block.getType() == Material.AIR)
+				.collect(Collectors.toSet());
 	}
 
 	/**
-	 * Gets the list of entities that are inside or on the edges of a region. This method uses {@link #validateWorlds() world validation}
-	 * @return List of entities
+	 * Gets the list of entities that are inside or on the edges of a region.
+	 * This method requires a world to be present.
+	 * @return Set of entities
 	 */
 	public Set<Entity> getEntitiesInside() {
 		validateWorlds();
-		Set<Entity> entities = new HashSet<>();
-		for(Entity ent : start.getWorld().getEntities()) {
-			if(isInside(ent.getLocation())) entities.add(ent);
-		}
-		return entities;
+        return getWorld().getEntities().stream()
+				.filter(entity -> isInside(entity.getLocation()))
+				.collect(Collectors.toSet());
 	}
 
 	/**
 	 * Checks if the given entity is inside the region. This method does not check worlds!
-	 * @param ent The Entity
-	 * @return Whether the given entity is inside of the region
+	 * @param entity The Entity
+	 * @return Whether the given entity is inside the region
 	 */
-	public boolean isInside(Entity ent) {
-		return isInside(ent.getLocation());
+	public boolean isInside(Entity entity) {
+		return isInside(entity.getLocation());
 	}
 
 	/**
 	 * Checks if the given location is inside the region. This method does not check worlds!
-	 * @param l The location
-	 * @return Whether the given location is inside of the region
+	 * @param location The location
+	 * @return Whether the given location is inside the region
 	 */
-	public boolean isInside(Location l) {
-		double x = l.getBlockX();
-		double y = l.getBlockY();
-		double z = l.getBlockZ();
-		boolean xInside = x >= x1 && x <= x2;
-		boolean yInside = y >= y1 && y <= y2;
-		boolean zInside = z >= z1 && z <= z2;
-		return xInside && yInside && zInside;
-	}
+	public boolean isInside(Location location) {
+		int x = location.getBlockX();
+		if (x < x1 || x > x2) {
+			return false;
+		}
+		int y = location.getBlockY();
+		if (y < y1 || y > y2) {
+			return false;
+		}
+		int z = location.getBlockZ();
+        return z >= z1 && z <= z2;
+    }
 
 }

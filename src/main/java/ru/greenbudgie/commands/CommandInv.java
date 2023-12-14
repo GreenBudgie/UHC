@@ -7,8 +7,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import ru.greenbudgie.UHC.PlayerInventoryView;
 import ru.greenbudgie.UHC.PlayerManager;
-import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.mutator.MutatorManager;
 import ru.greenbudgie.util.MathUtils;
 
@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 public class CommandInv implements CommandExecutor, TabCompleter {
 
-	//TODO Ability to look at offline player's inventories
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(MutatorManager.omniscient.isActive()) {
 			if(args.length >= 1) {
@@ -26,7 +25,7 @@ public class CommandInv implements CommandExecutor, TabCompleter {
 				if(!PlayerManager.isPlaying(observer)) return true;
 				Player target = Bukkit.getPlayer(args[0]);
 				if(target != null && PlayerManager.isPlaying(target)) {
-					UHC.viewInventory(observer, target);
+					PlayerInventoryView.viewInventory(observer, target);
 				} else {
 					sender.sendMessage(ChatColor.RED + "Нет такого игрока!");
 				}

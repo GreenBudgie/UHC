@@ -1,12 +1,12 @@
 package ru.greenbudgie.lobby;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import ru.greenbudgie.UHC.ArenaManager;
-import ru.greenbudgie.UHC.WorldManager;
+import ru.greenbudgie.UHC.*;
 import ru.greenbudgie.lobby.game.LobbyGameManager;
 import ru.greenbudgie.lobby.sign.LobbySign;
 import ru.greenbudgie.lobby.sign.SignManager;
@@ -15,6 +15,8 @@ import ru.greenbudgie.main.UHCPlugin;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.bukkit.ChatColor.*;
 
 public class Lobby {
 
@@ -87,6 +89,37 @@ public class Lobby {
         return isInLobby(player) || isWatchingArena(player);
     }
 
+    /**
+     * Returns player to lobby spawn location if it is possible and does some additional work if needed.
+     *
+     * @param player The player to teleport to lobby
+     */
+    public static void returnPlayerToLobby(Player player) {
+        if (PlayerManager.isPlaying(player)) {
+            player.sendMessage(DARK_RED + "" + BOLD + "- Нельзя выйти в лобби во время игры! -");
+            return;
+        }
+        if (PlayerManager.isSpectator(player)) {
+            returnSpectatorToLobby(player);
+            return;
+        }
+        if (isInLobbyOrWatchingArena(player)) {
+            LobbyGameManager.PVP_ARENA.onArenaLeave(player);
+            player.teleport(Lobby.getLobby().getSpawnLocation());
+        }
+    }
 
+    private static void returnSpectatorToLobby(Player spectator) {
+        UHC.resetPlayer(spectator);
+        spectator.setGameMode(GameMode.ADVENTURE);
+        SafeTeleport.performSafeTeleport(spectator, Lobby.getLobby().getSpawnLocation());
+        PlayerManager.unregisterSpectator(spectator);
+        for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+            inGamePlayer.sendMessage(
+                    DARK_AQUA + "" + BOLD + "- " + GOLD + spectator.getName() + AQUA + " перестал наблюдать за игрой"
+            );
+        }
+        UHC.refreshScoreboards();
+    }
 
 }

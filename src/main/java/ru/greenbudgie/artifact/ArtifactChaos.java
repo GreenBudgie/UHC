@@ -3,8 +3,8 @@ package ru.greenbudgie.artifact;
 import com.google.common.collect.Lists;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import ru.greenbudgie.UHC.GameType;
 import ru.greenbudgie.UHC.PlayerManager;
+import ru.greenbudgie.configuration.GameType;
 import ru.greenbudgie.mutator.MutatorManager;
 import ru.greenbudgie.util.MathUtils;
 

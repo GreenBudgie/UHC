@@ -27,6 +27,7 @@ import java.util.Map;
 public class LobbyMapPreview {
 
     private static Region mapPreviewRegion;
+
     protected static void init() {
         ConfigurationSection mapRegionSection = Lobby.getLobbyConfig().getConfigurationSection("mapPreviewRegion");
         if(mapRegionSection == null) {
@@ -34,7 +35,7 @@ public class LobbyMapPreview {
             return;
         }
         Map<String, Object> rawRegion = mapRegionSection.getValues(false);
-        Region previewRegion = Region.deserialize(rawRegion);
+        Region previewRegion = Region.deserialize(rawRegion, Lobby.getLobby());
         if(previewRegion == null) {
             UHCPlugin.warning("Invalid map preview region notation");
             return;
@@ -52,7 +53,6 @@ public class LobbyMapPreview {
      */
     public static void setPreview() {
         if(mapPreviewRegion == null || WorldManager.getGameMap() == null) return;
-        mapPreviewRegion.setWorld(Lobby.getLobby());
         int xRealLength = mapPreviewRegion.getXSideLength();
         int yRealLength = mapPreviewRegion.getYSideLength();
         int zRealLength = mapPreviewRegion.getZSideLength();

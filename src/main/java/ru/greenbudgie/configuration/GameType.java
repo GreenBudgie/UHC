@@ -1,4 +1,4 @@
-package ru.greenbudgie.UHC;
+package ru.greenbudgie.configuration;
 
 import static org.bukkit.ChatColor.*;
 
@@ -15,14 +15,8 @@ public enum GameType {
         return type;
     }
 
-    public static void switchType() {
-        if(UHC.playing) return;
-        int typeOrdinal = type.ordinal();
-        if(typeOrdinal == values().length - 1) {
-            type = values()[0];
-        } else {
-            type = values()[typeOrdinal + 1];
-        }
+    public static void setType(GameType type) {
+        GameType.type = type;
     }
 
     private final String description;

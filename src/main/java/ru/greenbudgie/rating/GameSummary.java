@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.UHC.GameState;
-import ru.greenbudgie.UHC.GameType;
+import ru.greenbudgie.configuration.GameType;
 import ru.greenbudgie.mutator.Mutator;
 import ru.greenbudgie.mutator.MutatorManager;
 import ru.greenbudgie.util.ItemUtils;

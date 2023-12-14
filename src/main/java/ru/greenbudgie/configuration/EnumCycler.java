@@ -1,4 +1,4 @@
-package ru.greenbudgie.UHC.configuration;
+package ru.greenbudgie.configuration;
 
 import javax.annotation.Nonnull;
 

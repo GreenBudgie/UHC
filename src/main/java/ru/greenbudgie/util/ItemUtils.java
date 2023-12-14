@@ -16,6 +16,9 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Helps to make new items and change existing ones
@@ -276,7 +279,7 @@ public class ItemUtils {
 	 */
 	public static ItemStack addLore(ItemStack item, boolean toStart, String... strings) {
 		List<String> prevLore = getLore(item);
-		List<String> lore = Lists.newArrayList(strings);
+		List<String> lore = Stream.of(strings).filter(Objects::nonNull).collect(Collectors.toList());
 		if(!toStart) {
 			prevLore.addAll(lore);
 			setLore(item, prevLore);
@@ -369,6 +372,8 @@ public class ItemUtils {
 		protected ItemStack item;
 		protected ItemMeta meta;
 
+		private boolean condition = true;
+
 		public Builder(Material type) {
 			item = new ItemStack(type);
 			meta = item.getItemMeta();
@@ -379,17 +384,46 @@ public class ItemUtils {
 			meta = item.getItemMeta();
 		}
 
+		/**
+		 * Applies the following change to the ItemStack if the provided value is true.
+		 * For example, {@code ifTrue(false).withLore("hi")} will not add the lore to the ItemStack.
+		 */
+		public Builder ifTrue(boolean value) {
+			condition = value;
+			return this;
+		}
+
+		/**
+		 * Applies the following change to the ItemStack if the provided value is false.
+		 * For example, {@code ifFalse(true).withLore("hi")} will not add the lore to the ItemStack.
+		 */
+		public Builder ifFalse(boolean value) {
+			condition = !value;
+			return this;
+		}
+
+		private boolean doNotApply() {
+			if (!condition) {
+				condition = true;
+				return true;
+			}
+			return false;
+		}
+
 		public Builder withFlags(ItemFlag... flags) {
+			if (doNotApply()) return this;
 			meta.addItemFlags(flags);
 			return this;
 		}
 
 		public Builder withName(String name) {
+			if (doNotApply()) return this;
 			meta.setDisplayName(name);
 			return this;
 		}
 
 		public Builder withLore(List<String> lore) {
+			if (doNotApply()) return this;
 			List<String> prevLore = meta.getLore();
 			if(prevLore == null) prevLore = new ArrayList<>();
 			prevLore.addAll(lore);
@@ -398,16 +432,19 @@ public class ItemUtils {
 		}
 
 		public Builder withLore(String... lore) {
+			if (doNotApply()) return this;
 			withLore(Arrays.asList(lore));
 			return this;
 		}
 
 		public Builder unbreakable() {
+			if (doNotApply()) return this;
 			meta.setUnbreakable(true);
 			return this;
 		}
 
 		public Builder withSplittedLore(String lore, int length) {
+			if (doNotApply()) return this;
 			List<String> splitted = splitLongString(lore, length);
 			for(int i = 0; i < splitted.size(); i++) {
 				String str = splitted.get(i);
@@ -424,22 +461,26 @@ public class ItemUtils {
 		}
 
 		public Builder withSplittedLore(String lore) {
+			if (doNotApply()) return this;
 			withSplittedLore(lore, 25);
 			return this;
 		}
 
 		public Builder withGlow() {
+			if (doNotApply()) return this;
 			meta.addEnchant(Enchantment.OXYGEN, 1, true);
 			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			return this;
 		}
 
 		public Builder withGlow(boolean glow) {
+			if (doNotApply()) return this;
 			if(glow) withGlow();
 			return this;
 		}
 
 		public Builder withEnchantments(Enchant... enchantments) {
+			if (doNotApply()) return this;
 			for(Enchant enchant : enchantments) {
 				meta.addEnchant(enchant.enchantment, enchant.level, true);
 			}
@@ -448,16 +489,19 @@ public class ItemUtils {
 
 		@Deprecated
 		public Builder unstackable() {
+			if (doNotApply()) return this;
 			setUnstackable(item);
 			return this;
 		}
 
 		public Builder withAmount(int amount) {
+			if (doNotApply()) return this;
 			item.setAmount(amount);
 			return this;
 		}
 
 		public Builder withValue(String name, String value) {
+			if (doNotApply()) return this;
 			item.setItemMeta(meta);
 			item = setCustomValue(item, name, value);
 			meta = item.getItemMeta();

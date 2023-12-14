@@ -1,11 +1,11 @@
 package ru.greenbudgie.lobby.sign;
 
-import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
-import ru.greenbudgie.UHC.*;
+import ru.greenbudgie.UHC.SpectatorManager;
+import ru.greenbudgie.UHC.UHC;
 
 import static org.bukkit.ChatColor.*;
 
@@ -28,21 +28,7 @@ public class LobbySignSpectate extends LobbySign {
 
     @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
-        if(UHC.playing) {
-            PlayerManager.addSpectator(clicker);
-            Location teleportLocation;
-            if (UHC.state.isDeathmatch()) {
-                teleportLocation = ArenaManager.getCurrentArena().getWorld().getSpawnLocation();
-            } else {
-                teleportLocation = WorldManager.spawnLocation;
-            }
-            SafeTeleport.allowTeleport(clicker);
-            clicker.teleport(teleportLocation);
-            UHC.refreshScoreboards();
-            for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
-                inGamePlayer.sendMessage(GOLD + clicker.getName() + AQUA + " присоединился к наблюдателям");
-            }
-        }
+        SpectatorManager.addSpectatorFromLobby(clicker);
     }
 
     @Override
@@ -51,8 +37,10 @@ public class LobbySignSpectate extends LobbySign {
         if(!UHC.playing) {
             side.setLine(1, GRAY + "<" + DARK_GRAY + BOLD + "Наблюдать" + RESET + GRAY + ">");
             side.setLine(2, RED + "Игра не идет");
+            side.setLine(3, GRAY + "/watch");
         } else {
             side.setLine(1, GRAY + "<" + AQUA + BOLD + "Наблюдать" + RESET + GRAY + ">");
+            side.setLine(2, GRAY + "/watch");
         }
     }
 

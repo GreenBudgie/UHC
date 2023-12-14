@@ -41,7 +41,7 @@ public class ParticleUtils {
 	 * Creates particles on the faces of the given region
 	 * @param region The region
 	 * @param particle Particle type to spawn
-	 * @param density How much particles to spawn at each side
+	 * @param density How many particles to spawn at each side
 	 * @param color Color of particle, might be null
 	 */
 	public static void createParticlesOnRegionFaces(Region region, Particle particle, int density, @Nullable Color color) {
@@ -56,10 +56,10 @@ public class ParticleUtils {
 	}
 
 	/**
-	 * Creates particles inside of the given region
+	 * Creates particles inside the given region
 	 * @param region The region
 	 * @param particle Particle type to spawn
-	 * @param amount How much particles to spawn
+	 * @param amount How many particles to spawn
 	 * @param color Color of particle, might be null
 	 */
 	public static void createParticlesInsideRegion(Region region, Particle particle, int amount, @Nullable Color color) {
@@ -75,7 +75,7 @@ public class ParticleUtils {
 	 * @param to Line end location
 	 * @param particle A particle to create
 	 * @param color Color of a particle, might be null
-	 * @param density How much particles to spawn per block
+	 * @param density How many particles to spawn per block
 	 */
 	public static void createLine(Location from, Location to, Particle particle, double density, @Nullable Color color) {
 		if(from.getWorld() != to.getWorld()) throw new IllegalArgumentException("Locations must be in the same world!");

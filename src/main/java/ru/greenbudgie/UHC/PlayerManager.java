@@ -2,20 +2,18 @@ package ru.greenbudgie.UHC;
 
 import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.classes.ClassManager;
+import ru.greenbudgie.configuration.GameType;
 import ru.greenbudgie.event.SpectatorJoinEvent;
 import ru.greenbudgie.event.SpectatorLeaveEvent;
-import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.lobby.LobbyTeamBuilder;
 import ru.greenbudgie.rating.GameSummary;
 import ru.greenbudgie.rating.PlayerSummary;
 import ru.greenbudgie.rating.Rating;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -87,19 +85,26 @@ public class PlayerManager {
         return null;
     }
 
-    public static void removeSpectator(Player spectator) {
+    /**
+     * Unregisters the spectator. It does not update the player in any way, e.g. it does not clear effects or
+     * teleport him to lobby. This method just removes the player from spectator list and calls an event.
+     */
+    public static void unregisterSpectator(Player spectator) {
+        if (!spectators.remove(spectator)) {
+            throw new IllegalStateException(spectator.getName() + " is not a spectator!");
+        }
         Bukkit.getPluginManager().callEvent(new SpectatorLeaveEvent(spectator));
-        UHC.resetPlayer(spectator);
-        spectator.teleport(Lobby.getLobby().getSpawnLocation());
-        spectator.setGameMode(GameMode.ADVENTURE);
-        getSpectators().remove(spectator);
     }
 
-    public static void addSpectator(Player player) {
-        UHC.resetPlayer(player);
-        player.setGameMode(GameMode.SPECTATOR);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
-        getSpectators().add(player);
+    /**
+     * Registers the spectator. It does not update the player in any way, e.g. it does not clear effects or
+     * teleport him to lobby. This method just removes the player from spectator list and calls an event.
+     */
+    public static void registerSpectator(Player player) {
+        if (spectators.contains(player)) {
+            throw new IllegalStateException(player.getName() + " is already a spectator!");
+        }
+        spectators.add(player);
         Bukkit.getPluginManager().callEvent(new SpectatorJoinEvent(player));
     }
 
@@ -109,6 +114,11 @@ public class PlayerManager {
      */
     public static List<UHCPlayer> getPlayers() {
         return players;
+    }
+
+    @Nullable
+    public static UHCPlayer getPlayerByNickname(String nickname) {
+        return getPlayers().stream().filter(player -> player.getNickname().equals(nickname)).findAny().orElse(null);
     }
 
     /**
@@ -182,6 +192,7 @@ public class PlayerManager {
     }
 
     public static boolean isTeammates(UHCPlayer player1, UHCPlayer player2) {
+        if(player1 == null || player2 == null) return false;
         return player1.getTeammate() == player2;
     }
 

@@ -4,7 +4,9 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
-import ru.greenbudgie.UHC.GameType;
+import ru.greenbudgie.UHC.UHC;
+import ru.greenbudgie.configuration.EnumCycler;
+import ru.greenbudgie.configuration.GameType;
 
 import static org.bukkit.ChatColor.GRAY;
 
@@ -17,7 +19,10 @@ public class LobbySignGameType extends LobbySign {
 
     @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
-        GameType.switchType();
+        if (UHC.playing) {
+            return;
+        }
+        GameType.setType(EnumCycler.nextValue(GameType.getType(), GameType.values()));
     }
 
     @Override

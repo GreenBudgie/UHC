@@ -5,8 +5,8 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.UHC.UHC;
-import ru.greenbudgie.UHC.configuration.EnumCycler;
-import ru.greenbudgie.UHC.configuration.MapSize;
+import ru.greenbudgie.configuration.EnumCycler;
+import ru.greenbudgie.configuration.MapSize;
 import ru.greenbudgie.util.NumericalCases;
 
 import static org.bukkit.ChatColor.*;

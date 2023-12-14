@@ -7,7 +7,7 @@ commands:
   description: Debug command
   usage: /test
  gm:
-  description: Fast gamemode switch
+  description: Fast game mode switch
   usage: /gm [0-3]
  start:
   description: Start game
@@ -37,7 +37,7 @@ commands:
   description: CustomItem debug
   usage: /customitem
  timer:
-  description: Controls ingame timer
+  description: Controls in-game timer
   usage: /timer <reset/set/add> [value]
  mutator:
   description: Shows active mutators (use only in game)
@@ -68,3 +68,6 @@ commands:
  artifacts:
   description: Открыть меню артефактов
   usage: /artifacts
+ watch:
+  description: Наблюдать за игрой
+  usage: /watch

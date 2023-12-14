@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import ru.greenbudgie.UHC.UHC;
-import ru.greenbudgie.UHC.configuration.FastStart;
+import ru.greenbudgie.configuration.FastStart;
 import ru.greenbudgie.util.MathUtils;
 
 import java.util.List;

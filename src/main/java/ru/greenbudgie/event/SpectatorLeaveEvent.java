@@ -5,7 +5,8 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 
 /**
- * Called when the spectator leaves the game
+ * Called when the spectator leaves the game, either quits or returns to lobby.
+ * At this point the player should already be teleported to lobby.
  */
 public class SpectatorLeaveEvent extends PlayerEvent {
 

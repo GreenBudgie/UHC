@@ -20,19 +20,22 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MerchantRecipe;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.SuspiciousStewMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.*;
-import ru.greenbudgie.UHC.configuration.FastStart;
-import ru.greenbudgie.UHC.configuration.GameDuration;
-import ru.greenbudgie.UHC.configuration.MapSize;
 import ru.greenbudgie.artifact.ArtifactManager;
 import ru.greenbudgie.block.CustomBlockManager;
 import ru.greenbudgie.classes.ClassManager;
 import ru.greenbudgie.classes.UHCClass;
+import ru.greenbudgie.configuration.FastStart;
+import ru.greenbudgie.configuration.GameDuration;
+import ru.greenbudgie.configuration.GameType;
+import ru.greenbudgie.configuration.MapSize;
 import ru.greenbudgie.drop.Drop;
 import ru.greenbudgie.drop.Drops;
 import ru.greenbudgie.event.AfterGameInitializeEvent;
@@ -158,7 +161,10 @@ public class UHC implements Listener {
 		if(!state.isPreGame()) {
 			if(isDuo) {
 				List<PlayerTeam> aliveTeams = PlayerManager.getAliveTeams();
-				if(aliveTeams.size() > 0) {
+				if(!aliveTeams.isEmpty()) {
+					if (scoreboardCurrentTeamIndex >= aliveTeams.size()) {
+						scoreboardCurrentTeamIndex = 0;
+					}
 					PlayerTeam currentTeam = aliveTeams.get(scoreboardCurrentTeamIndex);
 					String prefix = DARK_GRAY + "[" +
 							WHITE + "" + BOLD + (scoreboardCurrentTeamIndex + 1) +
@@ -1300,31 +1306,6 @@ public class UHC implements Listener {
 				.withSplittedLore(GOLD + "Окружи его золотыми слитками и получи 2 золотых яблока").build();
 	}
 
-	private static String invViewStart = DARK_GRAY + "Инвентарь";
-
-	public static void viewInventory(Player observer, Player target) {
-		final int size = 9 * 6;
-		PlayerInventory targetInventory = target.getInventory();
-		Inventory currentInventory = Bukkit.createInventory(observer, size, invViewStart + DARK_AQUA + BOLD + " " + target.getName());
-		for(int i = 0; i < targetInventory.getStorageContents().length; i++) {
-			ItemStack item = targetInventory.getStorageContents()[i];
-			currentInventory.setItem(i, item);
-		}
-		ItemStack blackPanel = ItemUtils.builder(Material.BLACK_STAINED_GLASS_PANE).withName(" ").build();
-		for(int slot = size - 18; slot < size - 9; slot++) {
-			currentInventory.setItem(slot, blackPanel);
-		}
-		for(int slot = size - 9 + 4; slot < size - 1; slot++) {
-			currentInventory.setItem(slot, blackPanel);
-		}
-		currentInventory.setItem(size - 9, targetInventory.getHelmet());
-		currentInventory.setItem(size - 9 + 1, targetInventory.getChestplate());
-		currentInventory.setItem(size - 9 + 2, targetInventory.getLeggings());
-		currentInventory.setItem(size - 9 + 3, targetInventory.getBoots());
-		currentInventory.setItem(size - 1, targetInventory.getItemInOffHand());
-		observer.openInventory(currentInventory);
-	}
-
 	private static void enablePvpAndSwitchState() {
 		state = GameState.GAME;
 		deathmatchTimer = 60 * getGameDuration();
@@ -1335,13 +1316,6 @@ public class UHC implements Listener {
 			p.sendTitle(DARK_RED + "" + BOLD + "ПВП " + GOLD + BOLD + "Включено" + GRAY + "!",
 					YELLOW + "До дезматча " + AQUA + BOLD + getGameDuration() +
 							RESET + YELLOW + " минут", 10, 60, 30);
-		}
-	}
-
-	@EventHandler
-	public void noClick(InventoryClickEvent e) {
-		if(e.getView().getTitle().startsWith(invViewStart)) {
-			e.setCancelled(true);
 		}
 	}
 
@@ -1520,9 +1494,9 @@ public class UHC implements Listener {
 		Player player = e.getPlayer();
 		if(PlayerManager.isInGame(player)) {
 			if(PlayerManager.isSpectator(player)) {
-				PlayerManager.removeSpectator(player);
+				PlayerManager.unregisterSpectator(player);
 				for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
-					inGamePlayer.sendMessage(AQUA + "Наблюдатель " + GOLD + player.getName() + AQUA + " отключился");
+					inGamePlayer.sendMessage(DARK_AQUA + "" + BOLD + "- " + GOLD + player.getName() + AQUA + " перестал наблюдать за игрой");
 				}
 			}
 			if(PlayerManager.isPlaying(player)) {
@@ -1531,7 +1505,7 @@ public class UHC implements Listener {
 			}
 		} else {
 			for(Player currentPlayer : Lobby.getPlayersInLobbyAndArenas()) {
-				currentPlayer.sendMessage(RED + "" + BOLD + "- " + RESET + GOLD + player.getName() + YELLOW + " отключился");
+				currentPlayer.sendMessage(RED + "" + BOLD + "- " + RESET + GOLD + player.getName() + GRAY + " отключился");
 			}
 		}
 		refreshScoreboardsLater();
@@ -1735,54 +1709,6 @@ public class UHC implements Listener {
 				e.setExpToDrop(0);
 			} else {
 				e.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	public void noTeleport(PlayerTeleportEvent e) {
-		if (!playing) {
-			return;
-		}
-		Location from = e.getFrom();
-		Location to = e.getTo();
-		if (to == null) {
-			return;
-		}
-		World fromWorld = from.getWorld();
-		World toWorld = to.getWorld();
-		if (fromWorld == toWorld) {
-			return;
-		}
-		Player player = e.getPlayer();
-		if (SafeTeleport.isTeleportAllowed(player)) {
-			SafeTeleport.restrictTeleport(player);
-			return;
-		}
-		boolean isFromLobby = Lobby.isInLobbyOrWatchingArena(player);
-		boolean isFromGame = PlayerManager.isInGame(player);
-		boolean isToLobby = toWorld == Lobby.getLobby() || ArenaManager.getArenaWorlds().contains(toWorld);
-		boolean isToGameWorld = toWorld == WorldManager.getGameMap() ||
-				toWorld == WorldManager.getGameMapNether() ||
-				(ArenaManager.getCurrentArena() != null && toWorld == ArenaManager.getCurrentArena().getWorld());
-		if (isFromLobby && isToGameWorld) {
-			e.setTo(from);
-			e.getPlayer().sendMessage(RED + "Нельзя телепортироваться к игроку через команду! Используй табличку <наблюдать>!");
-			return;
-		}
-		if (isFromGame && isToLobby) {
-			e.setTo(from);
-			e.getPlayer().sendMessage(RED + "Чтобы телепортироваться в лобби, используй /lobby!");
-		}
-	}
-
-	@EventHandler
-	public void spectatorOpenInv(PlayerInteractEntityEvent e) {
-		Player p = e.getPlayer();
-		if((state.isBeforeDeathmatch() || state == GameState.DEATHMATCH) &&
-				e.getHand() == EquipmentSlot.HAND && e.getRightClicked() instanceof Player clicked && PlayerManager.isSpectator(p)) {
-			if(PlayerManager.isPlaying(clicked)) {
-				viewInventory(p, clicked);
 			}
 		}
 	}
