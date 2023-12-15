@@ -76,6 +76,9 @@ public class ArenaManager {
                 resetArenaBorder(arena);
             }
         }
+        if (currentArena == null) {
+            setupCurrentArena();
+        }
     }
     
     private static void setupArenaWorld(World world) {

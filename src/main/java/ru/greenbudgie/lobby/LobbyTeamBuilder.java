@@ -123,6 +123,9 @@ public class LobbyTeamBuilder implements Listener {
     }
 
     private static void giveTeammateSelectItemIfNeeded(Player player) {
+        if (!UHC.isDuo) {
+            return;
+        }
         if (LobbyGameManager.isParticipating(player)) {
             return;
         }
@@ -231,10 +234,17 @@ public class LobbyTeamBuilder implements Listener {
 
     @EventHandler
     public void updateOnJoin(PlayerJoinEvent event) {
+        if (UHC.playing) {
+            return;
+        }
         Player player = event.getPlayer();
         restoreTeammate(player, true);
         reopenInventories();
-        giveTeammateSelectItemIfNeeded(player);
+        if (UHC.isDuo) {
+            giveTeammateSelectItemIfNeeded(player);
+        } else {
+            removeTeammateSelectItem(player);
+        }
     }
 
     @EventHandler

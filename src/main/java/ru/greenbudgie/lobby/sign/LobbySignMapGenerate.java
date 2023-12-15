@@ -28,7 +28,7 @@ public class LobbySignMapGenerate extends LobbySign {
             side.setLine(2, GRAY + "<" + GREEN + BOLD + "Пересоздать" + RESET + GRAY + ">");
         } else {
             side.setLine(1, DARK_AQUA + "Мир не создан");
-            side.setLine(2, GRAY + "<" + DARK_GREEN + BOLD + "Пересоздать" + RESET + GRAY + ">");
+            side.setLine(2, GRAY + "<" + DARK_GREEN + BOLD + "Создать" + RESET + GRAY + ">");
         }
     }
 

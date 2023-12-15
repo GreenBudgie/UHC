@@ -105,10 +105,11 @@ public class UHC implements Listener {
 	public static final double DEFAULT_MAX_PLAYER_HP = 26;
 
 	public static void init() {
+		Lobby.init();
 		WorldManager.init();
 		RecipeHandler.init();
-		Lobby.init();
 		MutatorManager.init();
+		SignManager.init();
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			createLobbyScoreboard(p);
 		}

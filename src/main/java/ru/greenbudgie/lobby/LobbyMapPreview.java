@@ -28,7 +28,7 @@ public class LobbyMapPreview {
 
     private static Region mapPreviewRegion;
 
-    protected static void init() {
+    public static void init() {
         ConfigurationSection mapRegionSection = Lobby.getLobbyConfig().getConfigurationSection("mapPreviewRegion");
         if(mapRegionSection == null) {
             UHCPlugin.warning("No map preview region specified in config");

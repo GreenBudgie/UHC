@@ -10,73 +10,62 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static org.bukkit.ChatColor.*;
+
 public class WorldManager {
 
 	public static boolean keepMap = true;
 	public static Location spawnLocation;
-	private static World lobby, gameMap, gameMapNether;
+	private static World gameMap, gameMapNether;
 
 	public static void init() {
-		lobby = Bukkit.createWorld(new WorldCreator("Lobby"));
-		lobby.setDifficulty(Difficulty.NORMAL);
-		lobby.setPVP(true);
-		lobby.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
-		lobby.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-		lobby.setGameRule(GameRule.NATURAL_REGENERATION, false);
-		lobby.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
-		lobby.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-
-		removeMapDatFiles();
 		ArenaManager.init();
 
 		if(Bukkit.getWorld("CurrentMap") != null) {
 			gameMap = Bukkit.createWorld(new WorldCreator("CurrentMap"));
 			gameMap.setDifficulty(Difficulty.HARD);
 			spawnLocation = gameMap.getSpawnLocation().clone();
+			LobbyMapPreview.setPreview();
+		} else {
+			generateAndSetGameMap();
 		}
+
 		if(Bukkit.getWorld("CurrentMapNether") != null) {
 			gameMapNether = Bukkit.createWorld(new WorldCreator("CurrentMapNether"));
 			gameMapNether.setDifficulty(Difficulty.HARD);
+		} else {
+			generateAndSetGameMapNether();
 		}
 	}
 
-	private static void removeMapDatFiles() {
-		File dataFolder = new File(lobby.getWorldFolder().getAbsolutePath() + File.separator + "data");
-		for(int i = 0;; i++) {
-			File mapDat = new File(dataFolder.getAbsolutePath() + File.separator + "map_" + i + ".dat");
-			try {
-				if(!mapDat.delete()) {
-					break;
-				}
-			} catch(Exception ignored) {
-				break;
-			}
-		}
-		File idcounts = new File(dataFolder.getAbsolutePath() + File.separator + "idcounts.dat");
-		try {
-			idcounts.delete();
-		} catch(Exception ignored) {}
-	}
-
-	public static World createMap() {
-		String arrows = ChatColor.DARK_GRAY + "" + ChatColor.BOLD + ">>>";
-		Bukkit.broadcastMessage(arrows + ChatColor.DARK_AQUA + "" + ChatColor.BOLD + " Начинается генерация мира! " + ChatColor.RESET + ChatColor.GOLD +
+	public static void createMap() {
+		String arrows = DARK_GRAY + "" + BOLD + ">>>";
+		Bukkit.broadcastMessage(arrows + DARK_AQUA + "" + BOLD + " Начинается генерация мира! " + RESET + GOLD +
 				"Сервер может зависнуть на некоторое время. Это нормально.");
 		UHC.generating = true;
+		generateAndSetGameMap();
+		Bukkit.broadcastMessage(arrows + DARK_RED + BOLD + " Генерация ада");
+		generateAndSetGameMapNether();
+		Bukkit.broadcastMessage(arrows + GRAY + BOLD + " Копирование арены");
+		ArenaManager.setupCurrentArena();
+		Bukkit.broadcastMessage(arrows + DARK_GREEN + BOLD + " Новый мир создан!");
+		TaskManager.asyncInvokeLater(() -> UHC.generating = false, 20);
+	}
+
+	private static void generateAndSetGameMap() {
 		World map = Bukkit.createWorld(new WorldCreator("CurrentMap"));
 		setRules(map);
 		spawnLocation = map.getSpawnLocation().clone();
 		gameMap = map;
-		Bukkit.broadcastMessage(arrows + ChatColor.RESET + ChatColor.DARK_RED + " Генерация ада...");
-		World nether = Bukkit.createWorld(new WorldCreator("CurrentMapNether").environment(World.Environment.NETHER));
+		LobbyMapPreview.setPreview();
+	}
+
+	private static void generateAndSetGameMapNether() {
+		World nether = Bukkit.createWorld(
+				new WorldCreator("CurrentMapNether").environment(World.Environment.NETHER)
+		);
 		setRules(nether);
 		gameMapNether = nether;
-		Bukkit.broadcastMessage(arrows + ChatColor.RESET + ChatColor.GRAY + " Копирование арены...");
-		ArenaManager.setupCurrentArena();
-		LobbyMapPreview.setPreview();
-		Bukkit.broadcastMessage(arrows + ChatColor.DARK_GREEN + "" + ChatColor.BOLD + " Новый мир создан!");
-		TaskManager.asyncInvokeLater(() -> UHC.generating = false, 20);
-		return map;
 	}
 
 	private static void setRules(World map) {
@@ -204,10 +193,6 @@ public class WorldManager {
 
 	public static boolean hasMap() {
 		return gameMap != null && gameMapNether != null && ArenaManager.getCurrentArena() != null;
-	}
-
-	public static World getLobby() {
-		return lobby;
 	}
 
 	public static World getGameMap() {

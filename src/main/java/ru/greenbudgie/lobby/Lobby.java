@@ -1,12 +1,13 @@
 package ru.greenbudgie.lobby;
 
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import ru.greenbudgie.UHC.*;
+import ru.greenbudgie.UHC.ArenaManager;
+import ru.greenbudgie.UHC.PlayerManager;
+import ru.greenbudgie.UHC.SafeTeleport;
+import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.lobby.game.LobbyGameManager;
 import ru.greenbudgie.lobby.sign.LobbySign;
 import ru.greenbudgie.lobby.sign.SignManager;
@@ -21,10 +22,22 @@ import static org.bukkit.ChatColor.*;
 public class Lobby {
 
     private static YamlConfiguration lobbyConfig;
+    private static World lobby;
 
     public static void init() {
+        lobby = Bukkit.createWorld(new WorldCreator("Lobby"));
+        lobby.setDifficulty(Difficulty.NORMAL);
+        lobby.setPVP(true);
+        lobby.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
+        lobby.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        lobby.setGameRule(GameRule.NATURAL_REGENERATION, false);
+        lobby.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+        lobby.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+
+        removeMapDatFiles();
+
         boolean toUpdate = false;
-        File file = new File(WorldManager.getLobby().getWorldFolder() + File.separator + "lobby.yml");
+        File file = new File(getLobby().getWorldFolder() + File.separator + "lobby.yml");
         try {
             if(!file.exists()) file.createNewFile();
         } catch(Exception e) {
@@ -50,7 +63,6 @@ public class Lobby {
         } catch(Exception e) {
             UHCPlugin.error("Unable to save lobby.yml");
         }
-        SignManager.init();
         LobbyTeamBuilder.init();
         LobbyGameManager.init();
         LobbyMapPreview.init();
@@ -58,12 +70,30 @@ public class Lobby {
         Bukkit.getPluginManager().registerEvents(new LobbyTeamBuilder(), UHCPlugin.instance);
     }
 
+    private static void removeMapDatFiles() {
+        File dataFolder = new File(lobby.getWorldFolder().getAbsolutePath() + File.separator + "data");
+        for(int i = 0;; i++) {
+            File mapDat = new File(dataFolder.getAbsolutePath() + File.separator + "map_" + i + ".dat");
+            try {
+                if(!mapDat.delete()) {
+                    break;
+                }
+            } catch(Exception ignored) {
+                break;
+            }
+        }
+        File idcounts = new File(dataFolder.getAbsolutePath() + File.separator + "idcounts.dat");
+        try {
+            idcounts.delete();
+        } catch(Exception ignored) {}
+    }
+
     public static YamlConfiguration getLobbyConfig() {
         return lobbyConfig;
     }
 
     public static World getLobby() {
-        return WorldManager.getLobby();
+        return lobby;
     }
 
     public static boolean isInLobby(Player player) {

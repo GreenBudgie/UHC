@@ -24,7 +24,6 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-import ru.greenbudgie.UHC.WorldManager;
 import ru.greenbudgie.event.BeforeGameInitializeEvent;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.lobby.game.LobbyGame;
@@ -331,7 +330,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 	}
 
 	private List<Player> getLobbyPlayers() {
-		return WorldManager.getLobby().getPlayers();
+		return Lobby.getLobby().getPlayers();
 	}
 
 	public boolean isDueling(Player p) {
@@ -411,7 +410,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		for(Block block : closeRegion.getBlocksInside()) {
 			block.setType(Material.AIR);
 		}
-		WorldManager.getLobby().playSound(closeRegion.getStartLocation(), Sound.BLOCK_WOODEN_TRAPDOOR_OPEN, 1F, 0.6F);
+		Lobby.getLobby().playSound(closeRegion.getStartLocation(), Sound.BLOCK_WOODEN_TRAPDOOR_OPEN, 1F, 0.6F);
 		isOpen = true;
 	}
 
@@ -419,7 +418,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		for(Block block : closeRegion.getBlocksInside()) {
 			block.setType(Material.SPRUCE_FENCE);
 		}
-		WorldManager.getLobby().playSound(closeRegion.getStartLocation(), Sound.BLOCK_WOODEN_TRAPDOOR_CLOSE, 1F, 0.6F);
+		Lobby.getLobby().playSound(closeRegion.getStartLocation(), Sound.BLOCK_WOODEN_TRAPDOOR_CLOSE, 1F, 0.6F);
 		isOpen = false;
 	}
 
