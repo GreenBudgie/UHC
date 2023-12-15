@@ -3,12 +3,10 @@ package ru.greenbudgie.lobby.game.parkour;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -142,17 +140,6 @@ public class LobbyGameParkour extends LobbyGame implements Listener {
     @EventHandler
     public void endSessionsOnGameStart(BeforeGameInitializeEvent event) {
         endAllSessions();
-    }
-
-    @EventHandler
-    public void breakSign(BlockBreakEvent event) {
-        Block block = event.getBlock();
-        if (event.getBlock().getWorld() != Lobby.getLobby()) {
-            return;
-        }
-        if (block.getState() instanceof Sign) {
-            block.removeMetadata(BEST_TIME_METADATA_KEY, UHCPlugin.instance);
-        }
     }
 
     @EventHandler

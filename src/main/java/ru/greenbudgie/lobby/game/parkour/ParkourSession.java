@@ -1,14 +1,14 @@
 package ru.greenbudgie.lobby.game.parkour;
 
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
+import org.bukkit.persistence.PersistentDataType;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.InventoryHelper;
 import ru.greenbudgie.util.Region;
@@ -21,9 +21,10 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.bukkit.ChatColor.*;
-import static ru.greenbudgie.lobby.game.parkour.LobbyGameParkour.BEST_TIME_METADATA_KEY;
 
 public class ParkourSession {
+
+    private static final NamespacedKey BEST_TIME_KEY = new NamespacedKey(UHCPlugin.instance, "best_time");
 
     /**
      * How far from the center of the start block a player should be away to start the timer
@@ -68,7 +69,7 @@ public class ParkourSession {
 
     public void complete() {
         removeItems();
-        Block sign = findSign();
+        Sign sign = findSign();
         if (sign == null) {
             endNoBestTime();
             return;
@@ -129,34 +130,39 @@ public class ParkourSession {
         );
     }
 
-    private void updateBestTime(Block sign) {
-        sign.setMetadata(BEST_TIME_METADATA_KEY, new FixedMetadataValue(UHCPlugin.instance, timer));
-        Sign signState = (Sign) sign.getState();
-        SignSide side = signState.getSide(Side.FRONT);
+    private void updateBestTime(Sign sign) {
+        sign.getPersistentDataContainer().set(
+                BEST_TIME_KEY,
+                PersistentDataType.LONG,
+                timer
+        );
+        SignSide side = sign.getSide(Side.FRONT);
         side.setLine(0, GRAY + "Лучшее время");
         side.setLine(1, GOLD + player.getName());
         side.setLine(2, GRAY + "< " + AQUA + BOLD + formatTime() + RESET + GRAY + " >");
-        signState.update();
+        sign.update();
     }
 
-    private boolean isBestTime(Block sign) {
-        Optional<Long> previousBestTime = sign.getMetadata(BEST_TIME_METADATA_KEY).stream()
-                .findFirst()
-                .map(MetadataValue::asLong);
-        return previousBestTime.map(prevBestTime -> timer < prevBestTime).orElse(true);
+    private boolean isBestTime(Sign sign) {
+        Long previousBestTime = sign.getPersistentDataContainer().get(BEST_TIME_KEY, PersistentDataType.LONG);
+        if (previousBestTime == null) {
+            return true;
+        }
+        return timer < previousBestTime;
     }
 
     @Nullable
-    private Block findSign() {
+    private Sign findSign() {
         Set<Block> blocksAround = new Region(
                 startLocation.clone().add(-1, 0, -1),
                 startLocation.clone().add(1, 0, 1)
         ).getBlocksInside();
-        List<Block> signsAround = blocksAround.stream()
+        List<Sign> signsAround = blocksAround.stream()
                 .filter(block -> block.getState() instanceof Sign)
+                .map(sign -> (Sign) sign.getState())
                 .toList();
-        Optional<Block> signWithBestTime = signsAround.stream()
-                .filter(sign -> sign.hasMetadata(BEST_TIME_METADATA_KEY))
+        Optional<Sign> signWithBestTime = signsAround.stream()
+                .filter(sign -> sign.getPersistentDataContainer().has(BEST_TIME_KEY, PersistentDataType.LONG))
                 .findFirst();
         return signWithBestTime.orElseGet(() ->
                 signsAround.stream().findFirst().orElse(null)
