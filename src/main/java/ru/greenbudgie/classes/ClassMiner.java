@@ -186,7 +186,7 @@ public class ClassMiner extends BarHolderUHCClass {
 
     @EventHandler
     @Override
-    public void onGameEnd(GameEndEvent event) {
+    public void onGameEnd(BeforeGameEndEvent event) {
         super.onGameEnd(event);
         for(UHCPlayer uhcPlayer : getAliveOnlinePlayersWithClass()) {
             if(uhcPlayer.getPlayer() != null) {

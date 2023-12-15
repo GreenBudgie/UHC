@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.lobby.Lobby;
+import ru.greenbudgie.lobby.LobbyTeamBuilder;
 
 import static org.bukkit.ChatColor.*;
 
@@ -19,6 +20,7 @@ public class LobbySignGameDuo extends LobbySign {
     @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
         UHC.isDuo = !UHC.isDuo;
+        LobbyTeamBuilder.giveOrRemoveTeammateSelectItems();
         Lobby.getPlayersInLobbyAndArenas().forEach(UHC::updateLobbyScoreboard);
     }
 

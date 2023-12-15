@@ -13,7 +13,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.UHCPlayer;
-import ru.greenbudgie.event.GameEndEvent;
+import ru.greenbudgie.event.BeforeGameEndEvent;
 import ru.greenbudgie.util.ItemInfo;
 import ru.greenbudgie.util.ParticleUtils;
 
@@ -79,7 +79,7 @@ public class CustomItemAncientShard extends ClassCustomItem implements Listener 
 	}
 
 	@EventHandler
-	public void clearOnGameEnd(GameEndEvent event) {
+	public void clearOnGameEnd(BeforeGameEndEvent event) {
 		affectedPlayers.clear();
 	}
 

@@ -36,7 +36,7 @@ public abstract class BarHolderUHCClass extends UHCClass {
     }
 
     @EventHandler
-    public void onGameEnd(GameEndEvent event) {
+    public void onGameEnd(BeforeGameEndEvent event) {
         for(UHCPlayer uhcPlayer : getAliveOnlinePlayersWithClass()) {
             Player player = uhcPlayer.getPlayer();
             BossBar bar = getBar(uhcPlayer);

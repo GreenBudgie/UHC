@@ -48,13 +48,22 @@ public class LobbyGameParkour extends LobbyGame implements Listener {
     }
 
     @Override
+    public boolean isParticipating(Player player) {
+        return parkourSessions.containsKey(player);
+    }
+
+    @Override
     public void update() {
         parkourSessions.values().forEach(ParkourSession::update);
     }
 
     public void endAllSessions() {
+        Map<Player, ParkourSession> parkourSessionsCopy = Map.copyOf(parkourSessions);
         parkourSessions.values().forEach(ParkourSession::end);
         parkourSessions.clear();
+        parkourSessionsCopy.forEach(((player, parkourSession) ->
+                Bukkit.getPluginManager().callEvent(new LobbyParkourLeaveEvent(player)))
+        );
     }
 
     @EventHandler
@@ -167,7 +176,7 @@ public class LobbyGameParkour extends LobbyGame implements Listener {
                 return;
             }
             currentSession.end();
-            parkourSessions.remove(player);
+            unregisterParkourSession(player);
         }
         ParkourSession session = new ParkourSession(player, startBlock);
         parkourSessions.put(player, session);
@@ -178,7 +187,7 @@ public class LobbyGameParkour extends LobbyGame implements Listener {
         ParkourSession session = parkourSessions.get(player);
         if (session != null) {
             session.complete();
-            parkourSessions.remove(player);
+            unregisterParkourSession(player);
         }
     }
 
@@ -186,7 +195,7 @@ public class LobbyGameParkour extends LobbyGame implements Listener {
         ParkourSession session = parkourSessions.get(player);
         if (session != null) {
             session.end();
-            parkourSessions.remove(player);
+            unregisterParkourSession(player);
         }
     }
 
@@ -195,6 +204,11 @@ public class LobbyGameParkour extends LobbyGame implements Listener {
         if (session != null) {
             session.restart();
         }
+    }
+
+    private void unregisterParkourSession(Player player) {
+        parkourSessions.remove(player);
+        Bukkit.getPluginManager().callEvent(new LobbyParkourLeaveEvent(player));
     }
 
 }

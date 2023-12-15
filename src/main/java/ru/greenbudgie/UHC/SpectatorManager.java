@@ -23,7 +23,6 @@ import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.drop.Drops;
 import ru.greenbudgie.event.SpectatorJoinEvent;
 import ru.greenbudgie.lobby.Lobby;
-import ru.greenbudgie.lobby.game.LobbyGameManager;
 import ru.greenbudgie.util.ItemUtils;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.TaskManager;
@@ -126,7 +125,6 @@ public class SpectatorManager implements Listener {
             player.sendMessage(RED + "" + BOLD + "- Ты сейчас не в лобби! -");
             return;
         }
-        LobbyGameManager.PVP_ARENA.onArenaLeave(player);
         preparePlayerToSpectate(player);
         Location teleportLocation;
         if (UHC.state.isDeathmatch()) {

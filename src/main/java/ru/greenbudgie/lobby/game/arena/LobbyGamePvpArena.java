@@ -258,6 +258,11 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 	}
 
 	@Override
+	public boolean isParticipating(Player player) {
+		return isOnArena(player);
+	}
+
+	@Override
 	public String getConfigName() {
 		return "pvparena";
 	}
@@ -304,6 +309,16 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 				case "leaveRegion" -> leaveRegion = region;
 				case "closeRegion" -> closeRegion = region;
 			}
+		}
+	}
+
+	public void switchKit(Player switcher) {
+		setKillsToNextKit(8);
+		setCurrentKit(getRandomKit());
+		String text = DARK_AQUA + "Новый набор" + GRAY + ": " + LIGHT_PURPLE + BOLD + getCurrentKit().getName();
+		InventoryHelper.sendActionBarMessage(switcher, text);
+		for(Player player : getPlayersOnArena()) {
+			InventoryHelper.sendActionBarMessage(player, text);
 		}
 	}
 
@@ -411,23 +426,24 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 	/**
 	 * Calls when a player leaves an arena in any way: walking out, using /lobby, quitting or dying
 	 */
-	public void onArenaLeave(Player p) {
-        if (!isOnArena(p)) {
+	public void onArenaLeave(Player player) {
+        if (!isOnArena(player)) {
             return;
         }
-        onArena.remove(p);
-        p.getInventory().clear();
-        if(isDueling(p)) {
-            Player opponent = getOpponent(p);
+        onArena.remove(player);
+        player.getInventory().clear();
+        if(isDueling(player)) {
+            Player opponent = getOpponent(player);
             if(opponent != null) {
-                endDuel(opponent, p);
+                endDuel(opponent, player);
             }
         } else {
-            InventoryHelper.sendActionBarMessage(p, GRAY + "> " +
+            InventoryHelper.sendActionBarMessage(player, GRAY + "> " +
                     GOLD + BOLD + "Ты вышел с арены" +
                     RESET + GRAY + " <");
-            p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_ELYTRA, 0.5F, 0.8F);
+            player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_ELYTRA, 0.5F, 0.8F);
         }
+		Bukkit.getPluginManager().callEvent(new PvpArenaLeaveEvent(player));
     }
 
 	/**
@@ -527,29 +543,39 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		p.setFoodLevel(20);
 	}
 
-	@EventHandler
-	public void teleport(PlayerTeleportEvent e) {
-		onArenaLeave(e.getPlayer());
+	@EventHandler(priority = EventPriority.HIGH)
+	public void teleport(PlayerTeleportEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
+		onArenaLeave(event.getPlayer());
 	}
 
 	@EventHandler
-	public void quit(PlayerQuitEvent e) {
-		onArenaLeave(e.getPlayer());
-	}
+	public void quit(PlayerQuitEvent event) {
+		Player player = event.getPlayer();
+        if (!isOnArena(player)) {
+            return;
+        }
+        onArenaLeave(event.getPlayer());
+        player.teleport(getSpawnLocation());
+    }
 
 	@EventHandler
 	public void move(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
-		if(Lobby.isInLobby(player)) {
-			Location to = e.getTo();
-			if(isOnArena(player) && leaveRegion.isInside(to)) {
-				onArenaLeave(player);
-			}
-			if(!isOnArena(player) && enterRegion.isInside(to)) {
-				onArenaEnter(player);
-			}
-		}
-	}
+        if (!Lobby.isInLobby(player)) {
+            return;
+        }
+        Location to = e.getTo();
+        if(isOnArena(player) && leaveRegion.isInside(to)) {
+            onArenaLeave(player);
+			return;
+        }
+        if(!isOnArena(player) && enterRegion.isInside(to)) {
+            onArenaEnter(player);
+        }
+    }
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void death(PlayerDeathEvent e) {
@@ -588,9 +614,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 	@EventHandler
 	public void leaveArenaOnGameStart(BeforeGameInitializeEvent event) {
 		for(Player player : Bukkit.getOnlinePlayers()) {
-			if(isOnArena(player)) {
-				onArenaLeave(player);
-			}
+			onArenaLeave(player);
 		}
 		openIfClosed();
 	}

@@ -72,7 +72,7 @@ public class Lobby {
 
     public static boolean isWatchingArena(Player player) {
         for(ArenaManager.Arena arena : ArenaManager.getArenas()) {
-            if(arena.getWorld().getPlayers().contains(player)) return true;
+            if(player.getWorld() == arena.getWorld()) return true;
         }
         return false;
     }
@@ -104,7 +104,6 @@ public class Lobby {
             return;
         }
         if (isInLobbyOrWatchingArena(player)) {
-            LobbyGameManager.PVP_ARENA.onArenaLeave(player);
             player.teleport(Lobby.getLobby().getSpawnLocation());
         }
     }
@@ -120,6 +119,7 @@ public class Lobby {
             );
         }
         UHC.refreshScoreboards();
+        Bukkit.getPluginManager().callEvent(new SpectatorReturnToLobbyEvent(spectator));
     }
 
 }

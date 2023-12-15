@@ -1,5 +1,6 @@
 package ru.greenbudgie.lobby.game;
 
+import org.bukkit.entity.Player;
 import ru.greenbudgie.lobby.game.arena.LobbyGamePvpArena;
 import ru.greenbudgie.lobby.game.parkour.LobbyGameParkour;
 
@@ -25,6 +26,13 @@ public class LobbyGameManager {
         for(LobbyGame game : lobbyGames) {
             game.update();
         }
+    }
+
+    /**
+     * Whether the player is participating in any lobby game
+     */
+    public static boolean isParticipating(Player player) {
+        return lobbyGames.stream().anyMatch(game -> game.isParticipating(player));
     }
 
 }

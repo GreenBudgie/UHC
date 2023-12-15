@@ -2,6 +2,7 @@ package ru.greenbudgie.lobby.game;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.main.UHCPlugin;
 
@@ -39,6 +40,11 @@ public abstract class LobbyGame {
     public abstract String getConfigName();
     public abstract void parseConfigOption(String option, Object value);
     public abstract void update();
+
+    /**
+     * Whether the player is participating in this game
+     */
+    public abstract boolean isParticipating(Player player);
     protected void postSetup() {}
 
 }

@@ -38,10 +38,7 @@ import ru.greenbudgie.configuration.GameType;
 import ru.greenbudgie.configuration.MapSize;
 import ru.greenbudgie.drop.Drop;
 import ru.greenbudgie.drop.Drops;
-import ru.greenbudgie.event.AfterGameInitializeEvent;
-import ru.greenbudgie.event.BeforeGameInitializeEvent;
-import ru.greenbudgie.event.GameEndEvent;
-import ru.greenbudgie.event.GameStartEvent;
+import ru.greenbudgie.event.*;
 import ru.greenbudgie.items.BlockHolder;
 import ru.greenbudgie.items.CustomItem;
 import ru.greenbudgie.items.CustomItems;
@@ -377,7 +374,7 @@ public class UHC implements Listener {
 	public static void endGame() {
 		if(playing) {
 			playing = false;
-			Bukkit.getPluginManager().callEvent(new GameEndEvent());
+			Bukkit.getPluginManager().callEvent(new BeforeGameEndEvent());
 
 			if(Rating.getCurrentGameSummary().isWorthSaving()) {
 				Rating.getCurrentGameSummary().calculateAndSetDuration();
@@ -413,6 +410,7 @@ public class UHC implements Listener {
 			state = GameState.STOPPED;
 			SignManager.updateTextOnSigns();
 			refreshLobbyScoreboard();
+			Bukkit.getPluginManager().callEvent(new AfterGameEndEvent());
 		} else {
 			Bukkit.broadcastMessage(RED + "Игра не идет");
 		}
