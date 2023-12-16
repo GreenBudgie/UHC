@@ -1,6 +1,7 @@
 package ru.greenbudgie.lobby.game.parkour;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -26,7 +27,6 @@ import java.util.Map;
 
 public class LobbyGameParkour extends LobbyGame implements Listener {
 
-    public static final String BEST_TIME_METADATA_KEY = "bestTime";
     public static final Material PARKOUR_START_BLOCK = Material.LIGHT_WEIGHTED_PRESSURE_PLATE;
     public static final Material PARKOUR_END_BLOCK = Material.HEAVY_WEIGHTED_PRESSURE_PLATE;
 
@@ -81,7 +81,7 @@ public class LobbyGameParkour extends LobbyGame implements Listener {
             startParkourSession(player, block);
         }
         if (block.getType() == PARKOUR_END_BLOCK) {
-            completeParkourSession(player);
+            completeParkourSession(player, block.getLocation());
         }
     }
 
@@ -173,10 +173,12 @@ public class LobbyGameParkour extends LobbyGame implements Listener {
         session.start();
     }
 
-    private void completeParkourSession(Player player) {
+    private void completeParkourSession(Player player, Location endLocation) {
         ParkourSession session = parkourSessions.get(player);
-        if (session != null) {
-            session.complete();
+        if (session == null) {
+            return;
+        }
+        if (session.tryComplete(endLocation)) {
             unregisterParkourSession(player);
         }
     }

@@ -9,10 +9,13 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
+import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.InventoryHelper;
 import ru.greenbudgie.util.Region;
+import ru.greenbudgie.util.WorldHelper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -25,6 +28,7 @@ import static org.bukkit.ChatColor.*;
 public class ParkourSession {
 
     private static final NamespacedKey BEST_TIME_KEY = new NamespacedKey(UHCPlugin.instance, "best_time");
+    private static final NamespacedKey END_LOCATION_KEY = new NamespacedKey(UHCPlugin.instance, "end_location");
 
     /**
      * How far from the center of the start block a player should be away to start the timer
@@ -67,13 +71,19 @@ public class ParkourSession {
         timer = 0;
     }
 
-    public void complete() {
-        removeItems();
+    public boolean tryComplete(Location endLocation) {
         Sign sign = findSign();
+        if (!isValidEndLocation(endLocation, sign)) {
+            restart();
+            InventoryHelper.sendActionBarMessage(player, GRAY + "< " + DARK_RED + BOLD + "Ты пришел не на тот финиш!" + GRAY + " >");
+            return false;
+        }
+        removeItems();
         if (sign == null) {
             endNoBestTime();
-            return;
+            return true;
         }
+        setEndLocation(endLocation, sign);
         if (isBestTime(sign)) {
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5F, 1.5F);
             updateBestTime(sign);
@@ -81,9 +91,10 @@ public class ParkourSession {
                     player,
                     GRAY + "< " + DARK_AQUA + BOLD + "Ты поставил новый рекорд: " + AQUA + BOLD + formatTime() + GRAY + " >"
             );
-            return;
+            return true;
         }
         endNoBestTime();
+        return true;
     }
 
     public void end() {
@@ -105,6 +116,31 @@ public class ParkourSession {
         String formattedTime = formatTime();
         InventoryHelper.sendActionBarMessage(player, GRAY + "" + BOLD + formattedTime);
         timer++;
+    }
+
+    public boolean isValidEndLocation(Location location, Sign sign) {
+        if (sign == null) {
+            return true;
+        }
+        Location endLocation = getEndLocation(sign);
+        if (endLocation == null) {
+            return true;
+        }
+        return WorldHelper.compareIntLocations(endLocation, location);
+    }
+
+    @Nullable
+    public Location getEndLocation(@Nonnull Sign sign) {
+        String rawLocation = sign.getPersistentDataContainer().get(END_LOCATION_KEY, PersistentDataType.STRING);
+        if (rawLocation == null) {
+            return null;
+        }
+        return WorldHelper.translateToLocation(Lobby.getLobby(), rawLocation);
+    }
+
+    public void setEndLocation(Location location, @Nonnull Sign sign) {
+        String rawLocation = WorldHelper.locationToStringNoWorld(location, false);
+        sign.getPersistentDataContainer().set(END_LOCATION_KEY, PersistentDataType.STRING, rawLocation);
     }
 
     public Player getPlayer() {

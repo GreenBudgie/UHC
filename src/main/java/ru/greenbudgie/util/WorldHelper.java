@@ -615,6 +615,14 @@ public class WorldHelper {
 		return null;
 	}
 
+	public static String locationToStringNoWorld(Location location, boolean includeRotation) {
+		String coordinates = location.getBlockX() + " " + location.getBlockY() + " " + location.getBlockZ();
+		if (!includeRotation) {
+			return coordinates;
+		}
+		return coordinates + " " + location.getYaw() + " " + location.getPitch();
+	}
+
 	public static List<Player> getPlayersDistance(Location l, double maxDist) {
 		List<Player> list = new ArrayList<>();
 		for(Player p : l.getWorld().getPlayers()) {
