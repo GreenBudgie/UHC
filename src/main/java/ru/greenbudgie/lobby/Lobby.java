@@ -134,6 +134,7 @@ public class Lobby {
             return;
         }
         if (isInLobbyOrWatchingArena(player)) {
+            player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
             player.teleport(Lobby.getLobby().getSpawnLocation());
         }
     }

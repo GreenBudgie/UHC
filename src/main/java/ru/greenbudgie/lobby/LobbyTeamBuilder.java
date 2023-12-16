@@ -116,7 +116,7 @@ public class LobbyTeamBuilder implements Listener {
         PlayerInventory inventory = player.getInventory();
         for (ItemStack item : inventory) {
             if (isTeammateSelector(item)) {
-                inventory.remove(item);
+                item.setAmount(0);
                 return;
             }
         }

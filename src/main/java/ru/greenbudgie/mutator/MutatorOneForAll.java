@@ -46,7 +46,7 @@ public class MutatorOneForAll extends Mutator implements Listener {
 
 	public void reset() {
 		activatedMutator = null;
-		timer = MathUtils.randomRange(5, 5); //60 120
+		timer = MathUtils.randomRange(60, 120); //60 120
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class MutatorOneForAll extends Mutator implements Listener {
 					.filter(mutator -> mutator.canBeAddedFromArtifact() && mutator.canBeDeactivatedByArtifact()).toList();
 			activatedMutator = MutatorManager.haste;
 			activatedMutator.activate(false, null);
-			timer = MathUtils.randomRange(5, 5);
+			timer = MathUtils.randomRange(400, 600);
 			for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
 				p.sendTitle(" ", GOLD + "Добавлен мутатор: " + LIGHT_PURPLE + activatedMutator.getName(), 5, 40, 15);
 				p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1F);

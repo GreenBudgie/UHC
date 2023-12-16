@@ -303,7 +303,7 @@ public class SpectatorManager implements Listener {
         );
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void openSpectatorInventory(PlayerAnimationEvent event) {
         if (event.getAnimationType() != PlayerAnimationType.ARM_SWING) {
             return;
@@ -320,7 +320,7 @@ public class SpectatorManager implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void ignoreInventoryWhenRightClick(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) {
             return;
         }
         Player player = event.getPlayer();

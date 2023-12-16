@@ -22,6 +22,11 @@ public class LobbySignPreviewArena extends LobbySign {
     }
 
     @Override
+    public boolean canBeUsedByAnyone() {
+        return true;
+    }
+
+    @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
         ArenaManager.openArenaPreviewInventory(clicker);
     }
