@@ -43,6 +43,7 @@ public class SignManager implements Listener {
 		new LobbySignTeleportToArena();
 		new LobbySignShowRequests();
 		new LobbySignShowArtifacts();
+		new LobbySignPreviewArena();
 	}
 
 	public static void init() {

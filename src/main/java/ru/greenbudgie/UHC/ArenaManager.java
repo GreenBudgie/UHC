@@ -3,9 +3,18 @@ package ru.greenbudgie.UHC;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.main.UHCPlugin;
+import ru.greenbudgie.util.ItemUtils;
 import ru.greenbudgie.util.MathUtils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.util.ArrayList;
@@ -13,7 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ArenaManager {
+import static org.bukkit.ChatColor.*;
+
+public class ArenaManager implements Listener {
+
+    private static final String INVENTORY_TITLE = DARK_GREEN + "Просмотр Арены";
 
     private static Arena chosenArena = null;
     private static boolean announceArena = true;
@@ -79,6 +92,7 @@ public class ArenaManager {
         if (currentArena == null) {
             setupCurrentArena();
         }
+        Bukkit.getPluginManager().registerEvents(new ArenaManager(), UHCPlugin.instance);
     }
     
     private static void setupArenaWorld(World world) {
@@ -206,15 +220,64 @@ public class ArenaManager {
         return !currentArena.getWorld().getPVP();
     }
 
+    public static void openArenaPreviewInventory(Player player) {
+        int inventorySize = ((arenas.size() - 1) / 9) * 9 + 9;
+        Inventory inventory = Bukkit.createInventory(player, inventorySize, INVENTORY_TITLE);
+        for (int i = 0; i < arenas.size(); i++) {
+            Arena arena = arenas.get(i);
+            ItemStack item = arena.getRepresentingItem();
+            inventory.setItem(i, item);
+        }
+        player.openInventory(inventory);
+    }
+    
+    public static void previewArena(@Nonnull Arena arena, Player player) {
+        if (!Lobby.isInLobbyOrWatchingArena(player)) {
+            return;
+        }
+        player.teleport(arena.getWorld().getSpawnLocation());
+        player.sendMessage(WHITE + "Просмотр арены - " + DARK_GREEN + arena.getName());
+        if(!arena.isOpen()) {
+            player.sendMessage(WHITE + "Это " +
+                    GRAY + BOLD + "закрытая " +
+                    WHITE + "арена - нельзя выйти за ее пределы");
+        }
+        player.sendMessage(GRAY + "Напиши " + WHITE + "/lobby" + GRAY + ", чтобы вернуться");
+        if(!arena.isEnabled()) {
+            player.sendMessage(RED + "Эта арена сейчас не используется!");
+        }
+    }
+
+    @EventHandler
+    public void inventoryClick(InventoryClickEvent event) {
+        if (!event.getView().getTitle().equals(INVENTORY_TITLE)) {
+            return;
+        }
+        event.setCancelled(true);
+        ItemStack item = event.getCurrentItem();
+        if (item == null) {
+            return;
+        }
+        Material type = item.getType();
+        for (Arena arena : arenas) {
+            if (arena.itemToShow == type) {
+                previewArena(arena, (Player) event.getWhoClicked());
+                return;
+            }
+        }
+    }
+
     public enum ArenaOptions {
 
         NAME("Unknown arena"),
         MAX_BORDER_SIZE(32),
         MIN_BORDER_SIZE(10),
         IS_OPEN(true),
-        IS_ENABLED(true);
+        IS_ENABLED(true),
+        ITEM_TO_SHOW(Material.DIAMOND_SWORD.name())
+        ;
 
-        private Object defaultValue;
+        private final Object defaultValue;
 
         ArenaOptions(Object defaultValue) {
             this.defaultValue = defaultValue;
@@ -233,32 +296,38 @@ public class ArenaManager {
         private int minBorderSize;
         private boolean isOpen;
         private boolean isEnabled;
+        private Material itemToShow;
 
         private Arena(World world) {
             this.world = world;
         }
 
-        public Arena(World world, String name, int maxBorderSize, int minBorderSize, boolean isOpen, boolean isEnabled) {
+        public Arena(
+                World world,
+                String name,
+                int maxBorderSize,
+                int minBorderSize,
+                boolean isOpen,
+                boolean isEnabled,
+                Material itemToShow
+        ) {
             this.world = world;
             this.name = name;
             this.maxBorderSize = maxBorderSize;
             this.minBorderSize = minBorderSize;
             this.isOpen = isOpen;
             this.isEnabled = isEnabled;
+            this.itemToShow = itemToShow;
         }
 
         public void setByOption(ArenaOptions option, String value) throws NumberFormatException {
             switch(option) {
-                case NAME ->
-                        setName(value.replaceAll("_", " "));
-                case MAX_BORDER_SIZE ->
-                        setMaxBorderSize(Integer.parseInt(value));
-                case MIN_BORDER_SIZE ->
-                        setMinBorderSize(Integer.parseInt(value));
-                case IS_OPEN ->
-                        setOpen(Boolean.parseBoolean(value));
-                case IS_ENABLED ->
-                        setEnabled(Boolean.parseBoolean(value));
+                case NAME -> setName(value.replaceAll("_", " "));
+                case MAX_BORDER_SIZE -> setMaxBorderSize(Integer.parseInt(value));
+                case MIN_BORDER_SIZE -> setMinBorderSize(Integer.parseInt(value));
+                case IS_OPEN -> setOpen(Boolean.parseBoolean(value));
+                case IS_ENABLED -> setEnabled(Boolean.parseBoolean(value));
+                case ITEM_TO_SHOW -> setItemToShow(Material.valueOf(value));
             }
         }
 
@@ -269,12 +338,22 @@ public class ArenaManager {
                 case MIN_BORDER_SIZE -> minBorderSize;
                 case IS_OPEN -> isOpen;
                 case IS_ENABLED -> isEnabled;
+                case ITEM_TO_SHOW -> itemToShow.name();
             };
+        }
+
+        public ItemStack getRepresentingItem() {
+            return ItemUtils.builder(itemToShow)
+                    .withName(DARK_GREEN + "" + BOLD + name)
+                    .ifTrue(isOpen).withLore(AQUA + "Открытая арена")
+                    .ifFalse(isOpen).withLore(DARK_AQUA + "Закрытая арена")
+                    .withLore(GOLD + "" + BOLD + "<ЛКМ>" + GRAY + " телепортироваться")
+                    .build();
         }
 
         public Arena cloneAsTemp() {
             World tempWorld = WorldManager.copyAsTemp(world);
-            return new Arena(tempWorld, name, maxBorderSize, minBorderSize, isOpen, isEnabled);
+            return new Arena(tempWorld, name, maxBorderSize, minBorderSize, isOpen, isEnabled, itemToShow);
         }
 
         public String getSimpleName() {
@@ -367,6 +446,15 @@ public class ArenaManager {
         public void setEnabled(boolean enabled) {
             isEnabled = enabled;
         }
+
+        public Material getItemToShow() {
+            return itemToShow;
+        }
+
+        public void setItemToShow(Material itemToShow) {
+            this.itemToShow = itemToShow;
+        }
+
     }
 
 }

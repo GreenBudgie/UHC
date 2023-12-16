@@ -21,30 +21,23 @@ public class CommandArena implements CommandExecutor, TabCompleter {
         if (!(sender instanceof Player player)) {
             return true;
         }
-		if (args.length == 0 && PlayerManager.isInGame(player)) {
-			player.sendMessage(DARK_GRAY + "" + BOLD + "> " +
-					GRAY + "Дезматч будет проходить на арене" +
-					DARK_GRAY + ": " +
-					DARK_GREEN + ArenaManager.getCurrentArena().getName() +
-					DARK_GRAY + "" + BOLD + " <");
+		if (args.length == 0) {
+            if (PlayerManager.isInGame(player)) {
+                player.sendMessage(DARK_GRAY + "" + BOLD + "> " +
+                        GRAY + "Дезматч будет проходить на арене" +
+                        DARK_GRAY + ": " +
+                        DARK_GREEN + ArenaManager.getCurrentArena().getName() +
+                        DARK_GRAY + "" + BOLD + " <");
+                return true;
+            }
+            ArenaManager.openArenaPreviewInventory(player);
 			return true;
 		}
-        if (args.length < 1) {
-            return true;
-        }
         String worldName = args[0];
         boolean found = false;
         for(ArenaManager.Arena arena : ArenaManager.getArenas()) {
             if(arena.getSimpleName().equals(worldName) || arena.getWorld().getName().equals(worldName)) {
-                player.teleport(arena.getWorld().getSpawnLocation());
-                player.sendMessage(ChatColor.WHITE + "Просмотр арены - " + ChatColor.DARK_GREEN + arena.getName());
-                if(!arena.isOpen()) {
-                    player.sendMessage(ChatColor.WHITE + "Это " +
-                            ChatColor.GRAY + ChatColor.BOLD + " закрытая " +
-                            ChatColor.WHITE + "арена - нельзя выйти за ее пределы");
-                }
-                player.sendMessage(ChatColor.GRAY + "Напиши " + ChatColor.WHITE + "/lobby" + ChatColor.GRAY + ", чтобы вернуться");
-                if(!arena.isEnabled()) player.sendMessage(ChatColor.RED + "Эта арена сейчас не используется!");
+                ArenaManager.previewArena(arena, player);
                 found = true;
                 break;
             }

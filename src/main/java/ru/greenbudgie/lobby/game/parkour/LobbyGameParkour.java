@@ -115,7 +115,10 @@ public class LobbyGameParkour extends LobbyGame implements Listener {
         if (session == null) {
             return;
         }
-        if (event.getTo() == session.getStartLocation()) {
+        if (event.getTo() == null) {
+            return;
+        }
+        if (WorldHelper.compareIntLocations(event.getTo(), session.getStartLocation())) {
             return;
         }
         session.end();
