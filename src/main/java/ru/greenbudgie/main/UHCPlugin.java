@@ -18,6 +18,7 @@ import ru.greenbudgie.mutator.InventoryBuilderMutator;
 import ru.greenbudgie.rating.InventoryBuilderRating;
 import ru.greenbudgie.rating.Rating;
 import ru.greenbudgie.requester.ItemRequester;
+import ru.greenbudgie.tutorial.TutorialInventory;
 import ru.greenbudgie.util.TaskManager;
 
 import java.util.logging.Level;
@@ -65,6 +66,7 @@ public class UHCPlugin extends JavaPlugin {
 		pm.registerEvents(new SpectatorManager(), this);
 		pm.registerEvents(new PlayerInventoryView(), this);
 		pm.registerEvents(new SafeTeleport(), this);
+		pm.registerEvents(new TutorialInventory(), this);
 		InventoryBuilderMutator.registerListener();
 		InventoryBuilderRating.registerListener();
 
