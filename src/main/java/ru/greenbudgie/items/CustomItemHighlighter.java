@@ -8,8 +8,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.UHCPlayer;
-import ru.greenbudgie.util.ItemInfo;
 import ru.greenbudgie.util.ParticleUtils;
+import ru.greenbudgie.util.item.ItemInfo;
 
 public class CustomItemHighlighter extends RequesterCustomItem {
 

@@ -1,4 +1,4 @@
-package ru.greenbudgie.util;
+package ru.greenbudgie.util.item;
 
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Helps to store structurized information.
+ * Helps to store structured information.
  * Can be applied to an item lore.
  */
 public class ItemInfo {

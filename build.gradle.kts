@@ -14,6 +14,10 @@ repositories {
 
 dependencies {
     implementation("org.spigotmc:spigot:1.20.2-R0.1-SNAPSHOT")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.1")
+    testImplementation("org.mockito:mockito-core:5.8.0")
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -24,4 +28,8 @@ tasks.register("replacePlugin", Jar::class) {
     archiveBaseName.set("UHCPlugin")
     destinationDirectory.set(file("C:/Projects/Plugins/UHC/Server/plugins"))
     from(sourceSets.main.get().output)
+}
+
+tasks.test {
+    useJUnitPlatform()
 }

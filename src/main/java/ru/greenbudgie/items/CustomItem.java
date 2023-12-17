@@ -9,7 +9,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.util.InventoryHelper;
-import ru.greenbudgie.util.ItemUtils;
+import ru.greenbudgie.util.item.ItemUtils;
 
 import java.util.HashMap;
 import java.util.Map;

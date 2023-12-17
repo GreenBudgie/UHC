@@ -10,8 +10,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import ru.greenbudgie.util.ItemInfo;
 import ru.greenbudgie.util.ParticleUtils;
+import ru.greenbudgie.util.item.ItemInfo;
 
 public class CustomItemCreatureHighlighter extends RequesterCustomItem {
 

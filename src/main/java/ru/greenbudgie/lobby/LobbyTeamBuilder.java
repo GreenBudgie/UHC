@@ -26,7 +26,7 @@ import ru.greenbudgie.event.AfterGameEndEvent;
 import ru.greenbudgie.lobby.game.LobbyGameManager;
 import ru.greenbudgie.lobby.game.arena.PvpArenaLeaveEvent;
 import ru.greenbudgie.lobby.game.parkour.LobbyParkourLeaveEvent;
-import ru.greenbudgie.util.ItemUtils;
+import ru.greenbudgie.util.item.ItemUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

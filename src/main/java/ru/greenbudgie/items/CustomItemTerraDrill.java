@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import ru.greenbudgie.util.ItemInfo;
+import ru.greenbudgie.util.item.ItemInfo;
 
 import java.util.HashMap;
 import java.util.HashSet;

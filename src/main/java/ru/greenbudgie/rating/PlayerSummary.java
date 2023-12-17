@@ -7,7 +7,7 @@ import ru.greenbudgie.UHC.GameState;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.classes.ClassManager;
 import ru.greenbudgie.classes.UHCClass;
-import ru.greenbudgie.util.ItemUtils;
+import ru.greenbudgie.util.item.ItemUtils;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;

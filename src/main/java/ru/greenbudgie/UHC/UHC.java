@@ -52,6 +52,7 @@ import ru.greenbudgie.rating.Rating;
 import ru.greenbudgie.requester.ItemRequester;
 import ru.greenbudgie.requester.RequestedItem;
 import ru.greenbudgie.util.*;
+import ru.greenbudgie.util.item.ItemUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -11,8 +11,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.main.UHCPlugin;
-import ru.greenbudgie.util.ItemUtils;
 import ru.greenbudgie.util.MathUtils;
+import ru.greenbudgie.util.item.ItemUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

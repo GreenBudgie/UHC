@@ -10,8 +10,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.UHC.PlayerManager;
-import ru.greenbudgie.util.ItemInfo;
 import ru.greenbudgie.util.ParticleUtils;
+import ru.greenbudgie.util.item.ItemInfo;
 
 public class CustomItemShieldBreaker extends RequesterCustomItem implements Listener {
 

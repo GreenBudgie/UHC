@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.lobby.game.LobbyGameManager;
 import ru.greenbudgie.util.InventoryHelper;
-import ru.greenbudgie.util.ItemUtils;
+import ru.greenbudgie.util.item.ItemUtils;
 
 import java.util.HashMap;
 import java.util.Map;

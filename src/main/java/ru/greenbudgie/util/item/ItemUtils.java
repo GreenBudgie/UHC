@@ -1,4 +1,4 @@
-package ru.greenbudgie.util;
+package ru.greenbudgie.util.item;
 
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.NBTTagCompound;
@@ -7,12 +7,15 @@ import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
+import ru.greenbudgie.util.MathUtils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -201,6 +204,25 @@ public class ItemUtils {
 		return getHead(Bukkit.getOfflinePlayer(playerName));
 	}
 
+	public static ItemStack addEnchantmentsToBook(@Nonnull ItemStack book, List<Enchant> enchants) {
+		if (book.getType() != Material.ENCHANTED_BOOK) {
+			throw new IllegalArgumentException("Item is not an enchanted book");
+		}
+		EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();
+		if (meta == null) {
+			return book;
+		}
+		for (Enchant enchant : enchants) {
+			meta.addStoredEnchant(enchant.getEnchantment(), enchant.getLevel(), true);
+		}
+		book.setItemMeta(meta);
+		return book;
+	}
+
+	public static ItemStack addEnchantmentsToBook(@Nonnull ItemStack book, Enchant... enchants) {
+		return addEnchantmentsToBook(book, Arrays.asList(enchants));
+	}
+
 	public static Builder builder(Material item) {
 		return new Builder(item);
 	}
@@ -213,26 +235,14 @@ public class ItemUtils {
 		return new PotionBuilder();
 	}
 
-	public static class Enchant {
-
-		public Enchantment enchantment;
-		public int level;
-
-		public Enchant(Enchantment enchantment, int level) {
-			this.enchantment = enchantment;
-			this.level = level;
-		}
-
-		public Enchant(Enchantment enchantment) {
-			this.enchantment = enchantment;
-			this.level = 1;
-		}
-
-		public ItemStack enchant(ItemStack item) {
-			item.addUnsafeEnchantment(enchantment, level);
-			return item;
-		}
-
+	/**
+	 * Enchants item with specified enchantments
+	 * @param item An item
+	 * @param enchantments Enchantments
+	 */
+	public static ItemStack addEnchantments(ItemStack item, Enchant... enchantments) {
+		Lists.newArrayList(enchantments).forEach(ench -> ench.enchant(item));
+		return item;
 	}
 
 	/**
@@ -240,7 +250,7 @@ public class ItemUtils {
 	 * @param item An item
 	 * @param enchantments Enchantments
 	 */
-	public static ItemStack addEnchantments(ItemStack item, Enchant... enchantments) {
+	public static ItemStack addEnchantments(ItemStack item, List<Enchant> enchantments) {
 		Lists.newArrayList(enchantments).forEach(ench -> ench.enchant(item));
 		return item;
 	}
@@ -486,9 +496,14 @@ public class ItemUtils {
 		}
 
 		public Builder withEnchantments(Enchant... enchantments) {
+			withEnchantments(List.of(enchantments));
+			return this;
+		}
+
+		public Builder withEnchantments(List<Enchant> enchantments) {
 			if (doNotApply()) return this;
 			for(Enchant enchant : enchantments) {
-				meta.addEnchant(enchant.enchantment, enchant.level, true);
+				meta.addEnchant(enchant.getEnchantment(), enchant.getLevel(), true);
 			}
 			return this;
 		}

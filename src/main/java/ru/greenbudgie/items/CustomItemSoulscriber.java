@@ -8,9 +8,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import ru.greenbudgie.UHC.PlayerManager;
-import ru.greenbudgie.util.ItemInfo;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.ParticleUtils;
+import ru.greenbudgie.util.item.ItemInfo;
 
 public class CustomItemSoulscriber extends RequesterCustomItem implements Listener {
 

@@ -2,7 +2,7 @@ package ru.greenbudgie.lobby.game.parkour;
 
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.util.InventoryHelper;
-import ru.greenbudgie.util.ItemUtils;
+import ru.greenbudgie.util.item.ItemUtils;
 
 import static org.bukkit.ChatColor.*;
 

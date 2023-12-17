@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import ru.greenbudgie.util.ItemInfo;
+import ru.greenbudgie.util.item.ItemInfo;
 
 public class CustomItemIceball extends RequesterCustomItem implements Listener {
 

@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.mutator.MutatorManager;
 import ru.greenbudgie.requester.ItemRequester;
 import ru.greenbudgie.util.InventoryHelper;
-import ru.greenbudgie.util.ItemInfo;
+import ru.greenbudgie.util.item.ItemInfo;
 
 public abstract class RequesterCustomItem extends CustomItem {
 

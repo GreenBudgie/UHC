@@ -11,6 +11,7 @@ import ru.greenbudgie.UHC.*;
 import ru.greenbudgie.artifact.ArtifactManager;
 import ru.greenbudgie.classes.ClassManager;
 import ru.greenbudgie.commands.*;
+import ru.greenbudgie.drop.DropsPreviewInventory;
 import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.items.CustomItemsListener;
 import ru.greenbudgie.lobby.sign.SignManager;
@@ -56,6 +57,7 @@ public class UHCPlugin extends JavaPlugin {
 		registerCommand("artifacts", new CommandArtifacts());
 		registerCommand("watch", new CommandWatch());
 		registerCommand("barters", new CommandBarters());
+		registerCommand("drops", new CommandDrops());
 
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new UHC(), this);
@@ -70,6 +72,7 @@ public class UHCPlugin extends JavaPlugin {
 		pm.registerEvents(new SafeTeleport(), this);
 		pm.registerEvents(new TutorialInventory(), this);
 		pm.registerEvents(new PiglinBarterManager(), this);
+		pm.registerEvents(new DropsPreviewInventory(), this);
 		InventoryBuilderMutator.registerListener();
 		InventoryBuilderRating.registerListener();
 

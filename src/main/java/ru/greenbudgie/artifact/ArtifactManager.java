@@ -20,8 +20,8 @@ import ru.greenbudgie.classes.ClassManager;
 import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.mutator.MutatorManager;
 import ru.greenbudgie.util.InventoryHelper;
-import ru.greenbudgie.util.ItemUtils;
 import ru.greenbudgie.util.MathUtils;
+import ru.greenbudgie.util.item.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

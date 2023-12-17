@@ -14,10 +14,10 @@ import ru.greenbudgie.event.UHCPlayerLeaveEvent;
 import ru.greenbudgie.event.UHCPlayerRejoinEvent;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.rating.PlayerSummary;
-import ru.greenbudgie.util.ItemUtils;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.ParticleUtils;
 import ru.greenbudgie.util.TaskManager;
+import ru.greenbudgie.util.item.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

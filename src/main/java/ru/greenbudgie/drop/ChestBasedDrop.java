@@ -14,6 +14,7 @@ import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.ParticleUtils;
 import ru.greenbudgie.util.Region;
 import ru.greenbudgie.util.TaskManager;
+import ru.greenbudgie.util.weighted.WeightedItem;
 
 import java.util.List;
 import java.util.Set;
@@ -45,10 +46,14 @@ public abstract class ChestBasedDrop extends Drop {
             slotsToFill.add(i);
         }
         int items = MathUtils.randomRange(getMinFillers() + getMainItemsCount(), getMaxFillers() + getMainItemsCount());
+        List<WeightedItem> mainDrops = Drops.getWeightedDropsList().getRandomElementsWeighted(getMainItemsCount());
         for(int i = 0; i < items; i++) {
             int slot = MathUtils.choose(slotsToFill);
             slotsToFill.remove(slot);
-            inv.setItem(slot, i < getMainItemsCount() ? Drops.getRandomDrop() : getRandomFiller());
+            inv.setItem(slot, i < getMainItemsCount()
+                    ? mainDrops.get(i).getItem().clone()
+                    : getRandomFiller()
+            );
         }
         location.getWorld().playSound(location, Sound.ITEM_FIRECHARGE_USE, 1F, 0.5F);
         ParticleUtils.createParticlesOnRegionEdges(dropRegion, Particle.FLAME, 4, null);

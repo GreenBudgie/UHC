@@ -3,7 +3,6 @@ package ru.greenbudgie.drop;
 import org.bukkit.*;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.WorldManager;
@@ -29,7 +28,10 @@ public class AirDrop extends Drop {
 
     @Override
     public void drop() {
-        Item item = location.getWorld().dropItem(location, new ItemStack(Drops.getRandomDrop()));
+        Item item = location.getWorld().dropItem(
+                location,
+                Drops.getWeightedDropsList().getRandomElementWeighted().getItem().clone()
+        );
         item.setGlowing(true);
         item.setPickupDelay(1);
         item.setMetadata("airdrop", new FixedMetadataValue(UHCPlugin.instance, true));

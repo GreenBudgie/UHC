@@ -2,7 +2,7 @@ package ru.greenbudgie.items;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import ru.greenbudgie.util.ItemInfo;
+import ru.greenbudgie.util.item.ItemInfo;
 
 public abstract class ClassCustomItem extends CustomItem {
 

@@ -15,8 +15,8 @@ import ru.greenbudgie.UHC.UHCPlayer;
 import ru.greenbudgie.event.AfterGameInitializeEvent;
 import ru.greenbudgie.event.UHCPlayerDeathEvent;
 import ru.greenbudgie.items.CustomItems;
-import ru.greenbudgie.util.ItemInfo;
 import ru.greenbudgie.util.ParticleUtils;
+import ru.greenbudgie.util.item.ItemInfo;
 
 public class ClassNecromancer extends UHCClass {
 

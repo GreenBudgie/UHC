@@ -9,8 +9,8 @@ import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.ArenaManager;
 import ru.greenbudgie.UHC.GameState;
 import ru.greenbudgie.UHC.UHC;
-import ru.greenbudgie.util.ItemInfo;
 import ru.greenbudgie.util.ParticleUtils;
+import ru.greenbudgie.util.item.ItemInfo;
 
 public class CustomItemHeavenMembrane extends RequesterCustomItem {
 

@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import ru.greenbudgie.block.CustomBlockLandmine;
-import ru.greenbudgie.util.ItemInfo;
+import ru.greenbudgie.util.item.ItemInfo;
 
 public class CustomItemLandmine extends RequesterCustomItem implements BlockHolder {
 

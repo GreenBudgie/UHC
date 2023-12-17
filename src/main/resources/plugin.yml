@@ -74,3 +74,6 @@ commands:
  barters:
   description: Посмотреть предметы в торговле с Пиглинами
   usage: /barters
+ drops:
+  description: Посмотреть возможные дропы (эирдропы, кейвдропы и эирдропы)
+  usage: /drops

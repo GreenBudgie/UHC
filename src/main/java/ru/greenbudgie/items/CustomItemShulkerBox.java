@@ -2,7 +2,7 @@ package ru.greenbudgie.items;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import ru.greenbudgie.util.ItemInfo;
+import ru.greenbudgie.util.item.ItemInfo;
 
 public class CustomItemShulkerBox extends RequesterCustomItem {
 

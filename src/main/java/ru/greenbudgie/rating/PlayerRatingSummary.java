@@ -2,7 +2,7 @@ package ru.greenbudgie.rating;
 
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
-import ru.greenbudgie.util.ItemUtils;
+import ru.greenbudgie.util.item.ItemUtils;
 
 public class PlayerRatingSummary {
 

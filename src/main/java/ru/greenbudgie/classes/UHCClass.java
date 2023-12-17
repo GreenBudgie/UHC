@@ -16,8 +16,8 @@ import ru.greenbudgie.UHC.UHCPlayer;
 import ru.greenbudgie.event.GameStartEvent;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.InventoryHelper;
-import ru.greenbudgie.util.ItemInfo;
-import ru.greenbudgie.util.ItemUtils;
+import ru.greenbudgie.util.item.ItemInfo;
+import ru.greenbudgie.util.item.ItemUtils;
 
 import java.util.List;
 

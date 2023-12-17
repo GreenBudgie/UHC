@@ -13,9 +13,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import ru.greenbudgie.UHC.*;
 import ru.greenbudgie.main.UHCPlugin;
-import ru.greenbudgie.util.ItemInfo;
 import ru.greenbudgie.util.Messages;
 import ru.greenbudgie.util.ParticleUtils;
+import ru.greenbudgie.util.item.ItemInfo;
 
 public class CustomItemInstantTnt extends RequesterCustomItem implements Listener {
 

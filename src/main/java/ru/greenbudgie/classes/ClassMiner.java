@@ -20,10 +20,10 @@ import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.UHC.UHCPlayer;
 import ru.greenbudgie.event.*;
 import ru.greenbudgie.items.CustomItems;
-import ru.greenbudgie.util.ItemInfo;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.ParticleUtils;
 import ru.greenbudgie.util.TaskManager;
+import ru.greenbudgie.util.item.ItemInfo;
 
 import java.util.Collection;
 import java.util.HashMap;

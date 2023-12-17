@@ -12,9 +12,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionType;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.util.InventoryHelper;
-import ru.greenbudgie.util.ItemUtils;
-import ru.greenbudgie.util.WeightedItem;
-import ru.greenbudgie.util.WeightedItemList;
+import ru.greenbudgie.util.item.ItemUtils;
+import ru.greenbudgie.util.weighted.WeightedItem;
+import ru.greenbudgie.util.weighted.WeightedItemList;
 
 import java.util.List;
 
@@ -28,32 +28,27 @@ public class PiglinBarterManager implements Listener {
             .withType(PotionType.LONG_FIRE_RESISTANCE)
             .build();
 
-    private static final ItemStack waterBottle = ItemUtils.potionBuilder()
-            .withType(PotionType.WATER)
-            .build();
-
     public static final WeightedItemList barters = new WeightedItemList(
-            new WeightedItem(waterBottle, 1, 1, 4),
-            new WeightedItem(Material.SPECTRAL_ARROW, 6, 12, 4),
-            new WeightedItem(Material.BOOK, 1, 3, 4),
-            new WeightedItem(Material.STRING, 3, 6, 4),
-            new WeightedItem(Material.IRON_INGOT, 1, 4, 4),
-            new WeightedItem(Material.GUNPOWDER, 3, 5, 3),
-            new WeightedItem(Material.NETHER_WART, 1, 2, 3),
-            new WeightedItem(Material.GOLDEN_CARROT, 4, 6, 3),
-            new WeightedItem(Material.OBSIDIAN, 10, 10, 3),
-            new WeightedItem(Material.LAVA_BUCKET, 1, 1, 2),
-            new WeightedItem(Material.REDSTONE, 6, 12, 2),
-            new WeightedItem(Material.LAPIS_LAZULI, 4, 8, 2),
-            new WeightedItem(fireResistancePotion, 1, 1, 1),
-            new WeightedItem(Material.DIAMOND, 1, 2, 1),
-            new WeightedItem(Material.APPLE, 1, 1, 1)
+            WeightedItem.builder(Material.SPECTRAL_ARROW).amount(6, 12).weight(4).build(),
+            WeightedItem.builder(Material.BOOK).amount(1, 3).weight(4).build(),
+            WeightedItem.builder(Material.STRING).amount(3, 6).weight(4).build(),
+            WeightedItem.builder(Material.IRON_INGOT).amount(1, 4).weight(3).build(),
+            WeightedItem.builder(Material.GUNPOWDER).amount(3, 5).weight(3).build(),
+            WeightedItem.builder(Material.NETHER_WART).amount(1, 2).weight(3).build(),
+            WeightedItem.builder(Material.GOLDEN_CARROT).amount(3, 6).weight(3).build(),
+            WeightedItem.builder(Material.OBSIDIAN).amount(10).weight(3).build(),
+            WeightedItem.builder(Material.LAVA_BUCKET).weight(2).build(),
+            WeightedItem.builder(Material.REDSTONE).amount(6, 12).weight(2).build(),
+            WeightedItem.builder(Material.LAPIS_LAZULI).amount(4, 8).weight(2).build(),
+            WeightedItem.builder(fireResistancePotion).weight(1).build(),
+            WeightedItem.builder(Material.DIAMOND).amount(1, 2).weight(1).build(),
+            WeightedItem.builder(Material.APPLE).weight(1).build()
     );
 
     public static void openBartersPreviewInventory(Player player) {
         Inventory inventory = Bukkit.createInventory(
                 player,
-                InventoryHelper.getInventorySizeFittingItemAmount(barters.getItems().length),
+                InventoryHelper.getInventorySizeFittingItemAmount(barters.getElements().size()),
                 INVENTORY_HEADER
         );
         inventory.addItem(barters.getPreviewItems().toArray(new ItemStack[0]));
@@ -67,7 +62,7 @@ public class PiglinBarterManager implements Listener {
         }
         List<ItemStack> outcome = event.getOutcome();
         outcome.clear();
-        outcome.add(barters.getRandomItemWeighted().getItem());
+        outcome.add(barters.getRandomElementWeighted().getItem().clone());
     }
 
     @EventHandler

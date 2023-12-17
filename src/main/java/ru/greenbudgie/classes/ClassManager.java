@@ -17,7 +17,7 @@ import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.UHC.UHCPlayer;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.main.UHCPlugin;
-import ru.greenbudgie.util.ItemUtils;
+import ru.greenbudgie.util.item.ItemUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

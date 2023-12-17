@@ -30,6 +30,8 @@ import ru.greenbudgie.lobby.game.LobbyGame;
 import ru.greenbudgie.lobby.sign.SignManager;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.*;
+import ru.greenbudgie.util.item.Enchant;
+import ru.greenbudgie.util.item.ItemUtils;
 
 import java.util.*;
 
@@ -54,7 +56,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 	protected void postSetup() {
 		Kit oneShotKillKit = new Kit("One-shot-kill");
 		oneShotKillKit.addItem(
-				ItemUtils.builder(Material.DIAMOND_SWORD).withEnchantments(new ItemUtils.Enchant(Enchantment.DAMAGE_ALL, 100)).withFlags(ItemFlag.HIDE_ENCHANTS).build());
+				ItemUtils.builder(Material.DIAMOND_SWORD).withEnchantments(new Enchant(Enchantment.DAMAGE_ALL, 100)).withFlags(ItemFlag.HIDE_ENCHANTS).build());
 		oneShotKillKit.withShield();
 
 		Kit diamondKit = new Kit("Алмазка");
@@ -93,9 +95,9 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		Kit usefulKit = new Kit("НЕ бесполезная лопата");
 		usefulKit.addArmorSet(Kit.ArmorMaterial.CHAIN);
 		usefulKit.addItem(ItemUtils.builder(Material.WOODEN_SHOVEL).withEnchantments(
-				new ItemUtils.Enchant(Enchantment.KNOCKBACK, 10),
-				new ItemUtils.Enchant(Enchantment.FIRE_ASPECT, 2),
-				new ItemUtils.Enchant(Enchantment.DAMAGE_ALL, 1)).build());
+				new Enchant(Enchantment.KNOCKBACK, 10),
+				new Enchant(Enchantment.FIRE_ASPECT, 2),
+				new Enchant(Enchantment.DAMAGE_ALL, 1)).build());
 
 		Kit healingKit = new Kit("Много хила");
 		healingKit.addArmorSet(Kit.ArmorMaterial.LEATHER);
@@ -107,32 +109,32 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 
 		Kit minerKit = new Kit("Шахтер");
 		minerKit.addArmorSet(Kit.ArmorMaterial.CHAIN);
-		minerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.LAPIS_LAZULI), new ItemUtils.Enchant(Enchantment.DAMAGE_ALL, 4)));
-		minerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.GOLDEN_PICKAXE), new ItemUtils.Enchant(Enchantment.KNOCKBACK, 3)));
-		minerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.REDSTONE_ORE), new ItemUtils.Enchant(Enchantment.FIRE_ASPECT, 1)));
+		minerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.LAPIS_LAZULI), new Enchant(Enchantment.DAMAGE_ALL, 4)));
+		minerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.GOLDEN_PICKAXE), new Enchant(Enchantment.KNOCKBACK, 3)));
+		minerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.REDSTONE_ORE), new Enchant(Enchantment.FIRE_ASPECT, 1)));
 
 		Kit strangeKit = new Kit("Полет");
 		strangeKit.addArmorSet(Kit.ArmorMaterial.LEATHER);
-		strangeKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.STONE_SHOVEL), new ItemUtils.Enchant(Enchantment.KNOCKBACK, 4)));
+		strangeKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.STONE_SHOVEL), new Enchant(Enchantment.KNOCKBACK, 4)));
 		strangeKit.addItem(
 				ItemUtils.potionBuilder().asSplash().withColor(Color.WHITE).withEffects(new PotionEffect(PotionEffectType.LEVITATION, 80, 1)).withName("Levitation Vial")
 						.build());
 
 		Kit archerKit = new Kit("Лучник");
 		archerKit.addArmorSet(Kit.ArmorMaterial.CHAIN);
-		archerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.BOW), new ItemUtils.Enchant(Enchantment.ARROW_INFINITE)));
+		archerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.ARROW_INFINITE)));
 		archerKit.addItem(Material.ARROW);
 
 		Kit crossbowKit = new Kit("Арбалетчик");
 		crossbowKit.addArmorSet(Kit.ArmorMaterial.CHAIN);
-		crossbowKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.CROSSBOW), new ItemUtils.Enchant(Enchantment.QUICK_CHARGE, 3)));
+		crossbowKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.CROSSBOW), new Enchant(Enchantment.QUICK_CHARGE, 3)));
 		for(int i = 0; i < 8; i++) {
 			crossbowKit.addItem(new ItemStack(Material.ARROW, 64));
 		}
 
 		Kit advCrossbowKit = new Kit("Продвинутый Арбалетчик");
 		advCrossbowKit.addArmorSet(Kit.ArmorMaterial.CHAIN);
-		advCrossbowKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.CROSSBOW), new ItemUtils.Enchant(Enchantment.QUICK_CHARGE, 3)));
+		advCrossbowKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.CROSSBOW), new Enchant(Enchantment.QUICK_CHARGE, 3)));
 		ItemStack firework = new ItemStack(Material.FIREWORK_ROCKET, 64);
 		FireworkMeta meta = (FireworkMeta) firework.getItemMeta();
 		meta.setPower(1);
@@ -143,14 +145,14 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		Kit advArcherKit = new Kit("Лучник 2");
 		advArcherKit.addArmorSet(Kit.ArmorMaterial.DIAMOND);
 		advArcherKit.addItem(
-				ItemUtils.addEnchantments(new ItemStack(Material.BOW), new ItemUtils.Enchant(Enchantment.ARROW_INFINITE), new ItemUtils.Enchant(Enchantment.ARROW_FIRE)));
+				ItemUtils.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.ARROW_INFINITE), new Enchant(Enchantment.ARROW_FIRE)));
 		advArcherKit.addItem(Material.ARROW);
 
 		Kit mixedKit = new Kit("Смешанный");
 		mixedKit.addArmorSet(Kit.ArmorMaterial.IRON);
 		mixedKit.addItem(Material.IRON_SWORD);
 		mixedKit.addItem(Material.IRON_AXE);
-		mixedKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.BOW), new ItemUtils.Enchant(Enchantment.ARROW_INFINITE)));
+		mixedKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.ARROW_INFINITE)));
 		mixedKit.addItem(Material.ARROW);
 		mixedKit.withShield();
 
@@ -159,8 +161,8 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		mixedKit2.addItem(Material.STONE_SWORD);
 		mixedKit2.addItem(Material.STONE_AXE);
 		mixedKit2.addItem(ItemUtils
-				.addEnchantments(new ItemStack(Material.BOW), new ItemUtils.Enchant(Enchantment.ARROW_INFINITE), new ItemUtils.Enchant(Enchantment.ARROW_KNOCKBACK),
-						new ItemUtils.Enchant(Enchantment.ARROW_DAMAGE, 2)));
+				.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.ARROW_INFINITE), new Enchant(Enchantment.ARROW_KNOCKBACK),
+						new Enchant(Enchantment.ARROW_DAMAGE, 2)));
 		mixedKit2.addItem(Material.ARROW);
 		mixedKit2.addItem(new ItemStack(Material.GOLDEN_APPLE));
 		mixedKit2.withShield();
@@ -170,9 +172,9 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		mixedKit3.addItem(Material.IRON_SWORD);
 		mixedKit3.addItem(Material.IRON_AXE);
 		mixedKit3.addItem(
-				ItemUtils.addEnchantments(new ItemStack(Material.BOW), new ItemUtils.Enchant(Enchantment.ARROW_INFINITE), new ItemUtils.Enchant(Enchantment.ARROW_FIRE)));
+				ItemUtils.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.ARROW_INFINITE), new Enchant(Enchantment.ARROW_FIRE)));
 		mixedKit3.addItem(
-				ItemUtils.addEnchantments(new ItemStack(Material.CROSSBOW), new ItemUtils.Enchant(Enchantment.QUICK_CHARGE, 2), new ItemUtils.Enchant(Enchantment.MULTISHOT), new ItemUtils.Enchant(Enchantment.PIERCING)));
+				ItemUtils.addEnchantments(new ItemStack(Material.CROSSBOW), new Enchant(Enchantment.QUICK_CHARGE, 2), new Enchant(Enchantment.MULTISHOT), new Enchant(Enchantment.PIERCING)));
 		for(int i = 0; i < 5; i++) {
 			mixedKit3.addItem(new ItemStack(Material.ARROW, 64));
 		}
@@ -211,7 +213,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		Kit wizardKit3 = new Kit("Маг 3");
 		wizardKit3.addArmorSet(Kit.ArmorMaterial.NETHERITE);
 		wizardKit3.addItem(ItemUtils.builder(Material.GOLDEN_AXE).
-				withEnchantments(new ItemUtils.Enchant(Enchantment.FIRE_ASPECT)).
+				withEnchantments(new Enchant(Enchantment.FIRE_ASPECT)).
 				build());
 		ItemStack damagingLiquid = ItemUtils.potionBuilder().
 				asLingering().

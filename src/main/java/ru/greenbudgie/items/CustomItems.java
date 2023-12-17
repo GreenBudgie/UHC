@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.main.UHCPlugin;
-import ru.greenbudgie.util.ItemUtils;
+import ru.greenbudgie.util.item.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.List;

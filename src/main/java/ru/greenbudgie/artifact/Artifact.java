@@ -7,8 +7,8 @@ import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.UHC.ArenaManager;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.UHC;
-import ru.greenbudgie.util.ItemUtils;
 import ru.greenbudgie.util.NumericalCases;
+import ru.greenbudgie.util.item.ItemUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
