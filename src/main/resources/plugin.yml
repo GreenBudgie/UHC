@@ -71,3 +71,6 @@ commands:
  watch:
   description: Наблюдать за игрой
   usage: /watch
+ barters:
+  description: Посмотреть предметы в торговле с Пиглинами
+  usage: /barters

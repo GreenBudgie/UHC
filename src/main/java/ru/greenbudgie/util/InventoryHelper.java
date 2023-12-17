@@ -35,6 +35,10 @@ import java.util.stream.Stream;
 
 public class InventoryHelper {
 
+	public static int getInventorySizeFittingItemAmount(int amount) {
+		return ((amount - 1) / 9) * 9 + 9;
+	}
+
 	public static ItemStack getFirstStack(Inventory inv, Material mat) {
 		for(int i = 0; i < inv.getSize(); i++) {
 			ItemStack stack = inv.getItem(i);

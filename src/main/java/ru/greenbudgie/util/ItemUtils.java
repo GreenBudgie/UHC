@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionType;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -321,6 +322,11 @@ public class ItemUtils {
 
 		public PotionBuilder withEffects(PotionEffect... effects) {
 			Lists.newArrayList(effects).forEach(ef -> meta.addCustomEffect(ef, true));
+			return this;
+		}
+
+		public PotionBuilder withType(PotionType type) {
+			meta.setBasePotionType(type);
 			return this;
 		}
 

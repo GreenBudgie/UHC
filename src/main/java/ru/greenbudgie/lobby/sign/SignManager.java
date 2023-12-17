@@ -45,6 +45,7 @@ public class SignManager implements Listener {
 		new LobbySignShowArtifacts();
 		new LobbySignPreviewArena();
 		new LobbySignTutorial();
+		new LobbySignShowBarters();
 	}
 
 	public static void init() {
