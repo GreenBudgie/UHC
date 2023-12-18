@@ -340,21 +340,21 @@ public class ItemUtils {
 			return this;
 		}
 
-		public PotionBuilder asDrinkable() {
+		public PotionBuilder drinkable() {
 			splash = false;
 			drinkable = true;
 			lingering = false;
 			return this;
 		}
 
-		public PotionBuilder asSplash() {
+		public PotionBuilder splash() {
 			splash = true;
 			drinkable = false;
 			lingering = false;
 			return this;
 		}
 
-		public PotionBuilder asLingering() {
+		public PotionBuilder lingering() {
 			splash = false;
 			drinkable = false;
 			lingering = true;

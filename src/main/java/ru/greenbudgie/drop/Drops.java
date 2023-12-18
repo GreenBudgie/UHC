@@ -4,12 +4,11 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.items.CustomItems;
-import ru.greenbudgie.util.InventoryHelper;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.Messages;
+import ru.greenbudgie.util.PotionEffectBuilder;
 import ru.greenbudgie.util.item.Enchant;
 import ru.greenbudgie.util.item.ItemUtils;
 import ru.greenbudgie.util.weighted.WeightedEnchantedItem;
@@ -30,68 +29,80 @@ public class Drops {
     public static final CaveDrop CAVEDROP = new CaveDrop();
     public static final NetherDrop NETHERDROP = new NetherDrop();
 
-    private static final ItemStack healingPotion = InventoryHelper.generatePotion(
-            WHITE + "Potion of Life",
-            Color.FUCHSIA,
-            new PotionEffect(PotionEffectType.HEAL, 1, 1)
-    );
-    private static final ItemStack toxicPotion = InventoryHelper.generatePotion(
-            WHITE + "Toxic Vial",
-            Color.GREEN,
-            true,
-            false,
-            new PotionEffect(PotionEffectType.POISON, 200, 1)
-    );
-    private static final ItemStack blindnessPotion = InventoryHelper.generatePotion(
-            WHITE + "Sightbreaker Potion",
-            Color.GRAY,
-            true,
-            false,
-            new PotionEffect(PotionEffectType.BLINDNESS, 400, 0)
-    );
-    private static final ItemStack hastePotion = InventoryHelper.generatePotion(
-            WHITE + "Potion of Quickhand",
-            Color.YELLOW,
-            new PotionEffect(PotionEffectType.FAST_DIGGING, 9600, 1)
-    );
-    private static final ItemStack strengthPotion = InventoryHelper.generatePotion(
-            WHITE + "Potion of Power",
-            Color.fromRGB(100, 0, 0),
-            new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 1200, 0)
-    );
-    private static final ItemStack damagePotion = InventoryHelper.generatePotion(
-            WHITE + "Sharp Vial",
-            Color.BLACK,
-            true,
-            false,
-            new PotionEffect(PotionEffectType.HARM, 1, 1)
-    );
-    private static final ItemStack levitationPotion = InventoryHelper.generatePotion(
-            WHITE + "Liquid Helium",
-            Color.WHITE,
-            true,
-            false,
-            new PotionEffect(PotionEffectType.LEVITATION, 600, 0)
-    );
-    private static final ItemStack nightVisionPotion = InventoryHelper.generatePotion(
-            WHITE + "Everseeing Potion",
-            Color.BLUE,
-            false,
-            false,
-            new PotionEffect(PotionEffectType.NIGHT_VISION, 24000, 0)
-    );
+    private static final ItemStack healingPotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Potion of Life Essence")
+            .withColor(Color.fromRGB(255, 182, 243))
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.HEAL).amplifier(1).build(),
+                    new PotionEffectBuilder(PotionEffectType.ABSORPTION).minutes(2).noParticles().build()
+            ).build();
+    private static final ItemStack toxicPotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Bottle of Toxic Sludge")
+            .splash()
+            .withColor(Color.GREEN)
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.POISON).seconds(6).amplifier(1).build(),
+                    new PotionEffectBuilder(PotionEffectType.SLOW).minutes(1).build()
+            ).build();
+    private static final ItemStack weaknessPotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Potion of Weakening")
+            .splash()
+            .withColor(Color.GRAY)
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.BLINDNESS).seconds(20).build(),
+                    new PotionEffectBuilder(PotionEffectType.WEAKNESS).seconds(30).build()
+            ).build();
+    private static final ItemStack minerPotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Potion of Miner Dream")
+            .withColor(Color.WHITE)
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.FAST_DIGGING).minutes(8).amplifier(1).build(),
+                    new PotionEffectBuilder(PotionEffectType.NIGHT_VISION).minutes(20).build()
+            ).build();
+    private static final ItemStack explorerPotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Potion of Exploration")
+            .withColor(Color.LIME)
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.SPEED).minutes(10).amplifier(1).build(),
+                    new PotionEffectBuilder(PotionEffectType.DOLPHINS_GRACE).minutes(10).build(),
+                    new PotionEffectBuilder(PotionEffectType.CONDUIT_POWER).minutes(10).build()
+            ).build();
+    private static final ItemStack strengthPotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Potion of Dominance")
+            .withColor(Color.fromRGB(100, 0, 0))
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.INCREASE_DAMAGE).minutes(1).build(),
+                    new PotionEffectBuilder(PotionEffectType.DAMAGE_RESISTANCE).seconds(30).build()
+            ).build();
+    private static final ItemStack damagePotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Potion of Death")
+            .splash()
+            .withColor(Color.BLACK)
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.HARM).build(),
+                    new PotionEffectBuilder(PotionEffectType.WITHER).seconds(12).build()
+            ).build();
+    private static final ItemStack disrespectPotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Potion of Enemy Disrespect")
+            .splash()
+            .withColor(Color.fromRGB(0, 0, 170))
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.LEVITATION).seconds(6).amplifier(2).build(),
+                    new PotionEffectBuilder(PotionEffectType.BLINDNESS).seconds(6).build(),
+                    new PotionEffectBuilder(PotionEffectType.HUNGER).minutes(2).amplifier(3).build()
+            ).build();
     
     private static final WeightedItemList weightedDrops = new WeightedItemList(
             WeightedItem.builder(healingPotion).weight(2).build(),
-            WeightedItem.builder(toxicPotion).weight(2).build(),
-            WeightedItem.builder(blindnessPotion).weight(2).build(),
-            WeightedItem.builder(hastePotion).weight(2).build(),
+            WeightedItem.builder(minerPotion).weight(2).build(),
             WeightedItem.builder(strengthPotion).weight(2).build(),
+            WeightedItem.builder(explorerPotion).weight(2).build(),
+            WeightedItem.builder(toxicPotion).weight(2).build(),
+            WeightedItem.builder(weaknessPotion).weight(2).build(),
             WeightedItem.builder(damagePotion).weight(2).build(),
-            WeightedItem.builder(levitationPotion).weight(2).build(),
-            WeightedItem.builder(nightVisionPotion).weight(2).build(),
+            WeightedItem.builder(disrespectPotion).weight(2).build(),
             WeightedItem.builder(Material.GOLDEN_APPLE).amount(2).weight(2).build(),
-            WeightedItem.builder(Material.DIAMOND).amount(9, 18).weight(2).build(),
+            WeightedItem.builder(Material.DIAMOND).amount(8, 14).weight(2).build(),
             WeightedItem.builder(Material.GOLD_INGOT).amount(16, 24).weight(2).build(),
             WeightedEnchantedItem.book().alwaysEnchant(new Enchant(Enchantment.THORNS, 3)).weight(2).build(),
             WeightedEnchantedItem.book().alwaysEnchant(
@@ -161,7 +172,7 @@ public class Drops {
             WeightedItem.builder(Material.REDSTONE_BLOCK).amount(8, 12).weight(2).build(),
             WeightedItem.builder(Material.LAPIS_BLOCK).amount(4, 5).weight(2).build(),
             WeightedItem.builder(Material.SPECTRAL_ARROW).amount(24, 32).weight(2).build(),
-            WeightedItem.builder(CustomItems.darkArtifact.getItemStack()).amount(15, 25).weight(2).build(),
+            WeightedItem.builder(CustomItems.darkArtifact.getItemStack()).amount(20, 30).weight(2).build(),
 
             WeightedEnchantedItem.item(Material.TRIDENT)
                     .alwaysEnchant(

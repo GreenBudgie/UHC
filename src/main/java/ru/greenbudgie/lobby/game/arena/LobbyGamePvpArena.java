@@ -102,7 +102,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		Kit healingKit = new Kit("Много хила");
 		healingKit.addArmorSet(Kit.ArmorMaterial.LEATHER);
 		healingKit.addItem(Material.IRON_SWORD);
-		ItemStack potion = ItemUtils.potionBuilder().asSplash().withColor(Color.FUCHSIA).withName("Heal").withEffects(new PotionEffect(PotionEffectType.HEAL, 1, 1)).build();
+		ItemStack potion = ItemUtils.potionBuilder().splash().withColor(Color.FUCHSIA).withName("Heal").withEffects(new PotionEffect(PotionEffectType.HEAL, 1, 1)).build();
 		for(int i = 0; i < 8; i++) {
 			healingKit.addItem(potion);
 		}
@@ -117,7 +117,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		strangeKit.addArmorSet(Kit.ArmorMaterial.LEATHER);
 		strangeKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.STONE_SHOVEL), new Enchant(Enchantment.KNOCKBACK, 4)));
 		strangeKit.addItem(
-				ItemUtils.potionBuilder().asSplash().withColor(Color.WHITE).withEffects(new PotionEffect(PotionEffectType.LEVITATION, 80, 1)).withName("Levitation Vial")
+				ItemUtils.potionBuilder().splash().withColor(Color.WHITE).withEffects(new PotionEffect(PotionEffectType.LEVITATION, 80, 1)).withName("Levitation Vial")
 						.build());
 
 		Kit archerKit = new Kit("Лучник");
@@ -185,14 +185,14 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		wizardKit.addItem(Material.STONE_SWORD);
 		wizardKit.addItem(Material.STONE_AXE);
 		wizardKit.addItem(
-				ItemUtils.potionBuilder().asSplash().withColor(Color.BLACK).withEffects(new PotionEffect(PotionEffectType.HARM, 1, 1)).withName("Sharp Vial").build());
+				ItemUtils.potionBuilder().splash().withColor(Color.BLACK).withEffects(new PotionEffect(PotionEffectType.HARM, 1, 1)).withName("Sharp Vial").build());
 		wizardKit.addItem(
-				ItemUtils.potionBuilder().asSplash().withColor(Color.GREEN).withEffects(new PotionEffect(PotionEffectType.POISON, 300, 0)).withName("Toxic Vial").build());
-		wizardKit.addItem(ItemUtils.potionBuilder().asSplash().withColor(Color.GRAY)
+				ItemUtils.potionBuilder().splash().withColor(Color.GREEN).withEffects(new PotionEffect(PotionEffectType.POISON, 300, 0)).withName("Toxic Vial").build());
+		wizardKit.addItem(ItemUtils.potionBuilder().splash().withColor(Color.GRAY)
 				.withEffects(new PotionEffect(PotionEffectType.SLOW, 200, 1), new PotionEffect(PotionEffectType.BLINDNESS, 160, 0),
 						new PotionEffect(PotionEffectType.WEAKNESS, 200, 0)).withName("Vial of Weakness").build());
 		wizardKit.addItem(
-				ItemUtils.potionBuilder().asDrinkable().withColor(Color.RED).withEffects(new PotionEffect(PotionEffectType.HEAL, 1, 1)).withName("Healing Vial").build());
+				ItemUtils.potionBuilder().drinkable().withColor(Color.RED).withEffects(new PotionEffect(PotionEffectType.HEAL, 1, 1)).withName("Healing Vial").build());
 		wizardKit.withShield();
 
 		Kit wizardKit2 = new Kit("Маг 2");
@@ -200,13 +200,13 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		wizardKit2.addItem(Material.GOLDEN_SWORD);
 		wizardKit2.addItem(Material.GOLDEN_AXE);
 		wizardKit2.addItem(
-				ItemUtils.potionBuilder().asDrinkable().withColor(Color.RED).withEffects(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 300, 1)).withName("Strength Vial")
+				ItemUtils.potionBuilder().drinkable().withColor(Color.RED).withEffects(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 300, 1)).withName("Strength Vial")
 						.build());
 		wizardKit2.addItem(
-				ItemUtils.potionBuilder().asDrinkable().withColor(Color.GRAY).withEffects(new PotionEffect(PotionEffectType.SPEED, 160, 3)).withName("Hyper Speed Vial")
+				ItemUtils.potionBuilder().drinkable().withColor(Color.GRAY).withEffects(new PotionEffect(PotionEffectType.SPEED, 160, 3)).withName("Hyper Speed Vial")
 						.build());
 		wizardKit2.addItem(new ItemStack(Material.GOLDEN_APPLE, 2));
-		wizardKit2.addItem(ItemUtils.potionBuilder().asSplash().withColor(Color.GREEN)
+		wizardKit2.addItem(ItemUtils.potionBuilder().splash().withColor(Color.GREEN)
 				.withEffects(new PotionEffect(PotionEffectType.CONFUSION, 400, 0), new PotionEffect(PotionEffectType.POISON, 100, 0)).withName("Bad Vial").build());
 		wizardKit2.withShield();
 
@@ -216,7 +216,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 				withEnchantments(new Enchant(Enchantment.FIRE_ASPECT)).
 				build());
 		ItemStack damagingLiquid = ItemUtils.potionBuilder().
-				asLingering().
+				lingering().
 				withColor(Color.BLACK).
 				withName(DARK_GRAY + "Damaging Liquid").
 				withEffects(new PotionEffect(PotionEffectType.HARM, 1, 0)).
@@ -224,13 +224,13 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		wizardKit3.addItem(damagingLiquid);
 		wizardKit3.addItem(damagingLiquid);
 		wizardKit3.addItem(ItemUtils.potionBuilder().
-				asLingering().
+				lingering().
 				withColor(Color.WHITE).
 				withName("Liquid of heaven").
 				withEffects(new PotionEffect(PotionEffectType.LEVITATION, 10, 10)).
 				build());
 		wizardKit3.addItem(ItemUtils.potionBuilder().
-				asDrinkable().
+				drinkable().
 				withColor(Color.AQUA).
 				withName(AQUA + "" + BOLD + "Power Potion").
 				withEffects(
@@ -247,7 +247,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		manyDamage.addArmorSet(Kit.ArmorMaterial.NETHERITE);
 		manyDamage.addItem(Material.WOODEN_SWORD);
 		ItemStack damagePotion = ItemUtils.potionBuilder().
-				asSplash().
+				splash().
 				withColor(Color.BLACK).
 				withName("Damage").
 				withEffects(new PotionEffect(PotionEffectType.HARM, 1, 0)).build();
