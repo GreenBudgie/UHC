@@ -4,6 +4,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.item.ItemUtils;
 
@@ -36,12 +37,21 @@ public class CustomItems {
 	public static CustomItemIceball iceball = new CustomItemIceball();
 	public static CustomItemAllurementStone allurementStone = new CustomItemAllurementStone();
 
+	public static CustomItemLaserCutter laserCutter = new CustomItemLaserCutter();
+
 	public static void init() {
 		for(CustomItem item : items) {
 			if(item instanceof Listener) {
 				Bukkit.getPluginManager().registerEvents((Listener) item, UHCPlugin.instance);
 			}
 		}
+	}
+
+	public static void update() {
+		if (!UHC.playing) {
+			return;
+		}
+		items.forEach(CustomItem::update);
 	}
 
 	public static List<CustomItem> getItems() {

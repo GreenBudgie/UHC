@@ -72,6 +72,35 @@ public class ParticleUtils {
 	/**
 	 * Creates a line of particles
 	 * @param from Line start location
+	 * @param direction Direction to which the line should point
+	 * @param length Distance from the start location
+	 * @param particle A particle to create
+	 * @param color Color of a particle, might be null
+	 * @param density How many particles to spawn per block
+	 */
+	public static void createLine(
+			Location from,
+			Vector direction,
+			double length,
+			Particle particle,
+			double density,
+			@Nullable Color color
+	) {
+		// Converting to a unit vector to apply density
+		direction.normalize();
+		int particleCount = (int) Math.round(length * density);
+		Vector shift = direction.multiply(1D / density);
+		Location currentLocation = from.clone();
+
+		for(int i = 0; i < particleCount; i++) {
+			createParticle(currentLocation, particle, color);
+			currentLocation.add(shift);
+		}
+	}
+
+	/**
+	 * Creates a line of particles
+	 * @param from Line start location
 	 * @param to Line end location
 	 * @param particle A particle to create
 	 * @param color Color of a particle, might be null
@@ -80,16 +109,8 @@ public class ParticleUtils {
 	public static void createLine(Location from, Location to, Particle particle, double density, @Nullable Color color) {
 		if(from.getWorld() != to.getWorld()) throw new IllegalArgumentException("Locations must be in the same world!");
 		Vector vector = to.toVector().subtract(from.toVector()); //Setting up a from-to vector
-		vector.normalize(); //Converting to a unit vector to apply density
 		double length = from.distance(to);
-		int particleCount = (int) Math.round(length * density);
-		Vector shift = vector.multiply(1D / density);
-		Location currentLocation = from.clone();
-
-		for(int i = 0; i < particleCount; i++) {
-			createParticle(currentLocation, particle, color);
-			currentLocation.add(shift);
-		}
+		createLine(from, vector, length, particle, density, color);
 	}
 
 	/**

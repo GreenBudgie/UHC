@@ -973,6 +973,7 @@ public class UHC implements Listener {
 		if(playing) {
 			FightHelper.update();
 			ItemRequester.updateItems();
+			CustomItems.update();
 			for(UHCPlayer uplayer : PlayerManager.getPlayers()) {
 				uplayer.update();
 			}

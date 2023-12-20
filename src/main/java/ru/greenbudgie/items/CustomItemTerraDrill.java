@@ -20,7 +20,7 @@ import java.util.Set;
 
 public class CustomItemTerraDrill extends RequesterCustomItem implements Listener {
 
-	private static Map<Player, BlockFace> lastFace = new HashMap<>();
+	private static final Map<Player, BlockFace> lastFace = new HashMap<>();
 	private static final Set<Material> rock = Sets.newHashSet(
 			Material.STONE,
 			Material.ANDESITE,

@@ -52,6 +52,13 @@ public abstract class CustomItem {
 	public void onPlace(Player p, Block b, ItemStack item, BlockPlaceEvent e) {
 	}
 
+	/**
+	 * A generic update method. It does not involve item itself. An item can be either taken from the player's
+	 * inventory or not used at all if is not needed.
+	 */
+	public void update() {
+	}
+
 	public boolean isStackable() {
 		return true;
 	}

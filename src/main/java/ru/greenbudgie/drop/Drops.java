@@ -169,8 +169,8 @@ public class Drops {
                             WeightedEnchantment.builder(Enchantment.MULTISHOT).build()
                     ).number(0, 1).weight(2).build(),
             WeightedItem.builder(Material.ENCHANTING_TABLE).weight(2).build(),
-            WeightedItem.builder(Material.REDSTONE_BLOCK).amount(8, 12).weight(2).build(),
-            WeightedItem.builder(Material.LAPIS_BLOCK).amount(4, 5).weight(2).build(),
+            WeightedItem.builder(Material.REDSTONE_BLOCK).amount(10, 14).weight(2).build(),
+            WeightedItem.builder(Material.LAPIS_BLOCK).amount(4, 6).weight(2).build(),
             WeightedItem.builder(Material.SPECTRAL_ARROW).amount(24, 32).weight(2).build(),
             WeightedItem.builder(CustomItems.darkArtifact.getItemStack()).amount(20, 30).weight(2).build(),
 
