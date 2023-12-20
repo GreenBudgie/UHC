@@ -30,8 +30,8 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
 	private static final Set<Material> FUEL = Sets.newHashSet(Material.COAL, Material.CHARCOAL);
     private static final Material ACCELERATOR = Material.COPPER_INGOT;
 
-    private static final int MAX_BURN_COOLDOWN = 45 * 20;
-    private static final int ACCELERATE_TICKS = 15 * 20;
+    private static final int MAX_BURN_COOLDOWN = 50 * 20;
+    private static final int ACCELERATE_TICKS = 20 * 20;
     private static final int MAX_USE_DELAY_TICKS_DEFAULT = 6;
     private static final int MAX_USE_DELAY_TICKS_ACCELERATED = 3;
 
@@ -128,9 +128,10 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
 	public ItemInfo getDescription() {
 		return new ItemInfo("Генерирует направленный лазерный луч и позволяет крайне быстро уничтожать " +
 				"любую каменную породу. Руды оставляет нетронутыми. Для работы необходим уголь, обычный или древесный.")
-				.extra("Сжигает уголь каждые 45 секунд работы. Также, скорость добычи может быть ускорена за счет " +
-						"отличного проводника - меди. Если она есть в инвентаре, то каждые 15 секунд будет потрачена " +
-						"1 единица меди, а скорость добычи ускорена в два раза на это время!")
+				.extra("Сжигает уголь каждые 50 секунд работы. Также, скорость добычи может быть ускорена за счет " +
+						"отличного проводника - меди. Если она есть в инвентаре, то каждые 20 секунд будет потрачена " +
+						"1 единица меди, а скорость добычи ускорена в два раза на это время! " +
+                        "Максимальное расстояние добычи - 8 блоков.")
 				.note("К камню также относится адский камень, базальт, андезит, диорит и т.д.");
 	}
 

@@ -26,7 +26,7 @@ public class CustomItemAllurementStone extends RequesterCustomItem implements Bl
 
 	@Override
 	public int getRedstonePrice() {
-		return 64;
+		return 80;
 	}
 
 	@Override

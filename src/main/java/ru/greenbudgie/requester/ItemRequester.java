@@ -45,24 +45,25 @@ public class ItemRequester implements Listener {
 	public static void init() {
 		putItem(CustomItems.shulkerBox, 11);
 		putItem(CustomItems.iceball, 12);
-		putItem(CustomItems.highlighter, 13);
-		putItem(CustomItems.creatureHighlighter, 14);
+		putItem(CustomItems.creatureHighlighter, 13);
+		putItem(CustomItems.highlighter, 14);
 		putItem(CustomItems.infernalLead, 15);
 
-		putItem(CustomItems.pearl, 19);
-		putItem(CustomItems.booster, 20);
+		putItem(CustomItems.booster, 19);
+		putItem(CustomItems.pearl, 20);
 		putItem(CustomItems.pulsatingTotem, 21);
 		putItem(CustomItems.knockoutTotem, 23);
-		putItem(CustomItems.landmine, 24);
-		putItem(CustomItems.soulscriber, 25);
+		putItem(CustomItems.soulscriber, 24);
+		putItem(CustomItems.landmine, 25);
 
+		putItem(CustomItems.tracker, 29);
 		putItem(CustomItems.shieldBreaker, 30);
-		putItem(CustomItems.terraDrill, 31);
-		putItem(CustomItems.allurementStone, 32);
+		putItem(CustomItems.terraDrill, 32);
+		putItem(CustomItems.heavenMembrane, 33);
 
-		putItem(CustomItems.tnt, 39);
-		putItem(CustomItems.heavenMembrane, 40);
-		putItem(CustomItems.tracker, 41);
+		putItem(CustomItems.allurementStone, 39);
+		putItem(CustomItems.tnt, 40);
+		putItem(CustomItems.laserCutter, 41);
 	}
 
 	public static String padSymbols(String input) {

@@ -26,7 +26,6 @@ public class CustomItemCreatureHighlighter extends RequesterCustomItem {
 	@Override
 	public void onUseRight(Player p, ItemStack item, PlayerInteractEvent e) {
 		item.setAmount(item.getAmount() - 1);
-		boolean found = false;
 		for(LivingEntity entity : p.getWorld().getEntitiesByClass(LivingEntity.class)) {
 			if(!(entity instanceof Player) && p.getLocation().distance(entity.getLocation()) < 64) {
 				entity.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 240, 0));
@@ -43,7 +42,7 @@ public class CustomItemCreatureHighlighter extends RequesterCustomItem {
 
 	@Override
 	public int getRedstonePrice() {
-		return 32;
+		return 20;
 	}
 
 	@Override

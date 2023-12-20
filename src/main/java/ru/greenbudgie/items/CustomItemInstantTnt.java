@@ -39,7 +39,7 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 			Location center = b.getLocation().clone().add(0.5, 0, 0.5);
 			b.getWorld().playSound(center, Sound.ENTITY_TNT_PRIMED, 1F, 1F);
 			TNTPrimed tnt = (TNTPrimed) b.getWorld().spawnEntity(center, EntityType.PRIMED_TNT);
-			tnt.setFuseTicks(30);
+			tnt.setFuseTicks(25);
 			tnt.setMetadata("owner", new FixedMetadataValue(UHCPlugin.instance, p.getName()));
 			b.setType(Material.AIR);
 		} else {
@@ -67,8 +67,10 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 
 	@Override
 	public ItemInfo getDescription() {
-		return new ItemInfo("Динамит, который взрывается через полторы секунды после установки").
-				note("Установившему динамит игроку и его тиммейту наносится в 4 раза меньше урона от взрыва, что и отличает этот блок от мины, которая наносит всем одинаковый урон.");
+		return new ItemInfo("Динамит, который взрывается через 1.25 сек. после установки")
+				.explanation("Взрывается на 0.25 сек. быстрее мины")
+				.extra("Установившему динамит игроку и его тиммейту наносится в 4 раза меньше урона от взрыва, что и " +
+						"отличает этот блок от мины, которая наносит всем одинаковый урон.");
 	}
 
 	@Override
@@ -78,7 +80,7 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 
 	@Override
 	public int getLapisPrice() {
-		return 12;
+		return 16;
 	}
 
 }
