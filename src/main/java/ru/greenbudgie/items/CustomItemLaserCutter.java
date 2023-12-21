@@ -83,6 +83,32 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
 
     @Override
 	public void onUseRight(Player player, ItemStack item, PlayerInteractEvent e) {
+        laserCut(player, e.getHand());
+	}
+
+	@Override
+	public ItemInfo getDescription() {
+		return new ItemInfo("Генерирует лазерный луч и позволяет крайне быстро уничтожать " +
+				"любую каменную породу. Руды оставляет нетронутыми. Для работы необходим уголь, обычный или древесный.")
+				.extra("Сжигает уголь каждые 50 секунд работы. Также, скорость добычи может быть ускорена за счет " +
+						"проводника - меди. Если она есть в инвентаре, то каждые 20 секунд будет потрачена " +
+						"1 единица, а скорость добычи ускорена в два раза на это время! " +
+                        "Радиус действия - 8 блоков.")
+				.note("Лучше использовать без предметов (щита или факелов) в другой руке! " +
+                        "К камню также относится адский камень, сланец, андезит, диорит и т.д.");
+	}
+
+	@Override
+	public int getRedstonePrice() {
+		return 128;
+	}
+
+	@Override
+	public int getLapisPrice() {
+		return 32;
+	}
+
+    private void laserCut(Player player, EquipmentSlot hand) {
         boolean isUsingNow = isUsingNow(player);
         boolean isBurningFuel = isBurningFuel(player);
         ItemStack fuel = null;
@@ -95,7 +121,6 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
 
         RayTraceResult result = player.rayTraceBlocks(LASER_BEAM_DISTANCE, FluidCollisionMode.NEVER);
         Block hitBlock = Optional.ofNullable(result).map(RayTraceResult::getHitBlock).orElse(null);
-        EquipmentSlot hand = e.getHand();
 
         if (isUsingNow) {
             playUseEffect(player, hand, hitBlock);
@@ -111,39 +136,18 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
         playUseEffect(player, hand, hitBlock);
         setMaxUseDelay(player);
 
-		if (result == null) {
-			return;
-		}
-		Block block = result.getHitBlock();
-		if (block == null) {
-			return;
-		}
-		if (!allowedMaterials.contains(block.getType())) {
-			return;
-		}
+        if (result == null) {
+            return;
+        }
+        Block block = result.getHitBlock();
+        if (block == null) {
+            return;
+        }
+        if (!allowedMaterials.contains(block.getType())) {
+            return;
+        }
         breakBlock(player, block);
-	}
-
-	@Override
-	public ItemInfo getDescription() {
-		return new ItemInfo("Генерирует направленный лазерный луч и позволяет крайне быстро уничтожать " +
-				"любую каменную породу. Руды оставляет нетронутыми. Для работы необходим уголь, обычный или древесный.")
-				.extra("Сжигает уголь каждые 50 секунд работы. Также, скорость добычи может быть ускорена за счет " +
-						"отличного проводника - меди. Если она есть в инвентаре, то каждые 20 секунд будет потрачена " +
-						"1 единица меди, а скорость добычи ускорена в два раза на это время! " +
-                        "Максимальное расстояние добычи - 8 блоков.")
-				.note("К камню также относится адский камень, базальт, андезит, диорит и т.д.");
-	}
-
-	@Override
-	public int getRedstonePrice() {
-		return 128;
-	}
-
-	@Override
-	public int getLapisPrice() {
-		return 32;
-	}
+    }
 
     private void breakBlock(Player player, Block block) {
         BlockBreakEvent blockBreakEvent = new BlockBreakEvent(block, player);
