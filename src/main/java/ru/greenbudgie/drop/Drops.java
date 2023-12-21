@@ -177,12 +177,8 @@ public class Drops {
 
             WeightedEnchantedItem.item(Material.TRIDENT)
                     .alwaysEnchant(
-                            WeightedEnchantment.builder(Enchantment.DURABILITY).level(3).build(),
                             WeightedEnchantment.builder(Enchantment.LOYALTY).level(1, 2).build()
-                    )
-                    .weightedEnchantments(
-                            WeightedEnchantment.builder(Enchantment.CHANNELING).build()
-                    ).number(0, 1).weight(1).build(),
+                    ).weight(1).build(),
 
             WeightedItem.builder(Material.NETHERITE_HELMET).weight(1).build(),
             WeightedItem.builder(Material.NETHERITE_CHESTPLATE).weight(1).build(),

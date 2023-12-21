@@ -1543,7 +1543,7 @@ public class UHC implements Listener {
 			});
 			if(playing) {
 				player.sendMessage(YELLOW + "" + BOLD + "Сейчас идет игра! " + RESET + AQUA
-						+ "За игрой можно наблюдать, кликнув по табличке.");
+						+ "За игрой можно наблюдать, кликнув по табличке или написав /watch.");
 			}
 		}
 		refreshScoreboardsLater();

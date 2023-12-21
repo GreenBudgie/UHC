@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import ru.greenbudgie.util.InventoryHelper;
 import ru.greenbudgie.util.item.ItemUtils;
 
 import java.util.List;
@@ -26,12 +25,13 @@ public class TutorialInventory implements Listener {
             getItem(Material.PHANTOM_MEMBRANE, "Дропы", DROP_INFO),
             getItem(Material.SHULKER_SHELL, "Мутаторы", MUTATOR_INFO),
             getItem(Material.BLACK_DYE, "Артефакты", ARTIFACT_INFO),
-            getItem(Material.REDSTONE, "Запросы", REQUEST_INFO)
+            getItem(Material.REDSTONE, "Запросы", REQUEST_INFO),
+            getItem(Material.OBSIDIAN, "Ад", NETHER_INFO)
     );
 
     public static void openInventory(Player player) {
         Inventory inventory = Bukkit.createInventory(player, 9, INVENTORY_HEADER);
-        InventoryHelper.placeItemsCenter(inventory, tutorialItems, 0);
+        inventory.addItem(tutorialItems.toArray(new ItemStack[0]));
         player.openInventory(inventory);
     }
 
