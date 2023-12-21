@@ -133,8 +133,8 @@ public class SpectatorManager implements Listener {
             teleportLocation = WorldManager.spawnLocation;
         }
         SafeTeleport.performSafeTeleport(player, teleportLocation);
-        UHC.refreshScoreboards();
         PlayerManager.registerSpectator(player);
+        UHC.refreshScoreboards();
         for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
             inGamePlayer.sendMessage(
                     DARK_AQUA + "" + BOLD + "+ " + GOLD + player.getName() + AQUA + " присоединился к наблюдателям"

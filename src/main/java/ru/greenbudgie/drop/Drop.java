@@ -1,11 +1,16 @@
 package ru.greenbudgie.drop;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.scoreboard.Scoreboard;
+import ru.greenbudgie.drop.marker.DropMarker;
 import ru.greenbudgie.mutator.MutatorManager;
 import ru.greenbudgie.util.LocationFormatter;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.bukkit.ChatColor.*;
 
@@ -13,6 +18,10 @@ public abstract class Drop {
 
     protected int timer;
     protected Location location;
+
+    @Nullable
+    protected DropMarker<?> currentMarker = null;
+    protected final Set<DropMarker<?>> markers = new HashSet<>();
 
     public Drop() {
         Drops.DROPS.add(this);
@@ -22,12 +31,16 @@ public abstract class Drop {
     public abstract int getDefaultDropDelay();
     public abstract void drop();
     public abstract Location getRandomLocation();
+    public abstract ChatColor getMarkerColor();
+    public abstract DropMarker<?> createMarker();
 
     public void setup() {
         timer = getDefaultDropDelay();
         if(MutatorManager.moreDrops.isActive())
             timer /= 2;
         location = getRandomLocation();
+        currentMarker = createMarker();
+        markers.add(currentMarker);
     }
 
     public World.Environment getSpawnEnvironment() {
@@ -80,6 +93,16 @@ public abstract class Drop {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public void updateMarkerTeams(Scoreboard scoreboard) {
+        for (DropMarker<?> marker : markers) {
+            marker.updateTeam(scoreboard);
+        }
+    }
+
+    public void removeMarker(DropMarker<?> marker) {
+        markers.remove(marker);
     }
 
 }

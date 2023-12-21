@@ -139,6 +139,7 @@ public class UHC implements Listener {
 
 		p.setScoreboard(board);
 		updateGameScoreboard(p);
+		Drops.updateScoreboard(board);
 	}
 
 	private static String getPrefix(UHCPlayer currentPlayer, Player scoreboardOwner) {

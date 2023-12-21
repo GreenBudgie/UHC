@@ -11,11 +11,13 @@ import ru.greenbudgie.util.MathUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.bukkit.ChatColor.*;
+
 public class NetherDrop extends ChestBasedDrop {
 
     @Override
     public String getName() {
-        return ChatColor.DARK_RED + "" + ChatColor.BOLD + "Незердроп";
+        return DARK_RED + "" + BOLD + "Незердроп";
     }
 
     @Override
@@ -54,7 +56,7 @@ public class NetherDrop extends ChestBasedDrop {
         int z = MathUtils.randomRange(
                 center.getBlockZ() - size,
                 center.getBlockZ() + size);
-        int y = MathUtils.randomRange(7, 20);
+        int y = MathUtils.randomRange(34, 120);
         return new Location(WorldManager.getGameMapNether(), x, y, z);
     }
 
@@ -77,4 +79,10 @@ public class NetherDrop extends ChestBasedDrop {
     public World.Environment getSpawnEnvironment() {
         return World.Environment.NETHER;
     }
+
+    @Override
+    public ChatColor getMarkerColor() {
+        return DARK_RED;
+    }
+
 }

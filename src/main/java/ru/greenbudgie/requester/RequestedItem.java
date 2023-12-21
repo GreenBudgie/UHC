@@ -102,7 +102,7 @@ public class RequestedItem {
 			if(droppingTimer <= 0) {
 				info.remove();
 				Location bottom = l.clone().add(0, -2, 0);
-				Item droppedItem = bottom.getWorld().dropItemNaturally(location.clone().add(0, -0.7, 0), item);
+				Item droppedItem = bottom.getWorld().dropItem(location.clone().add(0, -0.7, 0), item);
 				droppedItem.setPickupDelay(0);
 				droppedItem.setGlowing(true);
 				ParticleUtils.createParticlesInsideSphere(bottom, 3, Particle.LAVA, null, 50);

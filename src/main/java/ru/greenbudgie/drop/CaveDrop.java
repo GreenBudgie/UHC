@@ -11,11 +11,13 @@ import ru.greenbudgie.util.MathUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.bukkit.ChatColor.*;
+
 public class CaveDrop extends ChestBasedDrop {
 
     @Override
     public String getName() {
-        return ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Кейвдроп";
+        return DARK_GREEN + "" + BOLD + "Кейвдроп";
     }
 
     @Override
@@ -55,7 +57,7 @@ public class CaveDrop extends ChestBasedDrop {
         int z = MathUtils.randomRange(
                 WorldManager.spawnLocation.getBlockZ() - size,
                 WorldManager.spawnLocation.getBlockZ() + size);
-        int minHeight = WorldManager.getGameMap().getMinHeight();
+        int minHeight = WorldManager.getGameMap().getMinHeight() + 8;
         int y = MathUtils.randomRange(minHeight, 0);
         return new Location(WorldManager.getGameMap(), x, y, z);
     }
@@ -68,6 +70,11 @@ public class CaveDrop extends ChestBasedDrop {
     @Override
     protected int getMaxFillers() {
         return 6;
+    }
+
+    @Override
+    public ChatColor getMarkerColor() {
+        return DARK_GREEN;
     }
 
 }

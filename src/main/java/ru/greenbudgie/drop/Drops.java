@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.Scoreboard;
 import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.Messages;
@@ -204,6 +205,12 @@ public class Drops {
         for(Drop drop : DROPS) {
             drop.setup();
             drop.timer -= MathUtils.randomRange(0, 30);
+        }
+    }
+
+    public static void updateScoreboard(Scoreboard scoreboard) {
+        for (Drop drop : DROPS) {
+            drop.updateMarkerTeams(scoreboard);
         }
     }
 

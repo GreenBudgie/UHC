@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.UHC.PlayerManager;
+import ru.greenbudgie.drop.marker.ChestBasedDropMarker;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.ParticleUtils;
 import ru.greenbudgie.util.Region;
@@ -62,6 +63,9 @@ public abstract class ChestBasedDrop extends Drop {
             p.sendMessage(getChatDropCoordinatesInfo());
             p.playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.5F, 0.5F);
         }
+        if (currentMarker != null) {
+            currentMarker.setDropped();
+        }
     }
 
     protected int getMainItemsCount() {
@@ -92,6 +96,11 @@ public abstract class ChestBasedDrop extends Drop {
             ParticleUtils.createParticlesOnRegionEdges(dropRegion, Particle.SMOKE_NORMAL, 4, null);
             timer--;
         }
+    }
+
+    @Override
+    public ChestBasedDropMarker createMarker() {
+        return new ChestBasedDropMarker(this);
     }
 
 }
