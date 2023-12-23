@@ -3,6 +3,7 @@ package ru.greenbudgie.drop.marker;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import ru.greenbudgie.UHC.PlayerManager;
@@ -36,12 +37,12 @@ public class ChestBasedDropMarker extends DropMarker<ChestBasedDrop> {
     }
 
     @EventHandler
-    public void removeOnChestBreak(PlayerInteractEvent event) {
+    public void removeOnChestBreak(BlockBreakEvent event) {
         if (!isDropped) {
             return;
         }
-        Block clickedBlock = event.getClickedBlock();
-        if (clickedBlock != null && WorldHelper.compareIntLocations(clickedBlock.getLocation(), location)) {
+        Block block = event.getBlock();
+        if (WorldHelper.compareIntLocations(block.getLocation(), location)) {
             remove();
         }
     }

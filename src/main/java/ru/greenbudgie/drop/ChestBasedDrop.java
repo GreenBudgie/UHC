@@ -8,7 +8,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.drop.marker.ChestBasedDropMarker;
 import ru.greenbudgie.util.MathUtils;
@@ -16,9 +15,11 @@ import ru.greenbudgie.util.ParticleUtils;
 import ru.greenbudgie.util.Region;
 import ru.greenbudgie.util.TaskManager;
 import ru.greenbudgie.util.weighted.WeightedItem;
+import ru.greenbudgie.util.weighted.WeightedItemList;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public abstract class ChestBasedDrop extends Drop {
 
@@ -46,15 +47,14 @@ public abstract class ChestBasedDrop extends Drop {
         for(int i = 0; i < inv.getSize(); i++) {
             slotsToFill.add(i);
         }
-        int items = MathUtils.randomRange(getMinFillers() + getMainItemsCount(), getMaxFillers() + getMainItemsCount());
+        int fillerNumber = MathUtils.randomRange(getMinFillers(), getMaxFillers());
+        List<WeightedItem> fillers = getFillers().getRandomElementsWeighted(fillerNumber);
         List<WeightedItem> mainDrops = Drops.getWeightedDropsList().getRandomElementsWeighted(getMainItemsCount());
-        for(int i = 0; i < items; i++) {
+        List<WeightedItem> mainItemsAndFillers = Stream.concat(fillers.stream(), mainDrops.stream()).toList();
+        for (WeightedItem item : mainItemsAndFillers) {
             int slot = MathUtils.choose(slotsToFill);
             slotsToFill.remove(slot);
-            inv.setItem(slot, i < getMainItemsCount()
-                    ? mainDrops.get(i).getItem().clone()
-                    : getRandomFiller()
-            );
+            inv.setItem(slot, item.getItem());
         }
         location.getWorld().playSound(location, Sound.ITEM_FIRECHARGE_USE, 1F, 0.5F);
         ParticleUtils.createParticlesOnRegionEdges(dropRegion, Particle.FLAME, 4, null);
@@ -78,11 +78,7 @@ public abstract class ChestBasedDrop extends Drop {
 
     protected abstract Material getCasing();
 
-    protected final ItemStack getRandomFiller() {
-        return MathUtils.choose(getFillers());
-    }
-
-    public abstract List<ItemStack> getFillers();
+    public abstract WeightedItemList getFillers();
 
     @Override
     public void update() {

@@ -43,7 +43,7 @@ public class Drops {
             .withColor(Color.GREEN)
             .withEffects(
                     new PotionEffectBuilder(PotionEffectType.POISON).seconds(6).amplifier(1).build(),
-                    new PotionEffectBuilder(PotionEffectType.SLOW).minutes(1).build()
+                    new PotionEffectBuilder(PotionEffectType.SLOW).amplifier(1).minutes(1).build()
             ).build();
     private static final ItemStack weaknessPotion = ItemUtils.potionBuilder()
             .withName(WHITE + "Potion of Weakening")
@@ -51,22 +51,23 @@ public class Drops {
             .withColor(Color.GRAY)
             .withEffects(
                     new PotionEffectBuilder(PotionEffectType.BLINDNESS).seconds(20).build(),
-                    new PotionEffectBuilder(PotionEffectType.WEAKNESS).seconds(30).build()
+                    new PotionEffectBuilder(PotionEffectType.WEAKNESS).minutes(1).build()
             ).build();
     private static final ItemStack minerPotion = ItemUtils.potionBuilder()
             .withName(WHITE + "Potion of Miner Dream")
             .withColor(Color.WHITE)
             .withEffects(
-                    new PotionEffectBuilder(PotionEffectType.FAST_DIGGING).minutes(8).amplifier(1).build(),
-                    new PotionEffectBuilder(PotionEffectType.NIGHT_VISION).minutes(20).build()
+                    new PotionEffectBuilder(PotionEffectType.FAST_DIGGING).minutes(10).amplifier(2).build(),
+                    new PotionEffectBuilder(PotionEffectType.NIGHT_VISION).minutes(30).build()
             ).build();
     private static final ItemStack explorerPotion = ItemUtils.potionBuilder()
             .withName(WHITE + "Potion of Exploration")
             .withColor(Color.LIME)
             .withEffects(
-                    new PotionEffectBuilder(PotionEffectType.SPEED).minutes(10).amplifier(1).build(),
-                    new PotionEffectBuilder(PotionEffectType.DOLPHINS_GRACE).minutes(10).build(),
-                    new PotionEffectBuilder(PotionEffectType.CONDUIT_POWER).minutes(10).build()
+                    new PotionEffectBuilder(PotionEffectType.SPEED).minutes(15).amplifier(1).build(),
+                    new PotionEffectBuilder(PotionEffectType.DOLPHINS_GRACE).minutes(15).build(),
+                    new PotionEffectBuilder(PotionEffectType.CONDUIT_POWER).minutes(15).build(),
+                    new PotionEffectBuilder(PotionEffectType.NIGHT_VISION).minutes(15).build()
             ).build();
     private static final ItemStack strengthPotion = ItemUtils.potionBuilder()
             .withName(WHITE + "Potion of Dominance")
@@ -81,7 +82,7 @@ public class Drops {
             .withColor(Color.BLACK)
             .withEffects(
                     new PotionEffectBuilder(PotionEffectType.HARM).build(),
-                    new PotionEffectBuilder(PotionEffectType.WITHER).seconds(12).build()
+                    new PotionEffectBuilder(PotionEffectType.WITHER).seconds(13).build()
             ).build();
     private static final ItemStack disrespectPotion = ItemUtils.potionBuilder()
             .withName(WHITE + "Potion of Enemy Disrespect")
@@ -89,8 +90,8 @@ public class Drops {
             .withColor(Color.fromRGB(0, 0, 170))
             .withEffects(
                     new PotionEffectBuilder(PotionEffectType.LEVITATION).seconds(6).amplifier(2).build(),
-                    new PotionEffectBuilder(PotionEffectType.BLINDNESS).seconds(6).build(),
-                    new PotionEffectBuilder(PotionEffectType.HUNGER).minutes(2).amplifier(3).build()
+                    new PotionEffectBuilder(PotionEffectType.DARKNESS).seconds(30).build(),
+                    new PotionEffectBuilder(PotionEffectType.HUNGER).minutes(2).amplifier(4).build()
             ).build();
     
     private static final WeightedItemList weightedDrops = new WeightedItemList(
@@ -104,13 +105,16 @@ public class Drops {
             WeightedItem.builder(disrespectPotion).weight(2).build(),
             WeightedItem.builder(Material.GOLDEN_APPLE).amount(2).weight(2).build(),
             WeightedItem.builder(Material.DIAMOND).amount(8, 14).weight(2).build(),
-            WeightedItem.builder(Material.GOLD_INGOT).amount(16, 24).weight(2).build(),
-            WeightedEnchantedItem.book().alwaysEnchant(new Enchant(Enchantment.THORNS, 3)).weight(2).build(),
+            WeightedItem.builder(Material.GOLD_INGOT).amount(20, 30).weight(2).build(),
+            WeightedEnchantedItem.book().alwaysEnchant(
+                    new Enchant(Enchantment.THORNS, 3),
+                    new Enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1)
+            ).weight(2).build(),
             WeightedEnchantedItem.book().alwaysEnchant(
                     WeightedEnchantment.builder(Enchantment.LOOT_BONUS_BLOCKS).level(2, 3).build()
             ).weight(2).build(),
             WeightedEnchantedItem.book().alwaysEnchant(
-                    WeightedEnchantment.builder(Enchantment.LOOT_BONUS_MOBS).level(2, 3).build()
+                    WeightedEnchantment.builder(Enchantment.LOOT_BONUS_MOBS).level(3).build()
             ).weight(2).build(),
             WeightedEnchantedItem.book().alwaysEnchant(new Enchant(Enchantment.FIRE_ASPECT, 2)).weight(2).build(),
             WeightedEnchantedItem.item(Material.DIAMOND_BOOTS).weightedEnchantments(
@@ -172,7 +176,7 @@ public class Drops {
             WeightedItem.builder(Material.ENCHANTING_TABLE).weight(2).build(),
             WeightedItem.builder(Material.REDSTONE_BLOCK).amount(10, 14).weight(2).build(),
             WeightedItem.builder(Material.LAPIS_BLOCK).amount(4, 6).weight(2).build(),
-            WeightedItem.builder(Material.SPECTRAL_ARROW).amount(24, 32).weight(2).build(),
+            WeightedItem.builder(Material.SPECTRAL_ARROW).amount(32, 48).weight(2).build(),
             WeightedItem.builder(CustomItems.darkArtifact.getItemStack()).amount(20, 30).weight(2).build(),
 
             WeightedEnchantedItem.item(Material.TRIDENT)

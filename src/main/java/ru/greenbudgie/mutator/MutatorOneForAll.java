@@ -11,8 +11,7 @@ import ru.greenbudgie.util.TaskManager;
 
 import java.util.List;
 
-import static org.bukkit.ChatColor.GOLD;
-import static org.bukkit.ChatColor.LIGHT_PURPLE;
+import static org.bukkit.ChatColor.*;
 
 public class MutatorOneForAll extends Mutator implements Listener {
 
@@ -76,7 +75,7 @@ public class MutatorOneForAll extends Mutator implements Listener {
 		if(activatedMutator == null) {
 			List<Mutator> mutators = MutatorManager.getNonConflictingInactiveMutators().stream()
 					.filter(mutator -> mutator.canBeAddedFromArtifact() && mutator.canBeDeactivatedByArtifact()).toList();
-			activatedMutator = MutatorManager.haste;
+			activatedMutator = MathUtils.choose(mutators);
 			activatedMutator.activate(false, null);
 			timer = MathUtils.randomRange(400, 600);
 			for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {

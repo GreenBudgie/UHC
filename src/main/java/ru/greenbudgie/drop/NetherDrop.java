@@ -4,16 +4,35 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.UHC.WorldManager;
+import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.util.MathUtils;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.greenbudgie.util.weighted.WeightedItem;
+import ru.greenbudgie.util.weighted.WeightedItemList;
 
 import static org.bukkit.ChatColor.*;
 
 public class NetherDrop extends ChestBasedDrop {
+
+    private static final WeightedItemList FILLERS = new WeightedItemList(
+            WeightedItem.builder(Material.NETHER_WART).amount(1, 2).weight(4).build(),
+            WeightedItem.builder(Material.PORKCHOP).amount(2, 2).weight(3).build(),
+            WeightedItem.builder(Material.GOLDEN_CARROT).amount(1, 2).weight(3).build(),
+            WeightedItem.builder(Material.FERMENTED_SPIDER_EYE).amount(1, 2).weight(3).build(),
+            WeightedItem.builder(Material.BLAZE_POWDER).weight(3).build(),
+            WeightedItem.builder(Material.GOLD_NUGGET).amount(5, 14).weight(3).build(),
+            WeightedItem.builder(Material.MAGMA_CREAM).weight(3).build(),
+            WeightedItem.builder(Material.GUNPOWDER).amount(1, 3).weight(3).build(),
+            WeightedItem.builder(Material.FIRE_CHARGE).weight(3).build(),
+            WeightedItem.builder(Material.COAL).amount(3, 6).weight(3).build(),
+            WeightedItem.builder(Material.GLOWSTONE).amount(3, 6).weight(3).build(),
+            WeightedItem.builder(Material.BROWN_MUSHROOM).amount(2, 4).weight(3).build(),
+            WeightedItem.builder(Material.RED_MUSHROOM).amount(2, 4).weight(3).build(),
+            WeightedItem.builder(Material.GLASS_BOTTLE).amount(1, 3).weight(3).build(),
+            WeightedItem.builder(CustomItems.darkArtifact.getItemStack()).amount(2, 3).weight(2).build(),
+            WeightedItem.builder(Material.ANCIENT_DEBRIS).amount(3, 6).weight(1).build()
+    );
+
 
     @Override
     public String getName() {
@@ -31,19 +50,8 @@ public class NetherDrop extends ChestBasedDrop {
     }
 
     @Override
-    public List<ItemStack> getFillers() {
-        List<ItemStack> fillers = new ArrayList<>();
-        fillers.add(new ItemStack(Material.NETHER_WART, MathUtils.randomRange(1, 2)));
-        fillers.add(new ItemStack(Material.PORKCHOP, MathUtils.randomRange(2, 3)));
-        fillers.add(new ItemStack(Material.GOLDEN_CARROT, MathUtils.randomRange(1, 2)));
-        fillers.add(new ItemStack(Material.FERMENTED_SPIDER_EYE, MathUtils.randomRange(1, 2)));
-        fillers.add(new ItemStack(Material.BLAZE_POWDER));
-        fillers.add(new ItemStack(Material.GOLD_NUGGET, MathUtils.randomRange(5, 14)));
-        fillers.add(new ItemStack(Material.MAGMA_CREAM));
-        fillers.add(new ItemStack(Material.GUNPOWDER, MathUtils.randomRange(1, 3)));
-        fillers.add(new ItemStack(Material.FIRE_CHARGE));
-        if(MathUtils.chance(30)) fillers.add(new ItemStack(Material.ANCIENT_DEBRIS));
-        return fillers;
+    public WeightedItemList getFillers() {
+        return FILLERS;
     }
 
     @Override

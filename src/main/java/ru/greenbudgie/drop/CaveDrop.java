@@ -3,17 +3,34 @@ package ru.greenbudgie.drop;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.UHC.WorldManager;
 import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.util.MathUtils;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.greenbudgie.util.weighted.WeightedItem;
+import ru.greenbudgie.util.weighted.WeightedItemList;
 
 import static org.bukkit.ChatColor.*;
 
 public class CaveDrop extends ChestBasedDrop {
+
+    private static final WeightedItemList FILLERS = new WeightedItemList(
+            WeightedItem.builder(Material.STRING).amount(1, 3).weight(3).build(),
+            WeightedItem.builder(Material.FLINT).amount(1, 3).weight(3).build(),
+            WeightedItem.builder(Material.BREAD).amount(1, 3).weight(3).build(),
+            WeightedItem.builder(Material.CARROT).amount(1, 3).weight(3).build(),
+            WeightedItem.builder(Material.FEATHER).amount(1, 3).weight(3).build(),
+            WeightedItem.builder(Material.LEATHER).weight(3).build(),
+            WeightedItem.builder(Material.PAPER).amount(1, 3).weight(3).build(),
+            WeightedItem.builder(Material.LAPIS_LAZULI).amount(1, 3).weight(3).build(),
+            WeightedItem.builder(Material.REDSTONE).amount(2, 5).weight(3).build(),
+            WeightedItem.builder(Material.IRON_INGOT).amount(1, 3).weight(3).build(),
+            WeightedItem.builder(Material.GOLD_INGOT).amount(1, 2).weight(3).build(),
+            WeightedItem.builder(CustomItems.darkArtifact.getItemStack()).weight(3).build(),
+            WeightedItem.builder(Material.APPLE).weight(2).build(),
+            WeightedItem.builder(Material.ARROW).amount(1, 2).weight(2).build(),
+            WeightedItem.builder(Material.OBSIDIAN).amount(1, 4).weight(2).build(),
+            WeightedItem.builder(Material.DIAMOND).weight(1).build()
+    );
 
     @Override
     public String getName() {
@@ -31,21 +48,8 @@ public class CaveDrop extends ChestBasedDrop {
     }
 
     @Override
-    public List<ItemStack> getFillers() {
-        List<ItemStack> fillers = new ArrayList<>();
-        fillers.add(new ItemStack(Material.STRING, MathUtils.randomRange(1, 3)));
-        fillers.add(new ItemStack(Material.BREAD, MathUtils.randomRange(1, 3)));
-        fillers.add(new ItemStack(Material.CARROT, MathUtils.randomRange(1, 3)));
-        fillers.add(new ItemStack(Material.FEATHER, MathUtils.randomRange(1, 3)));
-        fillers.add(new ItemStack(Material.LEATHER));
-        fillers.add(new ItemStack(Material.LAPIS_LAZULI, MathUtils.randomRange(1, 3)));
-        fillers.add(new ItemStack(Material.REDSTONE, MathUtils.randomRange(1, 5)));
-        fillers.add(new ItemStack(Material.IRON_INGOT, MathUtils.randomRange(1, 3)));
-        fillers.add(new ItemStack(Material.GOLD_INGOT, MathUtils.randomRange(1, 2)));
-        fillers.add(CustomItems.darkArtifact.getItemStack());
-        if(MathUtils.chance(50)) fillers.add(new ItemStack(Material.APPLE));
-        if(MathUtils.chance(30)) fillers.add(new ItemStack(Material.DIAMOND));
-        return fillers;
+    public WeightedItemList getFillers() {
+        return FILLERS;
     }
 
     @Override
