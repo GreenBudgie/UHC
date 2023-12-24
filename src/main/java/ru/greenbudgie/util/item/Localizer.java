@@ -1,23 +1,24 @@
 package ru.greenbudgie.util.item;
 
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EnchantmentLocalizer {
+public class Localizer {
 
-    private static final Pattern enchantmentNamePattern = Pattern.compile("\\b([a-zA-Z])");
+    private static final Pattern keyNamePattern = Pattern.compile("\\b([a-zA-Z])");
 
     /**
      * Gets a localized english name for the specified enchantment
      */
-    public static String localizeName(Enchantment enchantment) {
-        String key = enchantment.getKey().getKey();
-        String noUnderscoresKey = key.replaceAll("_", " ");
+    public static String localizeEnchantmentName(Enchantment enchantment) {
+        return localizeKey(enchantment.getKey().getKey());
+    }
 
-        Matcher matcher = enchantmentNamePattern.matcher(noUnderscoresKey);
-        return matcher.replaceAll(match -> match.group().toUpperCase());
+    public static String localizePotionEffectType(PotionEffectType type) {
+        return localizeKey(type.getKey().getKey());
     }
 
     /**
@@ -40,17 +41,19 @@ public class EnchantmentLocalizer {
         };
     }
 
-    public static String localize(Enchant enchantment) {
-        return localize(enchantment.getEnchantment(), enchantment.getLevel());
-    }
-
     public static String localize(Enchantment enchantment, int level) {
         boolean localizeLevel = enchantment.getMaxLevel() != 1;
         if (!localizeLevel) {
-            return localizeName(enchantment);
+            return localizeEnchantmentName(enchantment);
         }
-        return localizeName(enchantment) + " " + localizeLevel(level);
+        return localizeEnchantmentName(enchantment) + " " + localizeLevel(level);
     }
 
+    private static String localizeKey(String namespacedKey) {
+        String noUnderscoresKey = namespacedKey.replaceAll("_", " ");
+
+        Matcher matcher = keyNamePattern.matcher(noUnderscoresKey);
+        return matcher.replaceAll(match -> match.group().toUpperCase());
+    }
 
 }

@@ -3,7 +3,7 @@ package ru.greenbudgie.util.weighted;
 import org.bukkit.enchantments.Enchantment;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.item.Enchant;
-import ru.greenbudgie.util.item.EnchantmentLocalizer;
+import ru.greenbudgie.util.item.Localizer;
 
 import javax.annotation.Nonnull;
 
@@ -27,11 +27,11 @@ public class WeightedEnchantment extends WeightedElement<Enchantment> {
     public String getPreviewString(boolean isWeighted) {
         String level;
         if (minLevel == maxLevel) {
-            level = EnchantmentLocalizer.localizeLevel(minLevel);
+            level = Localizer.localizeLevel(minLevel);
         } else {
-            level = EnchantmentLocalizer.localizeLevel(minLevel) + "-" + EnchantmentLocalizer.localizeLevel(maxLevel);
+            level = Localizer.localizeLevel(minLevel) + "-" + Localizer.localizeLevel(maxLevel);
         }
-        String enchantment = EnchantmentLocalizer.localizeName(element);
+        String enchantment = Localizer.localizeEnchantmentName(element);
         String enchantmentPreview = GRAY + enchantment + " " + level;
         if (!isWeighted) {
             return enchantmentPreview;

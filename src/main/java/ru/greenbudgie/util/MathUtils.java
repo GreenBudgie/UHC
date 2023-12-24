@@ -36,7 +36,7 @@ public final class MathUtils {
 
 	public static String formatTime(int seconds) {
 		Date date = new Date(seconds * 1000L);
-		return (seconds >= 3600 ? String.valueOf((int) Math.floor(seconds / 3600.0)) + ":" : "") + new SimpleDateFormat("mm:ss").format(date);
+		return (seconds >= 3600 ? (int) Math.floor(seconds / 3600.0) + ":" : "") + new SimpleDateFormat("mm:ss").format(date);
 	}
 
 	public static double clamp(double num, double min, double max) {

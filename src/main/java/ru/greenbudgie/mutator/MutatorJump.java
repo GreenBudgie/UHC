@@ -22,12 +22,12 @@ public class MutatorJump extends EffectBasedMutator {
 
 	@Override
 	public String getDescription() {
-		return "Всем игрокам на всю игру выдается прыгучесть X";
+		return "Всем игрокам на всю игру выдается прыгучесть V";
 	}
 
 	@Override
 	public EffectEntry[] getEffects() {
-		return new EffectEntry[] { new EffectEntry(PotionEffectType.JUMP, 9) };
+		return new EffectEntry[] { new EffectEntry(PotionEffectType.JUMP, 4) };
 	}
 
 }

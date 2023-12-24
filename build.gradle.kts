@@ -13,8 +13,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot:1.20.2-R0.1-SNAPSHOT")
-    compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
+    implementation("org.spigotmc:spigot:1.20.2-R0.1-SNAPSHOT")
+    implementation("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.1")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.1")

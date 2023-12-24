@@ -11,8 +11,8 @@ import static org.bukkit.ChatColor.*;
 
 public class WeightedItem extends WeightedElement<ItemStack> {
 
-    private final int min;
-    private final int max;
+    protected final int min;
+    protected final int max;
 
     WeightedItem(ItemStack item, int min, int max, int weight) {
         super(item, weight);

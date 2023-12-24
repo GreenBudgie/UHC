@@ -12,10 +12,7 @@ import ru.greenbudgie.util.Messages;
 import ru.greenbudgie.util.PotionEffectBuilder;
 import ru.greenbudgie.util.item.Enchant;
 import ru.greenbudgie.util.item.ItemUtils;
-import ru.greenbudgie.util.weighted.WeightedEnchantedItem;
-import ru.greenbudgie.util.weighted.WeightedEnchantment;
-import ru.greenbudgie.util.weighted.WeightedItem;
-import ru.greenbudgie.util.weighted.WeightedItemList;
+import ru.greenbudgie.util.weighted.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +88,8 @@ public class Drops {
             .withEffects(
                     new PotionEffectBuilder(PotionEffectType.LEVITATION).seconds(6).amplifier(2).build(),
                     new PotionEffectBuilder(PotionEffectType.DARKNESS).seconds(30).build(),
-                    new PotionEffectBuilder(PotionEffectType.HUNGER).minutes(2).amplifier(4).build()
+                    new PotionEffectBuilder(PotionEffectType.HUNGER).minutes(2).amplifier(4).build(),
+                    new PotionEffectBuilder(PotionEffectType.SLOW_DIGGING).minutes(1).build()
             ).build();
     
     private static final WeightedItemList weightedDrops = new WeightedItemList(
@@ -176,7 +174,12 @@ public class Drops {
             WeightedItem.builder(Material.ENCHANTING_TABLE).weight(2).build(),
             WeightedItem.builder(Material.REDSTONE_BLOCK).amount(10, 14).weight(2).build(),
             WeightedItem.builder(Material.LAPIS_BLOCK).amount(4, 6).weight(2).build(),
-            WeightedItem.builder(Material.SPECTRAL_ARROW).amount(32, 48).weight(2).build(),
+            WeightedPotionEffectItem.arrow().weightedEffects(
+                    WeightedPotionEffect.builder(PotionEffectType.BLINDNESS).seconds(8).build(),
+                    WeightedPotionEffect.builder(PotionEffectType.WEAKNESS).seconds(15).build(),
+                    WeightedPotionEffect.builder(PotionEffectType.SLOW).seconds(15).amplifier(1).build(),
+                    WeightedPotionEffect.builder(PotionEffectType.POISON).seconds(6).build()
+            ).amount(16, 32).effectNumber(1, 2).weight(2).build(),
             WeightedItem.builder(CustomItems.darkArtifact.getItemStack()).amount(20, 30).weight(2).build(),
 
             WeightedEnchantedItem.item(Material.TRIDENT)
