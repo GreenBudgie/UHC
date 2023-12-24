@@ -44,8 +44,8 @@ public class ItemRequester implements Listener {
 
 	public static void init() {
 		putItem(CustomItems.shulkerBox, 11);
-		putItem(CustomItems.iceball, 12);
-		putItem(CustomItems.creatureHighlighter, 13);
+		putItem(CustomItems.creatureHighlighter, 12);
+		putItem(CustomItems.iceball, 13);
 		putItem(CustomItems.highlighter, 14);
 		putItem(CustomItems.infernalLead, 15);
 
@@ -61,9 +61,9 @@ public class ItemRequester implements Listener {
 		putItem(CustomItems.terraDrill, 32);
 		putItem(CustomItems.heavenMembrane, 33);
 
-		putItem(CustomItems.allurementStone, 39);
-		putItem(CustomItems.tnt, 40);
-		putItem(CustomItems.laserCutter, 41);
+		putItem(CustomItems.laserCutter, 39);
+		putItem(CustomItems.allurementStone, 40);
+		putItem(CustomItems.tnt, 41);
 	}
 
 	public static String padSymbols(String input) {

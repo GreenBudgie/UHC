@@ -43,7 +43,7 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
             ParticleUtils.createParticlesOutlineSphere(centerLocation, getEffectRadius(), Particle.SMOKE_NORMAL, null, 12);
             ParticleUtils.createParticlesInside(getBlock(), Particle.END_ROD, null, 1);
         }
-        if(ticksPassed > 0 && ticksPassed % 20 == 0) {
+        if(ticksPassed > 0 && ticksPassed % 10 == 0) {
             List<LivingEntity> nearbyEntities = new ArrayList<>();
             List<LivingEntity> entities = location.getWorld().getLivingEntities();
             for(LivingEntity entity : entities) {
@@ -59,7 +59,7 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
                         playerLocation.getY() - centerLocation.getY(),
                         playerLocation.getZ() - centerLocation.getZ());
                 playerPointer.normalize();
-                playerPointer.multiply(1.8);
+                playerPointer.multiply(2);
                 Vector currentVelocity = entity.getVelocity();
                 currentVelocity.add(playerPointer);
                 entity.setVelocity(currentVelocity);
@@ -69,7 +69,7 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
                     FightHelper.setDamager(player, owner, 70, "убил тотемом");
                 }
             }
-            ParticleUtils.createParticlesOutlineSphere(centerLocation, getEffectRadius() / 3, Particle.SMOKE_LARGE, null, 20);
+            ParticleUtils.createParticlesOutlineSphere(centerLocation, getEffectRadius(), Particle.SMOKE_LARGE, null, 30);
             location.getWorld().playSound(location, Sound.BLOCK_ANVIL_LAND, 0.4F, 0.5F);
         }
     }

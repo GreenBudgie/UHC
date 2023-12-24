@@ -6,6 +6,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.bukkit.event.inventory.PrepareGrindstoneEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.UHC.ArenaManager;
@@ -84,11 +85,16 @@ public class CustomItemsListener implements Listener {
 	@EventHandler
 	public void noRename(PrepareAnvilEvent e) {
 		ItemStack stack = e.getInventory().getItem(0);
-		if(stack != null && stack.hasItemMeta() && stack.getItemMeta().hasDisplayName()) {
-			for(CustomItem item : CustomItems.getItems()) {
-				if(item.isEquals(stack)) {
-					e.setResult(null);
-				}
+		if (CustomItems.isCustomItem(stack)) {
+			e.setResult(null);
+		}
+	}
+
+	@EventHandler
+	public void noGrindstone(PrepareGrindstoneEvent event) {
+		for (ItemStack item : event.getInventory()) {
+			if (CustomItems.isCustomItem(item)) {
+				event.setResult(null);
 			}
 		}
 	}

@@ -27,7 +27,7 @@ public class CustomItemPulsatingTotem extends RequesterCustomItem implements Blo
 
 	@Override
 	public int getRedstonePrice() {
-		return 52;
+		return 48;
 	}
 
 	@Override

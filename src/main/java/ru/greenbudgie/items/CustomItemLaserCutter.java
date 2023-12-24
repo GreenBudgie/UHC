@@ -100,7 +100,7 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
 
 	@Override
 	public int getRedstonePrice() {
-		return 128;
+		return 80;
 	}
 
 	@Override

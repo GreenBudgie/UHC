@@ -26,7 +26,7 @@ public class CustomItemKnockoutTotem extends RequesterCustomItem implements Bloc
 
 	@Override
 	public int getRedstonePrice() {
-		return 56;
+		return 48;
 	}
 
 	@Override
