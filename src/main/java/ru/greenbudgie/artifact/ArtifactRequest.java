@@ -26,7 +26,7 @@ public class ArtifactRequest extends Artifact {
 
 	@Override
 	public int getStartingPrice() {
-		return 8;
+		return 6;
 	}
 
 	@Override

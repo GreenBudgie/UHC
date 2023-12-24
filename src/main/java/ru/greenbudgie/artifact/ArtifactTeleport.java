@@ -22,12 +22,12 @@ public class ArtifactTeleport extends Artifact {
 
 	@Override
 	public int getStartingPrice() {
-		return 14;
+		return 12;
 	}
 
 	@Override
 	public float getPriceIncreaseAmount() {
-		return 0;
+		return 1;
 	}
 
 	@Override

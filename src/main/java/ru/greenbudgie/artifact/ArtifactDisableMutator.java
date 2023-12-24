@@ -12,8 +12,7 @@ import ru.greenbudgie.util.MathUtils;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static org.bukkit.ChatColor.GRAY;
-import static org.bukkit.ChatColor.LIGHT_PURPLE;
+import static org.bukkit.ChatColor.*;
 
 public class ArtifactDisableMutator extends Artifact {
 
@@ -41,18 +40,18 @@ public class ArtifactDisableMutator extends Artifact {
 	public boolean onUse(@Nullable Player player) {
 		if(!GameType.getType().allowsMutators()) return false;
 		List<Mutator> mutators = MutatorManager.getMutatorsForDeactivation();
-		if(mutators.size() > 0) {
-			Mutator mutator = MathUtils.choose(mutators);
-			for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
-				String message = padSymbols(GRAY + "Был деактивирован мутатор " + LIGHT_PURPLE + mutator.getName());
-				currentPlayer.sendMessage(message);
-				currentPlayer.playSound(currentPlayer.getLocation(), Sound.ITEM_TOTEM_USE, 0.8F, 1.2F);
-			}
-			mutator.deactivate();
-			return true;
-		}
-		return false;
-	}
+        if (mutators.isEmpty()) {
+            return false;
+        }
+        Mutator mutator = MathUtils.choose(mutators);
+        for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+            String message = padSymbols(GRAY + "Был деактивирован мутатор " + LIGHT_PURPLE + mutator.getName());
+            currentPlayer.sendMessage(message);
+            currentPlayer.playSound(currentPlayer.getLocation(), Sound.ITEM_TOTEM_USE, 0.8F, 1.2F);
+        }
+        mutator.deactivate();
+        return true;
+    }
 
 	@Override
 	public Material getType() {

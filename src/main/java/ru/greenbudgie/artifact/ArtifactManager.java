@@ -53,13 +53,13 @@ public class ArtifactManager implements Listener {
 
 	public static void init() {
 		putArtifact(timeLeap, 11);
-		putArtifact(drop, 12);
-		putArtifact(request, 13);
-		putArtifact(hunger, 14);
-		putArtifact(mutator, 15);
+		putArtifact(request, 12);
+		putArtifact(drop, 13);
+		putArtifact(randomEffect, 14);
+		putArtifact(hunger, 15);
 
-		putArtifact(disableMutator, 20);
-		putArtifact(randomEffect, 21);
+		putArtifact(mutator, 20);
+		putArtifact(disableMutator, 21);
 		putArtifact(teleport, 22);
 		putArtifact(health, 23);
 		putArtifact(damage, 24);

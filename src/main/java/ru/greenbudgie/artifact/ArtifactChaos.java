@@ -49,7 +49,7 @@ public class ArtifactChaos extends Artifact {
 		boolean canAddMutator = false;
 		boolean canRemoveMutator = false;
 		if(MutatorManager.activeMutators.size() < 6 && GameType.getType().allowsMutators()) canAddMutator = true;
-		if(MutatorManager.getMutatorsForDeactivation().size() > 0 && GameType.getType().allowsMutators()) canRemoveMutator = true;
+		if(!MutatorManager.getMutatorsForDeactivation().isEmpty() && GameType.getType().allowsMutators()) canRemoveMutator = true;
 		if(canAddMutator && canRemoveMutator) {
 			toAdd.add(MathUtils.choose(ArtifactManager.mutator, ArtifactManager.disableMutator));
 		} else {

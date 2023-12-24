@@ -72,7 +72,7 @@ public class ArtifactRandomEffect extends Artifact {
 
 	@Override
 	public int getStartingPrice() {
-		return 14;
+		return 8;
 	}
 
 	@Override

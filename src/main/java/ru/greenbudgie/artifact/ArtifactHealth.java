@@ -31,7 +31,7 @@ public class ArtifactHealth extends Artifact {
 
 	@Override
 	public float getPriceIncreaseAmount() {
-		return 1.5F;
+		return 2F;
 	}
 
 	@Override
