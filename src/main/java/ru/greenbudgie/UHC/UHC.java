@@ -3,7 +3,6 @@ package ru.greenbudgie.UHC;
 import com.google.common.collect.Lists;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -84,7 +83,6 @@ public class UHC implements Listener {
 	private static Mutator prevMutator = null;
 	private static BossBar voteBar = Bukkit.createBossBar("", BarColor.RED, BarStyle.SOLID);
 	//V 3.0
-	private static Region platformRegion = null;
 	private static int scoreboardCurrentTeamIndex;
 	private static int scoreboardTimeUntilNextTeam;
 	private static final int scoreboardMaxTimeUntilNextTeam = 3;
@@ -407,8 +405,7 @@ public class UHC implements Listener {
 			mapSize = MapSize.DEFAULT;
 			gameDuration = GameDuration.DEFAULT;
 			isRatingGame = true;
-			clearPlatformRegion();
-			platformRegion = null;
+			GameStartPlatformManager.removeAllPlatforms();
 			if(!WorldManager.keepMap && !state.isPreGame()) WorldManager.removeMap();
 			state = GameState.STOPPED;
 			SignManager.updateTextOnSigns();
@@ -464,37 +461,8 @@ public class UHC implements Listener {
 				player.getInventory().setItem(5, InventoryHelper.generateItemWithName(Material.RED_DYE,
 						RED + "Карта " + DARK_RED + BOLD + "Говно"));
 			}
-			double radius = PlayerManager.getPlayers().size();
-			double radsPerPlayer = 2 * Math.PI / PlayerManager.getPlayers().size();
-			int spawnHeight = WorldManager.spawnLocation.getWorld().getHighestBlockYAt(WorldManager.spawnLocation) + 16;
-			List<Location> spawnLocations = new ArrayList<>();
-			for(int i = 0; i < PlayerManager.getPlayers().size(); i++) {
-				int x = (int) Math.round(WorldManager.spawnLocation.getX() + Math.cos(radsPerPlayer * i) * radius);
-				int z = (int) Math.round(WorldManager.spawnLocation.getZ() + Math.sin(radsPerPlayer * i) * radius);
-				Location l = new Location(WorldManager.spawnLocation.getWorld(), x, 1, z);
-				spawnLocations.add(l);
-				int topY = WorldManager.spawnLocation.getWorld().getHighestBlockYAt(l) + 4;
-				if(topY >= spawnHeight) spawnHeight = topY;
-			}
-			for(Location l : spawnLocations) {
-				l.setY(spawnHeight);
-			}
 
-			Location platformCenter = WorldManager.spawnLocation.clone();
-			platformCenter.setY(spawnHeight);
-			createPlatform(platformCenter, radius + 2);
-
-			for(int i = 0; i < PlayerManager.getPlayers().size(); i++) {
-				Player p = PlayerManager.getPlayers().get(i).getPlayer();
-				Location l = spawnLocations.get(i);
-				Location l2 = WorldManager.spawnLocation.clone();
-				double xLength = l2.getX() - l.getX();
-				double zLength = l2.getZ() - l.getZ();
-				double yaw = -Math.atan2(xLength, zLength);
-				Location tpLoc = l.clone().add(0.5, 1, 0.5);
-				tpLoc.setYaw((float) Math.toDegrees(yaw));
-				p.teleport(tpLoc);
-			}
+			GameStartPlatformManager.createOverworldPlatformAndTeleportPlayers();
 
 			scoreboardCurrentTeamIndex = 0;
 			scoreboardTimeUntilNextTeam = scoreboardMaxTimeUntilNextTeam;
@@ -519,60 +487,6 @@ public class UHC implements Listener {
 			Bukkit.getPluginManager().callEvent(new AfterGameInitializeEvent());
 		} else {
 			Bukkit.broadcastMessage(RED + "Игра уже идет");
-		}
-	}
-
-	public static void createPlatform(Location center, double radius) {
-		radius += 0.5;
-
-		platformRegion = new Region(center.clone().add(-radius, 0, -radius), center.clone().add(radius, 4, radius));
-		clearPlatformRegion();
-
-		double invRadius = 1 / radius;
-		int ceilRadius = (int) Math.ceil(radius);
-
-		double nextXn = 0;
-		for(int x = 0; x <= ceilRadius; ++x) {
-			final double xn = nextXn;
-			nextXn = (x + 1) * invRadius;
-			double nextZn = 0;
-			for(int z = 0; z <= ceilRadius; ++z) {
-				final double zn = nextZn;
-				nextZn = (z + 1) * invRadius;
-				double distanceSq = (xn * xn) + (zn * zn);
-				if(distanceSq > 1) {
-					continue;
-				}
-				double xBorder = (nextXn * nextXn) + (zn * zn);
-				double zBorder = (xn * xn) + (nextZn * nextZn);
-				int y = 0;
-				Material block = Material.GLASS;
-				if(xBorder > 1 || zBorder > 1 ||
-						(radius > 6 && (xBorder < 0.2 || zBorder < 0.2))) {
-					y = 2;
-					block = Material.BARRIER;
-				}
-
-				center.clone().add(x, y, z).getBlock().setType(block);
-				center.clone().add(x, y, -z).getBlock().setType(block);
-				center.clone().add(-x, y, z).getBlock().setType(block);
-				center.clone().add(-x, y, -z).getBlock().setType(block);
-
-				if(y == 0) {
-					center.clone().add(x, 4, z).getBlock().setType(Material.BARRIER);
-					center.clone().add(x, 4, -z).getBlock().setType(Material.BARRIER);
-					center.clone().add(-x, 4, z).getBlock().setType(Material.BARRIER);
-					center.clone().add(-x, 4, -z).getBlock().setType(Material.BARRIER);
-				}
-			}
-		}
-	}
-
-	private static void clearPlatformRegion() {
-		if(platformRegion != null) {
-			for(Block block : platformRegion.getBlocksInside()) {
-				block.setType(Material.AIR);
-			}
 		}
 	}
 
@@ -1191,7 +1105,7 @@ public class UHC implements Listener {
 		Rating.getCurrentGameSummary().setStartMutators(Lists.newArrayList(MutatorManager.activeMutators));
 		Rating.getCurrentGameSummary().makeWorthSaving();
 
-		clearPlatformRegion();
+		GameStartPlatformManager.removeAllPlatforms();
 		for(Player player : PlayerManager.getAliveOnlinePlayers()) {
 			if(MutatorManager.hungerGames.isActive()) {
 				player.sendTitle(RED + "" + BOLD + "Игра " + GOLD + BOLD + "началась!",

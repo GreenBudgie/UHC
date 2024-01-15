@@ -67,6 +67,7 @@ public class MutatorManager {
 	public static MutatorImmunity immunity = new MutatorImmunity();
 	public static MutatorHyperExplosions hyperExplosions = new MutatorHyperExplosions();
 	public static MutatorLowMeleeDamage lowMeleeDamage = new MutatorLowMeleeDamage();
+	public static MutatorNetherGames netherGames = new MutatorNetherGames();
 
 	public static void init() {
 		MutatorPreferenceManager.init();

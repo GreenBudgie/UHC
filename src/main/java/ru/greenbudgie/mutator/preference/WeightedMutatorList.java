@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class WeightedMutatorList extends WeightedList<Mutator, WeightedMutator> {
 
-    private List<Mutator> initialWeightedMutators;
+    private final List<Mutator> initialWeightedMutators;
 
     public WeightedMutatorList(List<Mutator> weightedMutators) {
         initialWeightedMutators = weightedMutators.stream().toList();
