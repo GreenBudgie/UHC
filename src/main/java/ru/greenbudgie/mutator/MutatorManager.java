@@ -1,25 +1,17 @@
 package ru.greenbudgie.mutator;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import ru.greenbudgie.UHC.ArenaManager;
-import ru.greenbudgie.UHC.PlayerOptionHolder;
 import ru.greenbudgie.configuration.GameType;
-import ru.greenbudgie.lobby.Lobby;
-import ru.greenbudgie.main.UHCPlugin;
+import ru.greenbudgie.mutator.preference.MutatorPreferenceManager;
 import ru.greenbudgie.util.MathUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
+@SuppressWarnings("unused")
 public class MutatorManager {
 
-	public static Map<String, Set<Mutator>> preferredMutators = new HashMap<>();
 	public static List<Mutator> activeMutators = new ArrayList<>();
 	public static List<Mutator> mutators = new ArrayList<>();
 	public static MutatorApples apples = new MutatorApples();
@@ -77,27 +69,7 @@ public class MutatorManager {
 	public static MutatorLowMeleeDamage lowMeleeDamage = new MutatorLowMeleeDamage();
 
 	public static void init() {
-		Bukkit.getPluginManager().registerEvents(new Listener() {
-
-			@EventHandler
-			public void setPreferencesOnJoin(PlayerJoinEvent event) {
-				String playerName = event.getPlayer().getName();
-				restorePreferences(playerName);
-			}
-
-		}, UHCPlugin.instance);
-		for(Player player : Lobby.getPlayersInLobbyAndArenas()) {
-			restorePreferences(player.getName());
-		}
-	}
-
-	private static void restorePreferences(String playerName) {
-		if(!preferredMutators.containsKey(playerName)) {
-			Set<Mutator> savedMutators = PlayerOptionHolder.getMutatorPreferences(playerName);
-			if(!savedMutators.isEmpty()) {
-				preferredMutators.put(playerName, savedMutators);
-			}
-		}
+		MutatorPreferenceManager.init();
 	}
 
 	public static void updateMutators() {
@@ -111,55 +83,6 @@ public class MutatorManager {
 			}
 			mutator.update();
 		}
-	}
-
-	public static boolean hasPreferences(Mutator mutator) {
-		return getAvailablePreferences().values().stream().anyMatch(mutators -> mutators.contains(mutator));
-	}
-
-	public static int getPreferencePercent(Mutator mutator) {
-		List<Mutator> otherMutators = getAvailablePreferredMutatorsWeighted();
-		otherMutators.removeIf(m -> mutator == m);
-		double otherSize = otherMutators.size();
-		return (int) ((1 - (otherSize / getAvailablePreferredMutatorsWeighted().size())) * 100);
-	}
-
-	/**
-	 * Gets mutator preferences for online players only
-	 */
-	public static Map<String, Set<Mutator>> getAvailablePreferences() {
-		Map<String, Set<Mutator>> preferred = Maps.newHashMap(preferredMutators);
-		Set<String> toRemove = new HashSet<>();
-		for(String name : preferred.keySet()) {
-			if(Bukkit.getOnlinePlayers().stream().noneMatch(player -> player.getName().equals(name))) {
-				toRemove.add(name);
-			}
-		}
-		toRemove.forEach(preferred::remove);
-		return preferred;
-	}
-
-	public static Set<String> getPlayersWhoPrefersMutator(Mutator mutator) {
-		Map<String, Set<Mutator>> avPreferences = getAvailablePreferences();
-		Set<String> names = new HashSet<>();
-		for(String name : avPreferences.keySet()) {
-			if(mutator.isPreferredBy(name)) names.add(name);
-		}
-		return names;
-	}
-
-	public static List<Mutator> getAvailablePreferredMutatorsWeighted() {
-		Map<String, Set<Mutator>> avPreferences = getAvailablePreferences();
-		if(avPreferences.isEmpty()) return new ArrayList<>();
-		List<Mutator> availableMutators = getNonConflictingInactiveMutators();
-		if(availableMutators.isEmpty()) throw new IllegalArgumentException("Cannot choose a mutator from an empty list");
-		List<Mutator> preferredWeighted = new ArrayList<>();
-		for(String name : avPreferences.keySet()) {
-			Set<Mutator> mutators = Sets.newHashSet(avPreferences.get(name));
-			mutators.removeIf(mutator -> !availableMutators.contains(mutator));
-			preferredWeighted.addAll(mutators);
-		}
-		return preferredWeighted;
 	}
 
 	public static boolean doesMutatorConflictsWithActive(Mutator mutator) {
@@ -199,32 +122,29 @@ public class MutatorManager {
 	}
 
 	public static Mutator byClassName(String name) {
-		return mutators.stream().filter(mutator -> mutator.getClass().getSimpleName().endsWith(name)).findFirst().orElse(null);
+		return mutators.stream()
+				.filter(mutator -> mutator.getClass().getSimpleName().endsWith(name))
+				.findFirst()
+				.orElse(null);
 	}
 
 	public static Mutator activateRandomMutator(boolean applyHiding, boolean applyPreferences) {
 		Mutator mutator;
-		String preference = null;
-		if(applyPreferences && MathUtils.chance(40)) {
-			List<Mutator> preferred = getAvailablePreferredMutatorsWeighted();
-			if(!preferred.isEmpty()) {
-				mutator = MathUtils.choose(preferred);
-				preference = MathUtils.choose(getPlayersWhoPrefersMutator(mutator));
-			} else {
-				mutator = getRandomAvailableMutator();
-			}
+		String preferencePlayerName = null;
+		if (applyPreferences) {
+			mutator = MutatorPreferenceManager.getRandomAvailableMutatorWeighted();
+			preferencePlayerName = MutatorPreferenceManager.getRandomOnlinePlayerNameWithPreferenceOf(mutator);
 		} else {
 			mutator = getRandomAvailableMutator();
 		}
-		mutator.activate(applyHiding, preference);
+		mutator.activate(applyHiding, preferencePlayerName);
 		return mutator;
 	}
 
-	public static Mutator activateRandomArtifactMutator() {
+	public static void activateRandomArtifactMutator() {
 		List<Mutator> artifactMutators = getNonConflictingInactiveMutators().stream().filter(Mutator::canBeAddedFromArtifact).toList();
 		Mutator mutator = MathUtils.choose(artifactMutators);
 		mutator.activate(false, null);
-		return mutator;
 	}
 
 	public static void deactivateMutators() {
@@ -235,35 +155,13 @@ public class MutatorManager {
 	}
 
 	public static String getMessageFromCurrentMutators() {
-		ThreatStatus average = ThreatStatus.getAverageStatus(activeMutators.stream().map(Mutator::getThreatStatus).toArray(ThreatStatus[]::new));
+		ThreatStatus average = ThreatStatus.getAverageStatus(
+				activeMutators.stream().map(Mutator::getThreatStatus).toArray(ThreatStatus[]::new)
+		);
 		if(average != null) {
 			return average.getRandomMessage();
 		}
 		return null;
-	}
-
-	public static void setPreference(String name, Mutator mutator, boolean preferred) {
-		Set<Mutator> pref = preferredMutators.getOrDefault(name, new HashSet<>());
-		if(preferred) {
-			pref.add(mutator);
-		} else {
-			pref.remove(mutator);
-		}
-		if(pref.isEmpty()) {
-			preferredMutators.remove(name);
-			PlayerOptionHolder.saveMutatorPreferences(name, null);
-		} else {
-			preferredMutators.put(name, pref);
-			PlayerOptionHolder.saveMutatorPreferences(name, pref);
-		}
-
-	}
-
-	public static void clearPreferences(String name) {
-		Set<Mutator> preferredSet = Sets.newHashSet(preferredMutators.getOrDefault(name, new HashSet<>()));
-		for(Mutator preferred : preferredSet) {
-			setPreference(name, preferred, false);
-		}
 	}
 
 	public static Mutator getMutatorByConfigName(String configName) {

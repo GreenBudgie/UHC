@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.main.UHCPlugin;
+import ru.greenbudgie.mutator.preference.MutatorPreferenceManager;
 import ru.greenbudgie.util.InventoryHelper;
 import ru.greenbudgie.util.NumericalCases;
 import ru.greenbudgie.util.item.ItemUtils;
@@ -43,7 +44,7 @@ public class InventoryBuilderMutator {
 	private static final int RESET_SLOT = INV_SIZE - 9;
 	private static final int RESET_PREFERRED_SLOT = INV_SIZE - 8;
 
-	private Player player;
+	private final Player player;
 	private Sort sort = Sort.DEFAULT;
 	private Filter filter = Filter.NONE;
 	private boolean op = false;
@@ -106,10 +107,10 @@ public class InventoryBuilderMutator {
 	private void filter(List<Mutator> mutators) {
 		if(filter == Filter.NONE) return;
 		if(filter == Filter.PREFERRED_SELF) {
-			mutators.removeIf(mutator -> !mutator.isPreferredBy(player.getName()));
+			mutators.removeIf(mutator -> !MutatorPreferenceManager.hasPreference(player, mutator));
 		}
 		if(filter == Filter.PREFERRED_ALL) {
-			mutators.removeIf(mutator -> !MutatorManager.hasPreferences(mutator));
+			mutators.removeIf(mutator -> !MutatorPreferenceManager.isPreferredBySomeone(mutator));
 		}
 		if(filter.boundThreat != null) {
 			mutators.removeIf(mutator -> mutator.getThreatStatus() != filter.boundThreat);
@@ -127,7 +128,7 @@ public class InventoryBuilderMutator {
 			mutators.sort(comparator);
 		}
 		if(sort == Sort.PERCENT) {
-			Comparator<Mutator> comparator = Comparator.comparingInt(MutatorManager::getPreferencePercent).reversed();
+			Comparator<Mutator> comparator = Comparator.comparingDouble(MutatorPreferenceManager::getChance).reversed();
 			mutators.sort(comparator);
 		}
 	}
@@ -186,26 +187,29 @@ public class InventoryBuilderMutator {
 				ItemUtils.addLore(item, false, GREEN + "" + BOLD + "<АКТИВИРОВАТЬ>");
 			}
 		} else {
-			if(mutator.isPreferredBy(player.getName())) {
+			if(MutatorPreferenceManager.hasPreference(player, mutator)) {
 				ItemUtils.addGlow(item);
 				ItemUtils.addLore(item, false, DARK_PURPLE + "" + BOLD + "Предпочитаемый");
 			} else {
 				ItemUtils.addLore(item, false, DARK_AQUA + "<Сделать предпочитаемым>");
 			}
-			int preferenceCount = MutatorManager.getPlayersWhoPrefersMutator(mutator).size();
+			int preferenceCount = MutatorPreferenceManager.getOnlinePlayersWhoPreferMutator(mutator).size();
+			String chancePercent = MutatorPreferenceManager.getWeightedMutator(mutator)
+					.getFormattedChancePercent();
 			if(preferenceCount == 0) {
-				ItemUtils.addLore(item, false, GOLD + "Нет предпочтений");
+				ItemUtils.addLore(item, false,
+						GOLD + "Нет предпочтений" + GRAY + ", " +
+								GREEN + "шанс " + DARK_GREEN + BOLD + chancePercent
+				);
 			} else {
-				String prefer = new NumericalCases("Предпочитает ", "Предпочитают ", "Предпочитают ").byNumber(preferenceCount);
-				String player = new NumericalCases(" игрок", " игрока", " игроков").byNumber(preferenceCount);
-				List<Mutator> otherMutators = MutatorManager.getAvailablePreferredMutatorsWeighted();
-				otherMutators.removeIf(m -> mutator == m);
-				double otherSize = otherMutators.size();
-				int percent = (int) ((1 - (otherSize / MutatorManager.getAvailablePreferredMutatorsWeighted().size())) * 100);
+				String prefer = new NumericalCases("Предпочитает ", "Предпочитают ", "Предпочитают ")
+						.byNumber(preferenceCount);
+				String player = new NumericalCases(" игрок", " игрока", " игроков")
+						.byNumber(preferenceCount);
 				ItemUtils.addLore(item, false,
 						GOLD + prefer + AQUA + BOLD + preferenceCount + RESET +
 								GOLD + player + GRAY + ", " + GREEN + "шанс " + DARK_GREEN +
-								BOLD + percent + RESET + GRAY + "%");
+								BOLD + chancePercent);
 			}
 		}
 		if(mutator.conflictsWithClasses())
@@ -256,6 +260,9 @@ public class InventoryBuilderMutator {
 	public void handleClick(InventoryClickEvent event) {
 		int slot = event.getRawSlot();
 		ItemStack item = event.getCurrentItem();
+		if (item == null) {
+			return;
+		}
 		boolean clickedMutator = slot < MUTATOR_ROWS * 9;
 		if(clickedMutator) {
 			if(isOP()) {
@@ -279,56 +286,56 @@ public class InventoryBuilderMutator {
 						break;
 					}
 				}
-			} else {
-				for(Mutator mutator : MutatorManager.mutators) {
-					if(item.getType() == mutator.getItemToShow()) {
-						if(mutator.isPreferredBy(player.getName())) {
-							player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
-							MutatorManager.setPreference(player.getName(), mutator, false);
-							reopenAll();
-						} else {
-							if(MutatorManager.preferredMutators.getOrDefault(player.getName(), new HashSet<>()).size() >= 3) {
-								InventoryHelper.sendActionBarMessage(player, DARK_RED + "" + BOLD + "Нельзя выбрать более трех предпочитаемых мутаторов");
-								player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
-							} else {
-								player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 1F);
-								MutatorManager.setPreference(player.getName(), mutator, true);
-								reopenAll();
-							}
-						}
-						break;
-					}
-				}
+				return;
 			}
-		} else {
-			boolean reopen = true;
-			switch(slot) {
-				case RESET_SLOT -> {
-					sort = Sort.DEFAULT;
-					filter = Filter.NONE;
-					resetPage();
+			for(Mutator mutator : MutatorManager.mutators) {
+				if(item.getType() != mutator.getItemToShow()) {
+					continue;
 				}
-				case RESET_PREFERRED_SLOT -> MutatorManager.clearPreferences(player.getName());
-				case SORT_SLOT -> {
-					int sortIndex = sort.ordinal() + 1;
-					if(sortIndex >= Sort.values().length) sortIndex = 0;
-					sort = Sort.values()[sortIndex];
-					resetPage();
+				if (MutatorPreferenceManager.removePreference(player, mutator)) {
+					player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
+					reopenAll();
+					break;
 				}
-				case FILTER_SLOT -> {
-					int filterIndex = filter.ordinal() + 1;
-					if(filterIndex >= Filter.values().length) filterIndex = 0;
-					filter = Filter.values()[filterIndex];
-					resetPage();
+				if (MutatorPreferenceManager.addPreference(player, mutator)) {
+					player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 1F);
+					reopenAll();
+					break;
 				}
-				case PAGE_PREV_SLOT -> nextPage();
-				case PAGE_NEXT_SLOT -> prevPage();
-				default -> reopen = false;
+				InventoryHelper.sendActionBarMessage(player, DARK_RED + "" + BOLD + "Нельзя выбрать более пяти предпочитаемых мутаторов");
+				player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5F, 1F);
+				break;
 			}
-			if(reopen) {
-				openInventory();
-			}
+			return;
 		}
+		boolean reopen = true;
+		switch(slot) {
+			case RESET_SLOT -> {
+				sort = Sort.DEFAULT;
+				filter = Filter.NONE;
+				resetPage();
+			}
+			case RESET_PREFERRED_SLOT -> MutatorPreferenceManager.clearPreferences(player);
+			case SORT_SLOT -> {
+				int sortIndex = sort.ordinal() + 1;
+				if(sortIndex >= Sort.values().length) sortIndex = 0;
+				sort = Sort.values()[sortIndex];
+				resetPage();
+			}
+			case FILTER_SLOT -> {
+				int filterIndex = filter.ordinal() + 1;
+				if(filterIndex >= Filter.values().length) filterIndex = 0;
+				filter = Filter.values()[filterIndex];
+				resetPage();
+			}
+			case PAGE_PREV_SLOT -> nextPage();
+			case PAGE_NEXT_SLOT -> prevPage();
+			default -> reopen = false;
+		}
+		if(reopen) {
+			openInventory();
+		}
+
 	}
 
 	public enum Sort {
@@ -336,8 +343,8 @@ public class InventoryBuilderMutator {
 		THREAT("По сложности", Material.CREEPER_HEAD),
 		PERCENT("По проценту предпочтений", Material.PLAYER_HEAD);
 
-		private String description;
-		private Material itemToShow;
+		private final String description;
+		private final Material itemToShow;
 
 		Sort(String description, Material itemToShow) {
 			this.description = description;
@@ -355,9 +362,9 @@ public class InventoryBuilderMutator {
 		THREAT_DANGEROUS("Опасные", Material.RED_DYE, ThreatStatus.DANGEROUS),
 		THREAT_CRITICAL("Дикие", Material.WEEPING_VINES, ThreatStatus.CRITICAL);
 
-		private String description;
-		private ThreatStatus boundThreat;
-		private Material itemToShow;
+		private final String description;
+		private final ThreatStatus boundThreat;
+		private final Material itemToShow;
 
 		Filter(String description, Material itemToShow) {
 			this(description, itemToShow, null);

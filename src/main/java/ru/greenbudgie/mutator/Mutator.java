@@ -9,7 +9,7 @@ import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.MathUtils;
 
-import java.util.HashSet;
+import javax.annotation.Nullable;
 
 import static org.bukkit.ChatColor.*;
 
@@ -28,10 +28,6 @@ public abstract class Mutator {
 		if(canBeHidden() && MathUtils.chance(15)) {
 			isHidden = true;
 		}
-	}
-
-	public boolean isPreferredBy(String name) {
-		return MutatorManager.preferredMutators.getOrDefault(name, new HashSet<>()).contains(this);
 	}
 
 	public String getConfigName() {
@@ -71,13 +67,13 @@ public abstract class Mutator {
 		return true;
 	}
 
-	public final void activate(boolean applyHiding, String preference) {
+	public final void activate(boolean applyHiding, @Nullable String preferenceInfo) {
 		isActive = true;
 		MutatorManager.activeMutators.add(this);
 		if(applyHiding) hide();
 		for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
-			if(!isHidden && preference != null) {
-				p.sendMessage(DARK_PURPLE + "" + BOLD + "Предпочтение " + GOLD + preference + DARK_GRAY + ":");
+			if(!isHidden && preferenceInfo != null) {
+				p.sendMessage(DARK_PURPLE + "" + BOLD + "Предпочтение " + GOLD + preferenceInfo + DARK_GRAY + ":");
 			}
 			p.sendMessage(getInfo());
 		}

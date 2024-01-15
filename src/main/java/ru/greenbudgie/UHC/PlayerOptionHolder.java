@@ -49,10 +49,11 @@ public class PlayerOptionHolder {
         return preferredMutators;
     }
 
-    public static void saveMutatorPreferences(String playerName, Set<Mutator> preferredMutators) {
+    public static void saveMutatorPreferences(String playerName, @Nullable Set<Mutator> preferredMutators) {
         List<String> mutatorConfigNames = null;
-        if(preferredMutators != null)
+        if(preferredMutators != null) {
             mutatorConfigNames = preferredMutators.stream().map(Mutator::getConfigName).toList();
+        }
         savedPlayerOptions.set(playerName + ".mutators", mutatorConfigNames);
     }
 

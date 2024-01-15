@@ -20,6 +20,11 @@ public abstract class WeightedElement<T> {
         this.weight = weight;
     }
 
+    @Nonnull
+    public T getElement() {
+        return element;
+    }
+
     public int getWeight() {
         return weight;
     }

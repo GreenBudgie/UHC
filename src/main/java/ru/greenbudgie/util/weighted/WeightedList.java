@@ -3,7 +3,6 @@ package ru.greenbudgie.util.weighted;
 import ru.greenbudgie.util.MathUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -13,13 +12,21 @@ import java.util.List;
  */
 public abstract class WeightedList<T, E extends WeightedElement<T>> {
 
-    protected final List<E> elements;
-    protected final List<E> weightedElements;
+    protected List<E> elements;
+    protected List<E> weightedElements;
+
+    public WeightedList(List<E> elements) {
+        initialize(elements);
+    }
 
     @SafeVarargs
     public WeightedList(E... elements) {
+        initialize(List.of(elements));
+    }
+
+    protected void initialize(List<E> elements) {
         Comparator<E> weightComparator = Comparator.comparingInt(E::getWeight).reversed();
-        this.elements = Arrays.stream(elements).sorted(weightComparator).toList();
+        this.elements = elements.stream().sorted(weightComparator).toList();
         List<E> weightedList = new ArrayList<>();
         for (E element : elements) {
             for (int i = 0; i < element.getWeight(); i++) {
