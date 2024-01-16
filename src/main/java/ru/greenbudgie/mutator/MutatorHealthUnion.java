@@ -33,7 +33,10 @@ public class MutatorHealthUnion extends Mutator implements Listener {
 
 	@Override
 	public String getDescription() {
-		return "Два тиммейта разделяют свое здоровье! Когда один получает урон, второму также наносится этот урон. Также работает и с эффектами регенерации. Это значит, что у союзников всегда одинаковое количество здоровья, и если один умрет - то заберет с собой и второго!";
+		return "Два тиммейта разделяют свое здоровье! Когда один получает урон, второму также наносится этот урон. " +
+				"Также работает и с эффектами регенерации. Это значит, что у союзников всегда одинаковое количество " +
+				"здоровья, и если один умрет - то заберет с собой и второго! Если игрок стартует без тиммейта, то на " +
+				"него этот эффект не распространяется.";
 	}
 
 	@Override
@@ -49,7 +52,7 @@ public class MutatorHealthUnion extends Mutator implements Listener {
 	@Override
 	public void onChoose() {
 		for (PlayerTeam team : PlayerManager.getAliveTeams()) {
-			if (!isTeamAffected(team)) {
+			if (shouldSkipTeamProcessing(team)) {
 				continue;
 			}
 			UHCPlayer player1 = team.getPlayer1();
@@ -74,7 +77,7 @@ public class MutatorHealthUnion extends Mutator implements Listener {
 	@Override
 	public void update() {
 		for (PlayerTeam team : PlayerManager.getAliveTeams()) {
-			if (!isTeamAffected(team)) {
+			if (shouldSkipTeamProcessing(team)) {
 				continue;
 			}
 			UHCPlayer player1 = team.getPlayer1();
@@ -113,7 +116,7 @@ public class MutatorHealthUnion extends Mutator implements Listener {
 
 	private void updatePreviousHealth() {
 		for (PlayerTeam team : PlayerManager.getAliveTeams()) {
-			if (!isTeamAffected(team)) {
+			if (shouldSkipTeamProcessing(team)) {
 				continue;
 			}
 			previousTeamHealth.put(team, team.getPlayer1().getRealOrOfflineHealth());
@@ -133,8 +136,8 @@ public class MutatorHealthUnion extends Mutator implements Listener {
 		}
 	}
 
-	private boolean isTeamAffected(PlayerTeam team) {
-		return team.isDual() && team.allPlayersAlive();
+	private boolean shouldSkipTeamProcessing(PlayerTeam team) {
+		return !team.isDual() || !team.allPlayersAlive();
 	}
 
 }
