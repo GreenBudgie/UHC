@@ -5,6 +5,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
@@ -19,6 +20,7 @@ import ru.greenbudgie.util.ParticleUtils;
 import ru.greenbudgie.util.TaskManager;
 import ru.greenbudgie.util.item.ItemUtils;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -529,6 +531,14 @@ public class UHCPlayer {
     }
 
     public ArmorStand getGhost() {
+        return ghost;
+    }
+
+    @Nullable
+    public LivingEntity getPlayerOrGhost() {
+        if (isOnline()) {
+            return player;
+        }
         return ghost;
     }
 

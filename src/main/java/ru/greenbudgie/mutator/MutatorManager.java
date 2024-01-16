@@ -71,6 +71,7 @@ public class MutatorManager {
 	public static MutatorNetherGames netherGames = new MutatorNetherGames();
 	public static MutatorHealthUnion healthUnion = new MutatorHealthUnion();
 	public static MutatorFriendsForever friendsForever = new MutatorFriendsForever();
+	public static MutatorTeammateSwap teammateSwap = new MutatorTeammateSwap();
 
 	public static void init() {
 		MutatorPreferenceManager.init();

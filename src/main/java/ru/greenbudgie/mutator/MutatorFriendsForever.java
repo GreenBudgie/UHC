@@ -3,7 +3,6 @@ package ru.greenbudgie.mutator;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.PlayerManager;
@@ -18,7 +17,7 @@ import java.util.stream.Stream;
 
 import static org.bukkit.ChatColor.*;
 
-public class MutatorFriendsForever extends Mutator implements Listener {
+public class MutatorFriendsForever extends Mutator {
 
 	@Override
 	public Material getItemToShow() {
@@ -47,6 +46,11 @@ public class MutatorFriendsForever extends Mutator implements Listener {
 	@Override
 	public boolean isDuoOnly() {
 		return true;
+	}
+
+	@Override
+	public boolean canBeHidden() {
+		return false;
 	}
 
 	@Override
