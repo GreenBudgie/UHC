@@ -37,6 +37,11 @@ public class MutatorDamageBound extends Mutator implements Listener {
 		return "Когда кто-то из игроков получает урон, все остальные игроки получают часть от этого урона";
 	}
 
+	@Override
+	public boolean conflictsWith(Mutator another) {
+		return another == MutatorManager.healthUnion;
+	}
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public void damage(EntityDamageEvent e) {
 		if(!e.isCancelled() && e.getCause() != EntityDamageEvent.DamageCause.CUSTOM && e.getEntity() instanceof Player damager) {

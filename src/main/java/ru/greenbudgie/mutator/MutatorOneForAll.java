@@ -73,7 +73,7 @@ public class MutatorOneForAll extends Mutator implements Listener {
 			return;
 		}
 		if(activatedMutator == null) {
-			List<Mutator> mutators = MutatorManager.getNonConflictingInactiveMutators().stream()
+			List<Mutator> mutators = MutatorManager.getMutatorsAvailableForActivation().stream()
 					.filter(mutator -> mutator.canBeAddedFromArtifact() && mutator.canBeDeactivatedByArtifact()).toList();
 			activatedMutator = MathUtils.choose(mutators);
 			activatedMutator.activate(false, null);

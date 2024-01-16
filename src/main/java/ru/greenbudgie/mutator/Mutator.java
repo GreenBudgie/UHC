@@ -67,6 +67,10 @@ public abstract class Mutator {
 		return true;
 	}
 
+	public boolean isDuoOnly() {
+		return false;
+	}
+
 	public final void activate(boolean applyHiding, @Nullable String preferenceInfo) {
 		isActive = true;
 		MutatorManager.activeMutators.add(this);

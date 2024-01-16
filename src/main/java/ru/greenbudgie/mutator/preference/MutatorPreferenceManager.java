@@ -38,7 +38,7 @@ public class MutatorPreferenceManager implements Listener {
      * Gets a weighted list of mutators that are currently inactive and do not conflict with active
      */
     public static WeightedMutatorList getAvailableWeightedMutators() {
-        List<Mutator> availableMutators = MutatorManager.getNonConflictingInactiveMutators();
+        List<Mutator> availableMutators = MutatorManager.getMutatorsAvailableForActivation();
         if(availableMutators.isEmpty()) {
             throw new IllegalArgumentException("Cannot choose a mutator from an empty list");
         }

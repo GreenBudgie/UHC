@@ -45,6 +45,8 @@ public class UHCPlayer {
     private double offlineHealth;
     private double maxOfflineHealth;
 
+    private boolean isDead = false;
+
     public UHCPlayer(Player player) {
         this.player = player;
         this.nickname = player.getName();
@@ -180,8 +182,12 @@ public class UHCPlayer {
     }
 
     public void kill() {
-        if(state == State.SPECTATING) return;
-        if(player != null) {
+        if (state == State.SPECTATING) return;
+        if (isDead) {
+            return;
+        }
+        isDead = true;
+        if (player != null) {
             deathInGame();
         } else {
             deathWhileLeft();

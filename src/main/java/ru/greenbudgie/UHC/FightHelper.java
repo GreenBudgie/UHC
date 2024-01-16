@@ -13,7 +13,7 @@ import java.util.List;
 
 public class FightHelper {
 
-	public static List<FightProcess> processes = new ArrayList<>();
+	private static final List<FightProcess> processes = new ArrayList<>();
 
 	/**
 	 * Gets the custom player's killer
@@ -130,10 +130,10 @@ public class FightHelper {
 
 	private static class FightProcess {
 
-		private Player victim;
-		private UHCPlayer attacker;
+		private final Player victim;
+		private final UHCPlayer attacker;
 		private int ticks;
-		private String killMessage = "";
+		private final String killMessage;
 
 		public FightProcess(Player victim, UHCPlayer attacker, int ticks) {
 			this(victim, attacker, ticks, "");

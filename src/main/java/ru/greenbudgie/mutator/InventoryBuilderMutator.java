@@ -212,6 +212,8 @@ public class InventoryBuilderMutator {
 								BOLD + chancePercent);
 			}
 		}
+		if(mutator.isDuoOnly())
+			ItemUtils.addLore(item, LIGHT_PURPLE + "" + BOLD + "Только для дуо режима");
 		if(mutator.conflictsWithClasses())
 			ItemUtils.addLore(item, DARK_RED + "" + BOLD + "Недоступен при игре с классами");
 		return item;
@@ -274,7 +276,7 @@ public class InventoryBuilderMutator {
 							mutator.deactivate();
 							player.closeInventory();
 						} else {
-							if(MutatorManager.doesMutatorConflictsWithActive(mutator)) {
+							if(MutatorManager.doesMutatorConflictWithActive(mutator)) {
 								player.sendMessage(RED + "Мутатор конфликтует с активными");
 								player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.5F, 0.8F);
 							} else {

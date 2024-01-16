@@ -47,6 +47,20 @@ public class PlayerTeam {
 	}
 
 	/**
+	 * Whether all players in this team are still alive, online or offline.
+	 * If team only has one player, then it will return true if this player is alive.
+	 */
+	public boolean allPlayersAlive() {
+		if (!player1.isAlive()) {
+			return false;
+		}
+		if (player2 == null) {
+			return true;
+		}
+		return player2.isAlive();
+	}
+
+	/**
 	 * Checks whether the current team has at least one member alive, even if he is not on server
 	 */
 	public boolean isAlive() {

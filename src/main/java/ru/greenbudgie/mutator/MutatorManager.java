@@ -2,6 +2,7 @@ package ru.greenbudgie.mutator;
 
 import com.google.common.collect.Lists;
 import ru.greenbudgie.UHC.ArenaManager;
+import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.configuration.GameType;
 import ru.greenbudgie.mutator.preference.MutatorPreferenceManager;
 import ru.greenbudgie.util.MathUtils;
@@ -68,6 +69,7 @@ public class MutatorManager {
 	public static MutatorHyperExplosions hyperExplosions = new MutatorHyperExplosions();
 	public static MutatorLowMeleeDamage lowMeleeDamage = new MutatorLowMeleeDamage();
 	public static MutatorNetherGames netherGames = new MutatorNetherGames();
+	public static MutatorHealthUnion healthUnion = new MutatorHealthUnion();
 
 	public static void init() {
 		MutatorPreferenceManager.init();
@@ -86,21 +88,28 @@ public class MutatorManager {
 		}
 	}
 
-	public static boolean doesMutatorConflictsWithActive(Mutator mutator) {
+	public static boolean doesMutatorConflictWithActive(Mutator mutator) {
 		return activeMutators.stream().anyMatch(mutator::conflictsWith);
 	}
 
-	public static List<Mutator> getNonConflictingInactiveMutators() {
+	public static List<Mutator> getMutatorsAvailableForActivation() {
 		List<Mutator> availableMutators = Lists.newArrayList(mutators);
 		availableMutators.removeAll(activeMutators);
-		availableMutators.removeIf(MutatorManager::doesMutatorConflictsWithActive);
-		if(GameType.getType().allowsClasses()) availableMutators.removeIf(Mutator::conflictsWithClasses);
-		if(!ArenaManager.getCurrentArena().isOpen()) availableMutators.removeIf(mutator -> !mutator.canWorkIfArenaIsClosed());
+		availableMutators.removeIf(MutatorManager::doesMutatorConflictWithActive);
+		if(GameType.getType().allowsClasses()) {
+			availableMutators.removeIf(Mutator::conflictsWithClasses);
+		}
+		if (!UHC.isDuo) {
+			availableMutators.removeIf(Mutator::isDuoOnly);
+		}
+		if(!ArenaManager.getCurrentArena().isOpen()) {
+			availableMutators.removeIf(mutator -> !mutator.canWorkIfArenaIsClosed());
+		}
 		return availableMutators;
 	}
 
 	public static Mutator getRandomAvailableMutator() {
-		List<Mutator> availableMutators = getNonConflictingInactiveMutators();
+		List<Mutator> availableMutators = getMutatorsAvailableForActivation();
 		if(!availableMutators.isEmpty()) {
 			return MathUtils.choose(availableMutators);
 		}
@@ -143,7 +152,7 @@ public class MutatorManager {
 	}
 
 	public static void activateRandomArtifactMutator() {
-		List<Mutator> artifactMutators = getNonConflictingInactiveMutators().stream().filter(Mutator::canBeAddedFromArtifact).toList();
+		List<Mutator> artifactMutators = getMutatorsAvailableForActivation().stream().filter(Mutator::canBeAddedFromArtifact).toList();
 		Mutator mutator = MathUtils.choose(artifactMutators);
 		mutator.activate(false, null);
 	}
