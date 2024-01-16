@@ -57,7 +57,6 @@ public class MutatorManager {
 	public static MutatorBinding binding = new MutatorBinding();
 	public static MutatorDamageFly damageFly = new MutatorDamageFly();
 	public static MutatorOverpoweredMobs overpoweredMobs = new MutatorOverpoweredMobs();
-	public static MutatorOmniscient omniscient = new MutatorOmniscient();
 	public static MutatorVegetarian vegetarian = new MutatorVegetarian();
 	public static MutatorPhantomArtifacts artifacts = new MutatorPhantomArtifacts();
 	public static MutatorRandomEffects randomEffects = new MutatorRandomEffects();

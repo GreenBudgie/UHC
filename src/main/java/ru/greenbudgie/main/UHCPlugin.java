@@ -48,7 +48,6 @@ public class UHCPlugin extends JavaPlugin {
 		registerCommand("timer", new CommandTimer());
 		registerCommand("mutator", new CommandMutator());
 		registerCommand("optmutator", new CommandOptMutator());
-		registerCommand("inv", new CommandInv());
 		registerCommand("class", new CommandClass());
 		registerCommand("teammate", new CommandTeammate());
 		registerCommand("worldtime", new CommandWorldTime());

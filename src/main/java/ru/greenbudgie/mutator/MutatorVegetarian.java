@@ -1,17 +1,21 @@
 package ru.greenbudgie.mutator;
 
+import org.bukkit.GameRule;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ru.greenbudgie.UHC.WorldManager;
 
 import java.util.Arrays;
 
 public class MutatorVegetarian extends Mutator implements Listener {
 
-	private Material[] meat = new Material[] {
+	private static final int INCREASED_TICK_SPEED = 30;
+
+	private static final Material[] meat = new Material[] {
 			Material.PORKCHOP,
 			Material.COOKED_PORKCHOP,
 			Material.COD,
@@ -43,12 +47,12 @@ public class MutatorVegetarian extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Вегетарианец";
+		return "Аграрное Общество Вегетарианцев";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Мясо есть нельзя: наложится эффект отравления";
+		return "Все посевы растут в 10 раз быстрее, но при этом мясо есть нельзя: наложится эффект отравления. Другими словами, установлен randomTickSpeed = 30.";
 	}
 
 	@Override
@@ -56,12 +60,23 @@ public class MutatorVegetarian extends Mutator implements Listener {
 		return another == MutatorManager.noHunger;
 	}
 
+	@Override
+	public void onChoose() {
+		WorldManager.getGameMap().setGameRule(GameRule.RANDOM_TICK_SPEED, INCREASED_TICK_SPEED);
+		WorldManager.getGameMapNether().setGameRule(GameRule.RANDOM_TICK_SPEED, INCREASED_TICK_SPEED);
+	}
+
+	@Override
+	public void onDeactivate() {
+		WorldManager.getGameMap().setGameRule(GameRule.RANDOM_TICK_SPEED, 3);
+		WorldManager.getGameMapNether().setGameRule(GameRule.RANDOM_TICK_SPEED, 3);
+	}
+
 	@EventHandler
 	public void poisonOnConsume(PlayerItemConsumeEvent e) {
 		Material type = e.getItem().getType();
 		if(Arrays.asList(meat).contains(type)) {
 			e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.POISON, 60, 2));
-			e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 20, 0));
 		}
 	}
 
