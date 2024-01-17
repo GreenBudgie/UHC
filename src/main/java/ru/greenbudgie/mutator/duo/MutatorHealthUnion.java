@@ -8,9 +8,9 @@ import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.PlayerTeam;
 import ru.greenbudgie.UHC.UHCPlayer;
 import ru.greenbudgie.event.UHCPlayerDeathEvent;
-import ru.greenbudgie.mutator.Mutator;
-import ru.greenbudgie.mutator.MutatorManager;
-import ru.greenbudgie.mutator.ThreatStatus;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
+import ru.greenbudgie.mutator.manager.MutatorManager;
 
 import java.util.HashMap;
 import java.util.Map;

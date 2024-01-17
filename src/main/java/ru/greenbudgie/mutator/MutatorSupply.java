@@ -7,6 +7,8 @@ import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.loot.LootTables;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.WorldManager;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.util.MathUtils;
 
 public class MutatorSupply extends Mutator {

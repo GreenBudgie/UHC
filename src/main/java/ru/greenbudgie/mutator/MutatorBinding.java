@@ -7,6 +7,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
+import ru.greenbudgie.mutator.manager.MutatorManager;
 import ru.greenbudgie.util.InventoryHelper;
 
 public class MutatorBinding extends Mutator implements Listener {

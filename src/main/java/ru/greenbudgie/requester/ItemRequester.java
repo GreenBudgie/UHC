@@ -20,7 +20,7 @@ import ru.greenbudgie.items.CustomItem;
 import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.items.RequesterCustomItem;
 import ru.greenbudgie.main.UHCPlugin;
-import ru.greenbudgie.mutator.MutatorManager;
+import ru.greenbudgie.mutator.manager.MutatorManager;
 import ru.greenbudgie.util.InventoryHelper;
 import ru.greenbudgie.util.NumericalCases;
 import ru.greenbudgie.util.ParticleUtils;

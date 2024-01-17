@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.Listener;
 import ru.greenbudgie.UHC.*;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.TaskManager;
 

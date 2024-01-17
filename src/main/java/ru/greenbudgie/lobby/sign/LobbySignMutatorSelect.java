@@ -4,10 +4,9 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
-import ru.greenbudgie.mutator.InventoryBuilderMutator;
+import ru.greenbudgie.mutator.manager.InventoryBuilderMutator;
 
-import static org.bukkit.ChatColor.DARK_PURPLE;
-import static org.bukkit.ChatColor.GRAY;
+import static org.bukkit.ChatColor.*;
 
 public class LobbySignMutatorSelect extends LobbySign {
 

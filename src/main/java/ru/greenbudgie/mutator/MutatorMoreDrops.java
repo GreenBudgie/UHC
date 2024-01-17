@@ -3,6 +3,8 @@ package ru.greenbudgie.mutator;
 import org.bukkit.Material;
 import ru.greenbudgie.drop.Drop;
 import ru.greenbudgie.drop.Drops;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 
 public class MutatorMoreDrops extends Mutator {
 

@@ -10,6 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.PlayerManager;
+import ru.greenbudgie.mutator.base.ItemBasedMutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.util.TaskManager;
 
 import java.util.List;

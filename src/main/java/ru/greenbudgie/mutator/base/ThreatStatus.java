@@ -1,4 +1,4 @@
-package ru.greenbudgie.mutator;
+package ru.greenbudgie.mutator.base;
 
 import ru.greenbudgie.util.MathUtils;
 

@@ -1,9 +1,12 @@
-package ru.greenbudgie.mutator;
+package ru.greenbudgie.mutator.manager;
 
 import com.google.common.collect.Lists;
 import ru.greenbudgie.UHC.ArenaManager;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.configuration.GameType;
+import ru.greenbudgie.mutator.*;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.mutator.duo.MutatorDependence;
 import ru.greenbudgie.mutator.duo.MutatorFriendsForever;
 import ru.greenbudgie.mutator.duo.MutatorHealthUnion;

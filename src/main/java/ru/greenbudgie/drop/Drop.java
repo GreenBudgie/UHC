@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.scoreboard.Scoreboard;
 import ru.greenbudgie.drop.marker.DropMarker;
-import ru.greenbudgie.mutator.MutatorManager;
+import ru.greenbudgie.mutator.manager.MutatorManager;
 import ru.greenbudgie.util.LocationFormatter;
 
 import javax.annotation.Nullable;

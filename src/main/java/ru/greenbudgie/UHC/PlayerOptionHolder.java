@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import ru.greenbudgie.classes.ClassManager;
 import ru.greenbudgie.classes.UHCClass;
 import ru.greenbudgie.main.UHCPlugin;
-import ru.greenbudgie.mutator.Mutator;
-import ru.greenbudgie.mutator.MutatorManager;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.manager.MutatorManager;
 
 import javax.annotation.Nullable;
 import java.io.File;

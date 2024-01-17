@@ -3,20 +3,12 @@ package ru.greenbudgie.mutator.duo;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.PlayerTeam;
 import ru.greenbudgie.UHC.UHCPlayer;
-import ru.greenbudgie.event.SpectatorJoinEvent;
-import ru.greenbudgie.event.SpectatorLeaveEvent;
-import ru.greenbudgie.event.UHCPlayerLeaveEvent;
-import ru.greenbudgie.event.UHCPlayerRejoinEvent;
-import ru.greenbudgie.mutator.Mutator;
-import ru.greenbudgie.mutator.ThreatStatus;
+import ru.greenbudgie.mutator.base.BossBarHolderMutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.ParticleUtils;
 import ru.greenbudgie.util.TaskManager;
@@ -26,16 +18,15 @@ import java.util.Objects;
 
 import static org.bukkit.ChatColor.*;
 
-public class MutatorTeammateSwap extends Mutator implements Listener {
+public class MutatorTeammateSwap extends BossBarHolderMutator {
 
 	// +3 seconds to make it off-sync with the game timer
 	private final static int MAX_TIMER = 303;
-	private final BossBar bar = Bukkit.createBossBar(
-			"",
-			BarColor.WHITE,
-			BarStyle.SOLID
-	);;
 	private int timer = MAX_TIMER;
+
+	public MutatorTeammateSwap() {
+		super(Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SOLID));
+	}
 
 	@Override
 	public Material getItemToShow() {
@@ -63,29 +54,10 @@ public class MutatorTeammateSwap extends Mutator implements Listener {
 	}
 
 	@Override
-	public boolean containsBossBar() {
-		return true;
-	}
-
-	@Override
-	public boolean canBeHidden() {
-		return false;
-	}
-
-	@Override
 	public void onChoose() {
-		for (Player player : PlayerManager.getInGamePlayersAndSpectators()) {
-			bar.addPlayer(player);
-		}
-		bar.setVisible(true);
+		super.onChoose();
 		timer = MAX_TIMER;
 		updateBar();
-	}
-
-	@Override
-	public void onDeactivate() {
-		bar.removeAll();
-		bar.setVisible(false);
 	}
 
 	@Override
@@ -125,28 +97,8 @@ public class MutatorTeammateSwap extends Mutator implements Listener {
 	}
 
 	private void updateBar() {
-		bar.setTitle(AQUA + "До смены тиммейтов" + GRAY + ": " + DARK_AQUA + BOLD + MathUtils.formatTime(timer));
+		bar.setTitle(AQUA + "До смены мест" + GRAY + ": " + DARK_AQUA + BOLD + MathUtils.formatTime(timer));
 		bar.setProgress(timer / (double) MAX_TIMER);
-	}
-
-	@EventHandler
-	public void playerLeave(UHCPlayerLeaveEvent event) {
-		bar.removePlayer(event.getUHCPlayer().getPlayer());
-	}
-
-	@EventHandler
-	public void playerRejoin(UHCPlayerRejoinEvent event) {
-		bar.addPlayer(event.getUHCPlayer().getPlayer());
-	}
-
-	@EventHandler
-	public void spectatorJoin(SpectatorJoinEvent event) {
-		bar.addPlayer(event.getPlayer());
-	}
-
-	@EventHandler
-	public void spectatorLeave(SpectatorLeaveEvent event) {
-		bar.removePlayer(event.getPlayer());
 	}
 
 }

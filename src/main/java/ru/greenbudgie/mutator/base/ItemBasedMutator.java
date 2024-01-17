@@ -1,4 +1,4 @@
-package ru.greenbudgie.mutator;
+package ru.greenbudgie.mutator.base;
 
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;

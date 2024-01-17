@@ -23,6 +23,8 @@ import ru.greenbudgie.event.SpectatorJoinEvent;
 import ru.greenbudgie.event.SpectatorLeaveEvent;
 import ru.greenbudgie.event.UHCPlayerLeaveEvent;
 import ru.greenbudgie.event.UHCPlayerRejoinEvent;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.TaskManager;
 

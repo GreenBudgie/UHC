@@ -2,6 +2,8 @@ package ru.greenbudgie.mutator;
 
 import org.bukkit.Material;
 import org.bukkit.potion.PotionEffectType;
+import ru.greenbudgie.mutator.base.EffectBasedMutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 
 public class MutatorHaste extends EffectBasedMutator {
 

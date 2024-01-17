@@ -5,6 +5,8 @@ import ru.greenbudgie.UHC.ArenaManager;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.artifact.Artifact;
 import ru.greenbudgie.artifact.ArtifactManager;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.TaskManager;
 

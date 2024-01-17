@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import ru.greenbudgie.mutator.MutatorManager;
+import ru.greenbudgie.mutator.manager.MutatorManager;
 import ru.greenbudgie.requester.ItemRequester;
 import ru.greenbudgie.util.InventoryHelper;
 import ru.greenbudgie.util.item.ItemInfo;

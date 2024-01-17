@@ -8,6 +8,8 @@ import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.PlayerManager;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.util.EffectProcess;
 
 public class MutatorMoreRegen extends Mutator implements Listener {

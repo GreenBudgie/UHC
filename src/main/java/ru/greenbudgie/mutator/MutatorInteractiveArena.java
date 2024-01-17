@@ -1,6 +1,8 @@
 package ru.greenbudgie.mutator;
 
 import org.bukkit.Material;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 
 public class MutatorInteractiveArena extends Mutator {
 

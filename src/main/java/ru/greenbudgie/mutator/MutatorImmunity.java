@@ -4,16 +4,12 @@ import com.google.common.collect.Lists;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import ru.greenbudgie.UHC.PlayerManager;
-import ru.greenbudgie.event.SpectatorJoinEvent;
-import ru.greenbudgie.event.SpectatorLeaveEvent;
-import ru.greenbudgie.event.UHCPlayerLeaveEvent;
-import ru.greenbudgie.event.UHCPlayerRejoinEvent;
+import ru.greenbudgie.mutator.base.BossBarHolderMutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.ParticleUtils;
 import ru.greenbudgie.util.TaskManager;
@@ -23,12 +19,15 @@ import java.util.List;
 
 import static org.bukkit.ChatColor.*;
 
-public class MutatorImmunity extends Mutator implements Listener {
+public class MutatorImmunity extends BossBarHolderMutator {
 
-	public BossBar bar;
 	private final int maxImmunityTime = 3 * 60;
 	private int immunityTime = maxImmunityTime;
 	private ImmunitySource immunity = null;
+
+	public MutatorImmunity() {
+		super(Bukkit.createBossBar("", BarColor.BLUE, BarStyle.SOLID));
+	}
 
 	@Override
 	public ThreatStatus getThreatStatus() {
@@ -51,18 +50,10 @@ public class MutatorImmunity extends Mutator implements Listener {
 	}
 
 	@Override
-	public boolean canBeHidden() {
-		return false;
-	}
-
-	@Override
 	public void onChoose() {
-		bar = Bukkit.createBossBar("", BarColor.BLUE, BarStyle.SOLID);
-		bar.setVisible(true);
-		for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
-			bar.addPlayer(player);
-		}
+		super.onChoose();
 		changeImmunityAndReset();
+		updateBar();
 	}
 
 	private void updateBar() {
@@ -79,8 +70,7 @@ public class MutatorImmunity extends Mutator implements Listener {
 
 	@Override
 	public void onDeactivate() {
-		bar.setVisible(false);
-		bar.removeAll();
+		super.onDeactivate();
 		immunity = null;
 	}
 
@@ -93,26 +83,6 @@ public class MutatorImmunity extends Mutator implements Listener {
 		List<ImmunitySource> availableImmunities = Lists.newArrayList(ImmunitySource.values());
 		if(immunity != null) availableImmunities.remove(immunity);
 		immunity = MathUtils.choose(availableImmunities);
-	}
-
-	@EventHandler
-	public void playerLeave(UHCPlayerLeaveEvent event) {
-		bar.removePlayer(event.getUHCPlayer().getPlayer());
-	}
-
-	@EventHandler
-	public void playerRejoin(UHCPlayerRejoinEvent event) {
-		bar.addPlayer(event.getUHCPlayer().getPlayer());
-	}
-
-	@EventHandler
-	public void spectatorJoin(SpectatorJoinEvent event) {
-		bar.addPlayer(event.getPlayer());
-	}
-
-	@EventHandler
-	public void spectatorLeave(SpectatorLeaveEvent event) {
-		bar.removePlayer(event.getPlayer());
 	}
 
 	@Override
@@ -131,14 +101,9 @@ public class MutatorImmunity extends Mutator implements Listener {
 		if(event.getEntity() instanceof Player player && PlayerManager.isPlaying(player) &&
 				immunity != null && immunity.doAbsorb(event.getCause())) {
 			ParticleUtils.createParticlesOutlineSphere(player.getEyeLocation(), 1.7, Particle.REDSTONE, Color.AQUA, 20);
-			player.getWorld().playSound(player.getLocation(), Sound.ITEM_HOE_TILL, 0.5F, 0.5F);
+			player.getWorld().playSound(player.getLocation(), Sound.ITEM_HOE_TILL, 0.3F, 0.5F);
 			event.setCancelled(true);
 		}
-	}
-
-	@Override
-	public boolean containsBossBar() {
-		return true;
 	}
 
 	private enum ImmunitySource {
@@ -151,8 +116,8 @@ public class MutatorImmunity extends Mutator implements Listener {
 		FALL("Падение", EntityDamageEvent.DamageCause.FALL),
 		EXPLOSION("Взрывы", EntityDamageEvent.DamageCause.BLOCK_EXPLOSION, EntityDamageEvent.DamageCause.ENTITY_EXPLOSION);
 
-		List<EntityDamageEvent.DamageCause> sources;
-		String description;
+		final List<EntityDamageEvent.DamageCause> sources;
+		final String description;
 
 		ImmunitySource(String description, EntityDamageEvent.DamageCause... sources) {
 			this.description = description;

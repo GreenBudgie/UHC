@@ -5,8 +5,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.configuration.GameType;
-import ru.greenbudgie.mutator.Mutator;
-import ru.greenbudgie.mutator.MutatorManager;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.manager.MutatorManager;
 import ru.greenbudgie.util.MathUtils;
 
 import javax.annotation.Nullable;

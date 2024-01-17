@@ -3,7 +3,7 @@ package ru.greenbudgie.mutator.duo;
 import org.bukkit.Material;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import ru.greenbudgie.mutator.ThreatStatus;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.util.PotionEffectBuilder;
 
 import static org.bukkit.ChatColor.*;

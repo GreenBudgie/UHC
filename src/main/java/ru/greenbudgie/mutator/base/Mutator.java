@@ -1,4 +1,4 @@
-package ru.greenbudgie.mutator;
+package ru.greenbudgie.mutator.base;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -7,6 +7,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.main.UHCPlugin;
+import ru.greenbudgie.mutator.manager.MutatorManager;
 import ru.greenbudgie.util.MathUtils;
 
 import javax.annotation.Nullable;

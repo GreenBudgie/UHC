@@ -8,9 +8,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import ru.greenbudgie.UHC.UHC;
-import ru.greenbudgie.mutator.InventoryBuilderMutator;
-import ru.greenbudgie.mutator.Mutator;
-import ru.greenbudgie.mutator.MutatorManager;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.manager.InventoryBuilderMutator;
+import ru.greenbudgie.mutator.manager.MutatorManager;
 import ru.greenbudgie.util.MathUtils;
 
 import java.util.List;

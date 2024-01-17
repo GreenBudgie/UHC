@@ -3,6 +3,9 @@ package ru.greenbudgie.mutator;
 import org.bukkit.GameRule;
 import org.bukkit.Material;
 import ru.greenbudgie.UHC.WorldManager;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
+import ru.greenbudgie.mutator.manager.MutatorManager;
 
 public class MutatorEternalDay extends Mutator {
 

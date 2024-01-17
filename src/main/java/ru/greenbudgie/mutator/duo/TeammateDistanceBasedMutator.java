@@ -3,7 +3,7 @@ package ru.greenbudgie.mutator.duo;
 import org.bukkit.Location;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.PlayerTeam;
-import ru.greenbudgie.mutator.Mutator;
+import ru.greenbudgie.mutator.base.Mutator;
 import ru.greenbudgie.util.TaskManager;
 
 import javax.annotation.Nonnull;

@@ -1,6 +1,6 @@
 package ru.greenbudgie.mutator.preference;
 
-import ru.greenbudgie.mutator.Mutator;
+import ru.greenbudgie.mutator.base.Mutator;
 import ru.greenbudgie.util.weighted.WeightedList;
 
 import java.util.HashMap;

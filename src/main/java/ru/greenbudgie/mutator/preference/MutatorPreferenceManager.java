@@ -9,9 +9,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import ru.greenbudgie.UHC.PlayerOptionHolder;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.main.UHCPlugin;
-import ru.greenbudgie.mutator.InventoryBuilderMutator;
-import ru.greenbudgie.mutator.Mutator;
-import ru.greenbudgie.mutator.MutatorManager;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.manager.InventoryBuilderMutator;
+import ru.greenbudgie.mutator.manager.MutatorManager;
 import ru.greenbudgie.util.MathUtils;
 
 import javax.annotation.Nonnull;

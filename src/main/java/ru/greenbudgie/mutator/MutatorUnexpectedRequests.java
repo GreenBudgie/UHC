@@ -4,6 +4,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.UHC.WorldManager;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.requester.ItemRequester;
 import ru.greenbudgie.requester.RequestedItem;
 import ru.greenbudgie.util.MathUtils;

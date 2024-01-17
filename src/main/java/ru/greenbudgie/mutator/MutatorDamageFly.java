@@ -9,6 +9,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.PlayerManager;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 
 public class MutatorDamageFly extends Mutator implements Listener {
 

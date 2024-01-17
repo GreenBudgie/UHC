@@ -8,6 +8,9 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.WorldManager;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
+import ru.greenbudgie.mutator.manager.MutatorManager;
 
 import java.util.Arrays;
 

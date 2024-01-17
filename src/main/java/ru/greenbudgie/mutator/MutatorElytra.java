@@ -3,6 +3,8 @@ package ru.greenbudgie.mutator;
 import com.google.common.collect.Lists;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import ru.greenbudgie.mutator.base.ItemBasedMutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.util.InventoryHelper;
 
 import java.util.List;

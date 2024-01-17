@@ -10,6 +10,8 @@ import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.UHCPlayer;
 import ru.greenbudgie.event.UHCPlayerLeaveEvent;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 
 public class MutatorDangerWater extends Mutator implements Listener {
 

@@ -12,6 +12,8 @@ import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.UHCPlayer;
 import ru.greenbudgie.event.UHCPlayerDeathEvent;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.util.ParticleUtils;
 
 public class MutatorGoodDeath extends Mutator implements Listener {

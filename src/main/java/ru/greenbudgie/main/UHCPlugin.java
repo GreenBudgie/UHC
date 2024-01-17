@@ -15,7 +15,7 @@ import ru.greenbudgie.drop.DropsPreviewInventory;
 import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.items.CustomItemsListener;
 import ru.greenbudgie.lobby.sign.SignManager;
-import ru.greenbudgie.mutator.InventoryBuilderMutator;
+import ru.greenbudgie.mutator.manager.InventoryBuilderMutator;
 import ru.greenbudgie.nether.PiglinBarterManager;
 import ru.greenbudgie.rating.InventoryBuilderRating;
 import ru.greenbudgie.rating.Rating;

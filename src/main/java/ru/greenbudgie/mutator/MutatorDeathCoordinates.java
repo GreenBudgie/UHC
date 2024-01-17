@@ -13,6 +13,8 @@ import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.UHC.UHCPlayer;
 import ru.greenbudgie.event.UHCPlayerDeathEvent;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.util.WorldHelper;
 
 import static org.bukkit.ChatColor.*;

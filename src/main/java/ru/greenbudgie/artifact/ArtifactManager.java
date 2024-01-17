@@ -18,7 +18,7 @@ import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.UHC.WorldManager;
 import ru.greenbudgie.classes.ClassManager;
 import ru.greenbudgie.items.CustomItems;
-import ru.greenbudgie.mutator.MutatorManager;
+import ru.greenbudgie.mutator.manager.MutatorManager;
 import ru.greenbudgie.util.InventoryHelper;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.item.ItemUtils;

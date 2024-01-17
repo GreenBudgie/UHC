@@ -1,4 +1,4 @@
-package ru.greenbudgie.mutator;
+package ru.greenbudgie.mutator.manager;
 
 import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
@@ -11,6 +11,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.main.UHCPlugin;
+import ru.greenbudgie.mutator.base.Mutator;
+import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.mutator.preference.MutatorPreferenceManager;
 import ru.greenbudgie.util.InventoryHelper;
 import ru.greenbudgie.util.NumericalCases;
