@@ -920,6 +920,10 @@ public class UHC implements Listener {
 							locationInfo;
 					if(onlinePlayer.getWorld() == teammateLocation.getWorld())
 						teammateInfo += AQUA + " " + LocationFormatter.getArrowPointingTo(onlinePlayer.getLocation(), teammateLocation);
+					teammateInfo += MutatorManager.dependence.getAdditionalActionBarInfo(
+							onlinePlayer.getLocation(),
+							teammateLocation
+					);
 					teammateInfo += MutatorManager.friendsForever.getAdditionalActionBarInfo(
 							onlinePlayer.getLocation(),
 							teammateLocation

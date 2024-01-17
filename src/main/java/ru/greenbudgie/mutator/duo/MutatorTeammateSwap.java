@@ -1,4 +1,4 @@
-package ru.greenbudgie.mutator;
+package ru.greenbudgie.mutator.duo;
 
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
@@ -15,6 +15,8 @@ import ru.greenbudgie.event.SpectatorJoinEvent;
 import ru.greenbudgie.event.SpectatorLeaveEvent;
 import ru.greenbudgie.event.UHCPlayerLeaveEvent;
 import ru.greenbudgie.event.UHCPlayerRejoinEvent;
+import ru.greenbudgie.mutator.Mutator;
+import ru.greenbudgie.mutator.ThreatStatus;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.ParticleUtils;
 import ru.greenbudgie.util.TaskManager;
@@ -102,7 +104,7 @@ public class MutatorTeammateSwap extends Mutator implements Listener {
 
 	private void swapPlayers() {
 		for (PlayerTeam team : PlayerManager.getAliveTeams()) {
-			if (!team.isDual() || !team.allPlayersAlive()) {
+			if (team.isOneOrNoneAlive()) {
 				continue;
 			}
 			UHCPlayer player1 = team.getPlayer1();

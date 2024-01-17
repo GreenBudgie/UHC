@@ -4,6 +4,10 @@ import com.google.common.collect.Lists;
 import ru.greenbudgie.UHC.ArenaManager;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.configuration.GameType;
+import ru.greenbudgie.mutator.duo.MutatorDependence;
+import ru.greenbudgie.mutator.duo.MutatorFriendsForever;
+import ru.greenbudgie.mutator.duo.MutatorHealthUnion;
+import ru.greenbudgie.mutator.duo.MutatorTeammateSwap;
 import ru.greenbudgie.mutator.preference.MutatorPreferenceManager;
 import ru.greenbudgie.util.MathUtils;
 
@@ -69,6 +73,7 @@ public class MutatorManager {
 	public static MutatorLowMeleeDamage lowMeleeDamage = new MutatorLowMeleeDamage();
 	public static MutatorNetherGames netherGames = new MutatorNetherGames();
 	public static MutatorHealthUnion healthUnion = new MutatorHealthUnion();
+	public static MutatorDependence dependence = new MutatorDependence();
 	public static MutatorFriendsForever friendsForever = new MutatorFriendsForever();
 	public static MutatorTeammateSwap teammateSwap = new MutatorTeammateSwap();
 

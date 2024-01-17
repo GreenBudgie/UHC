@@ -70,6 +70,9 @@ public class LobbyGameParkour extends LobbyGame implements Listener {
         if (!Lobby.isInLobby(player)) {
             return;
         }
+        if (player.isFlying()) {
+            return;
+        }
         if (event.getAction() != Action.PHYSICAL) {
             return;
         }

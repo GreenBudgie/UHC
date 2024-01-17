@@ -47,17 +47,14 @@ public class PlayerTeam {
 	}
 
 	/**
-	 * Whether all players in this team are still alive, online or offline.
-	 * If team only has one player, then it will return true if this player is alive.
+	 * Whether this team has only one or none alive player.
+	 * If team only has one player, it will always return true.
 	 */
-	public boolean allPlayersAlive() {
-		if (!player1.isAlive()) {
-			return false;
-		}
-		if (player2 == null) {
+	public boolean isOneOrNoneAlive() {
+		if (!isDual()) {
 			return true;
 		}
-		return player2.isAlive();
+		return !(player1.isAlive() && player2.isAlive());
 	}
 
 	/**

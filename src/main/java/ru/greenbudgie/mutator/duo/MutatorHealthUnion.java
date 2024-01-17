@@ -1,4 +1,4 @@
-package ru.greenbudgie.mutator;
+package ru.greenbudgie.mutator.duo;
 
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -8,6 +8,9 @@ import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.PlayerTeam;
 import ru.greenbudgie.UHC.UHCPlayer;
 import ru.greenbudgie.event.UHCPlayerDeathEvent;
+import ru.greenbudgie.mutator.Mutator;
+import ru.greenbudgie.mutator.MutatorManager;
+import ru.greenbudgie.mutator.ThreatStatus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +55,7 @@ public class MutatorHealthUnion extends Mutator implements Listener {
 	@Override
 	public void onChoose() {
 		for (PlayerTeam team : PlayerManager.getAliveTeams()) {
-			if (shouldSkipTeamProcessing(team)) {
+			if (team.isOneOrNoneAlive()) {
 				continue;
 			}
 			UHCPlayer player1 = team.getPlayer1();
@@ -77,7 +80,7 @@ public class MutatorHealthUnion extends Mutator implements Listener {
 	@Override
 	public void update() {
 		for (PlayerTeam team : PlayerManager.getAliveTeams()) {
-			if (shouldSkipTeamProcessing(team)) {
+			if (team.isOneOrNoneAlive()) {
 				continue;
 			}
 			UHCPlayer player1 = team.getPlayer1();
@@ -116,7 +119,7 @@ public class MutatorHealthUnion extends Mutator implements Listener {
 
 	private void updatePreviousHealth() {
 		for (PlayerTeam team : PlayerManager.getAliveTeams()) {
-			if (shouldSkipTeamProcessing(team)) {
+			if (team.isOneOrNoneAlive()) {
 				continue;
 			}
 			previousTeamHealth.put(team, team.getPlayer1().getRealOrOfflineHealth());
@@ -134,10 +137,6 @@ public class MutatorHealthUnion extends Mutator implements Listener {
 			teammate.getPlayer().setLastDamageCause(damageCause);
 			teammate.kill();
 		}
-	}
-
-	private boolean shouldSkipTeamProcessing(PlayerTeam team) {
-		return !team.isDual() || !team.allPlayersAlive();
 	}
 
 }
