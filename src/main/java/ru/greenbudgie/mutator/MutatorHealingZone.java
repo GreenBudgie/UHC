@@ -83,7 +83,7 @@ public class MutatorHealingZone extends Mutator implements Listener {
 			return;
 		}
 		updateBars();
-		double randomDensity = MathUtils.randomRangeDouble(0.5, 1);
+		double randomDensity = MathUtils.randomRangeDouble(0.2, 0.6);
 		ParticleUtils.createParticlesOnRegionEdges(healingRegion, Particle.HEART, randomDensity, null);
 		for (Player player : PlayerManager.getAliveOnlinePlayers()) {
 			if (isInsideHealingRegion(player)) {

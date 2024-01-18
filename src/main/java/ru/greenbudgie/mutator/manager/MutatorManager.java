@@ -80,6 +80,7 @@ public class MutatorManager {
 	public static MutatorFriendsForever friendsForever = new MutatorFriendsForever();
 	public static MutatorTeammateSwap teammateSwap = new MutatorTeammateSwap();
 	public static MutatorHealingZone healingZone = new MutatorHealingZone();
+	public static MutatorBlackMark blackMark = new MutatorBlackMark();
 
 	public static void init() {
 		MutatorPreferenceManager.init();

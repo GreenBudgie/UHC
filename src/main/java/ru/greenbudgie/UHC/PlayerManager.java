@@ -70,6 +70,7 @@ public class PlayerManager {
         return null;
     }
 
+    @Nullable
     public static UHCPlayer asUHCPlayer(Player player) {
         if(player == null) return null;
         for(UHCPlayer uplayer : players) {
