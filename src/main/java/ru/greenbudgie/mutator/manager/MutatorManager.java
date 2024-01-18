@@ -79,6 +79,7 @@ public class MutatorManager {
 	public static MutatorDependence dependence = new MutatorDependence();
 	public static MutatorFriendsForever friendsForever = new MutatorFriendsForever();
 	public static MutatorTeammateSwap teammateSwap = new MutatorTeammateSwap();
+	public static MutatorHealingZone healingZone = new MutatorHealingZone();
 
 	public static void init() {
 		MutatorPreferenceManager.init();
