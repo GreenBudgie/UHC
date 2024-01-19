@@ -29,13 +29,21 @@ public class MutatorHealingZone extends Mutator implements Listener {
 	private static final BarColor OUTSIDE_COLOR = BarColor.WHITE;
 	private static final BarColor INSIDE_COLOR = BarColor.PINK;
 
+	private static final int MIN_TIME_TO_REGION_SPAWN = 8 * 60; // 8 minutes
+	private static final int MAX_TIME_TO_REGION_SPAWN = 15 * 60; // 15 minutes
+
+	private static final int TIME_TO_REGION_REMOVE = 8 * 60; // 8 minutes
+
 	private static final int TICKS_PER_UPDATE = 4;
-	private static final int HEAL_TIME = 60;
+	private static final int HEAL_TIME = 30;
 	private static final double TIMER_DECREASE_PER_UPDATE = 0.4;
 	private static final double TIMER_INCREASE_PER_UPDATE = 0.2;
 
 	private Region healingRegion;
 	private Location center;
+
+	private int timeToRegionSpawn = 0;
+	private int timeToRegionRemove = 0;
 
 	private final Map<Player, BossBar> bossBars = new HashMap<>();
 	private final Map<Player, Double> healingTimers = new HashMap<>();
@@ -57,28 +65,39 @@ public class MutatorHealingZone extends Mutator implements Listener {
 
 	@Override
 	public String getDescription() {
-		return "В случайном месте на поверхности карты появляется зона, при нахождении в которой каждую минуту " +
-				"будет восстанавливаться 1 сердце.";
+		return "Иногда в случайном месте на поверхности карты появляется зона, при нахождении в которой каждые " +
+				"30 секунд будет восстанавливаться 1 сердце. Эта зона остается на том же месте в течение 8 минут, " +
+				"а затем исчезает, и нужно будет снова ждать 8-15 минут для того, чтобы она появилась в новом месте.";
 	}
 
 	@Override
 	public void onChoose() {
-		setupRandomLocation();
-		updateBars();
+		resetSpawnTimer();
 	}
 
 	@Override
 	public void onDeactivate() {
-		bossBars.values().forEach(bar -> {
-			bar.setVisible(false);
-			bar.removeAll();
-		});
-		bossBars.clear();
-		healingTimers.clear();
+		resetBossBarsAndHealingTimers();
 	}
 
 	@Override
 	public void update() {
+		if (timeToRegionSpawn > 0) {
+			if (TaskManager.isSecUpdated()) {
+				timeToRegionSpawn--;
+			}
+			if (timeToRegionSpawn <= 0) {
+				spawnRegion();
+			}
+			return;
+		}
+		if (timeToRegionRemove <= 0) {
+			removeRegion();
+			return;
+		}
+		if (TaskManager.isSecUpdated()) {
+			timeToRegionRemove--;
+		}
 		if (!TaskManager.ticksPassed(TICKS_PER_UPDATE)) {
 			return;
 		}
@@ -94,15 +113,61 @@ public class MutatorHealingZone extends Mutator implements Listener {
 		}
 	}
 
-
-	@Override
-	public boolean containsBossBar() {
-		return true;
+	private void resetBossBarsAndHealingTimers() {
+		bossBars.values().forEach(bar -> {
+			bar.setVisible(false);
+			bar.removeAll();
+		});
+		bossBars.clear();
+		healingTimers.clear();
 	}
 
-	@Override
-	public boolean canBeHidden() {
-		return false;
+	private void spawnRegion() {
+		double halfSize = REGION_SIZE / 2.0;
+		int size = ((int) WorldManager.getActualMapSize()) / 2 - 10;
+		int x = MathUtils.randomRange(
+				WorldManager.spawnLocation.getBlockX() - size,
+				WorldManager.spawnLocation.getBlockX() + size);
+		int z = MathUtils.randomRange(
+				WorldManager.spawnLocation.getBlockZ() - size,
+				WorldManager.spawnLocation.getBlockZ() + size);
+		int y = WorldManager.getGameMap().getHighestBlockYAt(x, z) + (int) Math.floor(halfSize);
+		center = new Location(WorldManager.getGameMap(), x, y, z);
+		healingRegion = new Region(
+				center.clone().subtract(halfSize, halfSize, halfSize),
+				center.clone().add(halfSize, halfSize, halfSize)
+		);
+		for (Player player : PlayerManager.getInGamePlayersAndSpectators()) {
+			player.playSound(player, Sound.BLOCK_BEACON_ACTIVATE, 0.5F, 1.5F);
+			player.sendTitle(
+					null,
+					LIGHT_PURPLE + "" + BOLD + "> Зона регенерации заспавнилась <",
+					10,
+					20,
+					10
+			);
+		}
+		timeToRegionRemove = TIME_TO_REGION_REMOVE;
+	}
+
+	private void removeRegion() {
+		healingRegion = null;
+		for (Player player : PlayerManager.getInGamePlayersAndSpectators()) {
+			player.playSound(player, Sound.BLOCK_BEACON_DEACTIVATE, 0.5F, 1.5F);
+			player.sendTitle(
+					null,
+					DARK_PURPLE + "" + BOLD + "> Зона регенерации пропала <",
+					10,
+					20,
+					10
+			);
+		}
+		resetBossBarsAndHealingTimers();
+		resetSpawnTimer();
+	}
+
+	private void resetSpawnTimer() {
+		timeToRegionSpawn = MathUtils.randomRange(MIN_TIME_TO_REGION_SPAWN, MAX_TIME_TO_REGION_SPAWN);
 	}
 
 	private void updatePlayerInsideRegion(Player player) {
@@ -128,23 +193,6 @@ public class MutatorHealingZone extends Mutator implements Listener {
 		player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1f, 1f);
 		ParticleUtils.createParticlesAround(player, Particle.HEART, null, 10);
 		healingTimers.put(player, 0D);
-	}
-
-	private void setupRandomLocation() {
-		double halfSize = REGION_SIZE / 2.0;
-		int size = ((int) WorldManager.getActualMapSize()) / 2 - 10;
-		int x = MathUtils.randomRange(
-				WorldManager.spawnLocation.getBlockX() - size,
-				WorldManager.spawnLocation.getBlockX() + size);
-		int z = MathUtils.randomRange(
-				WorldManager.spawnLocation.getBlockZ() - size,
-				WorldManager.spawnLocation.getBlockZ() + size);
-		int y = WorldManager.getGameMap().getHighestBlockYAt(x, z) + (int) Math.floor(halfSize);
-		center = new Location(WorldManager.getGameMap(), x, y, z);
-		healingRegion = new Region(
-				center.clone().subtract(halfSize, halfSize, halfSize),
-				center.clone().add(halfSize, halfSize, halfSize)
-		);
 	}
 
 	private void updateBars() {
@@ -186,7 +234,9 @@ public class MutatorHealingZone extends Mutator implements Listener {
 				AQUA,
 				false
 		);
-		bar.setTitle(LIGHT_PURPLE + "Зона регенерации" + GRAY + ": " + locationInfo);
+		String timeInfo = DARK_GRAY + " (" + DARK_AQUA + BOLD +
+				MathUtils.formatTime(timeToRegionRemove) + DARK_GRAY + ")";
+		bar.setTitle(LIGHT_PURPLE + "Зона регенерации" + GRAY + ": " + locationInfo + timeInfo);
 	}
 
 	private void increaseHealingTimer(Player player) {
