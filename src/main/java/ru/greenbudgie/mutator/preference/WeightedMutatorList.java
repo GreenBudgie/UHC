@@ -9,13 +9,15 @@ import java.util.Map;
 
 public class WeightedMutatorList extends WeightedList<Mutator, WeightedMutator> {
 
+    private static final int WEIGHT_PER_PLAYER = 2;
     private final List<Mutator> initialWeightedMutators;
 
     public WeightedMutatorList(List<Mutator> weightedMutators) {
         initialWeightedMutators = weightedMutators.stream().toList();
         Map<Mutator, Integer> mutatorCount = new HashMap<>();
         for (Mutator mutator : weightedMutators) {
-            mutatorCount.merge(mutator, 1, Integer::sum);
+            mutatorCount.computeIfPresent(mutator, (currentMutator, count) -> count + WEIGHT_PER_PLAYER);
+            mutatorCount.putIfAbsent(mutator, 1);
         }
         List<WeightedMutator> weightedList = mutatorCount.entrySet()
                 .stream()
