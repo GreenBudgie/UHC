@@ -79,7 +79,13 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 			return;
 		}
 		updateBar();
-		if (timer > 0) {
+		if (blackMarkHolder.isOnline()) {
+			Player player = blackMarkHolder.getPlayer();
+			player.addPotionEffect(
+					new PotionEffectBuilder(PotionEffectType.SPEED).seconds(3).build()
+			);
+		}
+ 		if (timer > 0) {
 			timer--;
 			return;
 		}
