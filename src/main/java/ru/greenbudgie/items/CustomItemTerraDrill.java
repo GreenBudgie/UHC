@@ -2,6 +2,7 @@ package ru.greenbudgie.items;
 
 import com.google.common.collect.Sets;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,10 +12,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import ru.greenbudgie.util.Region;
 import ru.greenbudgie.util.item.ItemInfo;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,40 +46,24 @@ public class CustomItemTerraDrill extends RequesterCustomItem implements Listene
 		Block b = e.getBlock();
 		if(rock.contains(b.getType()) && !e.isCancelled()) {
 			BlockFace face = lastFace.getOrDefault(p, BlockFace.EAST);
-			Location l = b.getLocation();
-			Set<Block> toBreak = new HashSet<>();
-			if(face == BlockFace.DOWN || face == BlockFace.UP) {
-				toBreak.add(l.clone().add(1, 0, 0).getBlock());
-				toBreak.add(l.clone().add(1, 0, 1).getBlock());
-				toBreak.add(l.clone().add(1, 0, -1).getBlock());
-				toBreak.add(l.clone().add(-1, 0, 0).getBlock());
-				toBreak.add(l.clone().add(-1, 0, 1).getBlock());
-				toBreak.add(l.clone().add(-1, 0, -1).getBlock());
-				toBreak.add(l.clone().add(0, 0, 1).getBlock());
-				toBreak.add(l.clone().add(0, 0, -1).getBlock());
-			}
-			if(face == BlockFace.EAST || face == BlockFace.WEST) {
-				toBreak.add(l.clone().add(0, 1, 0).getBlock());
-				toBreak.add(l.clone().add(0, 1, 1).getBlock());
-				toBreak.add(l.clone().add(0, 1, -1).getBlock());
-				toBreak.add(l.clone().add(0, -1, 0).getBlock());
-				toBreak.add(l.clone().add(0, -1, 1).getBlock());
-				toBreak.add(l.clone().add(0, -1, -1).getBlock());
-				toBreak.add(l.clone().add(0, 0, 1).getBlock());
-				toBreak.add(l.clone().add(0, 0, -1).getBlock());
-			}
-			if(face == BlockFace.NORTH || face == BlockFace.SOUTH) {
-				toBreak.add(l.clone().add(1, 0, 0).getBlock());
-				toBreak.add(l.clone().add(1, 1, 0).getBlock());
-				toBreak.add(l.clone().add(1, -1, 0).getBlock());
-				toBreak.add(l.clone().add(-1, 0, 0).getBlock());
-				toBreak.add(l.clone().add(-1, 1, 0).getBlock());
-				toBreak.add(l.clone().add(-1, -1, 0).getBlock());
-				toBreak.add(l.clone().add(0, 1, 0).getBlock());
-				toBreak.add(l.clone().add(0, -1, 0).getBlock());
-			}
+			Location location = b.getLocation();
+			Region region = new Region(
+					location.clone().add(
+							face.getModX() == 0 ? -1 : 0,
+							face.getModY() == 0 ? -1 : 0,
+							face.getModZ() == 0 ? -1 : 0
+					),
+					location.clone().add(
+							face.getModX() == 0 ? 1 : 0,
+							face.getModY() == 0 ? 1 : 0,
+							face.getModZ() == 0 ? 1 : 0
+					)
+			);
+			Set<Block> toBreak = region.getBlocksInside();
+			toBreak.remove(b);
 			for(Block block : toBreak) {
 				if(rock.contains(block.getType())) {
+					block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, block.getType());
 					block.breakNaturally(item);
 				}
 			}

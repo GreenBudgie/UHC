@@ -26,12 +26,12 @@ public class CustomItemAllurementStone extends RequesterCustomItem implements Bl
 
 	@Override
 	public int getRedstonePrice() {
-		return 80;
+		return 64;
 	}
 
 	@Override
 	public int getLapisPrice() {
-		return 12;
+		return 16;
 	}
 
 	@Override

@@ -56,7 +56,7 @@ public class CustomItemSoulscriber extends RequesterCustomItem implements Listen
 
 	@Override
 	public int getRedstonePrice() {
-		return 56;
+		return 48;
 	}
 
 	@Override

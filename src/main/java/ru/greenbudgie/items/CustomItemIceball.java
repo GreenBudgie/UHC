@@ -32,7 +32,7 @@ public class CustomItemIceball extends RequesterCustomItem implements Listener {
 
     @Override
     public int getRedstonePrice() {
-        return 20;
+        return 16;
     }
 
     @Override

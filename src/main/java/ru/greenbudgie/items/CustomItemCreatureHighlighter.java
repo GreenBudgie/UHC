@@ -42,7 +42,7 @@ public class CustomItemCreatureHighlighter extends RequesterCustomItem {
 
 	@Override
 	public int getRedstonePrice() {
-		return 16;
+		return 12;
 	}
 
 	@Override

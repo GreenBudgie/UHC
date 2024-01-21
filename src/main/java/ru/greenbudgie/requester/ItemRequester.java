@@ -58,12 +58,12 @@ public class ItemRequester implements Listener {
 
 		putItem(CustomItems.tracker, 29);
 		putItem(CustomItems.shieldBreaker, 30);
-		putItem(CustomItems.terraDrill, 32);
-		putItem(CustomItems.heavenMembrane, 33);
+		putItem(CustomItems.heavenMembrane, 32);
+		putItem(CustomItems.terraDrill, 33);
 
-		putItem(CustomItems.laserCutter, 39);
-		putItem(CustomItems.allurementStone, 40);
-		putItem(CustomItems.tnt, 41);
+		putItem(CustomItems.allurementStone, 39);
+		putItem(CustomItems.tnt, 40);
+		putItem(CustomItems.laserCutter, 41);
 	}
 
 	public static String padSymbols(String input) {

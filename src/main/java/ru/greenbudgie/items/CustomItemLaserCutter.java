@@ -3,6 +3,7 @@ package ru.greenbudgie.items;
 import com.google.common.collect.Sets;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -13,31 +14,25 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.ParticleUtils;
+import ru.greenbudgie.util.Region;
 import ru.greenbudgie.util.item.ItemInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.bukkit.ChatColor.*;
 
 public class CustomItemLaserCutter extends RequesterCustomItem implements Listener {
 
 	private static final int LASER_BEAM_DISTANCE = 8;
-	private static final Set<Material> FUEL = Sets.newHashSet(Material.COAL, Material.CHARCOAL);
-    private static final Material ACCELERATOR = Material.COPPER_INGOT;
+    private static final Material FUEL = Material.COPPER_INGOT;
 
-    private static final int MAX_BURN_COOLDOWN = 60 * 20;
-    private static final int ACCELERATE_TICKS = 30 * 20;
-    private static final int MAX_USE_DELAY_TICKS_DEFAULT = 6;
-    private static final int MAX_USE_DELAY_TICKS_ACCELERATED = 3;
+    private static final int MAX_BURN_COOLDOWN = 30 * 20;
+    private static final int MAX_USE_DELAY_TICKS = 6;
 
-    private static final Sound BURN_SOUND = Sound.ITEM_FIRECHARGE_USE;
+    private static final Sound BURN_SOUND = Sound.BLOCK_RESPAWN_ANCHOR_CHARGE;
     private static final Sound LASER_SOUND = Sound.BLOCK_FIRE_AMBIENT;
-    private static final Sound ACCELERATE_SOUND = Sound.BLOCK_RESPAWN_ANCHOR_CHARGE;
 
     private static final float ARM_DISTANCE = 0.75F;
     private static final double ARM_ANGLE = -Math.PI / 4;
@@ -45,12 +40,12 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
     private static final float PARTICLE_SPREAD = 0.15F;
     private static final double MIN_PARTICLE_DENSITY = 0.5;
     private static final double MAX_PARTICLE_DENSITY = 1;
-    private static final Particle DEFAULT_LASER_PARTICLE = Particle.SMALL_FLAME;
-    private static final Particle ACCELERATED_LASER_PARTICLE = Particle.SOUL_FIRE_FLAME;
+    private static final Particle LASER_PARTICLE = Particle.SMALL_FLAME;
 
 	private static final Set<Material> allowedMaterials = Sets.newHashSet(
 			Material.STONE,
 			Material.COBBLESTONE,
+			Material.MOSSY_COBBLESTONE,
 			Material.COBBLED_DEEPSLATE,
 			Material.ANDESITE,
 			Material.DIORITE,
@@ -88,12 +83,10 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
 
 	@Override
 	public ItemInfo getDescription() {
-		return new ItemInfo("Генерирует лазерный луч и позволяет крайне быстро уничтожать " +
-				"любую каменную породу. Руды оставляет нетронутыми. Для работы необходим уголь, обычный или древесный.")
-				.extra("Сжигает уголь куждую минуту работы. Также, скорость добычи может быть ускорена за счет " +
-						"проводника - меди. Если она есть в инвентаре, то каждые 30 секунд будет потрачена " +
-						"1 единица, а скорость добычи ускорена в два раза на это время! " +
-                        "Радиус действия - 8 блоков.")
+		return new ItemInfo("Генерирует лазерный луч протяженностью 8 блоков и позволяет крайне " +
+                "быстро уничтожать любую каменную породу в радиусе 3x3. Руды оставляет нетронутыми. " +
+                "Для работы необходимы медные слитки.")
+				.extra("Использует медный слиток каждые 30 секунд работы. Не имеет прочности.")
 				.note("Лучше использовать без предметов (щита или факелов) в другой руке! " +
                         "К камню также относится адский камень, сланец, андезит, диорит и т.д.");
 	}
@@ -105,7 +98,7 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
 
 	@Override
 	public int getLapisPrice() {
-		return 32;
+		return 24;
 	}
 
     private void laserCut(Player player, EquipmentSlot hand) {
@@ -130,67 +123,50 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
         if (!isBurningFuel) {
             burnFuel(player, fuel);
         }
-        if (!isAccelerated(player)) {
-            tryAccelerate(player);
-        }
         playUseEffect(player, hand, hitBlock);
         setMaxUseDelay(player);
 
-        if (result == null) {
+        if (result == null || hitBlock == null) {
             return;
         }
-        Block block = result.getHitBlock();
-        if (block == null) {
+        if (!allowedMaterials.contains(hitBlock.getType())) {
             return;
         }
-        if (!allowedMaterials.contains(block.getType())) {
-            return;
-        }
-        breakBlock(player, block);
+        BlockFace hitBlockFace = Optional.ofNullable(result.getHitBlockFace()).orElse(BlockFace.EAST);
+        breakBlock(player, hitBlock, hitBlockFace);
     }
 
-    private void breakBlock(Player player, Block block) {
-        BlockBreakEvent blockBreakEvent = new BlockBreakEvent(block, player);
-        Bukkit.getPluginManager().callEvent(blockBreakEvent);
-        if (blockBreakEvent.isCancelled()) {
-            return;
-        }
-        player.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, block.getType());
-        block.breakNaturally();
-        ParticleUtils.createParticlesInside(block, Particle.SMOKE_NORMAL, null, 5);
-    }
-
-    private boolean isAccelerated(Player player) {
-        return player.getCooldown(ACCELERATOR) > 0;
-    }
-
-    private void tryAccelerate(Player player) {
-        for (ItemStack item : player.getInventory()) {
-            if (item == null) {
+    private void breakBlock(Player player, Block centerBlock, BlockFace face) {
+        Location location = centerBlock.getLocation();
+        Region region = new Region(
+                location.clone().add(
+                        face.getModX() == 0 ? -1 : 0,
+                        face.getModY() == 0 ? -1 : 0,
+                        face.getModZ() == 0 ? -1 : 0
+                ),
+                location.clone().add(
+                        face.getModX() == 0 ? 1 : 0,
+                        face.getModY() == 0 ? 1 : 0,
+                        face.getModZ() == 0 ? 1 : 0
+                )
+        );
+        List<Block> toBreak = region.getBlocksInside().stream()
+                .filter(currentBlock -> allowedMaterials.contains(currentBlock.getType()))
+                .filter(currentBlock -> currentBlock != centerBlock)
+                .toList();
+        for (Block blockToBreak : toBreak) {
+            BlockBreakEvent blockBreakEvent = new BlockBreakEvent(blockToBreak, player);
+            Bukkit.getPluginManager().callEvent(blockBreakEvent);
+            if (blockBreakEvent.isCancelled()) {
                 continue;
             }
-            if (item.getType() != ACCELERATOR) {
-                continue;
-            }
-            player.getWorld().playSound(
-                    player.getLocation(),
-                    ACCELERATE_SOUND,
-                    1F,
-                    2F
-            );
-            player.setCooldown(ACCELERATOR, ACCELERATE_TICKS);
-            item.setAmount(item.getAmount() - 1);
-            return;
+            player.getWorld().playEffect(blockToBreak.getLocation(), Effect.STEP_SOUND, blockToBreak.getType());
+            blockToBreak.breakNaturally();
         }
     }
 
     private boolean isBurningFuel(Player player) {
-        for (Material fuel : FUEL) {
-            if (player.getCooldown(fuel) > 0) {
-                return true;
-            }
-        }
-        return false;
+        return player.getCooldown(FUEL) > 0;
     }
 
     private void burnFuel(Player player, @Nonnull ItemStack fuel) {
@@ -200,9 +176,7 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
                 1F,
                 1F
         );
-        for (Material fuelMaterial : FUEL) {
-            player.setCooldown(fuelMaterial, MAX_BURN_COOLDOWN);
-        }
+        player.setCooldown(FUEL, MAX_BURN_COOLDOWN);
         fuel.setAmount(fuel.getAmount() - 1);
     }
 
@@ -212,7 +186,7 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
             if (item == null) {
                 continue;
             }
-            if (FUEL.contains(item.getType())) {
+            if (item.getType() == FUEL) {
                 return item;
             }
         }
@@ -229,7 +203,7 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
     }
 
     private void setMaxUseDelay(Player player) {
-        useDelays.put(player, getMaxUseDelayTicks(player));
+        useDelays.put(player, MAX_USE_DELAY_TICKS);
     }
 
     private boolean isUsingNow(Player player) {
@@ -237,14 +211,7 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
     }
 
     private int getUseDelayTicks(Player player) {
-        return useDelays.getOrDefault(player, getMaxUseDelayTicks(player));
-    }
-
-    private int getMaxUseDelayTicks(Player player) {
-        if (isAccelerated(player)) {
-            return MAX_USE_DELAY_TICKS_ACCELERATED;
-        }
-        return MAX_USE_DELAY_TICKS_DEFAULT;
+        return useDelays.getOrDefault(player, MAX_USE_DELAY_TICKS);
     }
 
     private void playUseEffect(Player player, EquipmentSlot hand, @Nullable Block pointingBlock) {
@@ -266,7 +233,7 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
         ParticleUtils.createLine(
                 armLocation.add(getRandomParticleSpreadVector()),
                 pointingLocation,
-                isAccelerated(player) ? ACCELERATED_LASER_PARTICLE : DEFAULT_LASER_PARTICLE,
+                LASER_PARTICLE,
                 getRandomParticleDensity(),
                 null
         );

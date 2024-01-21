@@ -44,7 +44,7 @@ public class CustomItemShieldBreaker extends RequesterCustomItem implements List
 
 	@Override
 	public int getRedstonePrice() {
-		return 64;
+		return 52;
 	}
 
 	@Override

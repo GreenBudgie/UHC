@@ -59,7 +59,7 @@ public class CustomItemHarmlessPearl extends RequesterCustomItem implements List
 
 	@Override
 	public int getRedstonePrice() {
-		return 48;
+		return 40;
 	}
 
 	@Override
