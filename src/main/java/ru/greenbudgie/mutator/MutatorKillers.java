@@ -25,7 +25,7 @@ import static org.bukkit.ChatColor.*;
 
 public class MutatorKillers extends Mutator implements Listener {
 
-	private static final int TIME_TO_KILL = 10; //TODO 40 * 60
+	private static final int TIME_TO_KILL = 40 * 60;
 	private static final int FAILURE_DAMAGE = 16;
 	private static final int SUCCESS_HEAL = 16;
 	private static final PotionEffect SUCCESS_EFFECT = new PotionEffectBuilder(PotionEffectType.REGENERATION)
