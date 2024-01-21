@@ -83,6 +83,7 @@ public class MutatorManager {
 	public static MutatorHealingZone healingZone = new MutatorHealingZone();
 	public static MutatorBlackMark blackMark = new MutatorBlackMark();
 	public static MutatorTrolling trolling = new MutatorTrolling();
+	public static MutatorKillers killers = new MutatorKillers();
 
 	public static void init() {
 		MutatorPreferenceManager.init();

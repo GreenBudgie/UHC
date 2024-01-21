@@ -28,7 +28,7 @@ public class LocationFormatter {
             return format(to, coordinateColor, commaColor);
         }
         if (differentWorlds) {
-            formatToWithDistance(from, to, coordinateColor, commaColor, distanceColor, bracesColor, true);
+            return formatToWithDistance(from, to, coordinateColor, commaColor, distanceColor, bracesColor, true);
         }
         return formatToWithDistance(from, to, coordinateColor, commaColor, distanceColor, bracesColor, formatDifferentWorld) +
                 arrowColor + " " + LocationFormatter.getArrowPointingTo(from, to);
