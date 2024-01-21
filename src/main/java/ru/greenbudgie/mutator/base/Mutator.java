@@ -26,7 +26,7 @@ public abstract class Mutator {
 	}
 
 	public void hide() {
-		if(canBeHidden() && MathUtils.chance(15)) {
+		if(canBeHidden() && MathUtils.chance(20)) {
 			isHidden = true;
 		}
 	}

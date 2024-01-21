@@ -57,6 +57,7 @@ public class UHCPlugin extends JavaPlugin {
 		registerCommand("watch", new CommandWatch());
 		registerCommand("barters", new CommandBarters());
 		registerCommand("drops", new CommandDrops());
+		registerCommand("trolling", new CommandTrolling());
 
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new UHC(), this);

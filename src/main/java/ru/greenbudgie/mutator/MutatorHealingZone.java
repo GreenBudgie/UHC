@@ -140,7 +140,7 @@ public class MutatorHealingZone extends Mutator implements Listener {
 		for (Player player : PlayerManager.getInGamePlayersAndSpectators()) {
 			player.playSound(player, Sound.BLOCK_BEACON_ACTIVATE, 0.5F, 1.5F);
 			player.sendTitle(
-					null,
+					"",
 					LIGHT_PURPLE + "" + BOLD + "> Зона регенерации заспавнилась <",
 					10,
 					20,
@@ -155,7 +155,7 @@ public class MutatorHealingZone extends Mutator implements Listener {
 		for (Player player : PlayerManager.getInGamePlayersAndSpectators()) {
 			player.playSound(player, Sound.BLOCK_BEACON_DEACTIVATE, 0.5F, 1.5F);
 			player.sendTitle(
-					null,
+					"",
 					DARK_PURPLE + "" + BOLD + "> Зона регенерации пропала <",
 					10,
 					20,

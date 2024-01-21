@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.PlayerManager;
+import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.UHC.UHCPlayer;
 import ru.greenbudgie.event.UHCPlayerDeathEvent;
 import ru.greenbudgie.mutator.base.BossBarHolderMutator;
@@ -61,7 +62,8 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 				"Ее можно передать другому игроку, подойдя к нему вплотную и нажав ПКМ. " +
 				"Однако, если убить игрока с черной меткой, то ты получишь ее проклятие! " +
 				"Если же ее носитель умрет сам, то метка наложится на ближайшего к нему игрока. " +
-				"Когда 30 минут пройдет и носитель умрет, этот мутатор деактивируется.";
+				"Когда 30 минут пройдет и носитель умрет, этот мутатор деактивируется." +
+				"Не может быть деактивирован мутатором!";
 	}
 
 	@Override
@@ -95,6 +97,11 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 
 	@Override
 	public boolean canBeAddedFromArtifact() {
+		return false;
+	}
+
+	@Override
+	public boolean canBeDeactivatedByArtifact() {
 		return false;
 	}
 
@@ -198,6 +205,9 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 
 	@EventHandler
 	public void onInteract(PlayerInteractEntityEvent event) {
+		if (!UHC.state.isGameActive()) {
+			return;
+		}
 		UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(event.getPlayer());
 		if (uhcPlayer == null) {
 			return;

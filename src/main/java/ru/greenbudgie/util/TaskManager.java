@@ -21,23 +21,23 @@ public class TaskManager {
 		UHCPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(UHCPlugin.instance, () -> {
 			UHC.tickGame();
 			LobbyGameManager.updateGames();
+			fullTicks++;
 			if(tick < 19) {
 				tick++;
-				fullTicks++;
 			} else {
 				tick = 0;
 				if(sec < 59) {
 					sec++;
-					fullSeconds++;
 				} else {
 					sec = 0;
 					if(min < 59) {
 						min++;
-						fullMinutes++;
 					} else {
 						min = 0;
 					}
+					fullMinutes++;
 				}
+				fullSeconds++;
 			}
 		}, 0L, 1L);
 	}

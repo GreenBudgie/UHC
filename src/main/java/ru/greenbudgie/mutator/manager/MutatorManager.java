@@ -12,6 +12,7 @@ import ru.greenbudgie.mutator.duo.MutatorFriendsForever;
 import ru.greenbudgie.mutator.duo.MutatorHealthUnion;
 import ru.greenbudgie.mutator.duo.MutatorTeammateSwap;
 import ru.greenbudgie.mutator.preference.MutatorPreferenceManager;
+import ru.greenbudgie.mutator.trolling.MutatorTrolling;
 import ru.greenbudgie.util.MathUtils;
 
 import java.util.ArrayList;
@@ -81,6 +82,7 @@ public class MutatorManager {
 	public static MutatorTeammateSwap teammateSwap = new MutatorTeammateSwap();
 	public static MutatorHealingZone healingZone = new MutatorHealingZone();
 	public static MutatorBlackMark blackMark = new MutatorBlackMark();
+	public static MutatorTrolling trolling = new MutatorTrolling();
 
 	public static void init() {
 		MutatorPreferenceManager.init();

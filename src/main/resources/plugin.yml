@@ -77,3 +77,6 @@ commands:
  drops:
   description: Посмотреть возможные дропы (эирдропы, кейвдропы и эирдропы)
   usage: /drops
+ trolling:
+  description: Debug command
+  usage: /trolling <className>
