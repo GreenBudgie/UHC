@@ -26,7 +26,7 @@ import static org.bukkit.ChatColor.*;
 public class MutatorKillers extends Mutator implements Listener {
 
 	private static final int TIME_TO_KILL = 40 * 60;
-	private static final int FAILURE_DAMAGE = 16;
+	private static final int FAILURE_DAMAGE = 10;
 	private static final int SUCCESS_HEAL = 16;
 	private static final PotionEffect SUCCESS_EFFECT = new PotionEffectBuilder(PotionEffectType.REGENERATION)
 			.seconds(10)
@@ -58,7 +58,7 @@ public class MutatorKillers extends Mutator implements Listener {
 	public String getDescription() {
 		return "Каждому игроку выдается задание - убить другого определенного игрока за 40 минут. " +
 				"Игроки всегда видят координаты своих жертв. Если ты успел убить игрока или он умер самостоятельно, " +
-				"то ты регенерируешь 8 сердец. Если же задание было провалено - теряешь 8 сердец. " +
+				"то ты регенерируешь 8 сердец. Если же задание было провалено - теряешь 5 сердец. " +
 				"От этого можно умереть! Нельзя деактивировать артефактом.";
 	}
 

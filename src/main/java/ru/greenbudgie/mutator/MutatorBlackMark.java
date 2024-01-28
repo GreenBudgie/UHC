@@ -1,6 +1,9 @@
 package ru.greenbudgie.mutator;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.ArmorStand;
@@ -22,7 +25,6 @@ import ru.greenbudgie.util.PotionEffectBuilder;
 import ru.greenbudgie.util.TaskManager;
 
 import javax.annotation.Nullable;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,7 +49,7 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 
 	@Override
 	public ThreatStatus getThreatStatus() {
-		return ThreatStatus.DANGEROUS;
+		return ThreatStatus.CRITICAL;
 	}
 
 	@Override
@@ -61,7 +63,8 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 				"появления в игре. Сначала метку получает случайный игрок. " +
 				"Ее можно передать другому игроку, подойдя к нему вплотную и нажав ПКМ. " +
 				"Однако, если убить игрока с черной меткой, то ты получишь ее проклятие! " +
-				"Если же ее носитель умрет сам, то метка наложится на ближайшего к нему игрока. " +
+				"Если же ее носитель умрет сам, то метка пропадет из игры. Замечу, что смерть от " +
+				"ведра лавы не считаются за убийство игрока, а значит за это метка на тебя не перейдет. " +
 				"Когда 30 минут пройдет и носитель умрет, этот мутатор деактивируется." +
 				"Не может быть деактивирован мутатором!";
 	}
@@ -176,23 +179,6 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 		return MathUtils.choose(players);
 	}
 
-	private void giveMarkToClosestPlayer() {
-		Location holderLocation = blackMarkHolder.getLocation();
-		Comparator<UHCPlayer> distanceComparator = Comparator.comparingDouble(uhcPlayer ->
-				uhcPlayer.getLocation().distanceSquared(holderLocation)
-		);
-		UHCPlayer closestPlayer = PlayerManager.getAlivePlayers().stream()
-				.filter(uhcPlayer -> uhcPlayer != blackMarkHolder)
-				.filter(uhcPlayer -> uhcPlayer.getLocation().getWorld() == holderLocation.getWorld())
-				.min(distanceComparator)
-				.orElse(getRandomPlayerExceptHolder());
-		if (closestPlayer == null) {
-			deactivate();
-			return;
-		}
-		giveBlackMarkTo(closestPlayer);
-	}
-
 	private void updateBar() {
 		bar.setTitle(
 				DARK_RED + "" + BOLD + "Черная метка на " + GOLD + blackMarkHolder.getNickname() +
@@ -237,7 +223,7 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 	}
 
 	@EventHandler
-	public void onPlayerDeath(UHCPlayerDeathEvent event) {
+	public void onHolderDeath(UHCPlayerDeathEvent event) {
 		if (!changeHolder) {
 			return;
 		}
@@ -248,7 +234,7 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 			giveBlackMarkTo(event.getKiller());
 			return;
 		}
-		giveMarkToClosestPlayer();
+		deactivate();
 	}
 
 }

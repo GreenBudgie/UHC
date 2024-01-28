@@ -35,8 +35,8 @@ public class MutatorTrolling extends Mutator {
         new TrollingEventTeleport();
     }
 
-    private static final int MIN_TIME_TO_TROLL = 5 * 60;
-    private static final int MAX_TIME_TO_TROLL = 10 * 60;
+    private static final int MIN_TIME_TO_TROLL = 2 * 60 + 30;
+    private static final int MAX_TIME_TO_TROLL = 5 * 60;
     private static final int TIME_TO_START_SELECTING = 2;
     private static final int SELECTION_EFFECTS = 8;
     private static final int TICKS_PER_SELECTION_EFFECT = 4;
