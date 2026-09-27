@@ -29,7 +29,7 @@ public class LobbySignGameDuration extends LobbySign {
 
         String durationInfo = switch (UHC.gameDuration) {
             case DEFAULT -> AQUA + "" + BOLD + "Обычная";
-            case OLD -> RED + "" + BOLD + "Как раньше";
+            case OLD -> RED + "" + BOLD + "Олдскул";
         };
         int fullDuration = UHC.getNoPVPDuration() + UHC.getGameDuration();
 
