@@ -107,6 +107,7 @@ public class ArenaManager implements Listener {
         world.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
         world.setGameRule(GameRule.IMMEDIATE_RESPAWN, true);
         world.setGameRule(GameRule.SPAWN_PHANTOMS, false);
+        world.setGameRule(GameRule.LOCATOR_BAR, false);
         world.setPVP(false);
     }
 

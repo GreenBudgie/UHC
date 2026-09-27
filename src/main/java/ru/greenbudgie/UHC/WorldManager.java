@@ -24,6 +24,7 @@ public class WorldManager {
 		if(Bukkit.getWorld("CurrentMap") != null) {
 			gameMap = Bukkit.createWorld(new WorldCreator("CurrentMap"));
 			gameMap.setDifficulty(Difficulty.HARD);
+			gameMap.setGameRule(GameRule.LOCATOR_BAR, false);
 			spawnLocation = gameMap.getSpawnLocation().clone();
 			LobbyMapPreview.setPreview();
 		} else {
@@ -33,6 +34,7 @@ public class WorldManager {
 		if(Bukkit.getWorld("CurrentMapNether") != null) {
 			gameMapNether = Bukkit.createWorld(new WorldCreator("CurrentMapNether"));
 			gameMapNether.setDifficulty(Difficulty.HARD);
+			gameMapNether.setGameRule(GameRule.LOCATOR_BAR, false);
 		} else {
 			generateAndSetGameMapNether();
 		}
@@ -78,6 +80,7 @@ public class WorldManager {
 		map.setGameRule(GameRule.ADVANCE_WEATHER, false);
 		map.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
 		map.setGameRule(GameRule.SPAWN_PHANTOMS, false);
+		map.setGameRule(GameRule.LOCATOR_BAR, false);
 		map.setPVP(false);
 	}
 

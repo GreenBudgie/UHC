@@ -33,6 +33,7 @@ public class Lobby {
         lobby.setGameRule(GameRule.NATURAL_HEALTH_REGENERATION, false);
         lobby.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
         lobby.setGameRule(GameRule.IMMEDIATE_RESPAWN, true);
+        lobby.setGameRule(GameRule.LOCATOR_BAR, false);
 
         removeMapDatFiles();
 
