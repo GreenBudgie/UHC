@@ -9,7 +9,9 @@ import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.drop.marker.DropMarker;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.mutator.manager.MutatorManager;
+import ru.greenbudgie.util.ChatHelper;
 import ru.greenbudgie.util.LocationFormatter;
+import ru.greenbudgie.util.item.ItemUtils;
 import ru.greenbudgie.util.item.Localizer;
 import ru.greenbudgie.util.weighted.WeightedItemList;
 
@@ -60,7 +62,7 @@ public abstract class Drop {
     }
 
     public void update() {
-        if (!isAnnounced && timer <= getDefaultDropDelay() && timer > 0) {
+        if (!isAnnounced && timer <= getDefaultDropDelay() / 2 && timer > 0) {
             announceItemInChat(true);
         }
     }
@@ -74,16 +76,17 @@ public abstract class Drop {
             return;
         }
 
-        var itemInfo = AQUA + "" + BOLD + itemToDrop.getAmount() +
-                RESET + WHITE + meta.getDisplayName();
-        var vertLine = DARK_GRAY + "" + BOLD + "∫" + RESET;
+        var vertLine = DARK_GRAY + "" + BOLD + "∫ " + RESET;
+        var prefix = isDroppingSoon
+                ? vertLine + getName() + WHITE + " скоро выпадет: "
+                : vertLine;
+        var amount = itemToDrop.getAmount() > 1
+                ? AQUA + "" + BOLD + itemToDrop.getAmount() + RESET + " "
+                : "";
+        var name = ItemUtils.getLocalizedName(itemToDrop, GOLD);
 
         for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
-            if (isDroppingSoon) {
-                p.sendMessage(vertLine + getName() + WHITE + " скоро выпадет: " + itemInfo);
-            } else {
-                p.sendMessage(vertLine + itemInfo);
-            }
+            ChatHelper.send(p, prefix, amount, name);
 
             for (var enchantment : itemToDrop.getEnchantments().keySet()) {
                 var level = itemToDrop.getEnchantmentLevel(enchantment);

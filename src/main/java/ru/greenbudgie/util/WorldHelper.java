@@ -362,10 +362,11 @@ public class WorldHelper {
 			if(!world.getWorldBorder().isInside(tpLoc)) {
 				continue;
 			}
-			if(!isSafeTeleportDestination(tpLoc)) {
+			Location safeLoc = findSafeGroundDownwards(tpLoc);
+			if(safeLoc == null) {
 				continue;
 			}
-			if(entity.teleport(tpLoc)) {
+			if(entity.teleport(safeLoc)) {
 				if(playSound) {
 					world.playSound(entity.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
 					world.playSound(new Location(world, x, y, z), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
@@ -379,13 +380,28 @@ public class WorldHelper {
 		chorusTeleport(e, range, true);
 	}
 
-	private static boolean isSafeTeleportDestination(Location loc) {
-		Block feet = loc.getBlock();
-		Block head = feet.getRelative(BlockFace.UP);
-		Block ground = feet.getRelative(BlockFace.DOWN);
-		if(!feet.isPassable() || !head.isPassable()) return false;
-		if(feet.isLiquid() || head.isLiquid()) return false;
-		return ground.getType().isSolid();
+	private static Location findSafeGroundDownwards(Location start) {
+		World world = start.getWorld();
+		int minY = world.getMinHeight();
+		Block feet = start.getBlock();
+		while(feet.getY() > minY) {
+			Block below = feet.getRelative(BlockFace.DOWN);
+			if(below.getType().isSolid()) {
+				Block head = feet.getRelative(BlockFace.UP);
+				if(feet.isPassable() && head.isPassable() && !feet.isLiquid() && !head.isLiquid()) {
+					return new Location(
+							world,
+							start.getX(),
+							feet.getY(),
+							start.getZ(),
+							start.getYaw(),
+							start.getPitch());
+				}
+				return null;
+			}
+			feet = below;
+		}
+		return null;
 	}
 
 	private static double randomInRange(int range, Random random) {

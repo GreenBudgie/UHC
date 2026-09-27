@@ -1,6 +1,9 @@
 package ru.greenbudgie.util.item;
 
 import com.google.common.collect.Lists;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.*;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -39,6 +42,34 @@ public class ItemUtils {
 		meta.setDisplayName(name);
 		item.setItemMeta(meta);
 		return item;
+	}
+
+	/**
+	 * Returns a component representing the item's visible name.
+	 * Prefers the custom display name, then the item_name component,
+	 * then falls back to a translatable component so the client renders
+	 * the vanilla name in its own locale.
+	 */
+	public static BaseComponent getLocalizedName(ItemStack item) {
+		ItemMeta meta = item.getItemMeta();
+		if (meta != null) {
+			if (meta.hasDisplayName()) {
+				return new TextComponent(ChatColor.stripColor(meta.getDisplayName()));
+			}
+			if (meta.hasItemName()) {
+				return new TextComponent(ChatColor.stripColor(meta.getItemName()));
+			}
+		}
+		return new TranslatableComponent(item.getTranslationKey());
+	}
+
+	/**
+	 * Same as {@link #getLocalizedName(ItemStack)}, but pre-colors the returned component.
+	 */
+	public static BaseComponent getLocalizedName(ItemStack item, ChatColor color) {
+		BaseComponent component = getLocalizedName(item);
+		component.setColor(color.asBungee());
+		return component;
 	}
 
 	/**
