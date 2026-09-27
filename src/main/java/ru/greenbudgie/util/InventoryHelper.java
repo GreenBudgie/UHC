@@ -16,7 +16,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.*;
@@ -513,8 +512,7 @@ public class InventoryHelper {
 
 	public static ItemStack setItemGlowing(ItemStack item) {
 		ItemMeta itemMeta = item.getItemMeta();
-		itemMeta.addEnchant(Enchantment.RESPIRATION, 1, true);
-		itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		itemMeta.setEnchantmentGlintOverride(true);
 		item.setItemMeta(itemMeta);
 		return item;
 	}

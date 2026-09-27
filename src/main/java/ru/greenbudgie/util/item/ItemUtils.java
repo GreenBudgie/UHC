@@ -2,7 +2,6 @@ package ru.greenbudgie.util.item;
 
 import com.google.common.collect.Lists;
 import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -118,14 +117,9 @@ public class ItemUtils {
 		return addSplittedLore(item, lore, 25);
 	}
 
-	/**
-	 * Makes item glow: adds an oxygen enchantment and hides it
-	 * @param item An item
-	 */
 	public static ItemStack addGlow(ItemStack item) {
 		ItemMeta itemMeta = item.getItemMeta();
-		itemMeta.addEnchant(Enchantment.RESPIRATION, 1, true);
-		itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		itemMeta.setEnchantmentGlintOverride(true);
 		item.setItemMeta(itemMeta);
 		return item;
 	}
@@ -484,8 +478,7 @@ public class ItemUtils {
 
 		public Builder withGlow() {
 			if (doNotApply()) return this;
-			meta.addEnchant(Enchantment.RESPIRATION, 1, true);
-			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			meta.setEnchantmentGlintOverride(true);
 			return this;
 		}
 
