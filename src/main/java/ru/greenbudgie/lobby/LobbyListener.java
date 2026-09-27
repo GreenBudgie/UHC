@@ -26,6 +26,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.lobby.game.LobbyGameManager;
 import ru.greenbudgie.util.TaskManager;
+import ru.greenbudgie.util.WorldHelper;
 
 public class LobbyListener implements Listener {
 
@@ -147,7 +148,7 @@ public class LobbyListener implements Listener {
         event.getDrops().clear();
         event.setKeepInventory(true);
         if(isInLobbyOrArena(player) && !LobbyGameManager.PVP_ARENA.isOnArena(player)) {
-            UHC.redirectRespawn(player, player.getWorld().getSpawnLocation());
+            UHC.redirectRespawn(player, WorldHelper.getSpawnLocation(player.getWorld()));
         }
     }
 

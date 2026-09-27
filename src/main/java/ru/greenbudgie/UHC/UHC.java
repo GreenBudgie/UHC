@@ -389,10 +389,11 @@ public class UHC implements Listener {
 				inGamePlayer.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
 				resetPlayer(inGamePlayer);
 				inGamePlayer.setGameMode(GameMode.ADVENTURE);
+				Location lobbySpawn = WorldHelper.getSpawnLocation(Lobby.getLobby());
 				if(inGamePlayer.isDead()) {
-					redirectRespawn(inGamePlayer, Lobby.getLobby().getSpawnLocation());
+					redirectRespawn(inGamePlayer, lobbySpawn);
 				} else {
-					inGamePlayer.teleport(Lobby.getLobby().getSpawnLocation());
+					inGamePlayer.teleport(lobbySpawn);
 				}
 			}
 			for(UHCPlayer uhcPlayer : PlayerManager.getPlayers()) {
@@ -815,8 +816,9 @@ public class UHC implements Listener {
 					skip = false;
 					state = GameState.DEATHMATCH;
 					arenaTimer = DEATHMATCH_START_TIMER;
+					Location arenaSpawn = WorldHelper.getSpawnLocation(ArenaManager.getCurrentArena().getWorld());
 					for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
-						inGamePlayer.teleport(ArenaManager.getCurrentArena().getWorld().getSpawnLocation());
+						inGamePlayer.teleport(arenaSpawn);
 						inGamePlayer.sendTitle(DARK_RED + "" + BOLD + "Дезматч" + GRAY + "!",
 								DARK_AQUA + "" + BOLD + DEATHMATCH_NO_PVP_DURATION +
 										RESET + GOLD + " секунд до " +
@@ -826,7 +828,7 @@ public class UHC implements Listener {
 					}
 					for(UHCPlayer offlinePlayer : PlayerManager.getAlivePlayers()) {
 						if(!offlinePlayer.isOnline()) {
-							offlinePlayer.teleport(ArenaManager.getCurrentArena().getWorld().getSpawnLocation());
+							offlinePlayer.teleport(arenaSpawn);
 						}
 					}
 				}
@@ -1456,7 +1458,7 @@ public class UHC implements Listener {
 			player.sendMessage(joinMessage);
 			TaskManager.invokeLater(() -> {
 				if(!Lobby.isInLobbyOrWatchingArena(player)) {
-					player.teleport(Lobby.getLobby().getSpawnLocation());
+					player.teleport(WorldHelper.getSpawnLocation(Lobby.getLobby()));
 					player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
 					resetPlayer(player);
 				}

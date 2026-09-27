@@ -18,6 +18,7 @@ import org.bukkit.map.MapView;
 import ru.greenbudgie.UHC.WorldManager;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.Region;
+import ru.greenbudgie.util.WorldHelper;
 
 import java.awt.*;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class LobbyMapPreview {
             yLength = yRealLength;
         }
 
-        Location worldCenter = WorldManager.getGameMap().getSpawnLocation();
+        Location worldCenter = WorldHelper.getSpawnLocation(WorldManager.getGameMap());
 
         int maxLength = Math.max(xLength, yLength);
         int chunksToShow = 12; //How many chunks in row to render on the entire preview

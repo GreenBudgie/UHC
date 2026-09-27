@@ -5,9 +5,9 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.greenbudgie.lobby.Lobby;
+import ru.greenbudgie.util.WorldHelper;
 
-import static org.bukkit.ChatColor.AQUA;
-import static org.bukkit.ChatColor.GRAY;
+import static org.bukkit.ChatColor.*;
 
 public class LobbySignReturnLobby extends LobbySign {
 
@@ -28,7 +28,7 @@ public class LobbySignReturnLobby extends LobbySign {
 
     @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
-        clicker.teleport(Lobby.getLobby().getSpawnLocation());
+        clicker.teleport(WorldHelper.getSpawnLocation(Lobby.getLobby()));
     }
 
     @Override

@@ -5,6 +5,7 @@ import ru.greenbudgie.lobby.LobbyMapPreview;
 import ru.greenbudgie.lobby.sign.SignManager;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.TaskManager;
+import ru.greenbudgie.util.WorldHelper;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class WorldManager {
 			gameMap = Bukkit.createWorld(new WorldCreator("CurrentMap"));
 			gameMap.setDifficulty(Difficulty.HARD);
 			gameMap.setGameRule(GameRule.LOCATOR_BAR, false);
-			spawnLocation = gameMap.getSpawnLocation().clone();
+			spawnLocation = WorldHelper.getSpawnLocation(gameMap);
 			LobbyMapPreview.setPreview();
 		} else {
 			generateAndSetGameMap();
@@ -57,7 +58,7 @@ public class WorldManager {
 	private static void generateAndSetGameMap() {
 		World map = Bukkit.createWorld(new WorldCreator("CurrentMap"));
 		setRules(map);
-		spawnLocation = map.getSpawnLocation().clone();
+		spawnLocation = WorldHelper.getSpawnLocation(map);
 		gameMap = map;
 		LobbyMapPreview.setPreview();
 	}

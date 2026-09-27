@@ -20,6 +20,17 @@ public class WorldHelper {
 		return w.getEnvironment() == World.Environment.NORMAL && w.getTime() >= 0 && w.getTime() <= 12000;
 	}
 
+	/**
+	 * Returns the world's spawn location with its world reference forcibly set to the given world.
+	 * Bukkit sometimes returns a Location whose world points to a different (e.g. template) world,
+	 * which silently breaks cross-world teleports.
+	 */
+	public static Location getSpawnLocation(World world) {
+		Location loc = world.getSpawnLocation();
+		loc.setWorld(world);
+		return loc;
+	}
+
 	public static boolean isBadMob(EntityType t) {
 		return t == EntityType.ZOMBIE || t == EntityType.SKELETON || t == EntityType.WITHER_SKELETON || t == EntityType.SHULKER || t == EntityType.SLIME
 				|| t == EntityType.SILVERFISH || t == EntityType.ENDERMAN || t == EntityType.SPIDER || t == EntityType.CAVE_SPIDER || t == EntityType.ZOMBIE_VILLAGER

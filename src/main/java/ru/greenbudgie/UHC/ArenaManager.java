@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.MathUtils;
+import ru.greenbudgie.util.WorldHelper;
 import ru.greenbudgie.util.item.ItemUtils;
 
 import javax.annotation.Nonnull;
@@ -142,6 +143,7 @@ public class ArenaManager implements Listener {
         } else {
             currentArena = chosenArena.cloneAsTemp();
         }
+        setupArenaWorld(currentArena.getWorld());
         resetArenaBorder(currentArena);
         currentArena.getWorld().setGameRule(GameRule.BLOCK_DROPS, false);
         needsUpdate = false;
@@ -236,7 +238,7 @@ public class ArenaManager implements Listener {
         if (!Lobby.isInLobbyOrWatchingArena(player)) {
             return;
         }
-        player.teleport(arena.getWorld().getSpawnLocation());
+        player.teleport(WorldHelper.getSpawnLocation(arena.getWorld()));
         player.sendMessage(WHITE + "Просмотр арены - " + DARK_GREEN + arena.getName());
         if(!arena.isOpen()) {
             player.sendMessage(WHITE + "Это " +

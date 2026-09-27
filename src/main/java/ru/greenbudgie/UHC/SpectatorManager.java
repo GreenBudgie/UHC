@@ -25,6 +25,7 @@ import ru.greenbudgie.event.SpectatorJoinEvent;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.TaskManager;
+import ru.greenbudgie.util.WorldHelper;
 import ru.greenbudgie.util.item.ItemUtils;
 
 import java.util.HashSet;
@@ -128,7 +129,7 @@ public class SpectatorManager implements Listener {
         preparePlayerToSpectate(player);
         Location teleportLocation;
         if (UHC.state.isDeathmatch()) {
-            teleportLocation = ArenaManager.getCurrentArena().getWorld().getSpawnLocation();
+            teleportLocation = WorldHelper.getSpawnLocation(ArenaManager.getCurrentArena().getWorld());
         } else {
             teleportLocation = WorldManager.spawnLocation;
         }
@@ -250,15 +251,15 @@ public class SpectatorManager implements Listener {
             return;
         }
         if (type == TELEPORT_OVERWORLD_ITEM.getType()) {
-            SafeTeleport.performSafeTeleport(player, WorldManager.getGameMap().getSpawnLocation());
+            SafeTeleport.performSafeTeleport(player, WorldHelper.getSpawnLocation(WorldManager.getGameMap()));
             return;
         }
         if (type == TELEPORT_NETHER_ITEM.getType()) {
-            SafeTeleport.performSafeTeleport(player, WorldManager.getGameMapNether().getSpawnLocation());
+            SafeTeleport.performSafeTeleport(player, WorldHelper.getSpawnLocation(WorldManager.getGameMapNether()));
             return;
         }
         if (type == TELEPORT_ARENA_ITEM.getType()) {
-            SafeTeleport.performSafeTeleport(player, ArenaManager.getCurrentArena().getWorld().getSpawnLocation());
+            SafeTeleport.performSafeTeleport(player, WorldHelper.getSpawnLocation(ArenaManager.getCurrentArena().getWorld()));
         }
         if (type == RETURN_LOBBY_ITEM.getType()) {
             Lobby.returnPlayerToLobby(player);

@@ -12,6 +12,7 @@ import ru.greenbudgie.lobby.game.LobbyGameManager;
 import ru.greenbudgie.lobby.sign.LobbySign;
 import ru.greenbudgie.lobby.sign.SignManager;
 import ru.greenbudgie.main.UHCPlugin;
+import ru.greenbudgie.util.WorldHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -136,14 +137,14 @@ public class Lobby {
         }
         if (isInLobbyOrWatchingArena(player)) {
             player.getActivePotionEffects().forEach(effect -> player.removePotionEffect(effect.getType()));
-            player.teleport(Lobby.getLobby().getSpawnLocation());
+            player.teleport(WorldHelper.getSpawnLocation(Lobby.getLobby()));
         }
     }
 
     private static void returnSpectatorToLobby(Player spectator) {
         UHC.resetPlayer(spectator);
         spectator.setGameMode(GameMode.ADVENTURE);
-        SafeTeleport.performSafeTeleport(spectator, Lobby.getLobby().getSpawnLocation());
+        SafeTeleport.performSafeTeleport(spectator, WorldHelper.getSpawnLocation(Lobby.getLobby()));
         PlayerManager.unregisterSpectator(spectator);
         for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
             inGamePlayer.sendMessage(

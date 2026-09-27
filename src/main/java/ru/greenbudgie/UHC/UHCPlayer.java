@@ -18,6 +18,7 @@ import ru.greenbudgie.rating.PlayerSummary;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.ParticleUtils;
 import ru.greenbudgie.util.TaskManager;
+import ru.greenbudgie.util.WorldHelper;
 import ru.greenbudgie.util.item.ItemUtils;
 
 import javax.annotation.Nullable;
@@ -461,10 +462,11 @@ public class UHCPlayer {
         state = State.SPECTATING;
         if(player != null) {
             if(player.getLocation().getY() < player.getWorld().getMinHeight()) {
+                Location worldSpawn = WorldHelper.getSpawnLocation(player.getWorld());
                 if(player.isDead()) {
-                    UHC.redirectRespawn(player, player.getWorld().getSpawnLocation());
+                    UHC.redirectRespawn(player, worldSpawn);
                 } else {
-                    player.teleport(player.getWorld().getSpawnLocation());
+                    player.teleport(worldSpawn);
                 }
             }
             SpectatorManager.preparePlayerToSpectate(player);
