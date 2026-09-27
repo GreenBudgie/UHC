@@ -24,6 +24,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+import ru.greenbudgie.UHC.UHC;
 import ru.greenbudgie.event.BeforeGameInitializeEvent;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.lobby.game.LobbyGame;
@@ -608,7 +609,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
             }
         }
         SignManager.updateTextOnSigns();
-        player.teleport(spawnLocation);
+        UHC.redirectRespawn(player, spawnLocation);
         TaskManager.invokeLater(() -> player.setVelocity(new Vector(0, 0, 0)));
     }
 

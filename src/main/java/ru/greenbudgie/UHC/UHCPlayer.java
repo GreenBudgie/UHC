@@ -263,7 +263,6 @@ public class UHCPlayer {
             }
         }
 
-        UHC.recalculateTimeOnPlayerDeath();
         UHC.tryWin();
     }
 
@@ -462,7 +461,11 @@ public class UHCPlayer {
         state = State.SPECTATING;
         if(player != null) {
             if(player.getLocation().getY() < player.getWorld().getMinHeight()) {
-                player.teleport(player.getWorld().getSpawnLocation());
+                if(player.isDead()) {
+                    UHC.redirectRespawn(player, player.getWorld().getSpawnLocation());
+                } else {
+                    player.teleport(player.getWorld().getSpawnLocation());
+                }
             }
             SpectatorManager.preparePlayerToSpectate(player);
             PlayerManager.registerSpectator(player);

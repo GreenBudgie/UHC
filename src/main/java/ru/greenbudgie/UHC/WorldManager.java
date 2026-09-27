@@ -78,7 +78,7 @@ public class WorldManager {
 		map.setGameRule(GameRule.NATURAL_HEALTH_REGENERATION, false);
 		map.setGameRule(GameRule.ADVANCE_TIME, false);
 		map.setGameRule(GameRule.ADVANCE_WEATHER, false);
-		map.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
+		map.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, true);
 		map.setGameRule(GameRule.SPAWN_PHANTOMS, false);
 		map.setGameRule(GameRule.LOCATOR_BAR, false);
 		map.setPVP(false);

@@ -144,11 +144,10 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void lobbyDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        UHC.heal(player);
         event.getDrops().clear();
         event.setKeepInventory(true);
         if(isInLobbyOrArena(player) && !LobbyGameManager.PVP_ARENA.isOnArena(player)) {
-            player.teleport(player.getWorld().getSpawnLocation());
+            UHC.redirectRespawn(player, player.getWorld().getSpawnLocation());
         }
     }
 

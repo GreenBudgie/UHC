@@ -63,6 +63,7 @@ public class UHC implements Listener {
 
 	public static boolean playing = false;
 	public static GameState state = GameState.STOPPED;
+	private static final Map<UUID, Location> pendingRespawn = new HashMap<>();
 	public static Map<Player, Boolean> voteResults = new HashMap<>();
 	public static int voteTimer = 0;
 	public static int preparingTimer = 0;
@@ -388,7 +389,11 @@ public class UHC implements Listener {
 				inGamePlayer.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
 				resetPlayer(inGamePlayer);
 				inGamePlayer.setGameMode(GameMode.ADVENTURE);
-				inGamePlayer.teleport(Lobby.getLobby().getSpawnLocation());
+				if(inGamePlayer.isDead()) {
+					redirectRespawn(inGamePlayer, Lobby.getLobby().getSpawnLocation());
+				} else {
+					inGamePlayer.teleport(Lobby.getLobby().getSpawnLocation());
+				}
 			}
 			for(UHCPlayer uhcPlayer : PlayerManager.getPlayers()) {
 				if(uhcPlayer.getGhost() != null) uhcPlayer.getGhost().remove();
@@ -995,9 +1000,13 @@ public class UHC implements Listener {
 
 	public static void tryWin() {
 		List<PlayerTeam> aliveTeams = PlayerManager.getAliveTeams();
-		if(aliveTeams.size() == 0) endGame();
-		if(aliveTeams.size() <= 1 && state.isPreGame()) {
+		if(aliveTeams.size() == 0) {
 			endGame();
+			return;
+		}
+		if(aliveTeams.size() == 1 && state.isPreGame()) {
+			endGame();
+			return;
 		}
 		if(aliveTeams.size() == 1) {
 			PlayerTeam team = aliveTeams.get(0);
@@ -1052,41 +1061,6 @@ public class UHC implements Listener {
 					}
 				}
 			}
-		}
-	}
-
-	public static void recalculateTimeOnPlayerDeath() {
-		int alivePlayers = PlayerManager.getAlivePlayers().size();
-		boolean fewPlayers = alivePlayers <= 4 && alivePlayers > 1;
-		if (!fewPlayers) {
-			return;
-		}
-		if(state == GameState.OUTBREAK) {
-			int minOutbreakTime = 60;
-			if (outbreakTimer < minOutbreakTime) {
-				return;
-			}
-			int outbreakTimeDecrease = 150;
-			outbreakTimer = Math.max(outbreakTimer - outbreakTimeDecrease, minOutbreakTime);
-			announceTimeChanged(alivePlayers);
-			return;
-		}
-		if(state == GameState.GAME) {
-			int minGameTime = 600;
-			if (deathmatchTimer < minGameTime) {
-				return;
-			}
-			int gameTimeDecrease = 300;
-			deathmatchTimer = Math.max(deathmatchTimer - gameTimeDecrease, minGameTime);
-			announceTimeChanged(alivePlayers);
-		}
-	}
-
-	private static void announceTimeChanged(int alivePlayersNumber) {
-		for(Player player : PlayerManager.getInGamePlayersAndSpectators()) {
-			player.playSound(player.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 0.5F, 1.2F);
-			player.sendMessage(GRAY + "В живых осталось " + AQUA + BOLD + alivePlayersNumber +
-					GRAY + " игрока. " + DARK_RED + BOLD + "Время сокращено!");
 		}
 	}
 
@@ -1184,6 +1158,9 @@ public class UHC implements Listener {
 	}
 
 	public static void heal(Player p) {
+		if(p.isDead()) {
+			return;
+		}
 		p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getBaseValue());
 		p.setSaturation(20);
 		p.setExhaustion(20);
@@ -1315,6 +1292,27 @@ public class UHC implements Listener {
 		UHCPlayer uplayer = PlayerManager.asUHCPlayer(player);
 		if(uplayer != null) {
 			uplayer.kill();
+		}
+	}
+
+	public static void redirectRespawn(Player player, Location location) {
+		pendingRespawn.put(player.getUniqueId(), location);
+	}
+
+	@EventHandler
+	public void respawn(PlayerRespawnEvent e) {
+		Player player = e.getPlayer();
+		Location pending = pendingRespawn.remove(player.getUniqueId());
+		if (pending != null) {
+			e.setRespawnLocation(pending);
+		} else {
+			e.setRespawnLocation(player.getLocation());
+		}
+		if (PlayerManager.isSpectator(player)) {
+			player.addPotionEffect(new PotionEffect(
+					PotionEffectType.NIGHT_VISION,
+					PotionEffect.INFINITE_DURATION,
+					0, false, false));
 		}
 	}
 

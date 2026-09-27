@@ -103,7 +103,7 @@ public class ArenaManager implements Listener {
         world.setGameRule(GameRule.ADVANCE_TIME, false);
         world.setGameRule(GameRule.ADVANCE_WEATHER, false);
         world.setGameRule(GameRule.SPAWN_MOBS, false);
-        world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
+        world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, true);
         world.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
         world.setGameRule(GameRule.IMMEDIATE_RESPAWN, true);
         world.setGameRule(GameRule.SPAWN_PHANTOMS, false);
