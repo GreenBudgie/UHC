@@ -72,6 +72,7 @@ public class UHCPlugin extends JavaPlugin {
 		pm.registerEvents(new TutorialInventory(), this);
 		pm.registerEvents(new PiglinBarterManager(), this);
 		pm.registerEvents(new DropsPreviewInventory(), this);
+		pm.registerEvents(new CraftingTweaks(), this);
 		InventoryBuilderMutator.registerListener();
 		InventoryBuilderRating.registerListener();
 

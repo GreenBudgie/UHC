@@ -307,7 +307,7 @@ public class UHCPlayer {
             return;
         }
 
-        killer.addOfflineHealth(4);
+        killer.addOfflineHealth(6);
     }
 
     private void showDeathMessage() {
