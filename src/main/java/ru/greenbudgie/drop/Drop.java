@@ -1,12 +1,17 @@
 package ru.greenbudgie.drop;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scoreboard.Scoreboard;
+import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.drop.marker.DropMarker;
+import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.mutator.manager.MutatorManager;
 import ru.greenbudgie.util.LocationFormatter;
+import ru.greenbudgie.util.item.Localizer;
+import ru.greenbudgie.util.weighted.WeightedItemList;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -18,6 +23,8 @@ public abstract class Drop {
 
     protected int timer;
     protected Location location;
+    protected ItemStack itemToDrop;
+    protected boolean isAnnounced = false;
 
     @Nullable
     protected DropMarker<?> currentMarker = null;
@@ -29,10 +36,13 @@ public abstract class Drop {
 
     public abstract String getName();
     public abstract int getDefaultDropDelay();
+    public abstract int getFirstDropDelay();
     public abstract void drop();
     public abstract Location getRandomLocation();
     public abstract ChatColor getMarkerColor();
     public abstract DropMarker<?> createMarker();
+    public abstract WeightedItemList getWeightedItemList();
+    public abstract Material getRepresentingItem();
 
     public void setup() {
         timer = getDefaultDropDelay();
@@ -41,13 +51,54 @@ public abstract class Drop {
         location = getRandomLocation();
         currentMarker = createMarker();
         markers.add(currentMarker);
+        itemToDrop = getWeightedItemList().getRandomElementWeighted().getItem();
+        isAnnounced = false;
     }
 
     public World.Environment getSpawnEnvironment() {
         return World.Environment.NORMAL;
     }
 
-    public void update() {}
+    public void update() {
+        if (!isAnnounced && timer <= getDefaultDropDelay() && timer > 0) {
+            announceItemInChat(true);
+        }
+    }
+
+    public void announceItemInChat(boolean isDroppingSoon) {
+        isAnnounced = true;
+
+        var meta = itemToDrop.getItemMeta();
+        if (meta == null) {
+            UHCPlugin.error("Item to drop has no meta");
+            return;
+        }
+
+        var itemInfo = AQUA + "" + BOLD + itemToDrop.getAmount() +
+                RESET + WHITE + meta.getDisplayName();
+        var vertLine = DARK_GRAY + "" + BOLD + "∫" + RESET;
+
+        for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
+            if (isDroppingSoon) {
+                p.sendMessage(vertLine + getName() + WHITE + " скоро выпадет: " + itemInfo);
+            } else {
+                p.sendMessage(vertLine + itemInfo);
+            }
+
+            for (var enchantment : itemToDrop.getEnchantments().keySet()) {
+                var level = itemToDrop.getEnchantmentLevel(enchantment);
+                p.sendMessage(vertLine + " " + GRAY + Localizer.localize(enchantment, level));
+            }
+
+            if (meta instanceof PotionMeta potionMeta) {
+                for (var effect : potionMeta.getCustomEffects()) {
+                    p.sendMessage(vertLine + " " + Localizer.localizePotionEffect(effect));
+                }
+            }
+
+            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 0.5F, 0.5F);
+        }
+    }
 
     public String getCoordinatesInfo(@Nullable Location playerLocation) {
         if (playerLocation == null) {

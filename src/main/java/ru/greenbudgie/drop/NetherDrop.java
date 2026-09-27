@@ -1,12 +1,15 @@
 package ru.greenbudgie.drop;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.WorldManager;
-import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.util.MathUtils;
+import ru.greenbudgie.util.PotionEffectBuilder;
+import ru.greenbudgie.util.item.ItemUtils;
+import ru.greenbudgie.util.weighted.WeightedEnchantedItem;
+import ru.greenbudgie.util.weighted.WeightedEnchantment;
 import ru.greenbudgie.util.weighted.WeightedItem;
 import ru.greenbudgie.util.weighted.WeightedItemList;
 
@@ -14,25 +17,70 @@ import static org.bukkit.ChatColor.*;
 
 public class NetherDrop extends ChestBasedDrop {
 
-    private static final WeightedItemList FILLERS = new WeightedItemList(
-            WeightedItem.builder(Material.NETHER_WART).amount(1, 2).weight(4).build(),
-            WeightedItem.builder(Material.PORKCHOP).amount(2, 2).weight(3).build(),
-            WeightedItem.builder(Material.GOLDEN_CARROT).amount(1, 2).weight(3).build(),
-            WeightedItem.builder(Material.FERMENTED_SPIDER_EYE).amount(1, 2).weight(3).build(),
-            WeightedItem.builder(Material.BLAZE_POWDER).weight(3).build(),
-            WeightedItem.builder(Material.GOLD_NUGGET).amount(5, 14).weight(3).build(),
-            WeightedItem.builder(Material.MAGMA_CREAM).weight(3).build(),
-            WeightedItem.builder(Material.GUNPOWDER).amount(1, 3).weight(3).build(),
-            WeightedItem.builder(Material.FIRE_CHARGE).weight(3).build(),
-            WeightedItem.builder(Material.COAL).amount(3, 6).weight(3).build(),
-            WeightedItem.builder(Material.GLOWSTONE).amount(3, 6).weight(3).build(),
-            WeightedItem.builder(Material.BROWN_MUSHROOM).amount(2, 4).weight(3).build(),
-            WeightedItem.builder(Material.RED_MUSHROOM).amount(2, 4).weight(3).build(),
-            WeightedItem.builder(Material.GLASS_BOTTLE).amount(1, 3).weight(3).build(),
-            WeightedItem.builder(CustomItems.darkArtifact.getItemStack()).amount(2, 3).weight(2).build(),
-            WeightedItem.builder(Material.ANCIENT_DEBRIS).amount(3, 6).weight(1).build()
+    private static final ItemStack regenerationPotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Potion of Regeneration")
+            .withColor(Color.fromRGB(255, 182, 243))
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.REGENERATION).seconds(30).amplifier(2).build()
+            ).build();
+
+    private static final WeightedItemList weightedDrops = new WeightedItemList(
+            WeightedItem.builder(regenerationPotion).build(),
+
+            WeightedEnchantedItem.item(Material.NETHERITE_BOOTS)
+                    .alwaysEnchant(
+                            WeightedEnchantment.builder(Enchantment.PROTECTION).level(2, 3).build()
+                    ).weightedEnchantments(
+                            WeightedEnchantment.builder(Enchantment.FEATHER_FALLING).level(3, 4).build()
+                    ).number(0, 1).build(),
+
+            WeightedEnchantedItem.item(Material.NETHERITE_LEGGINGS)
+                    .alwaysEnchant(
+                            WeightedEnchantment.builder(Enchantment.PROTECTION).level(2, 3).build()
+                    )
+                    .weightedEnchantments(
+                            WeightedEnchantment.builder(Enchantment.FIRE_PROTECTION).level(2, 3).build()
+                    ).number(0, 1).build(),
+
+            WeightedEnchantedItem.item(Material.NETHERITE_CHESTPLATE)
+                    .alwaysEnchant(
+                            WeightedEnchantment.builder(Enchantment.PROTECTION).level(2, 3).build()
+                    ).weightedEnchantments(
+                            WeightedEnchantment.builder(Enchantment.BLAST_PROTECTION).level(2, 3).build(),
+                            WeightedEnchantment.builder(Enchantment.THORNS).level(2).build()
+                    ).number(0, 1).build(),
+
+            WeightedEnchantedItem.item(Material.NETHERITE_HELMET)
+                    .alwaysEnchant(
+                            WeightedEnchantment.builder(Enchantment.PROTECTION).level(2, 3).build()
+                    )
+                    .weightedEnchantments(
+                            WeightedEnchantment.builder(Enchantment.PROJECTILE_PROTECTION).level(2, 3).build()
+                    ).number(0, 1).build(),
+
+            WeightedEnchantedItem.item(Material.BOW).alwaysEnchant(
+                    WeightedEnchantment.builder(Enchantment.POWER).level(2, 3).build(),
+                    WeightedEnchantment.builder(Enchantment.INFINITY).build(),
+                    WeightedEnchantment.builder(Enchantment.FLAME).build()
+            ).build(),
+
+            WeightedEnchantedItem.item(Material.NETHERITE_SWORD).alwaysEnchant(
+                    WeightedEnchantment.builder(Enchantment.SHARPNESS).level(3, 5).build(),
+                    WeightedEnchantment.builder(Enchantment.FIRE_ASPECT).level(1).build()
+            ).build()
     );
 
+    private static final WeightedItemList FILLERS = new WeightedItemList(
+            WeightedItem.builder(Material.NETHER_WART).amount(3, 6).weight(3).build(),
+            WeightedItem.builder(Material.PORKCHOP).amount(4, 6).weight(3).build(),
+            WeightedItem.builder(Material.GOLDEN_CARROT).amount(4, 6).weight(3).build(),
+            WeightedItem.builder(Material.FERMENTED_SPIDER_EYE).amount(1, 2).weight(3).build(),
+            WeightedItem.builder(Material.BLAZE_POWDER).weight(3).build(),
+            WeightedItem.builder(Material.GOLD_INGOT).amount(5, 10).weight(3).build(),
+            WeightedItem.builder(Material.MAGMA_CREAM).weight(3).build(),
+            WeightedItem.builder(Material.GUNPOWDER).amount(1, 3).weight(3).build(),
+            WeightedItem.builder(Material.ANCIENT_DEBRIS).amount(1, 2).weight(1).build()
+    );
 
     @Override
     public String getName() {
@@ -41,7 +89,12 @@ public class NetherDrop extends ChestBasedDrop {
 
     @Override
     public int getDefaultDropDelay() {
-        return 1080;
+        return 7 * 60;
+    }
+
+    @Override
+    public int getFirstDropDelay() {
+        return 3 * 60 + 40;
     }
 
     @Override
@@ -69,18 +122,13 @@ public class NetherDrop extends ChestBasedDrop {
     }
 
     @Override
-    protected int getMainItemsCount() {
-        return 2;
-    }
-
-    @Override
     protected int getMinFillers() {
-        return 4;
+        return 3;
     }
 
     @Override
     protected int getMaxFillers() {
-        return 7;
+        return 6;
     }
 
     @Override
@@ -91,6 +139,16 @@ public class NetherDrop extends ChestBasedDrop {
     @Override
     public ChatColor getMarkerColor() {
         return DARK_RED;
+    }
+
+    @Override
+    public WeightedItemList getWeightedItemList() {
+        return weightedDrops;
+    }
+
+    @Override
+    public Material getRepresentingItem() {
+        return Material.NETHERRACK;
     }
 
 }

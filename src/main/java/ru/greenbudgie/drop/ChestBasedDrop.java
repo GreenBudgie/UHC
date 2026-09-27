@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.drop.marker.ChestBasedDropMarker;
 import ru.greenbudgie.util.MathUtils;
@@ -48,13 +49,15 @@ public abstract class ChestBasedDrop extends Drop {
             slotsToFill.add(i);
         }
         int fillerNumber = MathUtils.randomRange(getMinFillers(), getMaxFillers());
-        List<WeightedItem> fillers = getFillers().getRandomElementsWeighted(fillerNumber);
-        List<WeightedItem> mainDrops = Drops.getWeightedDropsList().getRandomElementsWeighted(getMainItemsCount());
-        List<WeightedItem> mainItemsAndFillers = Stream.concat(fillers.stream(), mainDrops.stream()).toList();
-        for (WeightedItem item : mainItemsAndFillers) {
+        List<ItemStack> fillers = getFillers().getRandomElementsWeighted(fillerNumber)
+                .stream()
+                .map(WeightedItem::getItem)
+                .toList();
+        List<ItemStack> mainItemAndFillers = Stream.concat(fillers.stream(), Stream.of(itemToDrop)).toList();
+        for (ItemStack item : mainItemAndFillers) {
             int slot = MathUtils.choose(slotsToFill);
             slotsToFill.remove(slot);
-            inv.setItem(slot, item.getItem());
+            inv.setItem(slot, item);
         }
         location.getWorld().playSound(location, Sound.ITEM_FIRECHARGE_USE, 1F, 0.5F);
         ParticleUtils.createParticlesOnRegionEdges(dropRegion, Particle.FLAME, 4, null);
@@ -63,13 +66,10 @@ public abstract class ChestBasedDrop extends Drop {
             p.sendMessage(getChatDropCoordinatesInfo());
             p.playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.5F, 0.5F);
         }
+        announceItemInChat(false);
         if (currentMarker != null) {
             currentMarker.setDropped();
         }
-    }
-
-    protected int getMainItemsCount() {
-        return 1;
     }
 
     protected abstract int getMinFillers();
@@ -82,6 +82,8 @@ public abstract class ChestBasedDrop extends Drop {
 
     @Override
     public void update() {
+        super.update();
+
         if (!TaskManager.isSecUpdated()) {
             return;
         }

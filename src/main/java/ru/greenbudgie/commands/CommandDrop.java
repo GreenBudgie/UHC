@@ -22,19 +22,7 @@ public class CommandDrop implements CommandExecutor, TabCompleter {
 		if (!(sender instanceof Player player)) {
 			return true;
 		}
-		if (args.length >= 1 && args[0].equals("giveRandom")) {
-			int amount = 1;
-			if (args.length >= 2) {
-				amount = Integer.parseInt(args[1]);
-			}
-			boolean repeat = args.length >= 3 && args[2].equals("repeat");
-			List<WeightedItem> items = Drops.getWeightedDropsList().getRandomElementsWeighted(amount, repeat);
-			for (WeightedItem item : items) {
-				player.getWorld().dropItem(player.getLocation(), item.getItem().clone());
-			}
-			return true;
-		}
-		if(args.length == 2) {
+		if(args.length >= 2) {
 			Drop drop = switch(args[0]) {
 				case "air" -> Drops.AIRDROP;
 				case "cave" -> Drops.CAVEDROP;
@@ -57,6 +45,18 @@ public class CommandDrop implements CommandExecutor, TabCompleter {
 				if(args[1].equalsIgnoreCase("tp")) {
 					player.teleport(drop.getLocation());
 				}
+				if (args[1].equals("giveRandom")) {
+					int amount = 1;
+					if (args.length >= 3) {
+						amount = Integer.parseInt(args[2]);
+					}
+					boolean repeat = args.length >= 4 && args[3].equals("repeat");
+					List<WeightedItem> items = drop.getWeightedItemList().getRandomElementsWeighted(amount, repeat);
+					for (WeightedItem item : items) {
+						player.getWorld().dropItem(player.getLocation(), item.getItem().clone());
+					}
+					return true;
+				}
 			} else {
 				player.sendMessage(ChatColor.RED + "Такого дропа не существует");
 			}
@@ -67,13 +67,13 @@ public class CommandDrop implements CommandExecutor, TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
 		if(args.length == 1) {
-			return MathUtils.getListOfStringsMatchingLastWord(args, Lists.newArrayList("air", "cave", "nether", "giveRandom"));
+			return MathUtils.getListOfStringsMatchingLastWord(args, Lists.newArrayList("air", "cave", "nether"));
 		}
-		if(args.length == 2 && !args[0].equals("giveRandom")) {
+		if(args.length == 2) {
 			return MathUtils.getListOfStringsMatchingLastWord(args, Lists.newArrayList(
-					"reset", "drop", "changeloc", "currentloc", "tp"));
+					"reset", "drop", "changeloc", "currentloc", "tp", "giveRandom"));
 		}
-		if(args.length == 3 && args[0].equals("giveRandom")) {
+		if(args.length == 3 && args[1].equals("giveRandom")) {
 			return MathUtils.getListOfStringsMatchingLastWord(args, Lists.newArrayList("repeat"));
 		}
 		return null;

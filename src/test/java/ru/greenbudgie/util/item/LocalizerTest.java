@@ -12,7 +12,7 @@ class LocalizerTest {
 
     @Test
     public void testLocalizeEnchantmentName() {
-        assertEquals("Luck Of The Sea", Localizer.localizeEnchantmentName(Enchantment.LUCK));
+        assertEquals("Luck Of The Sea", Localizer.localizeEnchantmentName(Enchantment.LUCK_OF_THE_SEA));
         assertEquals("Thorns", Localizer.localizeEnchantmentName(Enchantment.THORNS));
         assertEquals("Binding Curse", Localizer.localizeEnchantmentName(Enchantment.BINDING_CURSE));
     }

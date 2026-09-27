@@ -1,11 +1,18 @@
 package ru.greenbudgie.drop;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.WorldManager;
-import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.util.MathUtils;
+import ru.greenbudgie.util.PotionEffectBuilder;
+import ru.greenbudgie.util.item.ItemUtils;
+import ru.greenbudgie.util.weighted.WeightedEnchantedItem;
+import ru.greenbudgie.util.weighted.WeightedEnchantment;
 import ru.greenbudgie.util.weighted.WeightedItem;
 import ru.greenbudgie.util.weighted.WeightedItemList;
 
@@ -13,23 +20,54 @@ import static org.bukkit.ChatColor.*;
 
 public class CaveDrop extends ChestBasedDrop {
 
+    private static final ItemStack minerPotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Potion of Miner")
+            .withColor(Color.ORANGE)
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.HASTE).minutes(15).amplifier(4).build(),
+                    new PotionEffectBuilder(PotionEffectType.NIGHT_VISION).minutes(30).build()
+            ).build();
+
+    private static final WeightedItemList weightedDrops = new WeightedItemList(
+            WeightedItem.builder(minerPotion).build(),
+
+            WeightedEnchantedItem.item(Material.NETHERITE_PICKAXE)
+                    .alwaysEnchant(
+                            WeightedEnchantment.builder(Enchantment.EFFICIENCY).level(5).build(),
+                            WeightedEnchantment.builder(Enchantment.UNBREAKING).level(3).build(),
+                            WeightedEnchantment.builder(Enchantment.FORTUNE).level(1, 3).build()
+                    ).build(),
+
+            WeightedItem.builder(Material.DIAMOND).amount(12, 20).build(),
+
+            WeightedEnchantedItem.item(Material.DIAMOND_HELMET).alwaysEnchant(
+                    WeightedEnchantment.builder(Enchantment.PROTECTION).level(1).build()
+            ).build(),
+
+            WeightedEnchantedItem.item(Material.DIAMOND_CHESTPLATE).alwaysEnchant(
+                    WeightedEnchantment.builder(Enchantment.PROTECTION).level(1).build()
+            ).build(),
+
+            WeightedEnchantedItem.item(Material.DIAMOND_LEGGINGS).alwaysEnchant(
+                    WeightedEnchantment.builder(Enchantment.PROTECTION).level(1).build()
+            ).build(),
+
+            WeightedEnchantedItem.item(Material.DIAMOND_BOOTS).alwaysEnchant(
+                    WeightedEnchantment.builder(Enchantment.PROTECTION).level(1).build()
+            ).build()
+    );
+
+
     private static final WeightedItemList FILLERS = new WeightedItemList(
-            WeightedItem.builder(Material.STRING).amount(1, 3).weight(3).build(),
-            WeightedItem.builder(Material.FLINT).amount(1, 3).weight(3).build(),
-            WeightedItem.builder(Material.BREAD).amount(1, 3).weight(3).build(),
-            WeightedItem.builder(Material.CARROT).amount(1, 3).weight(3).build(),
-            WeightedItem.builder(Material.FEATHER).amount(1, 3).weight(3).build(),
-            WeightedItem.builder(Material.LEATHER).weight(3).build(),
-            WeightedItem.builder(Material.PAPER).amount(1, 3).weight(3).build(),
-            WeightedItem.builder(Material.LAPIS_LAZULI).amount(1, 3).weight(3).build(),
-            WeightedItem.builder(Material.REDSTONE).amount(2, 5).weight(3).build(),
-            WeightedItem.builder(Material.IRON_INGOT).amount(1, 3).weight(3).build(),
-            WeightedItem.builder(Material.GOLD_INGOT).amount(1, 2).weight(3).build(),
-            WeightedItem.builder(CustomItems.darkArtifact.getItemStack()).weight(3).build(),
-            WeightedItem.builder(Material.APPLE).weight(2).build(),
-            WeightedItem.builder(Material.ARROW).amount(1, 2).weight(2).build(),
-            WeightedItem.builder(Material.OBSIDIAN).amount(1, 4).weight(2).build(),
-            WeightedItem.builder(Material.DIAMOND).weight(1).build()
+            WeightedItem.builder(Material.BREAD).amount(5, 8).weight(3).build(),
+            WeightedItem.builder(Material.LAPIS_LAZULI).amount(5, 10).weight(3).build(),
+            WeightedItem.builder(Material.REDSTONE).amount(10, 15).weight(3).build(),
+            WeightedItem.builder(Material.IRON_INGOT).amount(4, 8).weight(3).build(),
+            WeightedItem.builder(Material.GOLD_INGOT).amount(2, 5).weight(3).build(),
+            WeightedItem.builder(Material.APPLE).amount(1, 2).weight(2).build(),
+            WeightedItem.builder(Material.ARROW).amount(5, 15).weight(2).build(),
+            WeightedItem.builder(Material.OBSIDIAN).amount(4, 5).weight(2).build(),
+            WeightedItem.builder(Material.DIAMOND).amount(1, 2).weight(1).build()
     );
 
     @Override
@@ -39,7 +77,12 @@ public class CaveDrop extends ChestBasedDrop {
 
     @Override
     public int getDefaultDropDelay() {
-        return 720;
+        return 6 * 60;
+    }
+
+    @Override
+    public int getFirstDropDelay() {
+        return 2 * 60 + 20;
     }
 
     @Override
@@ -73,12 +116,22 @@ public class CaveDrop extends ChestBasedDrop {
 
     @Override
     protected int getMaxFillers() {
-        return 6;
+        return 5;
     }
 
     @Override
     public ChatColor getMarkerColor() {
         return DARK_GREEN;
+    }
+
+    @Override
+    public WeightedItemList getWeightedItemList() {
+        return weightedDrops;
+    }
+
+    @Override
+    public Material getRepresentingItem() {
+        return Material.DEEPSLATE;
     }
 
 }

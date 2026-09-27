@@ -4,6 +4,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
+import ru.greenbudgie.drop.Drops;
 import ru.greenbudgie.drop.DropsPreviewInventory;
 
 import static org.bukkit.ChatColor.*;
@@ -27,7 +28,7 @@ public class LobbySignShowDrops extends LobbySign {
 
     @Override
     public void onClick(Player clicker, Sign sign, PlayerInteractEvent event) {
-        DropsPreviewInventory.openDropsPreviewInventory(clicker);
+        DropsPreviewInventory.openDropsPreviewInventory(clicker, Drops.AIRDROP);
     }
 
     @Override

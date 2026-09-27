@@ -1,20 +1,105 @@
 package ru.greenbudgie.drop;
 
 import org.bukkit.*;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.WorldManager;
 import ru.greenbudgie.drop.marker.AirDropMarker;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.ParticleUtils;
+import ru.greenbudgie.util.PotionEffectBuilder;
 import ru.greenbudgie.util.TaskManager;
+import ru.greenbudgie.util.item.ItemUtils;
+import ru.greenbudgie.util.weighted.WeightedEnchantedItem;
+import ru.greenbudgie.util.weighted.WeightedEnchantment;
+import ru.greenbudgie.util.weighted.WeightedItem;
+import ru.greenbudgie.util.weighted.WeightedItemList;
 
 import static org.bukkit.ChatColor.*;
 
 public class AirDrop extends Drop {
+
+    private static final ItemStack healingPotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Potion of Life")
+            .withColor(Color.fromRGB(255, 182, 243))
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.INSTANT_HEALTH).amplifier(3).build(),
+                    new PotionEffectBuilder(PotionEffectType.ABSORPTION).minutes(2).noParticles().build()
+            ).build();
+    private static final ItemStack strengthPotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Potion of Dominance")
+            .withColor(Color.fromRGB(100, 0, 0))
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.STRENGTH).minutes(3).amplifier(2).build(),
+                    new PotionEffectBuilder(PotionEffectType.RESISTANCE).minutes(3).build()
+            ).build();
+    private static final ItemStack damagePotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Potion of Death")
+            .splash()
+            .withColor(Color.BLACK)
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.INSTANT_DAMAGE).amplifier(2).build(),
+                    new PotionEffectBuilder(PotionEffectType.WITHER).seconds(13).build()
+            ).build();
+
+    private static final WeightedItemList weightedDrops = new WeightedItemList(
+            WeightedItem.builder(healingPotion).build(),
+            WeightedItem.builder(strengthPotion).build(),
+            WeightedItem.builder(damagePotion).build(),
+            WeightedItem.builder(Material.GOLDEN_APPLE).amount(4).build(),
+
+            WeightedEnchantedItem.item(Material.DIAMOND_BOOTS)
+                    .alwaysEnchant(
+                            WeightedEnchantment.builder(Enchantment.PROTECTION).level(1, 2).build()
+                    ).weightedEnchantments(
+                            WeightedEnchantment.builder(Enchantment.FEATHER_FALLING).level(2, 4).build()
+                    ).number(0, 1).build(),
+
+            WeightedEnchantedItem.item(Material.DIAMOND_LEGGINGS)
+                    .alwaysEnchant(
+                            WeightedEnchantment.builder(Enchantment.PROTECTION).level(1, 2).build()
+                    )
+                    .weightedEnchantments(
+                            WeightedEnchantment.builder(Enchantment.FIRE_PROTECTION).level(1, 2).build()
+                    ).number(0, 1).build(),
+
+            WeightedEnchantedItem.item(Material.DIAMOND_CHESTPLATE)
+                    .alwaysEnchant(
+                            WeightedEnchantment.builder(Enchantment.PROTECTION).level(1, 2).build()
+                    ).weightedEnchantments(
+                            WeightedEnchantment.builder(Enchantment.BLAST_PROTECTION).level(1, 2).build(),
+                            WeightedEnchantment.builder(Enchantment.THORNS).level(1).build()
+                    ).number(0, 1).build(),
+
+            WeightedEnchantedItem.item(Material.DIAMOND_HELMET)
+                    .alwaysEnchant(
+                            WeightedEnchantment.builder(Enchantment.PROTECTION).level(1, 2).build()
+                    )
+                    .weightedEnchantments(
+                            WeightedEnchantment.builder(Enchantment.PROJECTILE_PROTECTION).level(1, 2).build()
+                    ).number(0, 1).build(),
+
+            WeightedEnchantedItem.item(Material.BOW).alwaysEnchant(
+                    WeightedEnchantment.builder(Enchantment.POWER).level(1, 2).build(),
+                    WeightedEnchantment.builder(Enchantment.INFINITY).build()
+            ).build(),
+
+            WeightedEnchantedItem.item(Material.DIAMOND_SWORD).alwaysEnchant(
+                    WeightedEnchantment.builder(Enchantment.SHARPNESS).level(3, 4).build()
+            ).build(),
+
+            WeightedEnchantedItem.item(Material.CROSSBOW)
+                    .alwaysEnchant(
+                            WeightedEnchantment.builder(Enchantment.QUICK_CHARGE).level(3).build(),
+                            WeightedEnchantment.builder(Enchantment.PIERCING).build()
+                    ).build()
+    );
 
     private final int MAX_DROP_HEIGHT = 100;
     private double height = 2.5, dropHeight = MAX_DROP_HEIGHT;
@@ -26,7 +111,12 @@ public class AirDrop extends Drop {
 
     @Override
     public int getDefaultDropDelay() {
-        return 600;
+        return 5 * 60;
+    }
+
+    @Override
+    public int getFirstDropDelay() {
+        return 0;
     }
 
     @Override
@@ -36,10 +126,7 @@ public class AirDrop extends Drop {
 
     @Override
     public void drop() {
-        Item item = location.getWorld().dropItem(
-                location,
-                Drops.getWeightedDropsList().getRandomElementWeighted().getItem().clone()
-        );
+        Item item = location.getWorld().dropItem(location, itemToDrop);
         item.setGlowing(true);
         item.setPickupDelay(1);
         item.setMetadata("airdrop", new FixedMetadataValue(UHCPlugin.instance, true));
@@ -51,6 +138,7 @@ public class AirDrop extends Drop {
             p.sendMessage(getChatDropCoordinatesInfo());
             p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_ELYTRA, 0.5F, 1.5F);
         }
+        announceItemInChat(false);
         if (currentMarker != null) {
             currentMarker.setDropped();
         }
@@ -77,6 +165,8 @@ public class AirDrop extends Drop {
 
     @Override
     public void update() {
+        super.update();
+
         if(timer <= 0 && TaskManager.isSecUpdated()) {
             drop();
             setup();
@@ -121,6 +211,16 @@ public class AirDrop extends Drop {
     @Override
     public AirDropMarker createMarker() {
         return new AirDropMarker(this);
+    }
+
+    @Override
+    public WeightedItemList getWeightedItemList() {
+        return weightedDrops;
+    }
+
+    @Override
+    public Material getRepresentingItem() {
+        return Material.PHANTOM_MEMBRANE;
     }
 
 }
