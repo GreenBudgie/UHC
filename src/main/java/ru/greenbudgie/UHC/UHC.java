@@ -237,7 +237,7 @@ public class UHC implements Listener {
 	private static void registerHpInfo(Player playerToShowInfo, String name, Scoreboard board, DisplaySlot slot) {
 		Objective hpInfo = board.getObjective(name);
 		if(hpInfo != null) hpInfo.unregister();
-		hpInfo = board.registerNewObjective(name, Criteria.HEALTH, RED + "❤");
+		hpInfo = board.registerNewObjective(name, Criteria.DUMMY, RED + "❤");
 		for(Player player : PlayerManager.getAliveOnlinePlayers()) {
 			Score hp = hpInfo.getScore(player.getName());
 			hp.setScore((int) player.getHealth());
