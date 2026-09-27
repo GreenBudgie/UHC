@@ -155,11 +155,12 @@ public class LobbyMapPreview {
 
     private static class CustomRenderer extends org.bukkit.map.MapRenderer {
 
-        private boolean needToRender = true;
         /**
          * How many blocks to render per map pixel
          */
         private final double scaling;
+        private byte[] buffer;
+        private boolean applied = false;
 
         protected CustomRenderer(double scaling) {
             this.scaling = scaling;
@@ -167,23 +168,29 @@ public class LobbyMapPreview {
 
         @Override
         public void render(MapView map, MapCanvas canvas, Player player) {
-            if(needToRender) {
+            if(applied) return;
+            World world = map.getWorld();
+            if(world == null) return;
+            if(buffer == null) {
+                byte[] pixels = new byte[128 * 128];
                 for(int x = 0; x < 128; x++) {
                     for(int z = 0; z < 128; z++) {
                         double scaledX = x / scaling;
                         double scaledZ = z / scaling;
                         int realX = (int) Math.round(scaledX + map.getCenterX());
                         int realZ = (int) Math.round(scaledZ + map.getCenterZ());
-                        World world = map.getWorld();
-                        if(world != null) {
-                            Block block = world.getHighestBlockAt(realX, realZ);
-                            byte color = getBlockColor(block);
-                            canvas.setPixel(x, z, color);
-                        }
+                        Block block = world.getHighestBlockAt(realX, realZ);
+                        pixels[x + z * 128] = getBlockColor(block);
                     }
                 }
-                needToRender = false;
+                buffer = pixels;
             }
+            for(int x = 0; x < 128; x++) {
+                for(int z = 0; z < 128; z++) {
+                    canvas.setPixel(x, z, buffer[x + z * 128]);
+                }
+            }
+            applied = true;
         }
 
     }
