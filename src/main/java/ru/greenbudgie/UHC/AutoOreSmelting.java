@@ -40,7 +40,7 @@ public class AutoOreSmelting implements Listener {
             Material.RAW_IRON, Material.IRON_INGOT,
             Material.RAW_GOLD, Material.GOLD_INGOT,
             Material.RAW_COPPER, Material.COPPER_INGOT,
-            Material.ANCIENT_DEBRIS, Material.NETHERITE_SCRAP
+            Material.ANCIENT_DEBRIS, Material.NETHERITE_INGOT
     );
 
     @EventHandler(priority = EventPriority.HIGH)

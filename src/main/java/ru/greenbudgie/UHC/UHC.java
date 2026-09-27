@@ -107,7 +107,6 @@ public class UHC implements Listener {
 	public static void init() {
 		Lobby.init();
 		WorldManager.init();
-		RecipeHandler.init();
 		MutatorManager.init();
 		SignManager.init();
 		for(Player p : Bukkit.getOnlinePlayers()) {
@@ -1204,11 +1203,6 @@ public class UHC implements Listener {
 		return FightHelper.padCrosses(name);
 	}
 
-	public static ItemStack getBonusShell() {
-		return ItemUtils.builder(Material.SHULKER_SHELL).withGlow().withName(LIGHT_PURPLE + "Сияющий панцирь")
-				.withSplittedLore(GOLD + "Окружи его золотыми слитками и получи 2 золотых яблока").build();
-	}
-
 	private static void enablePvpAndSwitchState() {
 		state = GameState.GAME;
 		deathmatchTimer = 60 * getGameDuration();
@@ -1315,19 +1309,6 @@ public class UHC implements Listener {
 					PotionEffectType.NIGHT_VISION,
 					PotionEffect.INFINITE_DURATION,
 					0, false, false));
-		}
-	}
-
-	@EventHandler
-	public void pickup(EntityPickupItemEvent e) {
-		if(e.getEntity() instanceof Player player) {
-			Player teammate = PlayerManager.getTeammate(player);
-			ItemStack item = e.getItem().getItemStack();
-			if(teammate != null &&
-					ItemUtils.hasCustomValue(item, "owner") &&
-					ItemUtils.getCustomValue(item, "owner").equals(teammate.getName())) {
-				e.setCancelled(true);
-			}
 		}
 	}
 

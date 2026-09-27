@@ -62,7 +62,6 @@ public class UHCPlugin extends JavaPlugin {
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new UHC(), this);
 		pm.registerEvents(new SignManager(), this);
-		pm.registerEvents(new RecipeHandler(), this);
 		pm.registerEvents(new CustomItemsListener(), this);
 		pm.registerEvents(new ItemRequester(), this);
 		pm.registerEvents(new ArtifactManager(), this);

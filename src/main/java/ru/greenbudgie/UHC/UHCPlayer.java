@@ -9,16 +9,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.classes.UHCClass;
 import ru.greenbudgie.event.UHCPlayerDeathEvent;
 import ru.greenbudgie.event.UHCPlayerLeaveEvent;
 import ru.greenbudgie.event.UHCPlayerRejoinEvent;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.rating.PlayerSummary;
-import ru.greenbudgie.util.MathUtils;
-import ru.greenbudgie.util.ParticleUtils;
-import ru.greenbudgie.util.TaskManager;
-import ru.greenbudgie.util.WorldHelper;
+import ru.greenbudgie.util.*;
 import ru.greenbudgie.util.item.ItemUtils;
 
 import javax.annotation.Nullable;
@@ -289,18 +287,27 @@ public class UHCPlayer {
     private void dropBonusItemOnDeath() {
         Location location = getLocation();
         UHCPlayer killer = getKiller();
-        if(killer != null) {
-            location.getWorld().dropItem(location, UHC.getBonusShell());
+        ItemStack bonusApple = ItemUtils.
+                builder(Material.GOLDEN_APPLE).
+                withName(DARK_GREEN + "" + BOLD + "Бонусное яблоко").
+                build();
+        location.getWorld().dropItem(location, bonusApple);
+
+        if (killer == null) {
             return;
         }
-        boolean golden = UHC.state == GameState.OUTBREAK;
-        ItemStack apple = ItemUtils.
-                builder(golden ? Material.GOLDEN_APPLE : Material.APPLE).
-                withName(golden ? (DARK_GREEN + "Золотое бонусное яблоко") : (GREEN + "Бонусное яблоко")).
-                withGlow(!golden).
-                build();
-        apple = ItemUtils.setCustomValue(apple, "owner", nickname);
-        location.getWorld().dropItem(location, apple);
+
+        if (killer.isAliveAndOnline()) {
+            var onlineKiller = killer.getPlayer();
+            // Regenerates 6 hp
+            onlineKiller.addPotionEffect(
+                    new PotionEffectBuilder(PotionEffectType.REGENERATION).seconds(15).amplifier(0).build()
+            );
+
+            return;
+        }
+
+        killer.addOfflineHealth(4);
     }
 
     private void showDeathMessage() {
