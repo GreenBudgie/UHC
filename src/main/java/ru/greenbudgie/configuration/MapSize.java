@@ -7,9 +7,8 @@ package ru.greenbudgie.configuration;
  */
 public enum MapSize {
 
-    SMALL(30),
-    DEFAULT(45),
-    BIG(60),
+    DEFAULT(40),
+    OLD(45),
     EXTREME(5000);
 
     private final int chunksPerPlayer;

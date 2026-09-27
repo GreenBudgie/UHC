@@ -37,7 +37,7 @@ public class CustomItemBooster extends RequesterCustomItem {
 
 	@Override
 	public int getRedstonePrice() {
-		return 32;
+		return 24;
 	}
 
 	@Override

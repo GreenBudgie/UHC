@@ -56,13 +56,13 @@ public class CustomItemHighlighter extends RequesterCustomItem {
 
 	@Override
 	public ItemInfo getDescription() {
-		return new ItemInfo("При использовании подсвечивает всех игроков в радиусе 128 блоков и выводит их список")
+		return new ItemInfo("ПКМ: подсвечивает игроков в радиусе 128 блоков")
 				.note("Ты и твой тиммейт не будут подсвечены");
 	}
 
 	@Override
 	public int getRedstonePrice() {
-		return 32;
+		return 24;
 	}
 
 	@Override

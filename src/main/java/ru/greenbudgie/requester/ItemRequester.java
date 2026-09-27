@@ -49,12 +49,11 @@ public class ItemRequester implements Listener {
 		putItem(CustomItems.highlighter, 14);
 		putItem(CustomItems.infernalLead, 15);
 
-		putItem(CustomItems.booster, 19);
-		putItem(CustomItems.pearl, 20);
-		putItem(CustomItems.pulsatingTotem, 21);
+		putItem(CustomItems.booster, 20);
+		putItem(CustomItems.pearl, 21);
+		putItem(CustomItems.pulsatingTotem, 22);
 		putItem(CustomItems.knockoutTotem, 23);
-		putItem(CustomItems.soulscriber, 24);
-		putItem(CustomItems.landmine, 25);
+		putItem(CustomItems.landmine, 24);
 
 		putItem(CustomItems.tracker, 29);
 		putItem(CustomItems.shieldBreaker, 30);

@@ -86,19 +86,17 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
 		return new ItemInfo("Генерирует лазерный луч протяженностью 8 блоков и позволяет крайне " +
                 "быстро уничтожать любую каменную породу в радиусе 3x3. Руды оставляет нетронутыми. " +
                 "Для работы необходимы медные слитки.")
-				.extra("Использует медный слиток каждые 30 секунд работы. Не имеет прочности.")
-				.note("Лучше использовать без предметов (щита или факелов) в другой руке! " +
-                        "К камню также относится адский камень, сланец, андезит, диорит и т.д.");
+				.extra("Использует медный слиток каждые 30 секунд работы. Не имеет прочности.");
 	}
 
 	@Override
 	public int getRedstonePrice() {
-		return 80;
+		return 52;
 	}
 
 	@Override
 	public int getLapisPrice() {
-		return 24;
+		return 12;
 	}
 
     private void laserCut(Player player, EquipmentSlot hand) {

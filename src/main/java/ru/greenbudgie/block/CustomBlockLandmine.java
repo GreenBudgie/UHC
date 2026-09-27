@@ -27,12 +27,12 @@ import java.util.stream.Collectors;
 public class CustomBlockLandmine extends CustomBlockItem {
 
 	private final UHCPlayer owner;
-	private final int maxFuseTicks = 30;
+	private final int maxFuseTicks = 24;
 	private int fuseTicks = maxFuseTicks;
 	private int secondExplodeTicks = 4;
 	private boolean triggered = false;
 	private final int range = 5;
-	private final List<Integer> signalTicks = Lists.newArrayList(30, 22, 15, 10, 7, 5, 3, 2, 1);
+	private final List<Integer> signalTicks = Lists.newArrayList(24, 16, 10, 7, 5, 3, 2, 1);
 	private boolean detonated = false;
 
 	public CustomBlockLandmine(Location location, Player owner) {

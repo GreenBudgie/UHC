@@ -20,7 +20,6 @@ public class CustomItems {
 	public static CustomItemInstantTnt tnt = new CustomItemInstantTnt();
 	public static CustomItemPlayerTracker tracker = new CustomItemPlayerTracker();
 	public static CustomItemBooster booster = new CustomItemBooster();
-	public static CustomItemSoulscriber soulscriber = new CustomItemSoulscriber();
 	public static CustomItemShieldBreaker shieldBreaker = new CustomItemShieldBreaker();
 	public static CustomItemDarkArtifact darkArtifact = new CustomItemDarkArtifact();
 	public static CustomItemHeavenMembrane heavenMembrane = new CustomItemHeavenMembrane();

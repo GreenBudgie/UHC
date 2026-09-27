@@ -35,9 +35,8 @@ public class LobbySignGameMapSize extends LobbySign {
         side.setLine(0, GRAY + "Размер карты");
 
         String sizeInfo = switch (UHC.mapSize) {
-            case SMALL -> GREEN + "" + BOLD + "Маленький";
             case DEFAULT -> AQUA + "" + BOLD + "Обычный";
-            case BIG -> RED + "" + BOLD + "Большой";
+            case OLD -> RED + "" + BOLD + "Как раньше";
             case EXTREME -> DARK_RED + "" + BOLD + "Гигантский";
         };
 

@@ -19,14 +19,14 @@ public class CustomItemKnockoutTotem extends RequesterCustomItem implements Bloc
 
 	@Override
 	public ItemInfo getDescription() {
-		return new ItemInfo("Тотем отбрасывания. При установке разбрасывает в стороны всех живых существ и игроков, кроме тебя и тиммейта.")
+		return new ItemInfo("При установке разбрасывает в стороны всех живых существ и игроков, кроме тебя и тиммейта.")
 				.extra("Действует 45 секунд в радиусе 8 блоков, после этого исчезает")
 				.note("Действует на игроков даже до ПВП. Можно установить на арене.");
 	}
 
 	@Override
 	public int getRedstonePrice() {
-		return 48;
+		return 40;
 	}
 
 	@Override

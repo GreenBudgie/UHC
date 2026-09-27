@@ -37,12 +37,12 @@ public class CustomItemCreatureHighlighter extends RequesterCustomItem {
 
 	@Override
 	public ItemInfo getDescription() {
-		return new ItemInfo("При использовании подсвечивает всех мобов в радиусе 64 блоков, кроме игроков");
+		return new ItemInfo("ПКМ: подсвечивает всех мобов в радиусе 64 блоков, кроме игроков");
 	}
 
 	@Override
 	public int getRedstonePrice() {
-		return 12;
+		return 8;
 	}
 
 	@Override

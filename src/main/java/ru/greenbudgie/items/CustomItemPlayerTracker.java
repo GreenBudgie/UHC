@@ -22,12 +22,12 @@ public class CustomItemPlayerTracker extends RequesterCustomItem {
 
 	@Override
 	public int getRedstonePrice() {
-		return 48;
+		return 40;
 	}
 
 	@Override
 	public int getLapisPrice() {
-		return 8;
+		return 6;
 	}
 
 }

@@ -25,11 +25,10 @@ public class PiglinBarterManager implements Listener {
     private static final String INVENTORY_HEADER = GOLD + "" + BOLD + "Торговля с Пиглинами";
 
     private static final ItemStack fireResistancePotion = ItemUtils.potionBuilder()
-            .withType(PotionType.LONG_FIRE_RESISTANCE)
+            .withType(PotionType.FIRE_RESISTANCE)
             .build();
 
     public static final WeightedItemList barters = new WeightedItemList(
-            WeightedItem.builder(Material.SPECTRAL_ARROW).amount(3, 6).weight(4).build(),
             WeightedItem.builder(Material.BOOK).amount(1, 2).weight(4).build(),
             WeightedItem.builder(Material.STRING).amount(2, 4).weight(4).build(),
             WeightedItem.builder(Material.IRON_INGOT).amount(1, 3).weight(3).build(),

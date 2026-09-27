@@ -27,12 +27,12 @@ public class CustomItemIceball extends RequesterCustomItem implements Listener {
 
     @Override
     public ItemInfo getDescription() {
-        return new ItemInfo("Ледяной снежок, отталкивающий игроков, но при этом не наносящий урона");
+        return new ItemInfo("Снежок, отталкивающий игроков. Не наносит урон.");
     }
 
     @Override
     public int getRedstonePrice() {
-        return 16;
+        return 12;
     }
 
     @Override

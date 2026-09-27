@@ -47,7 +47,7 @@ public class CustomItemHeavenMembrane extends RequesterCustomItem {
 
 	@Override
 	public int getRedstonePrice() {
-		return 56;
+		return 48;
 	}
 
 	@Override

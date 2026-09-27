@@ -21,6 +21,8 @@ import static org.bukkit.ChatColor.*;
 
 public class RequestedItem {
 
+	private static final int TIME_TO_DROP = 8;
+
 	private final Location location;
 	private final ItemStack item;
 	private int timeToDrop;
@@ -33,7 +35,7 @@ public class RequestedItem {
 	public RequestedItem(Location loc, ItemStack item) {
 		this.location = loc.clone().add(0, 1.5, 0);
 		this.item = item;
-		this.timeToDrop = 25;
+		this.timeToDrop = TIME_TO_DROP;
 		info = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
 		hideStand(info);
 		String customName = ItemRequester.padSymbols(AQUA + "Запрос" + GRAY + ": " + item.getItemMeta().getDisplayName());
