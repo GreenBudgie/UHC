@@ -97,16 +97,16 @@ public class ArenaManager implements Listener {
     
     private static void setupArenaWorld(World world) {
         world.setDifficulty(Difficulty.HARD);
-        world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        world.setGameRule(GameRule.NATURAL_REGENERATION, false);
-        world.setGameRule(GameRule.DO_FIRE_TICK, false);
-        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-        world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        world.setGameRule(GameRule.SHOW_ADVANCEMENT_MESSAGES, false);
+        world.setGameRule(GameRule.NATURAL_HEALTH_REGENERATION, false);
+        world.setGameRule(GameRule.FIRE_SPREAD_RADIUS_AROUND_PLAYER, 0);
+        world.setGameRule(GameRule.ADVANCE_TIME, false);
+        world.setGameRule(GameRule.ADVANCE_WEATHER, false);
+        world.setGameRule(GameRule.SPAWN_MOBS, false);
         world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
         world.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
-        world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-        world.setGameRule(GameRule.DO_INSOMNIA, false);
+        world.setGameRule(GameRule.IMMEDIATE_RESPAWN, true);
+        world.setGameRule(GameRule.SPAWN_PHANTOMS, false);
         world.setPVP(false);
     }
 
@@ -142,7 +142,7 @@ public class ArenaManager implements Listener {
             currentArena = chosenArena.cloneAsTemp();
         }
         resetArenaBorder(currentArena);
-        currentArena.getWorld().setGameRule(GameRule.DO_TILE_DROPS, false);
+        currentArena.getWorld().setGameRule(GameRule.BLOCK_DROPS, false);
         needsUpdate = false;
     }
 

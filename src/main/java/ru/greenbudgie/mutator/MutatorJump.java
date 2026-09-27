@@ -29,7 +29,7 @@ public class MutatorJump extends EffectBasedMutator {
 
 	@Override
 	public EffectEntry[] getEffects() {
-		return new EffectEntry[] { new EffectEntry(PotionEffectType.JUMP, 4) };
+		return new EffectEntry[] { new EffectEntry(PotionEffectType.JUMP_BOOST, 4) };
 	}
 
 }

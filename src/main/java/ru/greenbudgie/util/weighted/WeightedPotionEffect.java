@@ -17,12 +17,12 @@ public class WeightedPotionEffect extends WeightedElement<PotionEffectType> {
 
     private static final List<PotionEffectType> GOOD_EFFECTS = List.of(
             SPEED,
-            FAST_DIGGING,
-            INCREASE_DAMAGE,
-            HEAL,
-            JUMP,
+            HASTE,
+            STRENGTH,
+            INSTANT_HEALTH,
+            JUMP_BOOST,
             REGENERATION,
-            DAMAGE_RESISTANCE,
+            RESISTANCE,
             FIRE_RESISTANCE,
             WATER_BREATHING,
             INVISIBILITY,

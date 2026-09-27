@@ -89,7 +89,7 @@ public abstract class ChestBasedDrop extends Drop {
             drop();
             setup();
         } else {
-            ParticleUtils.createParticlesOnRegionEdges(dropRegion, Particle.SMOKE_NORMAL, 4, null);
+            ParticleUtils.createParticlesOnRegionEdges(dropRegion, Particle.SMOKE, 4, null);
             timer--;
         }
     }

@@ -385,7 +385,7 @@ public class UHC implements Listener {
 			}
 
 			for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
-				inGamePlayer.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+				inGamePlayer.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
 				resetPlayer(inGamePlayer);
 				inGamePlayer.setGameMode(GameMode.ADVENTURE);
 				inGamePlayer.teleport(Lobby.getLobby().getSpawnLocation());
@@ -440,8 +440,8 @@ public class UHC implements Listener {
 			World map = WorldManager.getGameMap();
 			map.setPVP(false);
 			map.setTime(0);
-			map.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
-			map.setGameRule(GameRule.DO_WEATHER_CYCLE, true);
+			map.setGameRule(GameRule.ADVANCE_TIME, true);
+			map.setGameRule(GameRule.ADVANCE_WEATHER, true);
 			WorldManager.getGameMapNether().setPVP(false);
 			Drops.firstSetup();
 
@@ -452,7 +452,7 @@ public class UHC implements Listener {
 
 			for(Player player : Bukkit.getOnlinePlayers()) {
 				PlayerManager.registerPlayer(player);
-				player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(DEFAULT_MAX_PLAYER_HP);
+				player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(DEFAULT_MAX_PLAYER_HP);
 				resetPlayer(player);
 				player.setNoDamageTicks(600);
 				player.setGameMode(GameMode.ADVENTURE);
@@ -1030,7 +1030,7 @@ public class UHC implements Listener {
 				Player winner = uhcWinner.getPlayer();
 				winner.setGameMode(GameMode.SPECTATOR);
 				winner.sendTitle(YELLOW + "Ты победил!", "", 10, 40, 20);
-				Firework firework = (Firework) winner.getWorld().spawnEntity(winner.getLocation(), EntityType.FIREWORK);
+				Firework firework = (Firework) winner.getWorld().spawnEntity(winner.getLocation(), EntityType.FIREWORK_ROCKET);
 				FireworkMeta meta = firework.getFireworkMeta();
 				meta.addEffect(FireworkEffect.builder().
 						with(FireworkEffect.Type.BALL_LARGE).
@@ -1140,7 +1140,7 @@ public class UHC implements Listener {
 				player.setHealth(player.getHealth() / 2);
 			}
 			player.setNoDamageTicks(160);
-			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 160, 9, true, true, true));
+			player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 160, 9, true, true, true));
 		}
 		Bukkit.getPluginManager().callEvent(new GameStartEvent());
 		if(MutatorManager.hungerGames.isActive()) {
@@ -1154,7 +1154,7 @@ public class UHC implements Listener {
 		voteResults.put(p, vote);
 		p.getWorld().playSound(p.getLocation(), vote ? Sound.ENTITY_VILLAGER_YES : Sound.ENTITY_VILLAGER_NO, 1, 1);
 		p.getInventory().clear();
-		ParticleUtils.createParticlesAround(p, Particle.REDSTONE, vote ? Color.LIME : Color.RED, 20);
+		ParticleUtils.createParticlesAround(p, Particle.DUST, vote ? Color.LIME : Color.RED, 20);
 		updateVoteBar();
 		if(voteResults.size() == PlayerManager.getPlayers().size()) {
 			endVote();
@@ -1184,7 +1184,7 @@ public class UHC implements Listener {
 	}
 
 	public static void heal(Player p) {
-		p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+		p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getBaseValue());
 		p.setSaturation(20);
 		p.setExhaustion(20);
 		p.setFoodLevel(20);
@@ -1459,7 +1459,7 @@ public class UHC implements Listener {
 			TaskManager.invokeLater(() -> {
 				if(!Lobby.isInLobbyOrWatchingArena(player)) {
 					player.teleport(Lobby.getLobby().getSpawnLocation());
-					player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+					player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
 					resetPlayer(player);
 				}
 			});
@@ -1731,7 +1731,7 @@ public class UHC implements Listener {
 
 	@EventHandler
 	public void tntArena(EntityExplodeEvent event) {
-		if(event.getEntityType() == EntityType.PRIMED_TNT) {
+		if(event.getEntityType() == EntityType.TNT) {
 			if (state == GameState.ENDING) {
 				event.blockList().clear();
 				return;

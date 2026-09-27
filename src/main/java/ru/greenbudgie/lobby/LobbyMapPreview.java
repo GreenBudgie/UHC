@@ -1,6 +1,5 @@
 package ru.greenbudgie.lobby;
 
-import net.minecraft.world.level.material.MaterialMapColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -8,7 +7,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_20_R2.util.CraftMagicNumbers;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -149,9 +147,8 @@ public class LobbyMapPreview {
 
     @SuppressWarnings("deprecation")
     private static byte getBlockColor(Block block) {
-        var nmsBlock = CraftMagicNumbers.getBlock(block.getType());
-        MaterialMapColor mapColor = nmsBlock.s();
-        Color color = new Color(mapColor.ak);
+        org.bukkit.Color bukkitColor = block.getBlockData().getMapColor();
+        Color color = new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
         return MapPalette.matchColor(color);
     }
 

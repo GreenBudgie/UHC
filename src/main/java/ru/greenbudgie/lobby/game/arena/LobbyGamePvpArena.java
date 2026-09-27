@@ -56,7 +56,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 	protected void postSetup() {
 		Kit oneShotKillKit = new Kit("One-shot-kill");
 		oneShotKillKit.addItem(
-				ItemUtils.builder(Material.DIAMOND_SWORD).withEnchantments(new Enchant(Enchantment.DAMAGE_ALL, 100)).withFlags(ItemFlag.HIDE_ENCHANTS).build());
+				ItemUtils.builder(Material.DIAMOND_SWORD).withEnchantments(new Enchant(Enchantment.SHARPNESS, 100)).withFlags(ItemFlag.HIDE_ENCHANTS).build());
 		oneShotKillKit.withShield();
 
 		Kit diamondKit = new Kit("Алмазка");
@@ -97,19 +97,19 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		usefulKit.addItem(ItemUtils.builder(Material.WOODEN_SHOVEL).withEnchantments(
 				new Enchant(Enchantment.KNOCKBACK, 10),
 				new Enchant(Enchantment.FIRE_ASPECT, 2),
-				new Enchant(Enchantment.DAMAGE_ALL, 1)).build());
+				new Enchant(Enchantment.SHARPNESS, 1)).build());
 
 		Kit healingKit = new Kit("Много хила");
 		healingKit.addArmorSet(Kit.ArmorMaterial.LEATHER);
 		healingKit.addItem(Material.IRON_SWORD);
-		ItemStack potion = ItemUtils.potionBuilder().splash().withColor(Color.FUCHSIA).withName("Heal").withEffects(new PotionEffect(PotionEffectType.HEAL, 1, 1)).build();
+		ItemStack potion = ItemUtils.potionBuilder().splash().withColor(Color.FUCHSIA).withName("Heal").withEffects(new PotionEffect(PotionEffectType.INSTANT_HEALTH, 1, 1)).build();
 		for(int i = 0; i < 8; i++) {
 			healingKit.addItem(potion);
 		}
 
 		Kit minerKit = new Kit("Шахтер");
 		minerKit.addArmorSet(Kit.ArmorMaterial.CHAIN);
-		minerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.LAPIS_LAZULI), new Enchant(Enchantment.DAMAGE_ALL, 4)));
+		minerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.LAPIS_LAZULI), new Enchant(Enchantment.SHARPNESS, 4)));
 		minerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.GOLDEN_PICKAXE), new Enchant(Enchantment.KNOCKBACK, 3)));
 		minerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.REDSTONE_ORE), new Enchant(Enchantment.FIRE_ASPECT, 1)));
 
@@ -122,7 +122,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 
 		Kit archerKit = new Kit("Лучник");
 		archerKit.addArmorSet(Kit.ArmorMaterial.CHAIN);
-		archerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.ARROW_INFINITE)));
+		archerKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.INFINITY)));
 		archerKit.addItem(Material.ARROW);
 
 		Kit crossbowKit = new Kit("Арбалетчик");
@@ -145,14 +145,14 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		Kit advArcherKit = new Kit("Лучник 2");
 		advArcherKit.addArmorSet(Kit.ArmorMaterial.DIAMOND);
 		advArcherKit.addItem(
-				ItemUtils.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.ARROW_INFINITE), new Enchant(Enchantment.ARROW_FIRE)));
+				ItemUtils.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.INFINITY), new Enchant(Enchantment.FLAME)));
 		advArcherKit.addItem(Material.ARROW);
 
 		Kit mixedKit = new Kit("Смешанный");
 		mixedKit.addArmorSet(Kit.ArmorMaterial.IRON);
 		mixedKit.addItem(Material.IRON_SWORD);
 		mixedKit.addItem(Material.IRON_AXE);
-		mixedKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.ARROW_INFINITE)));
+		mixedKit.addItem(ItemUtils.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.INFINITY)));
 		mixedKit.addItem(Material.ARROW);
 		mixedKit.withShield();
 
@@ -161,8 +161,8 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		mixedKit2.addItem(Material.STONE_SWORD);
 		mixedKit2.addItem(Material.STONE_AXE);
 		mixedKit2.addItem(ItemUtils
-				.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.ARROW_INFINITE), new Enchant(Enchantment.ARROW_KNOCKBACK),
-						new Enchant(Enchantment.ARROW_DAMAGE, 2)));
+				.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.INFINITY), new Enchant(Enchantment.PUNCH),
+						new Enchant(Enchantment.POWER, 2)));
 		mixedKit2.addItem(Material.ARROW);
 		mixedKit2.addItem(new ItemStack(Material.GOLDEN_APPLE));
 		mixedKit2.withShield();
@@ -172,7 +172,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		mixedKit3.addItem(Material.IRON_SWORD);
 		mixedKit3.addItem(Material.IRON_AXE);
 		mixedKit3.addItem(
-				ItemUtils.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.ARROW_INFINITE), new Enchant(Enchantment.ARROW_FIRE)));
+				ItemUtils.addEnchantments(new ItemStack(Material.BOW), new Enchant(Enchantment.INFINITY), new Enchant(Enchantment.FLAME)));
 		mixedKit3.addItem(
 				ItemUtils.addEnchantments(new ItemStack(Material.CROSSBOW), new Enchant(Enchantment.QUICK_CHARGE, 2), new Enchant(Enchantment.MULTISHOT), new Enchant(Enchantment.PIERCING)));
 		for(int i = 0; i < 5; i++) {
@@ -185,14 +185,14 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		wizardKit.addItem(Material.STONE_SWORD);
 		wizardKit.addItem(Material.STONE_AXE);
 		wizardKit.addItem(
-				ItemUtils.potionBuilder().splash().withColor(Color.BLACK).withEffects(new PotionEffect(PotionEffectType.HARM, 1, 1)).withName("Sharp Vial").build());
+				ItemUtils.potionBuilder().splash().withColor(Color.BLACK).withEffects(new PotionEffect(PotionEffectType.INSTANT_DAMAGE, 1, 1)).withName("Sharp Vial").build());
 		wizardKit.addItem(
 				ItemUtils.potionBuilder().splash().withColor(Color.GREEN).withEffects(new PotionEffect(PotionEffectType.POISON, 300, 0)).withName("Toxic Vial").build());
 		wizardKit.addItem(ItemUtils.potionBuilder().splash().withColor(Color.GRAY)
-				.withEffects(new PotionEffect(PotionEffectType.SLOW, 200, 1), new PotionEffect(PotionEffectType.BLINDNESS, 160, 0),
+				.withEffects(new PotionEffect(PotionEffectType.SLOWNESS, 200, 1), new PotionEffect(PotionEffectType.BLINDNESS, 160, 0),
 						new PotionEffect(PotionEffectType.WEAKNESS, 200, 0)).withName("Vial of Weakness").build());
 		wizardKit.addItem(
-				ItemUtils.potionBuilder().drinkable().withColor(Color.RED).withEffects(new PotionEffect(PotionEffectType.HEAL, 1, 1)).withName("Healing Vial").build());
+				ItemUtils.potionBuilder().drinkable().withColor(Color.RED).withEffects(new PotionEffect(PotionEffectType.INSTANT_HEALTH, 1, 1)).withName("Healing Vial").build());
 		wizardKit.withShield();
 
 		Kit wizardKit2 = new Kit("Маг 2");
@@ -200,14 +200,14 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		wizardKit2.addItem(Material.GOLDEN_SWORD);
 		wizardKit2.addItem(Material.GOLDEN_AXE);
 		wizardKit2.addItem(
-				ItemUtils.potionBuilder().drinkable().withColor(Color.RED).withEffects(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 300, 1)).withName("Strength Vial")
+				ItemUtils.potionBuilder().drinkable().withColor(Color.RED).withEffects(new PotionEffect(PotionEffectType.STRENGTH, 300, 1)).withName("Strength Vial")
 						.build());
 		wizardKit2.addItem(
 				ItemUtils.potionBuilder().drinkable().withColor(Color.GRAY).withEffects(new PotionEffect(PotionEffectType.SPEED, 160, 3)).withName("Hyper Speed Vial")
 						.build());
 		wizardKit2.addItem(new ItemStack(Material.GOLDEN_APPLE, 2));
 		wizardKit2.addItem(ItemUtils.potionBuilder().splash().withColor(Color.GREEN)
-				.withEffects(new PotionEffect(PotionEffectType.CONFUSION, 400, 0), new PotionEffect(PotionEffectType.POISON, 100, 0)).withName("Bad Vial").build());
+				.withEffects(new PotionEffect(PotionEffectType.NAUSEA, 400, 0), new PotionEffect(PotionEffectType.POISON, 100, 0)).withName("Bad Vial").build());
 		wizardKit2.withShield();
 
 		Kit wizardKit3 = new Kit("Маг 3");
@@ -219,7 +219,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 				lingering().
 				withColor(Color.BLACK).
 				withName(DARK_GRAY + "Damaging Liquid").
-				withEffects(new PotionEffect(PotionEffectType.HARM, 1, 0)).
+				withEffects(new PotionEffect(PotionEffectType.INSTANT_DAMAGE, 1, 0)).
 				build();
 		wizardKit3.addItem(damagingLiquid);
 		wizardKit3.addItem(damagingLiquid);
@@ -237,8 +237,8 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 						new PotionEffect(PotionEffectType.REGENERATION, 160, 1),
 						new PotionEffect(PotionEffectType.ABSORPTION, 160, 0),
 						new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 160, 0),
-						new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 160, 0),
-						new PotionEffect(PotionEffectType.FAST_DIGGING, 160, 4),
+						new PotionEffect(PotionEffectType.STRENGTH, 160, 0),
+						new PotionEffect(PotionEffectType.HASTE, 160, 4),
 						new PotionEffect(PotionEffectType.SPEED, 160, 1),
 						new PotionEffect(PotionEffectType.GLOWING, 160, 0)).
 				build());
@@ -250,7 +250,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 				splash().
 				withColor(Color.BLACK).
 				withName("Damage").
-				withEffects(new PotionEffect(PotionEffectType.HARM, 1, 0)).build();
+				withEffects(new PotionEffect(PotionEffectType.INSTANT_DAMAGE, 1, 0)).build();
 		for(int i = 0; i < 8; i++) {
 			manyDamage.addItem(damagePotion);
 		}
@@ -382,7 +382,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 		int winnerHealth = (int) Math.round(winner.getHealth());
 		InventoryHelper.sendActionBarMessage(loser, GRAY + "У противника осталось " + DARK_RED + BOLD + winnerHealth + GRAY + " ХП");
 		heal(winner);
-		Firework firework = (Firework) winner.getWorld().spawnEntity(winner.getLocation(), EntityType.FIREWORK);
+		Firework firework = (Firework) winner.getWorld().spawnEntity(winner.getLocation(), EntityType.FIREWORK_ROCKET);
 		FireworkMeta meta = firework.getFireworkMeta();
 		meta.setPower(2);
 		meta.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(Color.GREEN).withFlicker().build());
@@ -537,7 +537,7 @@ public class LobbyGamePvpArena extends LobbyGame implements Listener {
 
 	public void heal(Player p) {
 		p.getActivePotionEffects().forEach(ef -> p.removePotionEffect(ef.getType()));
-		p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+		p.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
 		p.setHealth(20);
 		p.setFireTicks(0);
 		p.setSaturation(20);

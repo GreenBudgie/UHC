@@ -40,7 +40,7 @@ public class CustomBlockInfernalTotem extends CustomBlockTotem {
             for(LivingEntity entity : entities) {
                 if(entity.getLocation().distanceSquared(centerLocation) <= getEffectRadius() * getEffectRadius()) {
                     if(entity instanceof Player player && (!PlayerManager.isPlaying(player) || isImmune(player))) continue;
-                    ParticleUtils.createParticlesAround(entity, Particle.SMOKE_LARGE, null, 10);
+                    ParticleUtils.createParticlesAround(entity, Particle.LARGE_SMOKE, null, 10);
                     entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 0.6F);
                     entity.setFireTicks(Math.max(entity.getFireTicks(), 100));
                     if(entity instanceof Player player) {
@@ -54,7 +54,7 @@ public class CustomBlockInfernalTotem extends CustomBlockTotem {
     @Override
     public void onEffectStop() {
         super.onEffectStop();
-        ParticleUtils.createParticlesInside(getBlock(), Particle.SMOKE_LARGE, null, 10);
+        ParticleUtils.createParticlesInside(getBlock(), Particle.LARGE_SMOKE, null, 10);
         location.getWorld().playSound(location, Sound.BLOCK_FIRE_EXTINGUISH, 1, 0.5f);
     }
 

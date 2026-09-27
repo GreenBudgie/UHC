@@ -49,7 +49,7 @@ public class MutatorSupply extends Mutator {
 	public void onChoose() {
 		for(int i = 0; i < PlayerManager.getAliveOnlinePlayers().size() * 2; i++) {
 			Location loc = chooseLocation();
-			StorageMinecart minecart = (StorageMinecart) loc.getWorld().spawnEntity(loc, EntityType.MINECART_CHEST);
+			StorageMinecart minecart = (StorageMinecart) loc.getWorld().spawnEntity(loc, EntityType.CHEST_MINECART);
 			minecart.setLootTable(getRandomLootTable().getLootTable());
 		}
 	}

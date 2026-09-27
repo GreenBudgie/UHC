@@ -31,7 +31,7 @@ public class MutatorHaste extends EffectBasedMutator {
 	public EffectEntry[] getEffects() {
 		return new EffectEntry[] {
 				new EffectEntry(PotionEffectType.SPEED, 1),
-				new EffectEntry(PotionEffectType.FAST_DIGGING, 1)
+				new EffectEntry(PotionEffectType.HASTE, 1)
 		};
 	}
 

@@ -36,7 +36,7 @@ public class MutatorInfiniteBows extends Mutator implements Listener {
 		if(e.getRecipe() != null) {
 			ItemStack result = e.getRecipe().getResult();
 			if(result.getType() == Material.BOW) {
-				result.addEnchantment(Enchantment.ARROW_INFINITE, 1);
+				result.addEnchantment(Enchantment.INFINITY, 1);
 				e.getInventory().setResult(result);
 			}
 		}

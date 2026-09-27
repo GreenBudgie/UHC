@@ -32,7 +32,7 @@ public class CustomItemShieldBreaker extends RequesterCustomItem implements List
 				if(off.getType() == Material.SHIELD) off.setAmount(0);
 				else if(main.getType() == Material.SHIELD) main.setAmount(0);
 				victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 1, 0.5F);
-				ParticleUtils.createParticlesAround(victim, Particle.SMOKE_NORMAL, null, 20);
+				ParticleUtils.createParticlesAround(victim, Particle.SMOKE, null, 20);
 			}
 		}
 	}

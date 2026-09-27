@@ -70,14 +70,14 @@ public class WorldManager {
 
 	private static void setRules(World map) {
 		map.setDifficulty(Difficulty.HARD);
-		map.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-		map.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+		map.setGameRule(GameRule.IMMEDIATE_RESPAWN, true);
+		map.setGameRule(GameRule.SHOW_ADVANCEMENT_MESSAGES, false);
 		map.setGameRule(GameRule.RANDOM_TICK_SPEED, 3);
-		map.setGameRule(GameRule.NATURAL_REGENERATION, false);
-		map.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-		map.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+		map.setGameRule(GameRule.NATURAL_HEALTH_REGENERATION, false);
+		map.setGameRule(GameRule.ADVANCE_TIME, false);
+		map.setGameRule(GameRule.ADVANCE_WEATHER, false);
 		map.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
-		map.setGameRule(GameRule.DO_INSOMNIA, false);
+		map.setGameRule(GameRule.SPAWN_PHANTOMS, false);
 		map.setPVP(false);
 	}
 

@@ -25,7 +25,7 @@ public class TrollingEventSpawnTnt extends TrollingEvent {
             Location location = player.getLocation();
             World world = Objects.requireNonNull(location.getWorld());
             world.playSound(location, Sound.ENTITY_TNT_PRIMED, 1F, 1.5F);
-            TNTPrimed tnt = (TNTPrimed) world.spawnEntity(location, EntityType.PRIMED_TNT);
+            TNTPrimed tnt = (TNTPrimed) world.spawnEntity(location, EntityType.TNT);
             tnt.setVelocity(
                     new Vector(
                             MathUtils.randomRangeDouble(-0.2, 0.2),

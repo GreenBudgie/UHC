@@ -71,7 +71,7 @@ public class CustomBlockLandmine extends CustomBlockItem {
 				}
 			}
 			if(MathUtils.chance(10)) {
-				ParticleUtils.createParticle(location.clone().add(0.5, 0.8, 0.5), Particle.SMOKE_NORMAL, null);
+				ParticleUtils.createParticle(location.clone().add(0.5, 0.8, 0.5), Particle.SMOKE, null);
 			}
 		} else {
 			if(signalTicks.contains(fuseTicks)) {
@@ -132,7 +132,7 @@ public class CustomBlockLandmine extends CustomBlockItem {
 			return;
 		}
 		e.getBlock().setType(Material.GRASS_BLOCK);
-		ParticleUtils.createParticlesOutline(e.getBlock(), Particle.VILLAGER_HAPPY, null, 20);
+		ParticleUtils.createParticlesOutline(e.getBlock(), Particle.HAPPY_VILLAGER, null, 20);
 		e.getBlock().getWorld().playSound(e.getBlock().getLocation(), Sound.BLOCK_CHORUS_FLOWER_GROW, 1F, 1F);
 	}
 

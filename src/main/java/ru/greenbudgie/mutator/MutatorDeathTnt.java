@@ -42,7 +42,7 @@ public class MutatorDeathTnt extends Mutator implements Listener {
 			return;
 		}
 		ent.getWorld().playSound(ent.getLocation(), Sound.ENTITY_TNT_PRIMED, 1F, 1.5F);
-		TNTPrimed tnt = (TNTPrimed) ent.getWorld().spawnEntity(ent.getLocation(), EntityType.PRIMED_TNT);
+		TNTPrimed tnt = (TNTPrimed) ent.getWorld().spawnEntity(ent.getLocation(), EntityType.TNT);
 		tnt.setVelocity(new Vector(MathUtils.randomRangeDouble(-0.2, 0.2), MathUtils.randomRangeDouble(1, 1.2), MathUtils.randomRangeDouble(-0.2, 0.2)));
 		tnt.setFuseTicks(80);
 	}

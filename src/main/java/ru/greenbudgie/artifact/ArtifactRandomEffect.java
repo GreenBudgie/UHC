@@ -16,7 +16,7 @@ import java.util.List;
 public class ArtifactRandomEffect extends Artifact {
 
 	private static final PotionEffect slowness = new PotionEffect(
-			PotionEffectType.SLOW,
+			PotionEffectType.SLOWNESS,
 			3 * 60 * 20,
 			0
 	);
@@ -26,7 +26,7 @@ public class ArtifactRandomEffect extends Artifact {
 			0
 	);
 	private static final PotionEffect fatigue = new PotionEffect(
-			PotionEffectType.SLOW_DIGGING,
+			PotionEffectType.MINING_FATIGUE,
 			3 * 60 * 20,
 			0
 	);
@@ -85,7 +85,7 @@ public class ArtifactRandomEffect extends Artifact {
 		PotionEffect chosenEffect = MathUtils.choose(effects);
 		for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
 			currentPlayer.addPotionEffect(chosenEffect);
-			ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.SMOKE_NORMAL, null, 25);
+			ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.SMOKE, null, 25);
 		}
 		for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 			currentPlayer.playSound(currentPlayer.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1F, 0.9F);

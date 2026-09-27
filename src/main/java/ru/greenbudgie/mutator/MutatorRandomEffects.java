@@ -18,17 +18,17 @@ public class MutatorRandomEffects extends Mutator {
 	private final PotionEffect[] EFFECTS = new PotionEffect[] {
 			//Good
 			new PotionEffect(PotionEffectType.SPEED, 30 * 20, 0),
-			new PotionEffect(PotionEffectType.FAST_DIGGING, 60 * 20, 1),
+			new PotionEffect(PotionEffectType.HASTE, 60 * 20, 1),
 			new PotionEffect(PotionEffectType.NIGHT_VISION, 120 * 20, 0),
-			new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 30 * 20, 0),
-			new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 60 * 20, 0),
-			new PotionEffect(PotionEffectType.JUMP, 20 * 20, 1),
+			new PotionEffect(PotionEffectType.STRENGTH, 30 * 20, 0),
+			new PotionEffect(PotionEffectType.RESISTANCE, 60 * 20, 0),
+			new PotionEffect(PotionEffectType.JUMP_BOOST, 20 * 20, 1),
 
 			//Bad
 			new PotionEffect(PotionEffectType.GLOWING, 30 * 20, 0),
 			new PotionEffect(PotionEffectType.LEVITATION, 10 * 20, 0),
 			new PotionEffect(PotionEffectType.BLINDNESS, 20 * 20, 0),
-			new PotionEffect(PotionEffectType.SLOW_DIGGING, 30 * 20, 0),
+			new PotionEffect(PotionEffectType.MINING_FATIGUE, 30 * 20, 0),
 			new PotionEffect(PotionEffectType.HUNGER, 30 * 20, 3),
 			new PotionEffect(PotionEffectType.WEAKNESS, 30 * 20, 0),
 	};

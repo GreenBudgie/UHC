@@ -53,7 +53,7 @@ public class ClassNecromancer extends UHCClass {
     @EventHandler
     public void gameInit(AfterGameInitializeEvent event) {
         for(UHCPlayer uhcPlayer : getPlayersWithClass()) {
-            uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(MAX_CLASS_HP);
+            uhcPlayer.getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(MAX_CLASS_HP);
         }
     }
 
@@ -85,7 +85,7 @@ public class ClassNecromancer extends UHCClass {
         if(uhcKiller != null && uhcKiller.isAliveAndOnline()) {
             Player killer = uhcKiller.getPlayer();
             if(hasClass(killer)) {
-                AttributeInstance maxHealth = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                AttributeInstance maxHealth = killer.getAttribute(Attribute.MAX_HEALTH);
                 maxHealth.setBaseValue(maxHealth.getBaseValue() + 4);
                 killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 0));
             }
@@ -115,7 +115,7 @@ public class ClassNecromancer extends UHCClass {
                 if(uhcKiller != null && uhcKiller.isAliveAndOnline()) killer = uhcKiller.getPlayer();
             }
             if(killer != null && hasClass(killer)) {
-                ParticleUtils.createParticlesAround(entity, Particle.SPELL_MOB, Color.RED, 30);
+                ParticleUtils.createParticlesAround(entity, Particle.ENTITY_EFFECT, Color.RED, 30);
                 entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_HOE_TILL, 1F, 0.5F);
                 killer.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 45, 0));
             }

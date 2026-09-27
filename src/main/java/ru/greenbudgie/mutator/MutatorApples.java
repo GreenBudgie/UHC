@@ -43,7 +43,7 @@ public class MutatorApples extends Mutator implements Listener {
 		if(b.getType() == Material.DARK_OAK_LEAVES || b.getType() == Material.OAK_LEAVES) {
 			Leaves leaves = (Leaves) b.getState().getBlockData();
 			if(!leaves.isPersistent() && MathUtils.chance(7)) {
-				ParticleUtils.createParticlesInside(b, Particle.REDSTONE, Color.YELLOW, 8);
+				ParticleUtils.createParticlesInside(b, Particle.DUST, Color.YELLOW, 8);
 				b.getWorld().dropItemNaturally(b.getLocation(), new ItemStack(Material.APPLE));
 			}
 		}
@@ -54,7 +54,7 @@ public class MutatorApples extends Mutator implements Listener {
 		Block b = e.getBlock();
 		if(b.getType() == Material.DARK_OAK_LEAVES || b.getType() == Material.OAK_LEAVES) {
 			if(MathUtils.chance(8)) {
-				ParticleUtils.createParticlesInside(b, Particle.REDSTONE, Color.YELLOW, 8);
+				ParticleUtils.createParticlesInside(b, Particle.DUST, Color.YELLOW, 8);
 				b.getWorld().dropItemNaturally(b.getLocation(), new ItemStack(Material.APPLE));
 			}
 		}

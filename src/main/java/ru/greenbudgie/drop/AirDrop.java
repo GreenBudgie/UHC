@@ -45,7 +45,7 @@ public class AirDrop extends Drop {
         item.setMetadata("airdrop", new FixedMetadataValue(UHCPlugin.instance, true));
         location.getWorld().playSound(location, Sound.ENTITY_ITEM_PICKUP, 1F, 0.5F);
         location.getWorld().playSound(location, Sound.BLOCK_WOOL_BREAK, 1.5F, 0.5F);
-        ParticleUtils.createParticlesInsideSphere(location, 3, Particle.REDSTONE, Color.WHITE, 40);
+        ParticleUtils.createParticlesInsideSphere(location, 3, Particle.DUST, Color.WHITE, 40);
         for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
             p.sendTitle(" ", getSpawnMessage(), 10, 40, 20);
             p.sendMessage(getChatDropCoordinatesInfo());

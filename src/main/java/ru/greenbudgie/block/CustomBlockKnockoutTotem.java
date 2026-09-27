@@ -40,7 +40,7 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
     @Override
     public void produceEffect() {
         if(ticksPassed % 2 == 0) {
-            ParticleUtils.createParticlesOutlineSphere(centerLocation, getEffectRadius(), Particle.SMOKE_NORMAL, null, 12);
+            ParticleUtils.createParticlesOutlineSphere(centerLocation, getEffectRadius(), Particle.SMOKE, null, 12);
             ParticleUtils.createParticlesInside(getBlock(), Particle.END_ROD, null, 1);
         }
         if(ticksPassed > 0 && ticksPassed % 10 == 0) {
@@ -63,13 +63,13 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
                 Vector currentVelocity = entity.getVelocity();
                 currentVelocity.add(playerPointer);
                 entity.setVelocity(currentVelocity);
-                ParticleUtils.createParticlesAround(entity, Particle.SMOKE_LARGE, null, 5);
+                ParticleUtils.createParticlesAround(entity, Particle.LARGE_SMOKE, null, 5);
                 entity.getWorld().playSound(entity.getLocation(), Sound.ITEM_FIRECHARGE_USE, 0.5F, 1.5F);
                 if(entity instanceof Player player) {
                     FightHelper.setDamager(player, owner, 70, "убил тотемом");
                 }
             }
-            ParticleUtils.createParticlesOutlineSphere(centerLocation, getEffectRadius(), Particle.SMOKE_LARGE, null, 30);
+            ParticleUtils.createParticlesOutlineSphere(centerLocation, getEffectRadius(), Particle.LARGE_SMOKE, null, 30);
             location.getWorld().playSound(location, Sound.BLOCK_ANVIL_LAND, 0.4F, 0.5F);
         }
     }
@@ -77,7 +77,7 @@ public class CustomBlockKnockoutTotem extends CustomBlockTotem {
     @Override
     public void onEffectStop() {
         super.onEffectStop();
-        ParticleUtils.createParticlesInside(getBlock(), Particle.SMOKE_LARGE, null, 10);
+        ParticleUtils.createParticlesInside(getBlock(), Particle.LARGE_SMOKE, null, 10);
         location.getWorld().playSound(location, Sound.ITEM_AXE_STRIP, 1, 0.8f);
     }
 

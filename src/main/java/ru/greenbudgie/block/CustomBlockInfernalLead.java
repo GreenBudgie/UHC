@@ -99,7 +99,7 @@ public class CustomBlockInfernalLead extends CustomBlockItem {
                 fortressPointingLocation = centerLocation.clone().add(vector.getX(), 0, vector.getZ());
             } else {
                 location.getWorld().playSound(location, Sound.BLOCK_FIRE_EXTINGUISH, 1, 1);
-                ParticleUtils.createParticlesInsideSphere(centerLocation, 2, Particle.SMOKE_LARGE, null, 20);
+                ParticleUtils.createParticlesInsideSphere(centerLocation, 2, Particle.LARGE_SMOKE, null, 20);
                 Block block = getBlock();
                 RespawnAnchor anchor = (RespawnAnchor) block.getState().getBlockData();
                 anchor.setCharges(0);

@@ -160,6 +160,9 @@ public class LobbyGameParkour extends LobbyGame implements Listener {
 
     private void startParkourSession(Player player, Block startBlock) {
         ParkourSession currentSession = parkourSessions.get(player);
+        if (!player.getActivePotionEffects().isEmpty()) {
+            return;
+        }
         if (currentSession != null) {
             boolean sameLocation = WorldHelper.compareIntLocations(
                     startBlock.getLocation(),

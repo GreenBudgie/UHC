@@ -90,7 +90,7 @@ public class MutatorTeammateSwap extends BossBarHolderMutator {
                     Objects.requireNonNull(player2.getPlayerOrGhost())
 			);
 			for (LivingEntity entity : playersOrGhosts) {
-				ParticleUtils.createParticlesAround(entity, Particle.REDSTONE, Color.PURPLE, 30);
+				ParticleUtils.createParticlesAround(entity, Particle.DUST, Color.PURPLE, 30);
 				entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1.5F);
 			}
 		}

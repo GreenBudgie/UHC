@@ -134,7 +134,9 @@ public class MutatorHealthUnion extends Mutator implements Listener {
 			EntityDamageEvent damageCause = player.isOnline() ?
 					player.getPlayer().getLastDamageCause() :
 					player.getGhost().getLastDamageCause();
-			teammate.getPlayer().setLastDamageCause(damageCause);
+			if (damageCause != null) {
+				teammate.getPlayer().setLastDamageCause(damageCause);
+			}
 			teammate.kill();
 		}
 	}

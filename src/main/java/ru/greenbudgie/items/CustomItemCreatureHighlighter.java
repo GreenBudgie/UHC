@@ -31,7 +31,7 @@ public class CustomItemCreatureHighlighter extends RequesterCustomItem {
 				entity.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 240, 0));
 			}
 		}
-		ParticleUtils.createParticlesInsideSphere(p.getLocation(), 3, Particle.FIREWORKS_SPARK, null, 35);
+		ParticleUtils.createParticlesInsideSphere(p.getLocation(), 3, Particle.FIREWORK, null, 35);
 		p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1.7F);
 	}
 

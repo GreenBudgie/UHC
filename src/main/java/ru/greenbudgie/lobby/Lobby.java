@@ -29,10 +29,10 @@ public class Lobby {
         lobby.setDifficulty(Difficulty.NORMAL);
         lobby.setPVP(true);
         lobby.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
-        lobby.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        lobby.setGameRule(GameRule.NATURAL_REGENERATION, false);
+        lobby.setGameRule(GameRule.SHOW_ADVANCEMENT_MESSAGES, false);
+        lobby.setGameRule(GameRule.NATURAL_HEALTH_REGENERATION, false);
         lobby.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
-        lobby.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+        lobby.setGameRule(GameRule.IMMEDIATE_RESPAWN, true);
 
         removeMapDatFiles();
 

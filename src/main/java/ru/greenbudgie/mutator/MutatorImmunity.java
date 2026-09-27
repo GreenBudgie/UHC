@@ -100,7 +100,7 @@ public class MutatorImmunity extends BossBarHolderMutator {
 	public void absorbDamage(EntityDamageEvent event) {
 		if(event.getEntity() instanceof Player player && PlayerManager.isPlaying(player) &&
 				immunity != null && immunity.doAbsorb(event.getCause())) {
-			ParticleUtils.createParticlesOutlineSphere(player.getEyeLocation(), 1.7, Particle.REDSTONE, Color.AQUA, 20);
+			ParticleUtils.createParticlesOutlineSphere(player.getEyeLocation(), 1.7, Particle.DUST, Color.AQUA, 20);
 			player.getWorld().playSound(player.getLocation(), Sound.ITEM_HOE_TILL, 0.3F, 0.5F);
 			event.setCancelled(true);
 		}

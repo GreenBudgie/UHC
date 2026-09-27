@@ -163,7 +163,7 @@ public class CustomItemUnderworldEgg extends ClassCustomItem implements Listener
 			UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
 			if(uhcPlayer != null) {
 				Location spawnLocation = egg.getLocation();
-				ParticleUtils.createParticlesOutlineSphere(spawnLocation, 5, Particle.SMOKE_LARGE, null, 40);
+				ParticleUtils.createParticlesOutlineSphere(spawnLocation, 5, Particle.LARGE_SMOKE, null, 40);
 				spawnMob(spawnLocation, EntityType.ZOMBIE, player);
 				spawnMob(spawnLocation, EntityType.HUSK, player);
 				spawnMob(spawnLocation, EntityType.SKELETON, player);

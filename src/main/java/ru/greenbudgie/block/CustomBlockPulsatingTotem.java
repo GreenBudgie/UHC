@@ -47,7 +47,7 @@ public class CustomBlockPulsatingTotem extends CustomBlockTotem {
                 projectilePointer.multiply(0.7);
                 projectile.setVelocity(projectilePointer);
 
-                ParticleUtils.createParticlesAround(projectile, Particle.SMOKE_LARGE, null, 4);
+                ParticleUtils.createParticlesAround(projectile, Particle.LARGE_SMOKE, null, 4);
                 ParticleUtils.createLine(centerLocation, projectile.getLocation(), Particle.SMALL_FLAME, 3, null);
                 projectile.getWorld().playSound(projectile.getLocation(), Sound.ENTITY_PHANTOM_HURT, 1, 2);
             }
@@ -61,7 +61,7 @@ public class CustomBlockPulsatingTotem extends CustomBlockTotem {
     @Override
     public void onEffectStop() {
         super.onEffectStop();
-        ParticleUtils.createParticlesInside(getBlock(), Particle.SMOKE_LARGE, null, 10);
+        ParticleUtils.createParticlesInside(getBlock(), Particle.LARGE_SMOKE, null, 10);
         location.getWorld().playSound(location, Sound.ENTITY_ENDER_EYE_DEATH, 1, 0.5f);
     }
 

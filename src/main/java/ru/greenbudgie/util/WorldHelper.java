@@ -1,11 +1,9 @@
 package ru.greenbudgie.util;
 
 import com.google.common.collect.Lists;
-import net.minecraft.core.BlockPosition;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
@@ -20,10 +18,6 @@ public class WorldHelper {
 
 	public static boolean isDay(World w) {
 		return w.getEnvironment() == World.Environment.NORMAL && w.getTime() >= 0 && w.getTime() <= 12000;
-	}
-
-	public static BlockPosition toBlockPos(Location l) {
-		return new BlockPosition(l.getBlockX(), l.getBlockY(), l.getBlockZ());
 	}
 
 	public static boolean isBadMob(EntityType t) {
@@ -368,7 +362,10 @@ public class WorldHelper {
 			if(!world.getWorldBorder().isInside(tpLoc)) {
 				continue;
 			}
-			if(((CraftLivingEntity) entity).getHandle().b(tpX, tpY, tpZ, false)) {
+			if(!isSafeTeleportDestination(tpLoc)) {
+				continue;
+			}
+			if(entity.teleport(tpLoc)) {
 				if(playSound) {
 					world.playSound(entity.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
 					world.playSound(new Location(world, x, y, z), Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1, 1);
@@ -380,6 +377,15 @@ public class WorldHelper {
 
 	public static void chorusTeleport(LivingEntity e, int range) {
 		chorusTeleport(e, range, true);
+	}
+
+	private static boolean isSafeTeleportDestination(Location loc) {
+		Block feet = loc.getBlock();
+		Block head = feet.getRelative(BlockFace.UP);
+		Block ground = feet.getRelative(BlockFace.DOWN);
+		if(!feet.isPassable() || !head.isPassable()) return false;
+		if(feet.isLiquid() || head.isLiquid()) return false;
+		return ground.getType().isSolid();
 	}
 
 	private static double randomInRange(int range, Random random) {

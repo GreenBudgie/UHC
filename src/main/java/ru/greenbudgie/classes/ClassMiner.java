@@ -139,8 +139,8 @@ public class ClassMiner extends BarHolderUHCClass {
     public void onUpdate(UHCPlayer uhcPlayer) {
         if(TaskManager.isSecUpdated() && (UHC.state.isBeforeDeathmatch() || UHC.state == GameState.DEATHMATCH) && uhcPlayer.isAliveAndOnline()) {
             Player player = uhcPlayer.getPlayer();
-            if(!player.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, Integer.MAX_VALUE, 0));
+            if(!player.hasPotionEffect(PotionEffectType.HASTE)) {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, Integer.MAX_VALUE, 0));
             }
         }
     }
@@ -282,7 +282,7 @@ public class ClassMiner extends BarHolderUHCClass {
                 }
             }
 
-            ParticleUtils.createParticlesInside(block, Particle.SPELL_MOB, Color.WHITE, 5);
+            ParticleUtils.createParticlesInside(block, Particle.ENTITY_EFFECT, Color.WHITE, 5);
             block.getWorld().playSound(block.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_HIT, 0.5f, 1);
             player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20 * 5, 0));
         }

@@ -163,7 +163,7 @@ public class MutatorKillers extends Mutator implements Listener {
 					60,
 					20
 			);
-			ParticleUtils.createParticlesAround(player, Particle.REDSTONE, Color.GREEN, 20);
+			ParticleUtils.createParticlesAround(player, Particle.DUST, Color.GREEN, 20);
 			return;
 		}
 		killer.addOfflineHealth(SUCCESS_HEAL);
@@ -182,7 +182,7 @@ public class MutatorKillers extends Mutator implements Listener {
 					60,
 					20
 			);
-			ParticleUtils.createParticlesAround(player, Particle.REDSTONE, Color.RED, 20);
+			ParticleUtils.createParticlesAround(player, Particle.DUST, Color.RED, 20);
 			return;
 		}
 		killer.addOfflineHealth(-FAILURE_DAMAGE);

@@ -106,7 +106,7 @@ public class RequestedItem {
 				droppedItem.setPickupDelay(0);
 				droppedItem.setGlowing(true);
 				ParticleUtils.createParticlesInsideSphere(bottom, 3, Particle.LAVA, null, 50);
-				ParticleUtils.createParticlesInsideSphere(bottom, 3, Particle.EXPLOSION_LARGE, null, 50);
+				ParticleUtils.createParticlesInsideSphere(bottom, 3, Particle.EXPLOSION_EMITTER, null, 50);
 				bottom.getWorld().playSound(bottom, Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, 1F, 0.5F);
 				bottom.getWorld().playSound(bottom, Sound.ENTITY_GENERIC_EXPLODE, 1F, 0.5F);
 				done = true;

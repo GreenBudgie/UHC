@@ -33,11 +33,11 @@ public class CustomItemSoulscriber extends RequesterCustomItem implements Listen
 		if(e.getEntity() instanceof Player victim && e.getDamager() instanceof Player attacker &&
 				!e.isCancelled() && e.getFinalDamage() > 0 && isEquals(attacker.getInventory().getItemInMainHand())) {
 			double regenHp = e.getFinalDamage() * 0.25;
-			double maxHp = attacker.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+			double maxHp = attacker.getAttribute(Attribute.MAX_HEALTH).getValue();
 			if(!PlayerManager.isTeammates(victim, attacker)) {
 				attacker.setHealth(MathUtils.clamp(attacker.getHealth() + regenHp, 0, maxHp));
 				victim.getWorld().playSound(victim.getLocation(), Sound.ITEM_HOE_TILL, 1, 0.5F);
-				ParticleUtils.createParticlesAround(victim, Particle.REDSTONE, Color.fromRGB(80, 0, 0), 15);
+				ParticleUtils.createParticlesAround(victim, Particle.DUST, Color.fromRGB(80, 0, 0), 15);
 			}
 		}
 	}

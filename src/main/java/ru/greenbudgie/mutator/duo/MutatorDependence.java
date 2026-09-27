@@ -47,12 +47,12 @@ public class MutatorDependence extends TeammateDistanceBasedMutator<MutatorDepen
 		),
 		FAR(
 				25,
-				effect(PotionEffectType.SLOW_DIGGING),
+				effect(PotionEffectType.MINING_FATIGUE),
 				RED + "" + BOLD + "Ты далеко"
 		),
 		VERY_FAR(
 				35,
-				effect(PotionEffectType.SLOW),
+				effect(PotionEffectType.SLOWNESS),
 				DARK_RED + "" + BOLD + "Ты очень далеко!"
 		),
 		EXTREMELY_FAR(

@@ -128,14 +128,14 @@ public class ItemRequester implements Listener {
 			if(requesterItem.canRequest(requester)) {
 				requester.getWorld().playSound(requester.getLocation(), Sound.ENTITY_ILLUSIONER_CAST_SPELL, 1F, 0.5F);
 				if(!MutatorManager.requestAnywhere.isActive()) {
-					Firework firework = (Firework) requester.getWorld().spawnEntity(requester.getLocation(), EntityType.FIREWORK);
+					Firework firework = (Firework) requester.getWorld().spawnEntity(requester.getLocation(), EntityType.FIREWORK_ROCKET);
 					FireworkMeta meta = firework.getFireworkMeta();
 					meta.setPower(2);
 					meta.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(Color.RED).withFade(Color.BLACK).build());
 					firework.setFireworkMeta(meta);
 					firework.setMetadata("request", new FixedMetadataValue(UHCPlugin.instance, true));
 				}
-				ParticleUtils.createParticlesInsideSphere(requester.getLocation(), 3, Particle.TOTEM, null, 30);
+				ParticleUtils.createParticlesInsideSphere(requester.getLocation(), 3, Particle.TOTEM_OF_UNDYING, null, 30);
 				int lapisPrice = MutatorManager.simpleRequests.isActive() ? 0 : requesterItem.getLapisPrice();
 				removeMaterials(requester, requesterItem.getRedstonePrice(), lapisPrice);
 				RequestedItem requestedItem = new RequestedItem(requester.getLocation(), requesterItem.getItemStack());

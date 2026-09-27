@@ -161,7 +161,7 @@ public class ParticleUtils {
 	 * @return Whether the particle has a color option
 	 */
 	public static boolean hasColor(Particle particle) {
-		return particle == Particle.REDSTONE || particle == Particle.SPELL_MOB || particle == Particle.SPELL_MOB_AMBIENT;
+		return particle == Particle.DUST || particle == Particle.ENTITY_EFFECT;
 	}
 
 	/**
@@ -176,15 +176,12 @@ public class ParticleUtils {
 		if(color == null || !hasColor(particle)) {
 			world.spawnParticle(particle, location,1, 0, 0, 0, 0);
 		} else {
-			if(particle == Particle.REDSTONE) {
+			if(particle == Particle.DUST) {
 				Particle.DustOptions dustOptions = new Particle.DustOptions(color, 1);
 				world.spawnParticle(particle, location, 1, dustOptions);
 			}
-			if(particle == Particle.SPELL_MOB || particle == Particle.SPELL_MOB_AMBIENT) {
-				double red = color.getRed() / 255D;
-				double green = color.getGreen() / 255D;
-				double blue = color.getBlue() / 255D;
-				world.spawnParticle(particle, location, 0, red, green, blue, 1);
+			if(particle == Particle.ENTITY_EFFECT) {
+				world.spawnParticle(particle, location, 1, color);
 			}
 		}
 	}

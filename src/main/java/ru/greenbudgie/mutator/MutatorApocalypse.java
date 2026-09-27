@@ -72,7 +72,7 @@ public class MutatorApocalypse extends Mutator implements Listener {
 		Location dropLocation = getRandomLocation();
 		boolean closedArena = UHC.state == GameState.DEATHMATCH && !ArenaManager.getCurrentArena().isOpen();
 		if(dropLocation != null && !closedArena) {
-			TNTPrimed tnt = (TNTPrimed) dropLocation.getWorld().spawnEntity(dropLocation, EntityType.PRIMED_TNT);
+			TNTPrimed tnt = (TNTPrimed) dropLocation.getWorld().spawnEntity(dropLocation, EntityType.TNT);
 			tnt.setFuseTicks(12 * 20);
 		}
 		reset();

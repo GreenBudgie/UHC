@@ -11,8 +11,8 @@ import java.util.List;
 public class TrollingEventNoMoving extends TrollingEvent {
 
     private static final List<PotionEffect> effects = List.of(
-            new PotionEffectBuilder(PotionEffectType.SLOW).seconds(15).amplifier(255).build(),
-            new PotionEffectBuilder(PotionEffectType.JUMP).seconds(15).amplifier(200).build()
+            new PotionEffectBuilder(PotionEffectType.SLOWNESS).seconds(15).amplifier(255).build(),
+            new PotionEffectBuilder(PotionEffectType.JUMP_BOOST).seconds(15).amplifier(200).build()
     );
 
     @Override

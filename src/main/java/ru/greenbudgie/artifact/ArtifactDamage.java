@@ -44,7 +44,7 @@ public class ArtifactDamage extends Artifact {
                 boolean isSelfDamage = player == currentPlayer;
                 double damage = MathUtils.clamp(isSelfDamage ? SELF_DAMAGE : DAMAGE, 0, currentPlayer.getHealth() - 1);
                 currentPlayer.damage(damage);
-                ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.SMOKE_LARGE, null, 15);
+                ParticleUtils.createParticlesInRange(currentPlayer.getLocation(), 3, Particle.LARGE_SMOKE, null, 15);
             } else {
                 double damage = MathUtils.clamp(DAMAGE, 0, uhcCurrentPlayer.getOfflineHealth() - 1);
                 uhcCurrentPlayer.addOfflineHealth(-damage);

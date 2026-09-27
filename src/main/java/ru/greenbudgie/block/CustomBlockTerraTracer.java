@@ -91,7 +91,7 @@ public class CustomBlockTerraTracer extends CustomBlockItem {
             double z = radius * Math.cos(phi);
             Location randomLocation = centerLocation.clone().add(x, y, z);
             ParticleUtils.createParticlesOutlineSphere(
-                    randomLocation, 0.3, Particle.REDSTONE, Color.fromRGB(59, 111, 255), 8);
+                    randomLocation, 0.3, Particle.DUST, Color.fromRGB(59, 111, 255), 8);
             randomLocation.getWorld().playSound(randomLocation, Sound.BLOCK_AMETHYST_BLOCK_HIT, 2, (float) MathUtils.randomRangeDouble(0.5, 2));
         }
         if(ticksPassed == 80) {
@@ -100,18 +100,18 @@ public class CustomBlockTerraTracer extends CustomBlockItem {
                 location.getWorld().playSound(location, Sound.BLOCK_BEACON_POWER_SELECT, 1, 2);
             } else {
                 location.getWorld().playSound(location, Sound.BLOCK_BEACON_DEACTIVATE, 1.5F, 1.5F);
-                ParticleUtils.createCircle(centerLocation, Particle.SMOKE_NORMAL, null, 1.5, 10);
+                ParticleUtils.createCircle(centerLocation, Particle.SMOKE, null, 1.5, 10);
                 dropAndRemove();
             }
         }
         if(hasLocatedOre() && ticksPassed > 80 && ticksPassed % 10 == 0) {
             if(nearestOre.getBlock().getType() == Material.AIR) {
                 location.getWorld().playSound(location, Sound.BLOCK_BEACON_DEACTIVATE, 1.5F, 1.5F);
-                ParticleUtils.createCircle(centerLocation, Particle.SMOKE_NORMAL, null, 1.5, 10);
+                ParticleUtils.createCircle(centerLocation, Particle.SMOKE, null, 1.5, 10);
                 remove();
                 return;
             }
-            ParticleUtils.createLine(centerLocation, nearestOre, Particle.REDSTONE, 3, Color.fromRGB(59, 111, 255));
+            ParticleUtils.createLine(centerLocation, nearestOre, Particle.DUST, 3, Color.fromRGB(59, 111, 255));
         }
     }
 

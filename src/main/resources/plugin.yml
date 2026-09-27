@@ -1,5 +1,5 @@
 name: UHC
-api-version: 1.20
+api-version: '26.2'
 main: ru.greenbudgie.main.UHCPlugin
 version: 4.0
 commands:

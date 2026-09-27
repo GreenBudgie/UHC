@@ -37,9 +37,9 @@ public class CustomItemAncientShard extends ClassCustomItem implements Listener 
 		UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
 		if(uhcPlayer != null) {
 			item.setAmount(item.getAmount() - 1);
-			player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
-			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 0));
-			ParticleUtils.createParticlesOutlineSphere(player.getLocation(), 2, Particle.REDSTONE, Color.fromRGB(214, 37, 152), 50);
+			player.removePotionEffect(PotionEffectType.RESISTANCE);
+			player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, Integer.MAX_VALUE, 0));
+			ParticleUtils.createParticlesOutlineSphere(player.getLocation(), 2, Particle.DUST, Color.fromRGB(214, 37, 152), 50);
 			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ILLUSIONER_AMBIENT, 1F, 0.5F);
 			player.getWorld().playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_FALL, 1F, 0.5F);
 			affectedPlayers.add(uhcPlayer);
@@ -53,7 +53,7 @@ public class CustomItemAncientShard extends ClassCustomItem implements Listener 
 						|| event.getAction() == EntityPotionEffectEvent.Action.REMOVED
 						|| event.getAction() == EntityPotionEffectEvent.Action.CHANGED)) {
 			PotionEffect effect = event.getOldEffect();
-			if(effect != null && effect.getType().equals(PotionEffectType.DAMAGE_RESISTANCE)) {
+			if(effect != null && effect.getType().equals(PotionEffectType.RESISTANCE)) {
 				UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
 				if(uhcPlayer != null && affectedPlayers.contains(uhcPlayer)) {
 					event.setCancelled(true);
@@ -67,13 +67,13 @@ public class CustomItemAncientShard extends ClassCustomItem implements Listener 
 		if(!event.isCancelled() && event.getFinalDamage() > 0 && event.getEntity() instanceof Player player) {
 			UHCPlayer uhcPlayer = PlayerManager.asUHCPlayer(player);
 			if(uhcPlayer != null && affectedPlayers.contains(uhcPlayer)) {
-				ParticleUtils.createParticlesOutlineSphere(player.getLocation(), 2, Particle.REDSTONE, Color.fromRGB(214, 37, 152), 90);
+				ParticleUtils.createParticlesOutlineSphere(player.getLocation(), 2, Particle.DUST, Color.fromRGB(214, 37, 152), 90);
 				player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ILLUSIONER_AMBIENT, 1F, 0.5F);
 				player.getWorld().playSound(player.getLocation(), Sound.BLOCK_AMETHYST_CLUSTER_BREAK, 1.8F, 0.5F);
 				player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 15, 1, false, false, false));
 				event.setCancelled(true);
 				affectedPlayers.remove(uhcPlayer);
-				player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+				player.removePotionEffect(PotionEffectType.RESISTANCE);
 			}
 		}
 	}

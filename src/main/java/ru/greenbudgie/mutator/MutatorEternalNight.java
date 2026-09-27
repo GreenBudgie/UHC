@@ -36,13 +36,13 @@ public class MutatorEternalNight extends Mutator {
 
 	@Override
 	public void onChoose() {
-		WorldManager.getGameMap().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+		WorldManager.getGameMap().setGameRule(GameRule.ADVANCE_TIME, false);
 		WorldManager.getGameMap().setTime(18000);
 	}
 
 	@Override
 	public void onDeactivate() {
-		WorldManager.getGameMap().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
+		WorldManager.getGameMap().setGameRule(GameRule.ADVANCE_TIME, true);
 	}
 
 	@Override

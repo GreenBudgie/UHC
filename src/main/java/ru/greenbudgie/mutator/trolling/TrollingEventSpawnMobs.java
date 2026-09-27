@@ -22,7 +22,7 @@ public class TrollingEventSpawnMobs extends TrollingEvent {
 
     private static final EntityType[] MOBS = new EntityType[] {
             EntityType.COW,
-            EntityType.MUSHROOM_COW,
+            EntityType.MOOSHROOM,
             EntityType.BEE,
             EntityType.RABBIT,
             EntityType.SHEEP,

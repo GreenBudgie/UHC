@@ -85,7 +85,7 @@ public class UHCPlugin extends JavaPlugin {
 
 		TaskManager.init();
 	}
-	
+
 	private void registerCommand(String commandName, CommandExecutor executor) {
 		PluginCommand command = this.getCommand(commandName);
 		if(command != null) command.setExecutor(executor);

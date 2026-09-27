@@ -35,10 +35,10 @@ public class CustomItemInstantTnt extends RequesterCustomItem implements Listene
 			if(!arena.getWorld().getPVP()) canPlace = false;
 		}
 		if(UHC.state != GameState.ENDING && (UHC.state != GameState.DEATHMATCH || canPlace)) {
-			ParticleUtils.createParticlesOutline(b, Particle.REDSTONE, Color.RED, 15);
+			ParticleUtils.createParticlesOutline(b, Particle.DUST, Color.RED, 15);
 			Location center = b.getLocation().clone().add(0.5, 0, 0.5);
 			b.getWorld().playSound(center, Sound.ENTITY_TNT_PRIMED, 1F, 1F);
-			TNTPrimed tnt = (TNTPrimed) b.getWorld().spawnEntity(center, EntityType.PRIMED_TNT);
+			TNTPrimed tnt = (TNTPrimed) b.getWorld().spawnEntity(center, EntityType.TNT);
 			tnt.setFuseTicks(20);
 			tnt.setMetadata("owner", new FixedMetadataValue(UHCPlugin.instance, p.getName()));
 			b.setType(Material.AIR);

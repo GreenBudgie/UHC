@@ -31,7 +31,7 @@ public class Drops {
             .withName(WHITE + "Potion of Life Essence")
             .withColor(Color.fromRGB(255, 182, 243))
             .withEffects(
-                    new PotionEffectBuilder(PotionEffectType.HEAL).amplifier(1).build(),
+                    new PotionEffectBuilder(PotionEffectType.INSTANT_HEALTH).amplifier(1).build(),
                     new PotionEffectBuilder(PotionEffectType.ABSORPTION).minutes(2).noParticles().build()
             ).build();
     private static final ItemStack toxicPotion = ItemUtils.potionBuilder()
@@ -40,7 +40,7 @@ public class Drops {
             .withColor(Color.GREEN)
             .withEffects(
                     new PotionEffectBuilder(PotionEffectType.POISON).seconds(6).amplifier(1).build(),
-                    new PotionEffectBuilder(PotionEffectType.SLOW).amplifier(1).minutes(1).build()
+                    new PotionEffectBuilder(PotionEffectType.SLOWNESS).amplifier(1).minutes(1).build()
             ).build();
     private static final ItemStack weaknessPotion = ItemUtils.potionBuilder()
             .withName(WHITE + "Potion of Weakening")
@@ -54,7 +54,7 @@ public class Drops {
             .withName(WHITE + "Potion of Miner Dream")
             .withColor(Color.WHITE)
             .withEffects(
-                    new PotionEffectBuilder(PotionEffectType.FAST_DIGGING).minutes(10).amplifier(2).build(),
+                    new PotionEffectBuilder(PotionEffectType.HASTE).minutes(10).amplifier(2).build(),
                     new PotionEffectBuilder(PotionEffectType.NIGHT_VISION).minutes(30).build()
             ).build();
     private static final ItemStack explorerPotion = ItemUtils.potionBuilder()
@@ -70,15 +70,15 @@ public class Drops {
             .withName(WHITE + "Potion of Dominance")
             .withColor(Color.fromRGB(100, 0, 0))
             .withEffects(
-                    new PotionEffectBuilder(PotionEffectType.INCREASE_DAMAGE).minutes(1).build(),
-                    new PotionEffectBuilder(PotionEffectType.DAMAGE_RESISTANCE).seconds(30).build()
+                    new PotionEffectBuilder(PotionEffectType.STRENGTH).minutes(1).build(),
+                    new PotionEffectBuilder(PotionEffectType.RESISTANCE).seconds(30).build()
             ).build();
     private static final ItemStack damagePotion = ItemUtils.potionBuilder()
             .withName(WHITE + "Potion of Death")
             .splash()
             .withColor(Color.BLACK)
             .withEffects(
-                    new PotionEffectBuilder(PotionEffectType.HARM).build(),
+                    new PotionEffectBuilder(PotionEffectType.INSTANT_DAMAGE).build(),
                     new PotionEffectBuilder(PotionEffectType.WITHER).seconds(13).build()
             ).build();
     private static final ItemStack disrespectPotion = ItemUtils.potionBuilder()
@@ -89,7 +89,7 @@ public class Drops {
                     new PotionEffectBuilder(PotionEffectType.LEVITATION).seconds(6).amplifier(2).build(),
                     new PotionEffectBuilder(PotionEffectType.DARKNESS).seconds(30).build(),
                     new PotionEffectBuilder(PotionEffectType.HUNGER).minutes(2).amplifier(4).build(),
-                    new PotionEffectBuilder(PotionEffectType.SLOW_DIGGING).minutes(1).build()
+                    new PotionEffectBuilder(PotionEffectType.MINING_FATIGUE).minutes(1).build()
             ).build();
     
     private static final WeightedItemList weightedDrops = new WeightedItemList(
@@ -106,50 +106,50 @@ public class Drops {
             WeightedItem.builder(Material.GOLD_INGOT).amount(20, 30).weight(2).build(),
             WeightedEnchantedItem.book().alwaysEnchant(
                     new Enchant(Enchantment.THORNS, 3),
-                    new Enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1)
+                    new Enchant(Enchantment.PROTECTION, 1)
             ).weight(2).build(),
             WeightedEnchantedItem.book().alwaysEnchant(
-                    WeightedEnchantment.builder(Enchantment.LOOT_BONUS_BLOCKS).level(2, 3).build()
+                    WeightedEnchantment.builder(Enchantment.FORTUNE).level(2, 3).build()
             ).weight(2).build(),
             WeightedEnchantedItem.book().alwaysEnchant(
-                    WeightedEnchantment.builder(Enchantment.LOOT_BONUS_MOBS).level(3).build()
+                    WeightedEnchantment.builder(Enchantment.LOOTING).level(3).build()
             ).weight(2).build(),
             WeightedEnchantedItem.book().alwaysEnchant(new Enchant(Enchantment.FIRE_ASPECT, 2)).weight(2).build(),
             WeightedEnchantedItem.item(Material.DIAMOND_BOOTS).weightedEnchantments(
-                    WeightedEnchantment.builder(Enchantment.PROTECTION_FALL).level(2, 4).build(),
+                    WeightedEnchantment.builder(Enchantment.FEATHER_FALLING).level(2, 4).build(),
                     WeightedEnchantment.builder(Enchantment.DEPTH_STRIDER).level(2, 3).build(),
-                    WeightedEnchantment.builder(Enchantment.PROTECTION_ENVIRONMENTAL).level(1).build()
+                    WeightedEnchantment.builder(Enchantment.PROTECTION).level(1).build()
             ).number(2).weight(2).build(),
             WeightedEnchantedItem.item(Material.DIAMOND_LEGGINGS).weightedEnchantments(
-                    WeightedEnchantment.builder(Enchantment.PROTECTION_FIRE).level(2, 4).build(),
-                    WeightedEnchantment.builder(Enchantment.PROTECTION_EXPLOSIONS).level(2, 4).build(),
-                    WeightedEnchantment.builder(Enchantment.PROTECTION_ENVIRONMENTAL).level(1).build(),
+                    WeightedEnchantment.builder(Enchantment.FIRE_PROTECTION).level(2, 4).build(),
+                    WeightedEnchantment.builder(Enchantment.BLAST_PROTECTION).level(2, 4).build(),
+                    WeightedEnchantment.builder(Enchantment.PROTECTION).level(1).build(),
                     WeightedEnchantment.builder(Enchantment.SWIFT_SNEAK).level(3).build()
             ).number(2).weight(2).build(),
             WeightedEnchantedItem.item(Material.DIAMOND_CHESTPLATE).alwaysEnchant(
-                    WeightedEnchantment.builder(Enchantment.PROTECTION_ENVIRONMENTAL).level(1, 2).build(),
+                    WeightedEnchantment.builder(Enchantment.PROTECTION).level(1, 2).build(),
                     WeightedEnchantment.builder(Enchantment.THORNS).level(1).build()
             ).weight(2).build(),
             WeightedEnchantedItem.item(Material.DIAMOND_HELMET)
                     .alwaysEnchant(
-                            WeightedEnchantment.builder(Enchantment.OXYGEN).level(2, 3).build(),
-                            WeightedEnchantment.builder(Enchantment.WATER_WORKER).level(1).build()
+                            WeightedEnchantment.builder(Enchantment.RESPIRATION).level(2, 3).build(),
+                            WeightedEnchantment.builder(Enchantment.AQUA_AFFINITY).level(1).build()
                     )
                     .weightedEnchantments(
-                            WeightedEnchantment.builder(Enchantment.PROTECTION_PROJECTILE).level(2, 3).build(),
-                            WeightedEnchantment.builder(Enchantment.PROTECTION_ENVIRONMENTAL).level(1).build()
+                            WeightedEnchantment.builder(Enchantment.PROJECTILE_PROTECTION).level(2, 3).build(),
+                            WeightedEnchantment.builder(Enchantment.PROTECTION).level(1).build()
                     ).weight(2).build(),
             WeightedEnchantedItem.item(Material.BOW)
                     .alwaysEnchant(
-                            WeightedEnchantment.builder(Enchantment.ARROW_DAMAGE).level(2, 4).build()
+                            WeightedEnchantment.builder(Enchantment.POWER).level(2, 4).build()
                     )
                     .weightedEnchantments(
-                            WeightedEnchantment.builder(Enchantment.ARROW_KNOCKBACK).level(1, 2).weight(2).build(),
-                            WeightedEnchantment.builder(Enchantment.ARROW_FIRE).build()
+                            WeightedEnchantment.builder(Enchantment.PUNCH).level(1, 2).weight(2).build(),
+                            WeightedEnchantment.builder(Enchantment.FLAME).build()
                     ).weight(2).build(),
             WeightedEnchantedItem.item(Material.DIAMOND_SWORD)
                     .alwaysEnchant(
-                            WeightedEnchantment.builder(Enchantment.DAMAGE_ALL).level(1, 2).build()
+                            WeightedEnchantment.builder(Enchantment.SHARPNESS).level(1, 2).build()
                     )
                     .weightedEnchantments(
                             WeightedEnchantment.builder(Enchantment.KNOCKBACK).weight(2).build(),
@@ -157,11 +157,11 @@ public class Drops {
                     ).weight(2).build(),
             WeightedEnchantedItem.item(Material.DIAMOND_AXE)
                     .alwaysEnchant(
-                            WeightedEnchantment.builder(Enchantment.DIG_SPEED).level(2, 3).build(),
+                            WeightedEnchantment.builder(Enchantment.EFFICIENCY).level(2, 3).build(),
                             WeightedEnchantment.builder(Enchantment.KNOCKBACK).level(2).build()
                     )
                     .weightedEnchantments(
-                            WeightedEnchantment.builder(Enchantment.DAMAGE_ALL).build()
+                            WeightedEnchantment.builder(Enchantment.SHARPNESS).build()
                     ).number(0, 1).weight(2).build(),
             WeightedEnchantedItem.item(Material.CROSSBOW)
                     .alwaysEnchant(
@@ -177,7 +177,7 @@ public class Drops {
             WeightedPotionEffectItem.arrow().weightedEffects(
                     WeightedPotionEffect.builder(PotionEffectType.BLINDNESS).seconds(8).build(),
                     WeightedPotionEffect.builder(PotionEffectType.WEAKNESS).seconds(15).build(),
-                    WeightedPotionEffect.builder(PotionEffectType.SLOW).seconds(15).amplifier(1).build(),
+                    WeightedPotionEffect.builder(PotionEffectType.SLOWNESS).seconds(15).amplifier(1).build(),
                     WeightedPotionEffect.builder(PotionEffectType.POISON).seconds(6).build()
             ).amount(16, 32).effectNumber(1, 2).weight(2).build(),
             WeightedItem.builder(CustomItems.darkArtifact.getItemStack()).amount(20, 30).weight(2).build(),

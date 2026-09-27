@@ -96,7 +96,7 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
     @EventHandler
     public void gameInit(AfterGameInitializeEvent event) {
         for(UHCPlayer uhcPlayer : getPlayersWithClass()) {
-            uhcPlayer.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(MAX_CLASS_HP);
+            uhcPlayer.getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(MAX_CLASS_HP);
             UHC.heal(uhcPlayer.getPlayer());
         }
     }
@@ -160,7 +160,7 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
         if(hasClass(player)) {
             ItemStack item = event.getItem();
             if(Stream.of(rawMeat).anyMatch(meat -> item.getType() == meat)) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 60, 0));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 20 * 60, 0));
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1, 0.5F);
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1, 0.5F);
                 TaskManager.invokeLater(() -> {
@@ -181,7 +181,7 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
                 double battleRage = getBattleRage(uhcAttacker);
                 if(battleRage > 0) {
                     int particlesToShow = (int) (battleRage * 25D);
-                    ParticleUtils.createParticlesAround(victim, Particle.REDSTONE, Color.fromRGB(100, 0, 0), particlesToShow);
+                    ParticleUtils.createParticlesAround(victim, Particle.DUST, Color.fromRGB(100, 0, 0), particlesToShow);
                     float volume = (float) (battleRage + 0.5);
                     float pitch = 0.65F - (float) (battleRage * 0.15);
                     victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, volume, pitch);
@@ -229,7 +229,7 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
                 if(Stream.of(allowedArmor).noneMatch(allowedArmor -> armorItem.getType() == allowedArmor)) {
                     armorItem.setAmount(0);
                     player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 0.5F);
-                    ParticleUtils.createParticlesAround(player, Particle.SMOKE_LARGE, null, 4);
+                    ParticleUtils.createParticlesAround(player, Particle.LARGE_SMOKE, null, 4);
                 }
             }
         }
@@ -293,8 +293,7 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
 
     private void registerRecipe(ShapedRecipe recipe, String... shape) {
         recipe.shape(shape);
-        recipe.setIngredient('l', Material.CHAIN);
-        recipe.setIngredient('-', Material.AIR);
+        recipe.setIngredient('l', Material.IRON_CHAIN);
     }
 
     @Override
@@ -302,32 +301,32 @@ public class ClassBerserk extends BarHolderUHCClass implements RecipeHolderClass
         ShapedRecipe helmet = new ShapedRecipe(
                 new NamespacedKey(UHCPlugin.instance, "berserk_helmet"),
                 new ItemStack(Material.CHAINMAIL_HELMET));
-        registerRecipe(helmet, "lll", "l-l", "---");
+        registerRecipe(helmet, "lll", "l l", "   ");
 
         ShapedRecipe helmet2 = new ShapedRecipe(
                 new NamespacedKey(UHCPlugin.instance, "berserk_helmet2"),
                 new ItemStack(Material.CHAINMAIL_HELMET));
-        registerRecipe(helmet2, "---", "lll", "l-l");
+        registerRecipe(helmet2, "   ", "lll", "l l");
 
         ShapedRecipe chestplate = new ShapedRecipe(
                 new NamespacedKey(UHCPlugin.instance, "berserk_chestplate"),
                 new ItemStack(Material.CHAINMAIL_CHESTPLATE));
-        registerRecipe(chestplate, "l-l", "lll", "lll");
+        registerRecipe(chestplate, "l l", "lll", "lll");
 
         ShapedRecipe leggings = new ShapedRecipe(
                 new NamespacedKey(UHCPlugin.instance, "berserk_leggings"),
                 new ItemStack(Material.CHAINMAIL_LEGGINGS));
-        registerRecipe(leggings, "lll", "l-l", "l-l");
+        registerRecipe(leggings, "lll", "l l", "l l");
 
         ShapedRecipe boots = new ShapedRecipe(
                 new NamespacedKey(UHCPlugin.instance, "berserk_boots"),
                 new ItemStack(Material.CHAINMAIL_BOOTS));
-        registerRecipe(boots, "---", "l-l", "l-l");
+        registerRecipe(boots, "   ", "l l", "l l");
 
         ShapedRecipe boots2 = new ShapedRecipe(
                 new NamespacedKey(UHCPlugin.instance, "berserk_boots2"),
                 new ItemStack(Material.CHAINMAIL_BOOTS));
-        registerRecipe(boots2, "l-l", "l-l", "---");
+        registerRecipe(boots2, "l l", "l l", "   ");
         
         return new Recipe[] {helmet, helmet2, chestplate, leggings, boots, boots2};
     }

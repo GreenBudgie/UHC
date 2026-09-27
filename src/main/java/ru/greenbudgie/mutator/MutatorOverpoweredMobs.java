@@ -59,9 +59,9 @@ public class MutatorOverpoweredMobs extends Mutator implements Listener {
 				if(equipment != null && MathUtils.chance(50)) {
 					ItemStack bow = equipment.getItemInMainHand();
 					if(bow.getType() == Material.BOW && bow.getEnchantments().isEmpty()) {
-						if(MathUtils.chance(60)) bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
-						if(MathUtils.chance(30)) bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
-						if(MathUtils.chance(12)) bow.addEnchantment(Enchantment.ARROW_FIRE, 1);
+						if(MathUtils.chance(60)) bow.addEnchantment(Enchantment.POWER, 1);
+						if(MathUtils.chance(30)) bow.addEnchantment(Enchantment.PUNCH, 1);
+						if(MathUtils.chance(12)) bow.addEnchantment(Enchantment.FLAME, 1);
 					}
 				}
 			}
@@ -75,7 +75,7 @@ public class MutatorOverpoweredMobs extends Mutator implements Listener {
 				EntityEquipment equipment = entity.getEquipment();
 				if(equipment != null && MathUtils.chance(50)) {
 					ItemStack sword = new ItemStack(MathUtils.chance(70) ? Material.STONE_SWORD : Material.IRON_SWORD);
-					if(MathUtils.chance(50)) sword.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+					if(MathUtils.chance(50)) sword.addEnchantment(Enchantment.SHARPNESS, 1);
 					if(MathUtils.chance(25)) sword.addEnchantment(Enchantment.KNOCKBACK, 1);
 					if(MathUtils.chance(10)) sword.addEnchantment(Enchantment.FIRE_ASPECT, 1);
 					equipment.setItemInMainHand(sword);
@@ -86,22 +86,22 @@ public class MutatorOverpoweredMobs extends Mutator implements Listener {
 				if(equipment != null) {
 					if(MathUtils.chance(50)) {
 						ItemStack item = new ItemStack(MathUtils.chance(30) ? Material.IRON_HELMET : Material.CHAINMAIL_HELMET);
-						if(MathUtils.chance(20)) item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+						if(MathUtils.chance(20)) item.addEnchantment(Enchantment.PROTECTION, 1);
 						entity.getEquipment().setHelmet(item);
 					}
 					if(MathUtils.chance(50)) {
 						ItemStack item = new ItemStack(MathUtils.chance(30) ? Material.IRON_CHESTPLATE : Material.CHAINMAIL_CHESTPLATE);
-						if(MathUtils.chance(20)) item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+						if(MathUtils.chance(20)) item.addEnchantment(Enchantment.PROTECTION, 1);
 						entity.getEquipment().setChestplate(item);
 					}
 					if(MathUtils.chance(50)) {
 						ItemStack item = new ItemStack(MathUtils.chance(30) ? Material.IRON_LEGGINGS : Material.CHAINMAIL_LEGGINGS);
-						if(MathUtils.chance(20)) item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+						if(MathUtils.chance(20)) item.addEnchantment(Enchantment.PROTECTION, 1);
 						entity.getEquipment().setLeggings(item);
 					}
 					if(MathUtils.chance(50)) {
 						ItemStack item = new ItemStack(MathUtils.chance(30) ? Material.IRON_BOOTS : Material.CHAINMAIL_BOOTS);
-						if(MathUtils.chance(20)) item.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+						if(MathUtils.chance(20)) item.addEnchantment(Enchantment.PROTECTION, 1);
 						entity.getEquipment().setBoots(item);
 					}
 					equipment.setBootsDropChance(0);

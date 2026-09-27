@@ -40,17 +40,17 @@ public class MutatorFriendsForever extends TeammateDistanceBasedMutator<MutatorF
 
 		SO_CLOSE(
 				6,
-				effect(PotionEffectType.INCREASE_DAMAGE),
+				effect(PotionEffectType.STRENGTH),
 				AQUA + "" + BOLD + "Ты близко!"
 		),
 		GOING_AWAY(
 				12,
-				effect(PotionEffectType.DAMAGE_RESISTANCE),
+				effect(PotionEffectType.RESISTANCE),
 				DARK_AQUA + "" + BOLD + "Ты отдаляешься..."
 		),
 		FAR(
 				24,
-				effect(PotionEffectType.FAST_DIGGING),
+				effect(PotionEffectType.HASTE),
 				RED + "" + BOLD + "Ты теряешь тиммейта..."
 		),
 		;

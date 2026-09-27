@@ -88,7 +88,7 @@ public class UHCPlayer {
                     timeToRejoin = maxTimeToRejoin;
                     state = State.LEFT_AND_ALIVE;
                     offlineHealth = player.getHealth();
-                    maxOfflineHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+                    maxOfflineHealth = player.getAttribute(Attribute.MAX_HEALTH).getBaseValue();
                     Bukkit.getPluginManager().callEvent(new UHCPlayerLeaveEvent(this));
                     createGhost();
                     saveInventory();
@@ -451,7 +451,7 @@ public class UHCPlayer {
         initiateDeath();
         state = State.LEFT_AND_DEAD;
         if(ghost != null) {
-            ParticleUtils.createParticlesAround(ghost, Particle.REDSTONE, Color.fromRGB(100, 0, 0), 20);
+            ParticleUtils.createParticlesAround(ghost, Particle.DUST, Color.fromRGB(100, 0, 0), 20);
             ghost.getWorld().playSound(ghost.getLocation(), Sound.ENTITY_PLAYER_DEATH, 1, 1);
             ghost.remove();
         }

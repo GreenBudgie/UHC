@@ -4,14 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.nbt.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.EntityType;
@@ -165,14 +162,14 @@ public class InventoryHelper {
 	}
 
 	public static boolean isBeaconEffect(PotionEffectType ef) {
-		PotionEffectType[] beacon = {PotionEffectType.SPEED, PotionEffectType.FAST_DIGGING, PotionEffectType.DAMAGE_RESISTANCE, PotionEffectType.JUMP,
-				PotionEffectType.INCREASE_DAMAGE, PotionEffectType.REGENERATION};
+		PotionEffectType[] beacon = {PotionEffectType.SPEED, PotionEffectType.HASTE, PotionEffectType.RESISTANCE, PotionEffectType.JUMP_BOOST,
+				PotionEffectType.STRENGTH, PotionEffectType.REGENERATION};
 		return Lists.newArrayList(beacon).contains(ef);
 	}
 
 	public static boolean isBadEffect(PotionEffectType ef) {
-		PotionEffectType[] bad = {PotionEffectType.SLOW, PotionEffectType.BLINDNESS, PotionEffectType.CONFUSION, PotionEffectType.GLOWING, PotionEffectType.HARM,
-				PotionEffectType.HUNGER, PotionEffectType.LEVITATION, PotionEffectType.POISON, PotionEffectType.SLOW_DIGGING, PotionEffectType.UNLUCK, PotionEffectType.WEAKNESS,
+		PotionEffectType[] bad = {PotionEffectType.SLOWNESS, PotionEffectType.BLINDNESS, PotionEffectType.NAUSEA, PotionEffectType.GLOWING, PotionEffectType.INSTANT_DAMAGE,
+				PotionEffectType.HUNGER, PotionEffectType.LEVITATION, PotionEffectType.POISON, PotionEffectType.MINING_FATIGUE, PotionEffectType.UNLUCK, PotionEffectType.WEAKNESS,
 				PotionEffectType.WITHER};
 		return Lists.newArrayList(bad).contains(ef);
 	}
@@ -217,7 +214,7 @@ public class InventoryHelper {
 			case CHICKEN -> Material.CHICKEN_SPAWN_EGG;
 			case SQUID -> Material.SQUID_SPAWN_EGG;
 			case WOLF -> Material.WOLF_SPAWN_EGG;
-			case MUSHROOM_COW -> Material.MOOSHROOM_SPAWN_EGG;
+			case MOOSHROOM -> Material.MOOSHROOM_SPAWN_EGG;
 			case OCELOT -> Material.OCELOT_SPAWN_EGG;
 			case HORSE -> Material.HORSE_SPAWN_EGG;
 			case RABBIT -> Material.RABBIT_SPAWN_EGG;
@@ -354,44 +351,6 @@ public class InventoryHelper {
 		return false;
 	}
 
-	public static String getAttributeName(Attribute att) {
-		return switch (att) {
-			case GENERIC_ARMOR -> "generic.armor";
-			case GENERIC_ARMOR_TOUGHNESS -> "generic.armorToughness";
-			case GENERIC_ATTACK_DAMAGE -> "generic.attackDamage";
-			case GENERIC_ATTACK_SPEED -> "generic.attackSpeed";
-			case GENERIC_FLYING_SPEED -> "generic.flyingSpeed";
-			case GENERIC_FOLLOW_RANGE -> "generic.followRange";
-			case GENERIC_KNOCKBACK_RESISTANCE -> "generic.knockbackResistance";
-			case GENERIC_LUCK -> "generic.luck";
-			case GENERIC_MAX_HEALTH -> "generic.maxHealth";
-			case GENERIC_MOVEMENT_SPEED -> "generic.movementSpeed";
-			case HORSE_JUMP_STRENGTH -> "horse.jumpStrength";
-			case ZOMBIE_SPAWN_REINFORCEMENTS -> "zombie.spawnReinforcements";
-			default -> null;
-		};
-	}
-
-	public static ItemStack addAttributes(ItemStack item, CustomAttribute... attributes) {
-		var nmsItem = CraftItemStack.asNMSCopy(item);
-		NBTTagCompound nbt = nmsItem.w();
-		NBTTagList modifiers = new NBTTagList();
-		for(CustomAttribute att : attributes) {
-			NBTTagCompound comp = new NBTTagCompound();
-			comp.a("AttributeName", NBTTagString.a(att.getName()));
-			comp.a("Name", NBTTagString.a(att.getName()));
-			comp.a("Amount", NBTTagDouble.a(att.getValue()));
-			comp.a("Operation", NBTTagInt.a(att.getOperation().ordinal()));
-			comp.a("UUIDLeast", NBTTagInt.a(894654));
-			comp.a("UUIDMost", NBTTagInt.a(2872));
-			comp.a("Slot", NBTTagString.a(att.getSlot().getName()));
-			modifiers.add(comp);
-		}
-		nbt.a("AttributeModifiers", modifiers);
-		nmsItem.b(nbt);
-		return CraftItemStack.asBukkitCopy(nmsItem);
-	}
-
 	/**
 	 * Damages item and returns if item is broken
 	 *
@@ -403,8 +362,8 @@ public class InventoryHelper {
 	public static boolean damageItem(ItemStack item, int damage, boolean useDurabilityEnchantment) {
 		Damageable meta = (Damageable) item.getItemMeta();
 		for(int i = 0; i < damage; i++) {
-			if(useDurabilityEnchantment && item.getItemMeta().hasEnchant(Enchantment.DURABILITY)) {
-				int level = item.getItemMeta().getEnchantLevel(Enchantment.DURABILITY) + 1;
+			if(useDurabilityEnchantment && item.getItemMeta().hasEnchant(Enchantment.UNBREAKING)) {
+				int level = item.getItemMeta().getEnchantLevel(Enchantment.UNBREAKING) + 1;
 				if(isArmor(item.getType())) {
 					if(!MathUtils.chance(60 + (40.0 / level))) continue;
 				} else {
@@ -419,10 +378,6 @@ public class InventoryHelper {
 			return true;
 		}
 		return false;
-	}
-
-	public static ItemStack generateItemWithNameAndAttributes(Material m, String name, CustomAttribute... attributes) {
-		return setName(addAttributes(new ItemStack(m), attributes), name);
 	}
 
 	public static boolean hasValue(ItemStack item, String valStart) {
@@ -558,7 +513,7 @@ public class InventoryHelper {
 
 	public static ItemStack setItemGlowing(ItemStack item) {
 		ItemMeta itemMeta = item.getItemMeta();
-		itemMeta.addEnchant(Enchantment.OXYGEN, 1, true);
+		itemMeta.addEnchant(Enchantment.RESPIRATION, 1, true);
 		itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		item.setItemMeta(itemMeta);
 		return item;
