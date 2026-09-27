@@ -117,18 +117,25 @@ public class SignManager implements Listener {
 	@EventHandler
 	public void signClick(PlayerInteractEvent e) {
 		Player clickedPlayer = e.getPlayer();
-		if(!UHC.generating && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			Block clickedBlock = e.getClickedBlock();
-			LobbySign lobbySign = getSignAt(clickedBlock.getLocation());
-			if(lobbySign != null &&
-					(!UHC.playing || lobbySign.canUseWhilePlaying()) &&
-					(clickedPlayer.isOp() || lobbySign.canBeUsedByAnyone())) {
-				Sign sign = lobbySign.getSignState(clickedBlock.getLocation());
-				clickedBlock.getWorld().playSound(clickedBlock.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 0.05F, 1.5F);
-				lobbySign.onClick(clickedPlayer, sign, e);
-				updateTextOnSigns();
-			}
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
+        Block clickedBlock = e.getClickedBlock();
+        LobbySign lobbySign = getSignAt(clickedBlock.getLocation());
+		if (lobbySign != null) {
+			e.setCancelled(true);
 		}
-	}
+
+		if (UHC.generating || lobbySign == null ||
+                (UHC.playing && !lobbySign.canUseWhilePlaying()) ||
+                (!clickedPlayer.isOp() && !lobbySign.canBeUsedByAnyone())) {
+            return;
+        }
+        Sign sign = lobbySign.getSignState(clickedBlock.getLocation());
+        clickedBlock.getWorld().playSound(clickedBlock.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 0.05F, 1.5F);
+        lobbySign.onClick(clickedPlayer, sign, e);
+        updateTextOnSigns();
+    }
 
 }
