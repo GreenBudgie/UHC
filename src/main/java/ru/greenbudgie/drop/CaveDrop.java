@@ -24,18 +24,17 @@ public class CaveDrop extends ChestBasedDrop {
             .withName(WHITE + "Potion of Miner")
             .withColor(Color.ORANGE)
             .withEffects(
-                    new PotionEffectBuilder(PotionEffectType.HASTE).minutes(15).amplifier(4).build(),
+                    new PotionEffectBuilder(PotionEffectType.HASTE).minutes(10).amplifier(7).build(),
                     new PotionEffectBuilder(PotionEffectType.NIGHT_VISION).minutes(30).build()
             ).build();
 
     private static final WeightedItemList weightedDrops = new WeightedItemList(
             WeightedItem.builder(minerPotion).build(),
 
-            WeightedEnchantedItem.item(Material.NETHERITE_PICKAXE)
+            WeightedEnchantedItem.item(Material.DIAMOND_PICKAXE)
                     .alwaysEnchant(
-                            WeightedEnchantment.builder(Enchantment.EFFICIENCY).level(5).build(),
-                            WeightedEnchantment.builder(Enchantment.UNBREAKING).level(3).build(),
-                            WeightedEnchantment.builder(Enchantment.FORTUNE).level(1, 3).build()
+                            WeightedEnchantment.builder(Enchantment.EFFICIENCY).level(10).build(),
+                            WeightedEnchantment.builder(Enchantment.FORTUNE).level(1, 2).build()
                     ).build(),
 
             WeightedItem.builder(Material.DIAMOND).amount(12, 20).build(),

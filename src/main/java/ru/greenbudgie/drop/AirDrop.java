@@ -26,25 +26,24 @@ import static org.bukkit.ChatColor.*;
 public class AirDrop extends Drop {
 
     private static final ItemStack healingPotion = ItemUtils.potionBuilder()
-            .withName(WHITE + "Potion of Life")
+            .withName(WHITE + "Potion of Regeneration")
             .withColor(Color.fromRGB(255, 182, 243))
             .withEffects(
-                    new PotionEffectBuilder(PotionEffectType.INSTANT_HEALTH).amplifier(3).build(),
-                    new PotionEffectBuilder(PotionEffectType.ABSORPTION).minutes(2).noParticles().build()
+                    new PotionEffectBuilder(PotionEffectType.REGENERATION).seconds(35).amplifier(0).build()
             ).build();
     private static final ItemStack strengthPotion = ItemUtils.potionBuilder()
             .withName(WHITE + "Potion of Dominance")
             .withColor(Color.fromRGB(100, 0, 0))
             .withEffects(
-                    new PotionEffectBuilder(PotionEffectType.STRENGTH).minutes(3).amplifier(2).build(),
-                    new PotionEffectBuilder(PotionEffectType.RESISTANCE).minutes(3).build()
+                    new PotionEffectBuilder(PotionEffectType.STRENGTH).minutes(2).amplifier(1).build(),
+                    new PotionEffectBuilder(PotionEffectType.RESISTANCE).minutes(2).build()
             ).build();
     private static final ItemStack damagePotion = ItemUtils.potionBuilder()
             .withName(WHITE + "Potion of Death")
             .splash()
             .withColor(Color.BLACK)
             .withEffects(
-                    new PotionEffectBuilder(PotionEffectType.INSTANT_DAMAGE).amplifier(2).build(),
+                    new PotionEffectBuilder(PotionEffectType.INSTANT_DAMAGE).amplifier(1).build(),
                     new PotionEffectBuilder(PotionEffectType.WITHER).seconds(13).build()
             ).build();
 
@@ -52,7 +51,7 @@ public class AirDrop extends Drop {
             WeightedItem.builder(healingPotion).build(),
             WeightedItem.builder(strengthPotion).build(),
             WeightedItem.builder(damagePotion).build(),
-            WeightedItem.builder(Material.GOLDEN_APPLE).amount(4).build(),
+            WeightedItem.builder(Material.GOLDEN_APPLE).amount(3, 4).build(),
 
             WeightedEnchantedItem.item(Material.DIAMOND_BOOTS)
                     .alwaysEnchant(

@@ -73,7 +73,7 @@ public class CommandDrop implements CommandExecutor, TabCompleter {
 			return MathUtils.getListOfStringsMatchingLastWord(args, Lists.newArrayList(
 					"reset", "drop", "changeloc", "currentloc", "tp", "giveRandom"));
 		}
-		if(args.length == 3 && args[1].equals("giveRandom")) {
+		if(args.length == 4 && args[1].equals("giveRandom")) {
 			return MathUtils.getListOfStringsMatchingLastWord(args, Lists.newArrayList("repeat"));
 		}
 		return null;

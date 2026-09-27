@@ -18,10 +18,10 @@ import static org.bukkit.ChatColor.*;
 public class NetherDrop extends ChestBasedDrop {
 
     private static final ItemStack regenerationPotion = ItemUtils.potionBuilder()
-            .withName(WHITE + "Potion of Regeneration")
+            .withName(WHITE + "Hyper Potion of Regeneration")
             .withColor(Color.fromRGB(255, 182, 243))
             .withEffects(
-                    new PotionEffectBuilder(PotionEffectType.REGENERATION).seconds(30).amplifier(2).build()
+                    new PotionEffectBuilder(PotionEffectType.REGENERATION).seconds(30).amplifier(1).build()
             ).build();
 
     private static final WeightedItemList weightedDrops = new WeightedItemList(

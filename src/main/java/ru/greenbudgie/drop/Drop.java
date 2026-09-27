@@ -77,16 +77,16 @@ public abstract class Drop {
         }
 
         var vertLine = DARK_GRAY + "" + BOLD + "∫ " + RESET;
-        var prefix = isDroppingSoon
-                ? vertLine + getName() + WHITE + " скоро выпадет: "
-                : vertLine;
         var amount = itemToDrop.getAmount() > 1
                 ? AQUA + "" + BOLD + itemToDrop.getAmount() + RESET + " "
                 : "";
         var name = ItemUtils.getLocalizedName(itemToDrop, GOLD);
 
         for(Player p : PlayerManager.getInGamePlayersAndSpectators()) {
-            ChatHelper.send(p, prefix, amount, name);
+            if (isDroppingSoon) {
+                p.sendMessage(vertLine + getName() + WHITE + " скоро выпадет:");
+            }
+            ChatHelper.send(p, vertLine, amount, name);
 
             for (var enchantment : itemToDrop.getEnchantments().keySet()) {
                 var level = itemToDrop.getEnchantmentLevel(enchantment);
