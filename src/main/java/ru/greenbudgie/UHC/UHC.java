@@ -795,6 +795,15 @@ public class UHC implements Listener {
 			}
 		}
 		if(state.isBeforeDeathmatch() || state == GameState.DEATHMATCH) {
+			for (Player player : PlayerManager.getAliveOnlinePlayers()) {
+				if (!player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
+					player.addPotionEffect(new PotionEffect(
+							PotionEffectType.NIGHT_VISION,
+							PotionEffect.INFINITE_DURATION,
+							0, false, false));
+				}
+			}
+
 			MutatorManager.updateMutators();
 		}
 		if(state == GameState.OUTBREAK) {

@@ -23,9 +23,17 @@ public class NetherDrop extends ChestBasedDrop {
             .withEffects(
                     new PotionEffectBuilder(PotionEffectType.REGENERATION).seconds(30).amplifier(1).build()
             ).build();
+    private static final ItemStack strengthPotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Hyper Potion of Dominance")
+            .withColor(Color.fromRGB(100, 0, 0))
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.STRENGTH).minutes(3).amplifier(1).build(),
+                    new PotionEffectBuilder(PotionEffectType.RESISTANCE).minutes(3).build()
+            ).build();
 
     private static final WeightedItemList weightedDrops = new WeightedItemList(
             WeightedItem.builder(regenerationPotion).build(),
+            WeightedItem.builder(strengthPotion).build(),
 
             WeightedEnchantedItem.item(Material.NETHERITE_BOOTS)
                     .alwaysEnchant(

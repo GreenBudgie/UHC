@@ -21,20 +21,19 @@ import static org.bukkit.ChatColor.*;
 public class CaveDrop extends ChestBasedDrop {
 
     private static final ItemStack minerPotion = ItemUtils.potionBuilder()
-            .withName(WHITE + "Potion of Miner")
+            .withName(WHITE + "Potion of Instamine")
             .withColor(Color.ORANGE)
             .withEffects(
-                    new PotionEffectBuilder(PotionEffectType.HASTE).minutes(10).amplifier(7).build(),
-                    new PotionEffectBuilder(PotionEffectType.NIGHT_VISION).minutes(30).build()
+                    new PotionEffectBuilder(PotionEffectType.HASTE).minutes(8).amplifier(9).build()
             ).build();
 
     private static final WeightedItemList weightedDrops = new WeightedItemList(
             WeightedItem.builder(minerPotion).build(),
 
-            WeightedEnchantedItem.item(Material.DIAMOND_PICKAXE)
+            WeightedEnchantedItem.item(Material.NETHERITE_PICKAXE)
                     .alwaysEnchant(
-                            WeightedEnchantment.builder(Enchantment.EFFICIENCY).level(10).build(),
-                            WeightedEnchantment.builder(Enchantment.FORTUNE).level(1, 2).build()
+                            WeightedEnchantment.builder(Enchantment.EFFICIENCY).level(5).build(),
+                            WeightedEnchantment.builder(Enchantment.FORTUNE).level(4).build()
                     ).build(),
 
             WeightedItem.builder(Material.DIAMOND).amount(12, 20).build(),

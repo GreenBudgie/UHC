@@ -29,7 +29,7 @@ public class PiglinBarterManager implements Listener {
             .build();
 
     public static final WeightedItemList barters = new WeightedItemList(
-            WeightedItem.builder(Material.BOOK).amount(1, 2).weight(4).build(),
+            WeightedItem.builder(Material.BOOK).amount(2, 4).weight(4).build(),
             WeightedItem.builder(Material.STRING).amount(2, 4).weight(4).build(),
             WeightedItem.builder(Material.IRON_INGOT).amount(1, 3).weight(3).build(),
             WeightedItem.builder(Material.GUNPOWDER).amount(2, 4).weight(3).build(),

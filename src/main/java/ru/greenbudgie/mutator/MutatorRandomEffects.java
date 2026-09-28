@@ -19,7 +19,6 @@ public class MutatorRandomEffects extends Mutator {
 			//Good
 			new PotionEffect(PotionEffectType.SPEED, 30 * 20, 0),
 			new PotionEffect(PotionEffectType.HASTE, 60 * 20, 1),
-			new PotionEffect(PotionEffectType.NIGHT_VISION, 120 * 20, 0),
 			new PotionEffect(PotionEffectType.STRENGTH, 30 * 20, 0),
 			new PotionEffect(PotionEffectType.RESISTANCE, 60 * 20, 0),
 			new PotionEffect(PotionEffectType.JUMP_BOOST, 20 * 20, 1),

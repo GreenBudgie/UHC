@@ -35,7 +35,7 @@ public class AirDrop extends Drop {
             .withName(WHITE + "Potion of Dominance")
             .withColor(Color.fromRGB(100, 0, 0))
             .withEffects(
-                    new PotionEffectBuilder(PotionEffectType.STRENGTH).minutes(2).amplifier(1).build(),
+                    new PotionEffectBuilder(PotionEffectType.STRENGTH).minutes(2).amplifier(0).build(),
                     new PotionEffectBuilder(PotionEffectType.RESISTANCE).minutes(2).build()
             ).build();
     private static final ItemStack damagePotion = ItemUtils.potionBuilder()
