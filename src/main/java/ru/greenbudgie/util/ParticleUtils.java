@@ -173,16 +173,16 @@ public class ParticleUtils {
 	public static void createParticle(Location location, Particle particle, @Nullable Color color) {
 		World world = location.getWorld();
 		if(world == null) return;
-		if(color == null || !hasColor(particle)) {
-			world.spawnParticle(particle, location,1, 0, 0, 0, 0);
+		Class<?> dataType = particle.getDataType();
+		Color effectiveColor = color != null ? color : Color.WHITE;
+		if(dataType == Particle.DustOptions.class) {
+			world.spawnParticle(particle, location, 1, new Particle.DustOptions(effectiveColor, 1));
+		} else if(dataType == Color.class) {
+			world.spawnParticle(particle, location, 1, effectiveColor);
+		} else if(dataType == Void.class) {
+			world.spawnParticle(particle, location, 1, 0, 0, 0, 0);
 		} else {
-			if(particle == Particle.DUST) {
-				Particle.DustOptions dustOptions = new Particle.DustOptions(color, 1);
-				world.spawnParticle(particle, location, 1, dustOptions);
-			}
-			if(particle == Particle.ENTITY_EFFECT) {
-				world.spawnParticle(particle, location, 1, color);
-			}
+			world.spawnParticle(particle, location, 1, 0, 0, 0, 0);
 		}
 	}
 
