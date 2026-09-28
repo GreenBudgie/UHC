@@ -216,7 +216,7 @@ LONG    = 20 мин no-PVP + 70 мин total = ~90 минут
 Сложные предметы с уникальными механиками, недоступные ванилой.
 
 **Утилиты:** `CustomItemShulkerBox`, `CustomItemHighlighter`, `CustomItemPlayerTracker`, `CustomItemBooster`.
-**Оружие:** `CustomItemLaserCutter`, `CustomItemShieldBreaker`, `CustomItemInstantTnt`, `CustomItemIceball`.
+**Оружие:** `CustomItemLaserCutter`, `CustomItemShieldBreaker`, `CustomItemInstantTnt`, `CustomItemWindCharge`.
 **Тотемы:** `CustomItemInfernalTotem`, `CustomItemKnockoutTotem`, `CustomItemPulsatingTotem`, `CustomItemAllurementStone`.
 **Мины/ловушки:** `CustomItemLandmine`.
 **Магия:** `CustomItemAncientShard`, `CustomItemHeavenMembrane`, `CustomItemHarmlessPearl`, `CustomItemUnderworldEgg`.

@@ -45,11 +45,11 @@ public class ItemRequester implements Listener {
 	public static void init() {
 		putItem(CustomItems.shulkerBox, 11);
 		putItem(CustomItems.creatureHighlighter, 12);
-		putItem(CustomItems.iceball, 13);
-		putItem(CustomItems.highlighter, 14);
-		putItem(CustomItems.infernalLead, 15);
+		putItem(CustomItems.highlighter, 13);
+		putItem(CustomItems.infernalLead, 14);
+		putItem(CustomItems.booster, 15);
 
-		putItem(CustomItems.booster, 20);
+		putItem(CustomItems.windCharge, 20);
 		putItem(CustomItems.pearl, 21);
 		putItem(CustomItems.pulsatingTotem, 22);
 		putItem(CustomItems.knockoutTotem, 23);

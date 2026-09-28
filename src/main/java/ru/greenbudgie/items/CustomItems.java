@@ -33,7 +33,7 @@ public class CustomItems {
 	public static CustomItemUnderworldEgg underworldEgg = new CustomItemUnderworldEgg();
 	public static CustomItemTerraTracer terraTracer = new CustomItemTerraTracer();
 	public static CustomItemAncientShard ancientShard = new CustomItemAncientShard();
-	public static CustomItemIceball iceball = new CustomItemIceball();
+	public static CustomItemWindCharge windCharge = new CustomItemWindCharge();
 	public static CustomItemAllurementStone allurementStone = new CustomItemAllurementStone();
 	public static CustomItemPocketNetherPortal pocketNetherPortal = new CustomItemPocketNetherPortal();
 
