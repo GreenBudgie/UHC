@@ -55,7 +55,7 @@ public class MutatorVegetarian extends Mutator implements Listener {
 
 	@Override
 	public String getDescription() {
-		return "Все посевы растут в 10 раз быстрее, но при этом мясо есть нельзя: наложится эффект отравления. Другими словами, установлен randomTickSpeed = 30.";
+		return "Все посевы растут быстрее, но при этом мясо есть нельзя: наложится эффект отравления. Другими словами, установлен randomTickSpeed = 30.";
 	}
 
 	@Override

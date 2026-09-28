@@ -26,7 +26,7 @@ import static org.bukkit.ChatColor.*;
 public class CustomItemLaserCutter extends RequesterCustomItem implements Listener {
 
 	private static final int LASER_BEAM_DISTANCE = 8;
-    private static final Material FUEL = Material.COPPER_INGOT;
+    private static final Material FUEL = Material.COAL;
 
     private static final int MAX_BURN_COOLDOWN = 30 * 20;
     private static final int MAX_USE_DELAY_TICKS = 6;
@@ -85,8 +85,8 @@ public class CustomItemLaserCutter extends RequesterCustomItem implements Listen
 	public ItemInfo getDescription() {
 		return new ItemInfo("Генерирует лазерный луч протяженностью 8 блоков и позволяет крайне " +
                 "быстро уничтожать любую каменную породу в радиусе 3x3. Руды оставляет нетронутыми. " +
-                "Для работы необходимы медные слитки.")
-				.extra("Использует медный слиток каждые 30 секунд работы. Не имеет прочности.");
+                "Для работы необходим обычный уголь.")
+				.extra("Использует уголь каждые 30 секунд работы. Не имеет прочности.");
 	}
 
 	@Override

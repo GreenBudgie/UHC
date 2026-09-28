@@ -60,9 +60,10 @@ public class ItemRequester implements Listener {
 		putItem(CustomItems.heavenMembrane, 32);
 		putItem(CustomItems.terraDrill, 33);
 
-		putItem(CustomItems.allurementStone, 39);
-		putItem(CustomItems.tnt, 40);
-		putItem(CustomItems.laserCutter, 41);
+		putItem(CustomItems.allurementStone, 38);
+		putItem(CustomItems.tnt, 39);
+		putItem(CustomItems.pocketNetherPortal, 41);
+		putItem(CustomItems.laserCutter, 42);
 	}
 
 	public static String padSymbols(String input) {

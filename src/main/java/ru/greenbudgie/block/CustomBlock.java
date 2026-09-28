@@ -128,6 +128,13 @@ public abstract class CustomBlock implements Listener {
     public void onRemove() {}
 
     /**
+     * Whether to replace the block with air when it removes
+     */
+    public boolean doReplaceBlockOnRemove() {
+        return true;
+    }
+
+    /**
      * Called every tick to update the block
      */
     protected final void update() {
@@ -145,7 +152,9 @@ public abstract class CustomBlock implements Listener {
      */
     public final void remove() {
         onRemove();
-        location.getBlock().setType(Material.AIR);
+        if (doReplaceBlockOnRemove()) {
+            location.getBlock().setType(Material.AIR);
+        }
         HandlerList.unregisterAll(this);
         doRemove = true;
     }

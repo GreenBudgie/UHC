@@ -35,6 +35,7 @@ public class CustomItems {
 	public static CustomItemAncientShard ancientShard = new CustomItemAncientShard();
 	public static CustomItemIceball iceball = new CustomItemIceball();
 	public static CustomItemAllurementStone allurementStone = new CustomItemAllurementStone();
+	public static CustomItemPocketNetherPortal pocketNetherPortal = new CustomItemPocketNetherPortal();
 
 	public static CustomItemLaserCutter laserCutter = new CustomItemLaserCutter();
 
