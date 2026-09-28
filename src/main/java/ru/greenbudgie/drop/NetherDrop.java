@@ -75,7 +75,9 @@ public class NetherDrop extends ChestBasedDrop {
             WeightedEnchantedItem.item(Material.NETHERITE_SWORD).alwaysEnchant(
                     WeightedEnchantment.builder(Enchantment.SHARPNESS).level(3, 5).build(),
                     WeightedEnchantment.builder(Enchantment.FIRE_ASPECT).level(1).build()
-            ).build()
+            ).build(),
+
+            WeightedEnchantedItem.item(ItemUtils.builder(Material.ELYTRA).unbreakable().build()).build()
     );
 
     private static final WeightedItemList FILLERS = new WeightedItemList(

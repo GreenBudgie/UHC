@@ -26,9 +26,17 @@ public class CaveDrop extends ChestBasedDrop {
             .withEffects(
                     new PotionEffectBuilder(PotionEffectType.HASTE).minutes(8).amplifier(9).build()
             ).build();
+    private static final ItemStack defencePotion = ItemUtils.potionBuilder()
+            .withName(WHITE + "Potion of Defence")
+            .withColor(Color.MAROON)
+            .withEffects(
+                    new PotionEffectBuilder(PotionEffectType.SLOWNESS).minutes(1).amplifier(5).build(),
+                    new PotionEffectBuilder(PotionEffectType.RESISTANCE).minutes(1).amplifier(3).build()
+            ).build();
 
     private static final WeightedItemList weightedDrops = new WeightedItemList(
             WeightedItem.builder(minerPotion).build(),
+            WeightedItem.builder(defencePotion).build(),
 
             WeightedEnchantedItem.item(Material.NETHERITE_PICKAXE)
                     .alwaysEnchant(
@@ -38,21 +46,30 @@ public class CaveDrop extends ChestBasedDrop {
 
             WeightedItem.builder(Material.DIAMOND).amount(12, 20).build(),
 
-            WeightedEnchantedItem.item(Material.DIAMOND_HELMET).alwaysEnchant(
-                    WeightedEnchantment.builder(Enchantment.PROTECTION).level(1).build()
-            ).build(),
+            WeightedEnchantedItem.item(Material.CROSSBOW)
+                    .alwaysEnchant(
+                            WeightedEnchantment.builder(Enchantment.QUICK_CHARGE).level(3).build(),
+                            WeightedEnchantment.builder(Enchantment.PIERCING).build()
+                    ).build(),
 
-            WeightedEnchantedItem.item(Material.DIAMOND_CHESTPLATE).alwaysEnchant(
-                    WeightedEnchantment.builder(Enchantment.PROTECTION).level(1).build()
-            ).build(),
+            WeightedEnchantedItem.item(Material.TRIDENT)
+                    .alwaysEnchant(
+                            WeightedEnchantment.builder(Enchantment.LOYALTY).level(3).build(),
+                            WeightedEnchantment.builder(Enchantment.UNBREAKING).level(3).build()
+                    ).build(),
 
-            WeightedEnchantedItem.item(Material.DIAMOND_LEGGINGS).alwaysEnchant(
-                    WeightedEnchantment.builder(Enchantment.PROTECTION).level(1).build()
-            ).build(),
+            WeightedEnchantedItem.item(Material.MACE)
+                    .alwaysEnchant(
+                            WeightedEnchantment.builder(Enchantment.BREACH).level(4).build()
+                    ).build(),
 
-            WeightedEnchantedItem.item(Material.DIAMOND_BOOTS).alwaysEnchant(
-                    WeightedEnchantment.builder(Enchantment.PROTECTION).level(1).build()
-            ).build()
+            WeightedEnchantedItem.item(Material.DIAMOND_SPEAR)
+                    .alwaysEnchant(
+                            WeightedEnchantment.builder(Enchantment.LUNGE).level(3).build(),
+                            WeightedEnchantment.builder(Enchantment.UNBREAKING).level(3).build()
+                    ).weightedEnchantments(
+                            WeightedEnchantment.builder(Enchantment.SHARPNESS).level(1, 2).build()
+                    ).number(0, 1).build()
     );
 
 

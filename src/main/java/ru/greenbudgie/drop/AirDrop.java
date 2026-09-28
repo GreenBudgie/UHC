@@ -91,13 +91,7 @@ public class AirDrop extends Drop {
 
             WeightedEnchantedItem.item(Material.DIAMOND_SWORD).alwaysEnchant(
                     WeightedEnchantment.builder(Enchantment.SHARPNESS).level(3, 4).build()
-            ).build(),
-
-            WeightedEnchantedItem.item(Material.CROSSBOW)
-                    .alwaysEnchant(
-                            WeightedEnchantment.builder(Enchantment.QUICK_CHARGE).level(3).build(),
-                            WeightedEnchantment.builder(Enchantment.PIERCING).build()
-                    ).build()
+            ).build()
     );
 
     private final int MAX_DROP_HEIGHT = 100;
