@@ -111,7 +111,7 @@ public class LobbyMapPreview {
                 int mapXShift = xSign * chunkSize * (x - xLength / 2);
                 int mapYShift = ySign * chunkSize * (y - yLength / 2);
                 Location currentMapCenterLocation = worldCenter.clone().add(mapXShift, 0, mapYShift);
-                ItemStack chunkMap = getMapWithRenderedRegion(itemFrame, currentMapCenterLocation, scaling);
+                ItemStack chunkMap = getMapWithRenderedRegion(currentMapCenterLocation, scaling);
                 itemFrame.setItem(chunkMap);
 
             }
@@ -131,18 +131,9 @@ public class LobbyMapPreview {
      * @param center The center of the region
      * @return Map item
      */
-    private static ItemStack getMapWithRenderedRegion(ItemFrame frame, Location center, double scaling) {
+    private static ItemStack getMapWithRenderedRegion(Location center, double scaling) {
         double scalingShift = 64 / scaling;
-        MapView view = null;
-        ItemStack existing = frame.getItem();
-        if (existing.getType() == Material.FILLED_MAP
-                && existing.getItemMeta() instanceof MapMeta existingMeta
-                && existingMeta.getMapView() != null) {
-            view = existingMeta.getMapView();
-        }
-        if (view == null) {
-            view = Bukkit.createMap(center.getWorld());
-        }
+        MapView view = Bukkit.createMap(center.getWorld());
         view.getRenderers().forEach(view::removeRenderer);
         view.setCenterX((int) Math.round(center.getBlockX() - scalingShift));
         view.setCenterZ((int) Math.round(center.getBlockZ() - scalingShift));
