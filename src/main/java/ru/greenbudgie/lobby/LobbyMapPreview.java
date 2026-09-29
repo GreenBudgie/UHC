@@ -227,7 +227,8 @@ public class LobbyMapPreview {
                 }
             }
         }
-        byte[] pixels = new byte[128 * 128];
+        int[] heights = new int[128 * 128];
+        Color[] colors = new Color[128 * 128];
         for(int x = 0; x < 128; x++) {
             for(int z = 0; z < 128; z++) {
                 double scaledX = x / scaling;
@@ -235,17 +236,38 @@ public class LobbyMapPreview {
                 int realX = (int) Math.round(scaledX + centerX);
                 int realZ = (int) Math.round(scaledZ + centerZ);
                 Block block = world.getHighestBlockAt(realX, realZ);
-                pixels[x + z * 128] = getBlockColor(block);
+                int idx = x + z * 128;
+                heights[idx] = block.getY();
+                org.bukkit.Color raw = block.getBlockData().getMapColor();
+                colors[idx] = new Color(raw.getRed(), raw.getGreen(), raw.getBlue());
+            }
+        }
+        byte[] pixels = new byte[128 * 128];
+        for(int x = 0; x < 128; x++) {
+            for(int z = 0; z < 128; z++) {
+                int idx = x + z * 128;
+                double brightness = 1.0;
+                if(z > 0) {
+                    int diff = heights[idx] - heights[x + (z - 1) * 128];
+                    if(diff > 0) brightness = 1.18;
+                    else if(diff < 0) brightness = 0.82;
+                }
+                pixels[idx] = shadeAndMatch(colors[idx], brightness);
             }
         }
         return pixels;
     }
 
     @SuppressWarnings("deprecation")
-    private static byte getBlockColor(Block block) {
-        org.bukkit.Color bukkitColor = block.getBlockData().getMapColor();
-        Color color = new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
-        return MapPalette.matchColor(color);
+    private static byte shadeAndMatch(Color color, double brightness) {
+        int r = clampByte((int) Math.round(color.getRed() * brightness));
+        int g = clampByte((int) Math.round(color.getGreen() * brightness));
+        int b = clampByte((int) Math.round(color.getBlue() * brightness));
+        return MapPalette.matchColor(new Color(r, g, b));
+    }
+
+    private static int clampByte(int value) {
+        return Math.min(255, Math.max(0, value));
     }
 
     private static class CustomRenderer extends org.bukkit.map.MapRenderer {
