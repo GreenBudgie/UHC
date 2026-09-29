@@ -36,8 +36,6 @@ public class Lobby {
         lobby.setGameRule(GameRule.IMMEDIATE_RESPAWN, true);
         lobby.setGameRule(GameRule.LOCATOR_BAR, false);
 
-        removeMapDatFiles();
-
         boolean toUpdate = false;
         File file = new File(getLobby().getWorldFolder() + File.separator + "lobby.yml");
         try {
@@ -72,25 +70,7 @@ public class Lobby {
         Bukkit.getPluginManager().registerEvents(new LobbyTeamBuilder(), UHCPlugin.instance);
     }
 
-    private static void removeMapDatFiles() {
-        File dataFolder = new File(lobby.getWorldFolder().getAbsolutePath() + File.separator + "data");
-        for(int i = 0;; i++) {
-            File mapDat = new File(dataFolder.getAbsolutePath() + File.separator + "map_" + i + ".dat");
-            try {
-                if(!mapDat.delete()) {
-                    break;
-                }
-            } catch(Exception ignored) {
-                break;
-            }
-        }
-        File idcounts = new File(dataFolder.getAbsolutePath() + File.separator + "idcounts.dat");
-        try {
-            idcounts.delete();
-        } catch(Exception ignored) {}
-    }
-
-    public static YamlConfiguration getLobbyConfig() {
+public static YamlConfiguration getLobbyConfig() {
         return lobbyConfig;
     }
 

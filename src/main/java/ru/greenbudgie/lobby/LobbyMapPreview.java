@@ -22,8 +22,10 @@ import ru.greenbudgie.util.Region;
 import ru.greenbudgie.util.WorldHelper;
 
 import java.awt.*;
-import java.util.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class LobbyMapPreview {
 
@@ -46,26 +48,24 @@ public class LobbyMapPreview {
             return;
         }
         mapPreviewRegion = previewRegion;
-        UHCPlugin.info("[MapPreview] init: region loaded, start=" +
-                previewRegion.getStartLocation().getBlockX() + "," +
-                previewRegion.getStartLocation().getBlockY() + "," +
-                previewRegion.getStartLocation().getBlockZ() +
-                " size=" + previewRegion.getXSideLength() + "x" +
-                previewRegion.getYSideLength() + "x" + previewRegion.getZSideLength());
     }
+
+    private static final int MAX_RETRY_ATTEMPTS = 5;
+    private static final long RETRY_DELAY_TICKS = 20L;
 
     /**
      * Fill the item frames at specified region with the maps of
      * current game world
      */
     public static void setPreview() {
-        UHCPlugin.info("[MapPreview] setPreview() called");
+        setPreview(0);
+    }
+
+    private static void setPreview(int attempt) {
         if(mapPreviewRegion == null) {
-            UHCPlugin.warning("[MapPreview] setPreview aborted: mapPreviewRegion is null");
             return;
         }
         if(WorldManager.getGameMap() == null) {
-            UHCPlugin.warning("[MapPreview] setPreview aborted: game map is null");
             return;
         }
         int xRealLength = mapPreviewRegion.getXSideLength();
@@ -98,10 +98,6 @@ public class LobbyMapPreview {
 
         int chunkSize = (int) Math.round(128 / scaling);
 
-        UHCPlugin.info("[MapPreview] grid=" + xLength + "x" + yLength +
-                ", worldCenter=" + worldCenter.getBlockX() + "," + worldCenter.getBlockZ() +
-                ", scaling=" + scaling + ", chunkSize=" + chunkSize);
-
         World lobbyWorld = mapPreviewRegion.getStartLocation().getWorld();
         Set<Long> lobbyChunksLoaded = new HashSet<>();
         for(int x = 0; x < xLength; x++) {
@@ -115,18 +111,13 @@ public class LobbyMapPreview {
                 }
             }
         }
-        UHCPlugin.info("[MapPreview] force-loaded " + lobbyChunksLoaded.size() + " lobby chunks for frame scan");
 
         int framesFound = 0;
-        int framesMissing = 0;
         for(int x = 0; x < xLength; x++) {
             for(int y = 0; y < yLength; y++) {
                 Location realLocation = computeFrameLocation(x, y, doesXChange, doesYChange, doesZChange);
                 ItemFrame itemFrame = getItemFrameAt(realLocation);
                 if(itemFrame == null) {
-                    framesMissing++;
-                    UHCPlugin.warning("[MapPreview] no ItemFrame at " +
-                            realLocation.getBlockX() + "," + realLocation.getBlockY() + "," + realLocation.getBlockZ());
                     continue;
                 }
                 framesFound++;
@@ -140,12 +131,14 @@ public class LobbyMapPreview {
                 int mapXShift = xSign * chunkSize * (x - xLength / 2);
                 int mapYShift = ySign * chunkSize * (y - yLength / 2);
                 Location currentMapCenterLocation = worldCenter.clone().add(mapXShift, 0, mapYShift);
-                ItemStack chunkMap = getMapWithRenderedRegion(currentMapCenterLocation, scaling);
+                ItemStack chunkMap = getMapWithRenderedRegion(currentMapCenterLocation, scaling, itemFrame);
                 itemFrame.setItem(chunkMap);
 
             }
         }
-        UHCPlugin.info("[MapPreview] setPreview done: frames found=" + framesFound + ", missing=" + framesMissing);
+        if(framesFound == 0 && attempt + 1 < MAX_RETRY_ATTEMPTS) {
+            Bukkit.getScheduler().runTaskLater(UHCPlugin.instance, () -> setPreview(attempt + 1), RETRY_DELAY_TICKS);
+        }
     }
 
     private static Location computeFrameLocation(int x, int y, boolean doesXChange, boolean doesYChange, boolean doesZChange) {
@@ -178,12 +171,18 @@ public class LobbyMapPreview {
      * @param center The center of the region
      * @return Map item
      */
-    private static ItemStack getMapWithRenderedRegion(Location center, double scaling) {
+    private static ItemStack getMapWithRenderedRegion(Location center, double scaling, ItemFrame existingFrame) {
         double scalingShift = 64 / scaling;
         World world = center.getWorld();
-        MapView view = Bukkit.createMap(world);
-        List<MapRenderer> existingRenderers = new ArrayList<>(view.getRenderers());
-        for(MapRenderer renderer : existingRenderers) {
+
+        MapView view = extractExistingMapView(existingFrame);
+        if(view == null) {
+            view = Bukkit.createMap(world);
+        } else {
+            view.setWorld(world);
+        }
+
+        for(MapRenderer renderer : new ArrayList<>(view.getRenderers())) {
             view.removeRenderer(renderer);
         }
         int centerX = (int) Math.round(center.getBlockX() - scalingShift);
@@ -191,13 +190,8 @@ public class LobbyMapPreview {
         view.setCenterX(centerX);
         view.setCenterZ(centerZ);
 
-        byte[] buffer = computeBuffer(world, scaling, centerX, centerZ, view.getId());
+        byte[] buffer = computeBuffer(world, scaling, centerX, centerZ);
         view.addRenderer(new CustomRenderer(buffer));
-
-        UHCPlugin.info("[MapPreview] created MapView id=" + view.getId() +
-                ", centerX=" + centerX + ", centerZ=" + centerZ +
-                ", world=" + (world == null ? "null" : world.getName()) +
-                ", removedRenderers=" + existingRenderers.size());
 
         ItemStack item = new ItemStack(Material.FILLED_MAP);
         MapMeta meta = (MapMeta) item.getItemMeta();
@@ -206,22 +200,33 @@ public class LobbyMapPreview {
         return item;
     }
 
-    private static byte[] computeBuffer(World world, double scaling, int centerX, int centerZ, int mapId) {
-        long start = System.currentTimeMillis();
+    private static MapView extractExistingMapView(ItemFrame frame) {
+        ItemStack currentItem = frame.getItem();
+        if(currentItem.getType() != Material.FILLED_MAP) {
+            return null;
+        }
+        if(!currentItem.hasItemMeta()) {
+            return null;
+        }
+        MapMeta meta = (MapMeta) currentItem.getItemMeta();
+        if(!meta.hasMapView()) {
+            return null;
+        }
+        return meta.getMapView();
+    }
+
+    private static byte[] computeBuffer(World world, double scaling, int centerX, int centerZ) {
         int minChunkX = centerX >> 4;
         int maxChunkX = (int) Math.round(centerX + 127 / scaling) >> 4;
         int minChunkZ = centerZ >> 4;
         int maxChunkZ = (int) Math.round(centerZ + 127 / scaling) >> 4;
-        int chunksLoaded = 0;
         for(int cx = minChunkX; cx <= maxChunkX; cx++) {
             for(int cz = minChunkZ; cz <= maxChunkZ; cz++) {
                 if(!world.isChunkLoaded(cx, cz)) {
                     world.loadChunk(cx, cz, true);
-                    chunksLoaded++;
                 }
             }
         }
-        long afterLoad = System.currentTimeMillis();
         byte[] pixels = new byte[128 * 128];
         for(int x = 0; x < 128; x++) {
             for(int z = 0; z < 128; z++) {
@@ -233,9 +238,6 @@ public class LobbyMapPreview {
                 pixels[x + z * 128] = getBlockColor(block);
             }
         }
-        UHCPlugin.info("[MapPreview] buffer(id=" + mapId + "): chunks preloaded=" + chunksLoaded +
-                " (" + (afterLoad - start) + "ms), pixels sampled in " +
-                (System.currentTimeMillis() - afterLoad) + "ms");
         return pixels;
     }
 
@@ -265,7 +267,6 @@ public class LobbyMapPreview {
                 }
             }
             applied = true;
-            UHCPlugin.info("[MapPreview] render(id=" + map.getId() + "): blitted pre-computed buffer");
         }
 
     }
