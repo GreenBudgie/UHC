@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
+import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import ru.greenbudgie.UHC.WorldManager;
 import ru.greenbudgie.main.UHCPlugin;
@@ -21,7 +22,8 @@ import ru.greenbudgie.util.Region;
 import ru.greenbudgie.util.WorldHelper;
 
 import java.awt.*;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 public class LobbyMapPreview {
 
@@ -44,6 +46,12 @@ public class LobbyMapPreview {
             return;
         }
         mapPreviewRegion = previewRegion;
+        UHCPlugin.info("[MapPreview] init: region loaded, start=" +
+                previewRegion.getStartLocation().getBlockX() + "," +
+                previewRegion.getStartLocation().getBlockY() + "," +
+                previewRegion.getStartLocation().getBlockZ() +
+                " size=" + previewRegion.getXSideLength() + "x" +
+                previewRegion.getYSideLength() + "x" + previewRegion.getZSideLength());
     }
 
     /**
@@ -51,7 +59,15 @@ public class LobbyMapPreview {
      * current game world
      */
     public static void setPreview() {
-        if(mapPreviewRegion == null || WorldManager.getGameMap() == null) return;
+        UHCPlugin.info("[MapPreview] setPreview() called");
+        if(mapPreviewRegion == null) {
+            UHCPlugin.warning("[MapPreview] setPreview aborted: mapPreviewRegion is null");
+            return;
+        }
+        if(WorldManager.getGameMap() == null) {
+            UHCPlugin.warning("[MapPreview] setPreview aborted: game map is null");
+            return;
+        }
         int xRealLength = mapPreviewRegion.getXSideLength();
         int yRealLength = mapPreviewRegion.getYSideLength();
         int zRealLength = mapPreviewRegion.getZSideLength();
@@ -82,25 +98,38 @@ public class LobbyMapPreview {
 
         int chunkSize = (int) Math.round(128 / scaling);
 
+        UHCPlugin.info("[MapPreview] grid=" + xLength + "x" + yLength +
+                ", worldCenter=" + worldCenter.getBlockX() + "," + worldCenter.getBlockZ() +
+                ", scaling=" + scaling + ", chunkSize=" + chunkSize);
+
+        World lobbyWorld = mapPreviewRegion.getStartLocation().getWorld();
+        Set<Long> lobbyChunksLoaded = new HashSet<>();
         for(int x = 0; x < xLength; x++) {
             for(int y = 0; y < yLength; y++) {
-                int realXShift = 0, realYShift = 0, realZShift = 0;
-                if(!doesXChange) {
-                    realZShift = x;
-                    realYShift = y;
+                Location loc = computeFrameLocation(x, y, doesXChange, doesYChange, doesZChange);
+                int cx = loc.getBlockX() >> 4;
+                int cz = loc.getBlockZ() >> 4;
+                long key = (((long) cx) << 32) | (cz & 0xFFFFFFFFL);
+                if(lobbyChunksLoaded.add(key)) {
+                    lobbyWorld.loadChunk(cx, cz, false);
                 }
-                if(!doesYChange) {
-                    realXShift = x;
-                    realZShift = y;
-                }
-                if(!doesZChange) {
-                    realXShift = x;
-                    realYShift = y;
-                }
-                Location realLocation = mapPreviewRegion.getStartLocation().clone().
-                        add(realXShift, realYShift, realZShift);
+            }
+        }
+        UHCPlugin.info("[MapPreview] force-loaded " + lobbyChunksLoaded.size() + " lobby chunks for frame scan");
+
+        int framesFound = 0;
+        int framesMissing = 0;
+        for(int x = 0; x < xLength; x++) {
+            for(int y = 0; y < yLength; y++) {
+                Location realLocation = computeFrameLocation(x, y, doesXChange, doesYChange, doesZChange);
                 ItemFrame itemFrame = getItemFrameAt(realLocation);
-                if(itemFrame == null) continue;
+                if(itemFrame == null) {
+                    framesMissing++;
+                    UHCPlugin.warning("[MapPreview] no ItemFrame at " +
+                            realLocation.getBlockX() + "," + realLocation.getBlockY() + "," + realLocation.getBlockZ());
+                    continue;
+                }
+                framesFound++;
 
                 BlockFace face = itemFrame.getAttachedFace().getOppositeFace();
                 int xSign = 1;
@@ -116,6 +145,24 @@ public class LobbyMapPreview {
 
             }
         }
+        UHCPlugin.info("[MapPreview] setPreview done: frames found=" + framesFound + ", missing=" + framesMissing);
+    }
+
+    private static Location computeFrameLocation(int x, int y, boolean doesXChange, boolean doesYChange, boolean doesZChange) {
+        int realXShift = 0, realYShift = 0, realZShift = 0;
+        if(!doesXChange) {
+            realZShift = x;
+            realYShift = y;
+        }
+        if(!doesYChange) {
+            realXShift = x;
+            realZShift = y;
+        }
+        if(!doesZChange) {
+            realXShift = x;
+            realYShift = y;
+        }
+        return mapPreviewRegion.getStartLocation().clone().add(realXShift, realYShift, realZShift);
     }
 
     private static ItemFrame getItemFrameAt(Location location) {
@@ -133,17 +180,63 @@ public class LobbyMapPreview {
      */
     private static ItemStack getMapWithRenderedRegion(Location center, double scaling) {
         double scalingShift = 64 / scaling;
-        MapView view = Bukkit.createMap(center.getWorld());
-        view.getRenderers().forEach(view::removeRenderer);
-        view.setCenterX((int) Math.round(center.getBlockX() - scalingShift));
-        view.setCenterZ((int) Math.round(center.getBlockZ() - scalingShift));
-        view.addRenderer(new CustomRenderer(scaling));
+        World world = center.getWorld();
+        MapView view = Bukkit.createMap(world);
+        List<MapRenderer> existingRenderers = new ArrayList<>(view.getRenderers());
+        for(MapRenderer renderer : existingRenderers) {
+            view.removeRenderer(renderer);
+        }
+        int centerX = (int) Math.round(center.getBlockX() - scalingShift);
+        int centerZ = (int) Math.round(center.getBlockZ() - scalingShift);
+        view.setCenterX(centerX);
+        view.setCenterZ(centerZ);
+
+        byte[] buffer = computeBuffer(world, scaling, centerX, centerZ, view.getId());
+        view.addRenderer(new CustomRenderer(buffer));
+
+        UHCPlugin.info("[MapPreview] created MapView id=" + view.getId() +
+                ", centerX=" + centerX + ", centerZ=" + centerZ +
+                ", world=" + (world == null ? "null" : world.getName()) +
+                ", removedRenderers=" + existingRenderers.size());
 
         ItemStack item = new ItemStack(Material.FILLED_MAP);
         MapMeta meta = (MapMeta) item.getItemMeta();
         meta.setMapView(view);
         item.setItemMeta(meta);
         return item;
+    }
+
+    private static byte[] computeBuffer(World world, double scaling, int centerX, int centerZ, int mapId) {
+        long start = System.currentTimeMillis();
+        int minChunkX = centerX >> 4;
+        int maxChunkX = (int) Math.round(centerX + 127 / scaling) >> 4;
+        int minChunkZ = centerZ >> 4;
+        int maxChunkZ = (int) Math.round(centerZ + 127 / scaling) >> 4;
+        int chunksLoaded = 0;
+        for(int cx = minChunkX; cx <= maxChunkX; cx++) {
+            for(int cz = minChunkZ; cz <= maxChunkZ; cz++) {
+                if(!world.isChunkLoaded(cx, cz)) {
+                    world.loadChunk(cx, cz, true);
+                    chunksLoaded++;
+                }
+            }
+        }
+        long afterLoad = System.currentTimeMillis();
+        byte[] pixels = new byte[128 * 128];
+        for(int x = 0; x < 128; x++) {
+            for(int z = 0; z < 128; z++) {
+                double scaledX = x / scaling;
+                double scaledZ = z / scaling;
+                int realX = (int) Math.round(scaledX + centerX);
+                int realZ = (int) Math.round(scaledZ + centerZ);
+                Block block = world.getHighestBlockAt(realX, realZ);
+                pixels[x + z * 128] = getBlockColor(block);
+            }
+        }
+        UHCPlugin.info("[MapPreview] buffer(id=" + mapId + "): chunks preloaded=" + chunksLoaded +
+                " (" + (afterLoad - start) + "ms), pixels sampled in " +
+                (System.currentTimeMillis() - afterLoad) + "ms");
+        return pixels;
     }
 
     @SuppressWarnings("deprecation")
@@ -155,42 +248,24 @@ public class LobbyMapPreview {
 
     private static class CustomRenderer extends org.bukkit.map.MapRenderer {
 
-        /**
-         * How many blocks to render per map pixel
-         */
-        private final double scaling;
-        private byte[] buffer;
+        private final byte[] buffer;
         private boolean applied = false;
 
-        protected CustomRenderer(double scaling) {
-            this.scaling = scaling;
+        protected CustomRenderer(byte[] buffer) {
+            super(false);
+            this.buffer = buffer;
         }
 
         @Override
         public void render(MapView map, MapCanvas canvas, Player player) {
             if(applied) return;
-            World world = map.getWorld();
-            if(world == null) return;
-            if(buffer == null) {
-                byte[] pixels = new byte[128 * 128];
-                for(int x = 0; x < 128; x++) {
-                    for(int z = 0; z < 128; z++) {
-                        double scaledX = x / scaling;
-                        double scaledZ = z / scaling;
-                        int realX = (int) Math.round(scaledX + map.getCenterX());
-                        int realZ = (int) Math.round(scaledZ + map.getCenterZ());
-                        Block block = world.getHighestBlockAt(realX, realZ);
-                        pixels[x + z * 128] = getBlockColor(block);
-                    }
-                }
-                buffer = pixels;
-            }
             for(int x = 0; x < 128; x++) {
                 for(int z = 0; z < 128; z++) {
                     canvas.setPixel(x, z, buffer[x + z * 128]);
                 }
             }
             applied = true;
+            UHCPlugin.info("[MapPreview] render(id=" + map.getId() + "): blitted pre-computed buffer");
         }
 
     }
