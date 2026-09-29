@@ -1,0 +1,11 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 14357620,
+    "separation": 5,
+    "spacing": 18
+  },
+  "structures": [
+    { "structure": "minecraft:swamp_hut", "weight": 1 }
+  ]
+}

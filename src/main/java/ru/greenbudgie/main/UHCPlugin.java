@@ -23,6 +23,7 @@ import ru.greenbudgie.requester.ItemRequester;
 import ru.greenbudgie.tutorial.TutorialInventory;
 import ru.greenbudgie.util.TaskManager;
 
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +35,7 @@ public class UHCPlugin extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		log = getLogger();
+		installWorldgenDatapack();
 		registerCommand("test", new CommandTest());
 		registerCommand("gm", new CommandGM());
 		registerCommand("start", new CommandStart());
@@ -84,6 +86,52 @@ public class UHCPlugin extends JavaPlugin {
 		Rating.loadFromConfig();
 
 		TaskManager.init();
+	}
+
+	private static final String DATAPACK_NAME = "uhc-fortress";
+	private static final String[] DATAPACK_FILES = {
+			"pack.mcmeta",
+			"data/minecraft/worldgen/structure_set/nether_complexes.json",
+			"data/minecraft/worldgen/structure_set/villages.json",
+			"data/minecraft/worldgen/structure_set/pillager_outposts.json",
+			"data/minecraft/worldgen/structure_set/ocean_monuments.json",
+			"data/minecraft/worldgen/structure_set/desert_pyramids.json",
+			"data/minecraft/worldgen/structure_set/jungle_temples.json",
+			"data/minecraft/worldgen/structure_set/swamp_huts.json",
+			"data/minecraft/worldgen/structure_set/igloos.json",
+			"data/minecraft/worldgen/structure_set/ocean_ruins.json",
+			"data/minecraft/worldgen/structure_set/shipwrecks.json",
+			"data/minecraft/worldgen/structure_set/ruined_portals.json",
+			"data/minecraft/worldgen/structure_set/woodland_mansions.json",
+			"data/minecraft/worldgen/structure_set/trail_ruins.json",
+			"data/minecraft/worldgen/structure_set/trial_chambers.json",
+			"data/minecraft/worldgen/structure_set/ancient_cities.json"
+	};
+
+	private void installWorldgenDatapack() {
+		File defaultWorldFolder = Bukkit.getWorlds().isEmpty()
+				? new File(Bukkit.getWorldContainer(), "world")
+				: Bukkit.getWorlds().get(0).getWorldFolder();
+		File datapackFolder = new File(defaultWorldFolder, "datapacks/" + DATAPACK_NAME);
+		boolean wasFresh = !datapackFolder.exists();
+		for(String relativePath : DATAPACK_FILES) {
+			File target = new File(datapackFolder, relativePath);
+			target.getParentFile().mkdirs();
+			String resourcePath = "datapacks/" + DATAPACK_NAME + "/" + relativePath;
+			try(InputStream in = getResource(resourcePath)) {
+				if(in == null) {
+					error("Missing datapack resource in JAR: " + resourcePath);
+					continue;
+				}
+				try(OutputStream out = new FileOutputStream(target)) {
+					in.transferTo(out);
+				}
+			} catch(IOException e) {
+				error("Failed to install datapack file " + relativePath + ": " + e.getMessage());
+			}
+		}
+		log.log(Level.INFO, "Datapack '" + DATAPACK_NAME + "' installed at " + datapackFolder.getPath()
+				+ (wasFresh ? " (fresh install — RESTART SERVER to activate boosted structure spawn)" : ""));
 	}
 
 	private void registerCommand(String commandName, CommandExecutor executor) {
