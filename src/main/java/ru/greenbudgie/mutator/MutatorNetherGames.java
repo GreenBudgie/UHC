@@ -23,7 +23,7 @@ public class MutatorNetherGames extends Mutator implements Listener {
 
 	private static final ItemStack WOODEN_PICKAXE = ItemUtils.builder(Material.WOODEN_PICKAXE)
 			.unbreakable()
-			.withEnchantments(new Enchant(Enchantment.EFFICIENCY, 1))
+			.withEnchantments(new Enchant(Enchantment.EFFICIENCY, 3))
 			.build();
 
 	@Override

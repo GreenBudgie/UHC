@@ -75,7 +75,7 @@ public class WorldManager {
 		map.setDifficulty(Difficulty.HARD);
 		map.setGameRule(GameRule.IMMEDIATE_RESPAWN, true);
 		map.setGameRule(GameRule.SHOW_ADVANCEMENT_MESSAGES, false);
-		map.setGameRule(GameRule.RANDOM_TICK_SPEED, 12);
+		map.setGameRule(GameRule.RANDOM_TICK_SPEED, 15);
 		map.setGameRule(GameRule.NATURAL_HEALTH_REGENERATION, false);
 		map.setGameRule(GameRule.ADVANCE_TIME, false);
 		map.setGameRule(GameRule.ADVANCE_WEATHER, false);
@@ -95,7 +95,7 @@ public class WorldManager {
 		border.setCenter(spawnLocation);
 
 		WorldBorder netherBorder = gameMapNether.getWorldBorder();
-		netherBorder.setSize(gameMap.getWorldBorder().getSize() * 3);
+		netherBorder.setSize(gameMap.getWorldBorder().getSize() * 2);
 		netherBorder.setWarningTime(0);
 		netherBorder.setWarningDistance(0);
 		netherBorder.setDamageBuffer(0);

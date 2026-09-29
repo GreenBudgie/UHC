@@ -71,15 +71,15 @@ public class MutatorVegetarian extends Mutator implements Listener {
 
 	@Override
 	public void onDeactivate() {
-		WorldManager.getGameMap().setGameRule(GameRule.RANDOM_TICK_SPEED, 3);
-		WorldManager.getGameMapNether().setGameRule(GameRule.RANDOM_TICK_SPEED, 3);
+		WorldManager.getGameMap().setGameRule(GameRule.RANDOM_TICK_SPEED, 15);
+		WorldManager.getGameMapNether().setGameRule(GameRule.RANDOM_TICK_SPEED, 15);
 	}
 
 	@EventHandler
 	public void poisonOnConsume(PlayerItemConsumeEvent e) {
 		Material type = e.getItem().getType();
 		if(Arrays.asList(meat).contains(type)) {
-			e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.POISON, 60, 2));
+			e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.POISON, 20, 2));
 		}
 	}
 

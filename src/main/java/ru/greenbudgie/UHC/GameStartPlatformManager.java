@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import ru.greenbudgie.util.Region;
-import ru.greenbudgie.util.WorldHelper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +27,8 @@ public class GameStartPlatformManager {
     }
 
     public static void createNetherPlatformAndTeleportPlayers() {
-        Location netherSpawnLocation = WorldHelper.getSpawnLocation(WorldManager.getGameMapNether());
+        Location spawnLocation = WorldManager.getGameMap().getSpawnLocation();
+        Location netherSpawnLocation = new Location(WorldManager.getGameMapNether(), spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ());
         Map<UHCPlayer, Location> playerSpawnLocations = getPlayerSpawnLocations(netherSpawnLocation);
 
         netherPlatformRegion = createPlatform(netherSpawnLocation);
