@@ -1,18 +1,20 @@
 package ru.greenbudgie.UHC;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.util.MathUtils;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 
 public class AutoOreSmelting implements Listener {
 
@@ -52,22 +54,8 @@ public class AutoOreSmelting implements Listener {
         if (!PlayerManager.isPlaying(player)) {
             return;
         }
-        ItemStack usedItem = player.getInventory().getItemInMainHand();
         Block block = event.getBlock();
         if (!blocksToSmelt.contains(block.getType())) {
-            return;
-        }
-        Collection<ItemStack> drops = block.getDrops(usedItem, player);
-        List<ItemStack> smeltedDrops = new ArrayList<>();
-        for(ItemStack initialDrop : drops) {
-            Material smeltingResult = smeltingResults.get(initialDrop.getType());
-            if (smeltingResult == null) {
-                continue;
-            }
-            ItemStack smeltedDrop = new ItemStack(smeltingResult, initialDrop.getAmount());
-            smeltedDrops.add(smeltedDrop);
-        }
-        if (smeltedDrops.isEmpty()) {
             return;
         }
         ExperienceAmount experienceAmount = experienceToDrop.get(block.getType());
@@ -75,12 +63,24 @@ public class AutoOreSmelting implements Listener {
             UHCPlugin.error("No experience amount is configured for the specified smeltable block, 0 will be used instead");
             experienceAmount = new ExperienceAmount(0, 0);
         }
-        event.setDropItems(false);
         event.setExpToDrop(experienceAmount.randomExperience());
+    }
 
-        Location blockLocation = block.getLocation();
-        for (ItemStack smeltedDrop : smeltedDrops) {
-            block.getWorld().dropItemNaturally(blockLocation, smeltedDrop);
+    @EventHandler
+    public void replaceOreDrops(BlockDropItemEvent event) {
+        if (!PlayerManager.isPlaying(event.getPlayer())) {
+            return;
+        }
+        if (!blocksToSmelt.contains(event.getBlockState().getType())) {
+            return;
+        }
+        for (Item item : event.getItems()) {
+            ItemStack stack = item.getItemStack();
+            Material smeltingResult = smeltingResults.get(stack.getType());
+            if (smeltingResult == null) {
+                continue;
+            }
+            item.setItemStack(new ItemStack(smeltingResult, stack.getAmount()));
         }
     }
 
