@@ -9,6 +9,7 @@ public enum MapSize {
 
     DEFAULT(40),
     OLD(45),
+    BIG(75),
     EXTREME(5000);
 
     private final int chunksPerPlayer;

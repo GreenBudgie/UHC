@@ -37,6 +37,7 @@ public class PiglinBarterManager implements Listener {
             WeightedItem.builder(Material.NETHER_WART).amount(1, 2).weight(3).build(),
             WeightedItem.builder(Material.GOLDEN_CARROT).amount(1, 2).weight(3).build(),
             WeightedItem.builder(Material.OBSIDIAN).amount(5, 10).weight(3).build(),
+            WeightedItem.builder(Material.FLINT).amount(3, 5).weight(3).build(),
             WeightedItem.builder(fireResistancePotion).weight(2).build(),
             WeightedItem.builder(Material.DIAMOND).amount(1, 2).weight(1).build(),
             WeightedItem.builder(Material.APPLE).weight(1).build()

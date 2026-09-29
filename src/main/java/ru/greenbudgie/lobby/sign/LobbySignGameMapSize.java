@@ -36,7 +36,8 @@ public class LobbySignGameMapSize extends LobbySign {
 
         String sizeInfo = switch (UHC.mapSize) {
             case DEFAULT -> AQUA + "" + BOLD + "Обычный";
-            case OLD -> RED + "" + BOLD + "Олдскул";
+            case OLD -> DARK_AQUA + "" + BOLD + "Олдскул";
+            case BIG -> RED + "" + BOLD + "Большой";
             case EXTREME -> DARK_RED + "" + BOLD + "Гигантский";
         };
 

@@ -1,19 +1,48 @@
 package ru.greenbudgie.UHC;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.entity.EntityCombustByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.projectiles.ProjectileSource;
+import ru.greenbudgie.event.AfterGameEndEvent;
+import ru.greenbudgie.event.GameStartEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class FightHelper {
+public class FightHelper implements Listener {
 
 	private static final List<FightProcess> processes = new ArrayList<>();
+	private static final Map<Location, UHCPlayer> spilledLava = new HashMap<>();
+	private static final Map<Location, UHCPlayer> burningFire = new HashMap<>();
+
+	@EventHandler
+	public void onGameStart(GameStartEvent event) {
+		reset();
+	}
+
+	@EventHandler
+	public void onGameEnd(AfterGameEndEvent event) {
+		reset();
+	}
+
+	private static void reset() {
+		processes.clear();
+		spilledLava.clear();
+		burningFire.clear();
+	}
 
 	/**
 	 * Gets the custom player's killer
@@ -83,6 +112,14 @@ public class FightHelper {
 		for(FightProcess process : processes) {
 			process.ticks--;
 		}
+
+		spilledLava.entrySet().removeIf(entry ->
+				entry.getKey().getBlock().getType() != Material.LAVA
+		);
+
+		burningFire.entrySet().removeIf(entry ->
+				entry.getKey().getBlock().getType() != Material.FIRE
+		);
 	}
 
 	private static FightProcess getProcess(Player victim) {
@@ -126,6 +163,72 @@ public class FightHelper {
 			}
 		}
 		return padCrosses(deathMessage);
+	}
+
+	@EventHandler
+	public void lavaSpill(PlayerBucketEmptyEvent event) {
+		if (!UHC.playing) {
+			return;
+		}
+
+		var player = PlayerManager.asUHCPlayer(event.getPlayer());
+		if (player == null) {
+			return;
+		}
+
+		if (event.getBucket() != Material.LAVA_BUCKET) {
+			return;
+		}
+
+		spilledLava.put(event.getBlock().getLocation(), player);
+	}
+
+	@EventHandler
+	public void ignite(BlockIgniteEvent event) {
+		if (!UHC.playing) {
+			return;
+		}
+
+		var player = PlayerManager.asUHCPlayer(event.getPlayer());
+		if (player == null) {
+			return;
+		}
+
+		var cause = event.getCause();
+		if (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL || cause == BlockIgniteEvent.IgniteCause.FIREBALL) {
+			burningFire.put(event.getBlock().getLocation(), player);
+		}
+	}
+
+	@EventHandler
+	public void combustByBlock(EntityCombustByBlockEvent event) {
+		if (!UHC.playing) {
+			return;
+		}
+
+		if (!(event.getEntity() instanceof Player victim)) {
+			return;
+		}
+
+		var combuster = event.getCombuster();
+		if (combuster == null) {
+			return;
+		}
+
+		var location = combuster.getLocation();
+		UHCPlayer attacker;
+		String killMessage;
+		if (spilledLava.containsKey(location)) {
+			attacker = spilledLava.get(location);
+			killMessage = "утопил в лаве";
+		} else if (burningFire.containsKey(location)) {
+			attacker = burningFire.get(location);
+			killMessage = "сжёг";
+		} else {
+			return;
+		}
+
+		setDamager(victim, attacker, (int)(event.getDuration() * 20 + 20), killMessage);
 	}
 
 	private static class FightProcess {
