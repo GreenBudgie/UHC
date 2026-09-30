@@ -40,7 +40,6 @@ public class MutatorManager {
 	public static MutatorDeathTnt deathTnt = new MutatorDeathTnt();
 	public static MutatorSupply supply = new MutatorSupply();
 	public static MutatorWizardBattle wizardBattle = new MutatorWizardBattle();
-	public static MutatorKnockback knockback = new MutatorKnockback();
 	public static MutatorDamageBound damageBound = new MutatorDamageBound();
 	public static MutatorHealthDisplay healthDisplay = new MutatorHealthDisplay();
 	public static MutatorChemistBattle chemistBattle = new MutatorChemistBattle();
@@ -62,7 +61,6 @@ public class MutatorManager {
 	public static MutatorRestrictions restrictions = new MutatorRestrictions();
 	public static MutatorTotems totems = new MutatorTotems();
 	public static MutatorRequestAnywhere requestAnywhere = new MutatorRequestAnywhere();
-	public static MutatorBinding binding = new MutatorBinding();
 	public static MutatorDamageFly damageFly = new MutatorDamageFly();
 	public static MutatorOverpoweredMobs overpoweredMobs = new MutatorOverpoweredMobs();
 	public static MutatorVegetarian vegetarian = new MutatorVegetarian();

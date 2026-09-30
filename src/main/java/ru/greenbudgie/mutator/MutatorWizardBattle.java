@@ -37,7 +37,11 @@ public class MutatorWizardBattle extends ItemBasedMutator {
 
 	@Override
 	public List<ItemStack> getItemsToAdd() {
-		return Lists.newArrayList(new ItemStack(Material.ENCHANTING_TABLE), new ItemStack(Material.BOOKSHELF, 64));
+		return Lists.newArrayList(
+				new ItemStack(Material.ENCHANTING_TABLE),
+				new ItemStack(Material.BOOKSHELF, 64),
+				new ItemStack(Material.LAPIS_LAZULI, 3)
+		);
 	}
 
 }

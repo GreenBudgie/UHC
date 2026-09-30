@@ -5,16 +5,19 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.UHC.WorldManager;
+import ru.greenbudgie.mutator.base.ItemBasedMutator;
 import ru.greenbudgie.mutator.base.Mutator;
 import ru.greenbudgie.mutator.base.ThreatStatus;
 import ru.greenbudgie.mutator.manager.MutatorManager;
 
 import java.util.Arrays;
+import java.util.List;
 
-public class MutatorVegetarian extends Mutator implements Listener {
+public class MutatorVegetarian extends ItemBasedMutator implements Listener {
 
 	private static final int INCREASED_TICK_SPEED = 30;
 
@@ -55,7 +58,7 @@ public class MutatorVegetarian extends Mutator implements Listener {
 
 	@Override
 	public String getDescription() {
-		return "Все посевы растут быстрее, но при этом мясо есть нельзя: наложится эффект отравления. Другими словами, установлен randomTickSpeed = 30.";
+		return "Ты получаешь морковь. Все посевы растут быстрее, но при этом мясо есть нельзя: наложится эффект отравления.";
 	}
 
 	@Override
@@ -83,4 +86,13 @@ public class MutatorVegetarian extends Mutator implements Listener {
 		}
 	}
 
+	@Override
+	public boolean isOnlyPreGame() {
+		return false;
+	}
+
+	@Override
+	public List<ItemStack> getItemsToAdd() {
+		return List.of(new ItemStack(Material.CARROT));
+	}
 }

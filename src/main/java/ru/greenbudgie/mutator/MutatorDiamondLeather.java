@@ -7,7 +7,6 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.mutator.base.Mutator;
 import ru.greenbudgie.mutator.base.ThreatStatus;
-import ru.greenbudgie.mutator.manager.MutatorManager;
 
 public class MutatorDiamondLeather extends Mutator implements Listener {
 
@@ -29,11 +28,6 @@ public class MutatorDiamondLeather extends Mutator implements Listener {
 	@Override
 	public String getDescription() {
 		return "Из кожи крафтится алмазная броня";
-	}
-
-	@Override
-	public boolean conflictsWith(Mutator another) {
-		return another == MutatorManager.binding;
 	}
 
 	@EventHandler

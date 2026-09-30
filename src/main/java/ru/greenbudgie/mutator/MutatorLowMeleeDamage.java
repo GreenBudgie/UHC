@@ -9,7 +9,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import ru.greenbudgie.mutator.base.Mutator;
 import ru.greenbudgie.mutator.base.ThreatStatus;
-import ru.greenbudgie.mutator.manager.MutatorManager;
 import ru.greenbudgie.util.ParticleUtils;
 
 import java.util.Set;
@@ -39,11 +38,6 @@ public class MutatorLowMeleeDamage extends Mutator implements Listener {
 	@Override
 	public String getDescription() {
 		return "Удары в ближнем бою как по игрокам, так и по мобам, наносят лишь половину урона. Время использовать луки!";
-	}
-
-	@Override
-	public boolean conflictsWith(Mutator another) {
-		return another == MutatorManager.knockback;
 	}
 
 	@EventHandler
