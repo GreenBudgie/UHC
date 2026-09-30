@@ -93,4 +93,9 @@ public abstract class CustomItem {
 		return item;
 	}
 
+	public boolean isHolding(Player player) {
+		var inventory = player.getInventory();
+		return isEquals(inventory.getItemInMainHand()) || isEquals(inventory.getItemInOffHand());
+	}
+
 }

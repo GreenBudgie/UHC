@@ -54,6 +54,7 @@ import ru.greenbudgie.util.*;
 import ru.greenbudgie.util.fastboard.FastBoard;
 import ru.greenbudgie.util.item.ItemUtils;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -925,51 +926,24 @@ public class UHC implements Listener {
 				uplayer.update();
 			}
 			CustomBlockManager.updateBlocks();
+
+			if (ActionBarManager.isUpdateTick()) {
+				for (Player onlinePlayer : PlayerManager.getAliveOnlinePlayers()) {
+					ActionBarManager.queueMessage(onlinePlayer, 0, () -> getTeammateActionBarInfo(onlinePlayer));
+				}
+			}
 		}
 		if(playing && state == GameState.GAME || state == GameState.OUTBREAK) {
 			Drops.update();
 		}
-		if(TaskManager.ticksPassed(4) && playing) {
-			for(Player onlinePlayer : PlayerManager.getAliveOnlinePlayers()) {
-				UHCPlayer teammate = PlayerManager.getUHCTeammate(onlinePlayer);
-				if(teammate != null && teammate.isAlive()) {
-					Location teammateLocation = teammate.getLocation();
-					if(teammateLocation == null) continue;
-					String separator = GRAY + " | ";
-					String locationInfo = LocationFormatter.formatToWithDistance(
-							onlinePlayer.getLocation(),
-							teammateLocation,
-							DARK_AQUA,
-							GRAY,
-							AQUA,
-							DARK_GRAY,
-							true
-					);
-					String teammateInfo =
-							GOLD + teammate.getNickname() + separator +
-							RED + ((int) Math.round(teammate.getRealOrOfflineHealth())) +
-							DARK_RED + " ❤" + separator +
-							locationInfo;
-					if(onlinePlayer.getWorld() == teammateLocation.getWorld())
-						teammateInfo += AQUA + " " + LocationFormatter.getArrowPointingTo(onlinePlayer.getLocation(), teammateLocation);
-					teammateInfo += MutatorManager.dependence.getAdditionalActionBarInfo(
-							onlinePlayer.getLocation(),
-							teammateLocation
-					);
-					teammateInfo += MutatorManager.friendsForever.getAdditionalActionBarInfo(
-							onlinePlayer.getLocation(),
-							teammateLocation
-					);
-					InventoryHelper.sendActionBarMessage(onlinePlayer, teammateInfo);
-				}
-			}
+		if(TaskManager.ticksPassed(2) && playing) {
 			for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 				updateGameScoreboard(inGamePlayer);
 			}
 		}
 		if(TaskManager.isSecUpdated() && playing) {
 			List<PlayerTeam> aliveTeams = PlayerManager.getAliveTeams();
-			if(aliveTeams.size() > 0) {
+			if(!aliveTeams.isEmpty()) {
 				if(scoreboardCurrentTeamIndex >= aliveTeams.size()) scoreboardCurrentTeamIndex = 0;
 				scoreboardTimeUntilNextTeam--;
 				if(scoreboardTimeUntilNextTeam <= 0) {
@@ -978,37 +952,49 @@ public class UHC implements Listener {
 					scoreboardTimeUntilNextTeam = scoreboardMaxTimeUntilNextTeam;
 				}
 			}
-
-			for(Player currentPlayer : PlayerManager.getAliveOnlinePlayers()) {
-				ItemStack compassMainHand = currentPlayer.getInventory().getItemInMainHand();
-				ItemStack compassOffHand = currentPlayer.getInventory().getItemInOffHand();
-				if(CustomItems.tracker.isEquals(compassMainHand) || CustomItems.tracker.isEquals(compassOffHand)) {
-					List<Player> list =
-							PlayerManager.getAliveOnlinePlayers().stream()
-							.filter(anotherPlayer -> anotherPlayer.getWorld() == currentPlayer.getWorld()
-									&& anotherPlayer != currentPlayer
-									&& (!PlayerManager.isTeammates(anotherPlayer, currentPlayer)))
-							.toList();
-					double dist = Double.MAX_VALUE;
-					Player nearest = null;
-					for(Player anotherPlayer : list) {
-						double d = anotherPlayer.getLocation().distance(currentPlayer.getLocation());
-						if(d < dist) {
-							dist = d;
-							nearest = anotherPlayer;
-						}
-					}
-					if(nearest != null) {
-						currentPlayer.setCompassTarget(nearest.getLocation());
-					}
-				} else {
-					Location compassLocation = Optional
-							.ofNullable(currentPlayer.getBedSpawnLocation())
-							.orElse(currentPlayer.getWorld().getSpawnLocation());
-					currentPlayer.setCompassTarget(compassLocation);
-				}
-			}
 		}
+
+		ActionBarManager.showMessages();
+	}
+
+	@Nullable
+	private static String getTeammateActionBarInfo(Player onlinePlayer) {
+		UHCPlayer teammate = PlayerManager.getUHCTeammate(onlinePlayer);
+		if (teammate == null || !teammate.isAlive()) {
+			return null;
+		}
+
+		Location teammateLocation = teammate.getLocation();
+		if (teammateLocation == null) {
+			return null;
+		}
+		String separator = GRAY + " | ";
+		String locationInfo = LocationFormatter.formatToWithDistance(
+				onlinePlayer.getLocation(),
+				teammateLocation,
+				DARK_AQUA,
+				GRAY,
+				AQUA,
+				DARK_GRAY,
+				true
+		);
+		String teammateInfo =
+				GOLD + teammate.getNickname() + separator +
+						RED + ((int) Math.round(teammate.getRealOrOfflineHealth())) +
+						DARK_RED + " ❤" + separator +
+						locationInfo;
+		if (onlinePlayer.getWorld() == teammateLocation.getWorld())
+			teammateInfo += AQUA + " " + LocationFormatter.getArrowPointingTo(onlinePlayer.getLocation(), teammateLocation);
+		teammateInfo += MutatorManager.dependence.getAdditionalActionBarInfo(
+				onlinePlayer.getLocation(),
+				teammateLocation
+		);
+		teammateInfo += MutatorManager.friendsForever.getAdditionalActionBarInfo(
+				onlinePlayer.getLocation(),
+				teammateLocation
+		);
+
+		return teammateInfo;
 	}
 
 	public static void draw() {
