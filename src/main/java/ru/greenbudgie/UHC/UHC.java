@@ -51,6 +51,7 @@ import ru.greenbudgie.rating.Rating;
 import ru.greenbudgie.requester.ItemRequester;
 import ru.greenbudgie.requester.RequestedItem;
 import ru.greenbudgie.util.*;
+import ru.greenbudgie.util.fastboard.FastBoard;
 import ru.greenbudgie.util.item.ItemUtils;
 
 import java.util.*;
@@ -87,6 +88,7 @@ public class UHC implements Listener {
 	private static int scoreboardCurrentTeamIndex;
 	private static int scoreboardTimeUntilNextTeam;
 	private static final int scoreboardMaxTimeUntilNextTeam = 3;
+	private static final Map<UUID, FastBoard> fastBoards = new HashMap<>();
 
 	private static final String UHC_LOGO =
 			RED + "" + BOLD + "U" +
@@ -118,6 +120,22 @@ public class UHC implements Listener {
 		return UHC_LOGO;
 	}
 
+	private static FastBoard getOrCreateFastBoard(Player player) {
+		UUID uuid = player.getUniqueId();
+		FastBoard board = fastBoards.get(uuid);
+		if(board != null && !board.isDeleted() && board.getPlayer() == player) {
+			return board;
+		}
+		if(board != null) board.delete();
+		if(!player.isOnline()) {
+			fastBoards.remove(uuid);
+			return null;
+		}
+		board = new FastBoard(player);
+		fastBoards.put(uuid, board);
+		return board;
+	}
+
 	public static void createGameScoreboard(Player p) {
 		Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 
@@ -135,6 +153,9 @@ public class UHC implements Listener {
 		playerTeam.setColor(AQUA);
 		PlayerManager.getAliveOnlinePlayers().forEach(pl -> playerTeam.addEntry(pl.getName()));
 
+		board.registerNewObjective("hpInfoList", Criteria.DUMMY, RED + "❤");
+		board.registerNewObjective("hpInfoName", Criteria.DUMMY, RED + "❤");
+
 		p.setScoreboard(board);
 		updateGameScoreboard(p);
 		Drops.updateScoreboard(board);
@@ -149,12 +170,11 @@ public class UHC implements Listener {
 	}
 
 	public static void updateGameScoreboard(Player player) {
+		FastBoard fastBoard = getOrCreateFastBoard(player);
+		if(fastBoard == null) return;
 		Scoreboard board = player.getScoreboard();
-		Objective gameInfo = board.getObjective("gameInfo");
-		if(gameInfo != null) gameInfo.unregister();
-		gameInfo = board.registerNewObjective("gameInfo", "dummy", getUHCLogo());
-		gameInfo.setDisplaySlot(DisplaySlot.SIDEBAR);
-		int c = 0;
+		fastBoard.updateTitle(getUHCLogo());
+		List<String> lines = new ArrayList<>();
 
 		if(!state.isPreGame()) {
 			if(isDuo) {
@@ -179,10 +199,8 @@ public class UHC implements Listener {
 					} else {
 						teamInfo2 = prefix + GRAY + "Нет тиммейта";
 					}
-					Score teamScore2 = gameInfo.getScore(teamInfo2);
-					teamScore2.setScore(c++);
-					Score teamScore1 = gameInfo.getScore(teamInfo1);
-					teamScore1.setScore(c++);
+					lines.add(teamInfo2);
+					lines.add(teamInfo1);
 				}
 			}
 
@@ -195,8 +213,7 @@ public class UHC implements Listener {
 			} else {
 				teamCountInfo += new NumericalCases("игрок", "игрока", "игроков").byNumber(aliveTeamsNumber);
 			}
-			Score teamCountScore = gameInfo.getScore(teamCountInfo);
-			teamCountScore.setScore(c++);
+			lines.add(teamCountInfo);
 		}
 
 		if(state.isBeforeDeathmatch()) {
@@ -204,31 +221,26 @@ public class UHC implements Listener {
 			Location playerLocation = player.getLocation();
 			for(Drop drop : new Drop[] {Drops.NETHERDROP, Drops.CAVEDROP, Drops.AIRDROP}) {
 				if(drop.getTimer() <= deathmatchTimer || show) {
-					Score locationScore = gameInfo.getScore(
-							DARK_GRAY + "- " + drop.getCoordinatesInfo(playerLocation)
-					);
-					locationScore.setScore(c++);
-					Score textScore = gameInfo.getScore(
-								drop.getName() +
-									DARK_GRAY + " (" +
-									AQUA + MathUtils.formatTime(drop.getTimer()) +
-									DARK_GRAY + "):");
-					textScore.setScore(c++);
+					lines.add(DARK_GRAY + "- " + drop.getCoordinatesInfo(playerLocation));
+					lines.add(drop.getName() +
+							DARK_GRAY + " (" +
+							AQUA + MathUtils.formatTime(drop.getTimer()) +
+							DARK_GRAY + "):");
 				}
 			}
-			Score playerLocationScore = gameInfo.getScore(
-					GRAY + "Ты: " +
+			lines.add(GRAY + "Ты: " +
 					GRAY + BOLD + playerLocation.getBlockX() +
 					WHITE + ", " +
 					GRAY + BOLD + playerLocation.getBlockY() +
 					WHITE + ", " +
 					GRAY + BOLD + playerLocation.getBlockZ());
-			playerLocationScore.setScore(c++);
 		}
 		if(!timerInfo.isEmpty()) {
-			Score timer = gameInfo.getScore(timerInfo);
-			timer.setScore(c);
+			lines.add(timerInfo);
 		}
+
+		Collections.reverse(lines);
+		fastBoard.updateLines(lines);
 
 		registerHpInfo(player, "hpInfoList", board, DisplaySlot.PLAYER_LIST);
 		registerHpInfo(player, "hpInfoName", board, DisplaySlot.BELOW_NAME);
@@ -236,16 +248,26 @@ public class UHC implements Listener {
 
 	private static void registerHpInfo(Player playerToShowInfo, String name, Scoreboard board, DisplaySlot slot) {
 		Objective hpInfo = board.getObjective(name);
-		if(hpInfo != null) hpInfo.unregister();
-		hpInfo = board.registerNewObjective(name, Criteria.DUMMY, RED + "❤");
-		for(Player player : PlayerManager.getAliveOnlinePlayers()) {
-			Score hp = hpInfo.getScore(player.getName());
-			hp.setScore((int) player.getHealth());
+		if(hpInfo == null) {
+			hpInfo = board.registerNewObjective(name, Criteria.DUMMY, RED + "❤");
 		}
+		Set<String> aliveNames = new HashSet<>();
+		for(Player player : PlayerManager.getAliveOnlinePlayers()) {
+			String entry = player.getName();
+			aliveNames.add(entry);
+			hpInfo.getScore(entry).setScore((int) player.getHealth());
+		}
+		for(String entry : new HashSet<>(board.getEntries())) {
+			if(!aliveNames.contains(entry) && hpInfo.getScore(entry).isScoreSet()) {
+				board.resetScores(entry);
+			}
+		}
+		DisplaySlot targetSlot = null;
 		if(PlayerManager.isSpectator(playerToShowInfo) || MutatorManager.healthDisplay.isActive()) {
-			hpInfo.setDisplaySlot(slot);
-		} else {
-			hpInfo.setDisplaySlot(null);
+			targetSlot = slot;
+		}
+		if(hpInfo.getDisplaySlot() != targetSlot) {
+			hpInfo.setDisplaySlot(targetSlot);
 		}
 	}
 
@@ -314,12 +336,10 @@ public class UHC implements Listener {
 	}
 
 	public static void updateLobbyScoreboard(Player player) {
-		Scoreboard board = player.getScoreboard();
-		Objective teamInfo = board.getObjective("teamInfo");
-		if(teamInfo != null) teamInfo.unregister();
-		teamInfo = board.registerNewObjective("teamInfo", "dummy", getUHCLogo());
-		teamInfo.setDisplaySlot(DisplaySlot.SIDEBAR);
-		int c = 0;
+		FastBoard fastBoard = getOrCreateFastBoard(player);
+		if(fastBoard == null) return;
+		fastBoard.updateTitle(getUHCLogo());
+		List<String> lines = new ArrayList<>();
 		if(isDuo) {
 			List<Player> registered = new ArrayList<>();
 			for(Player currentPlayer : Lobby.getPlayersInLobbyAndArenas()) {
@@ -338,9 +358,7 @@ public class UHC implements Listener {
 				} else {
 					s = DARK_GRAY + "- " + currentPlayerName;
 				}
-				Score team = teamInfo.getScore(s);
-				team.setScore(c);
-				c++;
+				lines.add(s);
 				registered.add(currentPlayer);
 			}
 			int teamNumber = LobbyTeamBuilder.getTeamNumber();
@@ -354,22 +372,21 @@ public class UHC implements Listener {
 					"команды",
 					"команд").
 					byNumber(teamNumber);
-			Score teamNumberInfo = teamInfo.getScore(
-					GRAY + teamNumberText1 + " " +
-							DARK_AQUA + BOLD + teamNumber + " " +
-							GRAY + teamNumberText2 +
-							DARK_GRAY + ":");
-			teamNumberInfo.setScore(c++);
+			lines.add(GRAY + teamNumberText1 + " " +
+					DARK_AQUA + BOLD + teamNumber + " " +
+					GRAY + teamNumberText2 +
+					DARK_GRAY + ":");
 		}
 
 		UHCClass selectedClass = ClassManager.getClassInLobby(player);
 		if(selectedClass != null) {
-			Score classInfo = teamInfo.getScore(
-						GRAY + "Класс" +
-							DARK_GRAY + ": " +
-							selectedClass.getName());
-			classInfo.setScore(c);
+			lines.add(GRAY + "Класс" +
+					DARK_GRAY + ": " +
+					selectedClass.getName());
 		}
+
+		Collections.reverse(lines);
+		fastBoard.updateLines(lines);
 	}
 
 	public static void endGame() {
@@ -1406,6 +1423,8 @@ public class UHC implements Listener {
 	public void quit(PlayerQuitEvent e) {
 		e.setQuitMessage(null);
 		Player player = e.getPlayer();
+		FastBoard fastBoard = fastBoards.remove(player.getUniqueId());
+		if(fastBoard != null) fastBoard.delete();
 		if(PlayerManager.isInGame(player)) {
 			if(PlayerManager.isSpectator(player)) {
 				PlayerManager.unregisterSpectator(player);
