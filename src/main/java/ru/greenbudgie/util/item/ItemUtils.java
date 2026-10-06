@@ -216,7 +216,7 @@ public class ItemUtils {
 
 	public static ItemStack getHead(OfflinePlayer player) {
 		ItemStack head = new ItemStack(Material.PLAYER_HEAD);
-		if(player == null) return head;
+		if(player == null || !Bukkit.getOnlineMode()) return head;
 		SkullMeta meta = (SkullMeta) head.getItemMeta();
 		if(meta == null) return head;
 		meta.setOwningPlayer(player);

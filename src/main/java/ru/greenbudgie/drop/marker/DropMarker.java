@@ -34,12 +34,13 @@ public abstract class DropMarker<T extends Drop> implements Listener {
                 location,
                 EntityType.ARMOR_STAND
         );
-        marker.setMarker(true);
         marker.setInvisible(true);
         marker.setInvulnerable(true);
         marker.setGlowing(true);
         marker.setSmall(true);
         marker.setBasePlate(false);
+        marker.setAI(false);
+        marker.setGravity(false);
         updateTeamForEveryPlayer();
         Bukkit.getPluginManager().registerEvents(this, UHCPlugin.instance);
     }

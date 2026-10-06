@@ -8,29 +8,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerAnimationEvent;
-import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import ru.greenbudgie.drop.Drops;
 import ru.greenbudgie.event.SpectatorJoinEvent;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.util.MathUtils;
-import ru.greenbudgie.util.TaskManager;
 import ru.greenbudgie.util.WorldHelper;
 import ru.greenbudgie.util.item.ItemUtils;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.bukkit.ChatColor.*;
 
@@ -38,7 +29,7 @@ public class SpectatorManager implements Listener {
 
     private static final String INVENTORY_TITLE = DARK_AQUA + "" + BOLD + "Меню Наблюдателя";
     private static final String MSG_OPEN_SPECTATOR_INVENTORY_INFO =
-            DARK_GRAY + "" + BOLD + "> " + DARK_AQUA + "Нажми " + AQUA + BOLD + "ЛКМ" +
+            DARK_GRAY + "" + BOLD + "> " + DARK_AQUA + "Напиши " + AQUA + BOLD + "/menu" +
                     DARK_AQUA + " для доступа к меню наблюдателя";
     private static final String MSG_SPECTATOR_ACCESS_PLAYER_INVENTORY_INFO =
             DARK_GRAY + "" + BOLD + "> " + DARK_AQUA + "Нажми " + AQUA + BOLD + "ПКМ" +
@@ -104,13 +95,6 @@ public class SpectatorManager implements Listener {
     public static void preparePlayerToSpectate(Player player) {
         UHC.resetPlayer(player);
         player.setGameMode(GameMode.SPECTATOR);
-        player.addPotionEffect(new PotionEffect(
-                PotionEffectType.NIGHT_VISION,
-                PotionEffect.INFINITE_DURATION,
-                0,
-                false,
-                false)
-        );
     }
 
     /**
@@ -143,7 +127,18 @@ public class SpectatorManager implements Listener {
         }
     }
 
-    private void openInventory(Player player) {
+    /**
+     * Opens the spectator menu for the player if the player is a spectator
+     */
+    public static void openSpectatorInventory(Player player) {
+        if (!PlayerManager.isSpectator(player)) {
+            player.sendMessage(RED + "" + BOLD + "- Ты сейчас не наблюдаешь за игрой! -");
+            return;
+        }
+        openInventory(player);
+    }
+
+    private static void openInventory(Player player) {
         List<UHCPlayer> players = PlayerManager.getAlivePlayers();
         int playersSlots = MathUtils.clamp(players.size() - 1, 0, MAX_LAST_PLAYER_SLOT);
         int fillerStartSlot = (playersSlots / SLOTS_IN_ROW + 1) * SLOTS_IN_ROW;
@@ -173,7 +168,7 @@ public class SpectatorManager implements Listener {
         player.openInventory(inventory);
     }
 
-    private void putTeammateItem(Inventory inventory, Player spectator, int slot) {
+    private static void putTeammateItem(Inventory inventory, Player spectator, int slot) {
         if (!UHC.isDuo) {
             return;
         }
@@ -184,7 +179,7 @@ public class SpectatorManager implements Listener {
         inventory.setItem(slot, getPlayerItem(spectator, teammate));
     }
 
-    private ItemStack getPlayerItem(Player spectator, UHCPlayer player) {
+    private static ItemStack getPlayerItem(Player spectator, UHCPlayer player) {
         boolean isTeammates = PlayerManager.isTeammates(PlayerManager.asUHCPlayer(spectator), player);
         String separator = DARK_GRAY + " | ";
         String namePrefix = "";
@@ -266,17 +261,6 @@ public class SpectatorManager implements Listener {
         }
     }
 
-    private final Set<Player> ignoreInventoryOpen = new HashSet<>();
-
-    private void ignoreInventoryOpen(Player player) {
-        ignoreInventoryOpen.add(player);
-        TaskManager.invokeLater(() -> ignoreInventoryOpen.remove(player));
-    }
-
-    private boolean shouldIgnoreInventoryOpen(Player player) {
-        return ignoreInventoryOpen.contains(player);
-    }
-
     @EventHandler(priority = EventPriority.LOW)
     public void openPlayerInventory(PlayerInteractEntityEvent event) {
         if (!UHC.state.isGameActive()) {
@@ -286,7 +270,6 @@ public class SpectatorManager implements Listener {
         if (!PlayerManager.isSpectator(player)) {
             return;
         }
-        ignoreInventoryOpen(player);
         if(event.getHand() == EquipmentSlot.HAND && event.getRightClicked() instanceof Player clicked) {
             if(PlayerManager.isPlaying(clicked)) {
                 PlayerInventoryView.viewInventory(player, clicked);
@@ -302,33 +285,6 @@ public class SpectatorManager implements Listener {
                 MSG_OPEN_SPECTATOR_INVENTORY_INFO,
                 MSG_SPECTATOR_ACCESS_PLAYER_INVENTORY_INFO
         );
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void openSpectatorInventory(PlayerAnimationEvent event) {
-        if (event.getAnimationType() != PlayerAnimationType.ARM_SWING) {
-            return;
-        }
-        Player player = event.getPlayer();
-        if (shouldIgnoreInventoryOpen(player)) {
-            return;
-        }
-        if (!PlayerManager.isSpectator(player)) {
-            return;
-        }
-        openInventory(player);
-    }
-
-    @EventHandler(priority = EventPriority.LOW)
-    public void ignoreInventoryWhenRightClick(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) {
-            return;
-        }
-        Player player = event.getPlayer();
-        if (!PlayerManager.isSpectator(player)) {
-            return;
-        }
-        ignoreInventoryOpen(player);
     }
 
     @EventHandler

@@ -813,7 +813,7 @@ public class UHC implements Listener {
 			}
 		}
 		if(state.isBeforeDeathmatch() || state == GameState.DEATHMATCH) {
-			for (Player player : PlayerManager.getAliveOnlinePlayers()) {
+			for (Player player : PlayerManager.getInGamePlayersAndSpectators()) {
 				if (!player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
 					player.addPotionEffect(new PotionEffect(
 							PotionEffectType.NIGHT_VISION,
@@ -1315,12 +1315,6 @@ public class UHC implements Listener {
 			e.setRespawnLocation(pending);
 		} else {
 			e.setRespawnLocation(player.getLocation());
-		}
-		if (PlayerManager.isSpectator(player)) {
-			player.addPotionEffect(new PotionEffect(
-					PotionEffectType.NIGHT_VISION,
-					PotionEffect.INFINITE_DURATION,
-					0, false, false));
 		}
 	}
 

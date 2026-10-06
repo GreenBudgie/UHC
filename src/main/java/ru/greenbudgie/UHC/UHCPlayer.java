@@ -287,11 +287,7 @@ public class UHCPlayer {
     private void dropBonusItemOnDeath() {
         Location location = getLocation();
         UHCPlayer killer = getKiller();
-        ItemStack bonusApple = ItemUtils.
-                builder(Material.GOLDEN_APPLE).
-                withName(DARK_GREEN + "" + BOLD + "Бонусное яблоко").
-                build();
-        location.getWorld().dropItem(location, bonusApple);
+        location.getWorld().dropItem(location, new ItemStack(Material.GOLDEN_APPLE));
 
         if (killer == null) {
             return;

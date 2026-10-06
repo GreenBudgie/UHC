@@ -57,6 +57,7 @@ public class UHCPlugin extends JavaPlugin {
 		registerCommand("requests", new CommandRequests());
 		registerCommand("artifacts", new CommandArtifacts());
 		registerCommand("watch", new CommandWatch());
+		registerCommand("menu", new CommandMenu());
 		registerCommand("barters", new CommandBarters());
 		registerCommand("drops", new CommandDrops());
 		registerCommand("trolling", new CommandTrolling());
