@@ -1,9 +1,6 @@
 package ru.greenbudgie.items;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
+import org.bukkit.*;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.craftbukkit.entity.CraftItem;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -17,13 +14,14 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.UHC;
+import ru.greenbudgie.block.CustomBlockTrashCan;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.item.ItemInfo;
 
 import java.util.Map;
 import java.util.Set;
 
-public class CustomItemTrashCan extends RequesterCustomItem implements Listener {
+public class CustomItemTrashCan extends RequesterCustomItem implements Listener, BlockHolder {
 
     private static final Set<Material> trash = Set.of(
             Material.STONE,
@@ -72,7 +70,9 @@ public class CustomItemTrashCan extends RequesterCustomItem implements Listener 
             Material.GRASS_BLOCK,
             Material.ROTTEN_FLESH,
             Material.SPIDER_EYE,
-            Material.BONE
+            Material.BONE,
+            Material.WHEAT_SEEDS,
+            Material.WILDFLOWERS
     );
 
     public String getName() {
@@ -85,7 +85,7 @@ public class CustomItemTrashCan extends RequesterCustomItem implements Listener 
 
     @Override
     public ItemInfo getDescription() {
-        return new ItemInfo("Шалкер бокс, который, находясь в инвентаре, автоматически засасывает в себя подбираемый тобой мусор")
+        return new ItemInfo("Находясь в инвентаре, автоматически засасывает подбираемый мусор")
                 .extra("К мусору относится любой камень, бесполезные дропы с мобов, растительность и т.п.");
     }
 
@@ -101,6 +101,17 @@ public class CustomItemTrashCan extends RequesterCustomItem implements Listener 
 
     @Override
     public boolean isGlowing() {
+        return false;
+    }
+
+    @Override
+    public boolean placeBlock(Location location, Player owner) {
+        new CustomBlockTrashCan(location);
+        return true;
+    }
+
+    @Override
+    public boolean canPlaceOnDeathmatch() {
         return false;
     }
 

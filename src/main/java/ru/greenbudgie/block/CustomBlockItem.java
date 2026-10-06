@@ -4,6 +4,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.items.CustomItem;
 
 /**
@@ -25,6 +26,14 @@ public abstract class CustomBlockItem extends CustomBlock {
 
     public abstract CustomItem getRepresentingItem();
 
+    /**
+     * Gets the item that drops when this block removes.
+     * The block is still present when this method is called.
+     */
+    protected ItemStack getDropItem() {
+        return getRepresentingItem().getItemStack();
+    }
+
     @Override
     public void onBreak(BlockBreakEvent event) {
         super.onBreak(event);
@@ -44,7 +53,7 @@ public abstract class CustomBlockItem extends CustomBlock {
      */
     public final void dropAndRemove() {
         if(location != null && location.getWorld() != null) {
-            location.getWorld().dropItemNaturally(location, getRepresentingItem().getItemStack());
+            location.getWorld().dropItemNaturally(centerLocation, getDropItem());
         }
         remove();
     }

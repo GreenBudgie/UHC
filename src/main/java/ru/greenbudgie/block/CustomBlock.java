@@ -43,7 +43,9 @@ public abstract class CustomBlock implements Listener {
     public CustomBlock(Location location) {
         this.location = location;
         this.centerLocation = location.getBlock().getLocation().clone().add(0.5, 0.5, 0.5);
-        location.getBlock().setType(getMaterial());
+        if (doReplaceBlockOnCreate()) {
+            location.getBlock().setType(getMaterial());
+        }
         Bukkit.getPluginManager().registerEvents(this, UHCPlugin.instance);
         CustomBlockManager.getCustomBlocks().add(this);
         onCreate();
@@ -126,6 +128,14 @@ public abstract class CustomBlock implements Listener {
      * This will be called even if the block is exploded/broken by player.
      */
     public void onRemove() {}
+
+    /**
+     * Whether to replace the block at the location with this block's material when it creates.
+     * Return false to keep the already placed block with its data as it is.
+     */
+    public boolean doReplaceBlockOnCreate() {
+        return true;
+    }
 
     /**
      * Whether to replace the block with air when it removes
