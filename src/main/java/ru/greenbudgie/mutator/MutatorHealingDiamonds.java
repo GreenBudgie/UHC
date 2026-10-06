@@ -26,7 +26,7 @@ public class MutatorHealingDiamonds extends Mutator implements Listener {
 
 	@Override
 	public String getName() {
-		return "Полезная руда";
+		return "Полезная Руда";
 	}
 
 	@Override
