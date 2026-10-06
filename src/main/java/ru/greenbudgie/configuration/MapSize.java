@@ -7,8 +7,7 @@ package ru.greenbudgie.configuration;
  */
 public enum MapSize {
 
-    DEFAULT(40),
-    OLD(45),
+    DEFAULT(45),
     BIG(75),
     EXTREME(5000);
 
