@@ -28,7 +28,7 @@ public class ArtifactDamage extends Artifact {
 
     @Override
     public int getStartingPrice() {
-        return 18;
+        return 14;
     }
 
     @Override

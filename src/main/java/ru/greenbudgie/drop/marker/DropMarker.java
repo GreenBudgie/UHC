@@ -55,6 +55,10 @@ public abstract class DropMarker<T extends Drop> implements Listener {
         HandlerList.unregisterAll(this);
     }
 
+    public void updateLocation(Location newLocation) {
+        marker.teleport(newLocation.clone().add(getLocationShift()));
+    }
+
     public void updateTeamForEveryPlayer() {
         for (Player player : PlayerManager.getInGamePlayersAndSpectators()) {
             Scoreboard scoreboard = player.getScoreboard();

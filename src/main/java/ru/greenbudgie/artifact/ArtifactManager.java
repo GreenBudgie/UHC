@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -15,18 +16,17 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.UHC;
+import ru.greenbudgie.UHC.UHCPlayer;
 import ru.greenbudgie.UHC.WorldManager;
 import ru.greenbudgie.classes.ClassManager;
+import ru.greenbudgie.event.AfterGameEndEvent;
 import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.mutator.manager.MutatorManager;
 import ru.greenbudgie.util.InventoryHelper;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.item.ItemUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,15 +45,16 @@ public class ArtifactManager implements Listener {
 	public static ArtifactDisableMutator disableMutator = new ArtifactDisableMutator();
 	public static ArtifactChaos chaos = new ArtifactChaos();
 	public static ArtifactHunger hunger = new ArtifactHunger();
-	public static ArtifactRequest request = new ArtifactRequest();
+	public static ArtifactDropThief dropThief = new ArtifactDropThief();
 
 	private static final Map<Integer, Artifact> inventoryArtifacts = new HashMap<>();
+	private static final Set<UHCPlayer> playersWithShownGuide = new HashSet<>();
 
 	private static final String INVENTORY_NAME = Artifact.padSymbols(RED + "" + BOLD + "Силы артефактов");
 
 	public static void init() {
 		putArtifact(timeLeap, 11);
-		putArtifact(request, 12);
+		putArtifact(dropThief, 12);
 		putArtifact(drop, 13);
 		putArtifact(randomEffect, 14);
 		putArtifact(hunger, 15);
@@ -204,6 +205,42 @@ public class ArtifactManager implements Listener {
 				e.getDrops().add(item);
 			}
 		}
+	}
+
+	@EventHandler
+	public void onGameEnd(AfterGameEndEvent event) {
+		playersWithShownGuide.clear();
+	}
+
+	@EventHandler
+	public void showGuideOnPickupArtifact(EntityPickupItemEvent event) {
+		if (!UHC.state.isBeforeDeathmatch()) {
+			return;
+		}
+
+		if (!(event.getEntity() instanceof Player player)) {
+			return;
+		}
+
+		var item = event.getItem().getItemStack();
+		if (!CustomItems.darkArtifact.isEquals(item)) {
+			return;
+		}
+
+		var uhcPlayer = PlayerManager.asUHCPlayer(player);
+		if (uhcPlayer == null || !uhcPlayer.isAliveAndOnline()) {
+			return;
+		}
+
+		if (playersWithShownGuide.contains(uhcPlayer)) {
+			return;
+		}
+
+		playersWithShownGuide.add(uhcPlayer);
+		player.playSound(player, Sound.BLOCK_NOTE_BLOCK_HARP, 0.5f, 1.2f);
+		player.sendMessage(Artifact.ARTIFACT_SYMBOL + RESET + GOLD + " Нажми " +
+				AQUA + BOLD + "ПКМ" +
+				RESET + GOLD + " с артефактом в руке, чтобы открыть меню сил артефактов");
 	}
 
 }

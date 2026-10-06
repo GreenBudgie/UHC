@@ -100,6 +100,7 @@ public abstract class Drop {
             }
 
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 0.5F, 0.5F);
+            p.sendMessage(vertLine + DARK_GRAY + "---");
         }
     }
 
@@ -147,6 +148,9 @@ public abstract class Drop {
 
     public void setLocation(Location location) {
         this.location = location;
+        if (currentMarker != null) {
+            currentMarker.updateLocation(location);
+        }
     }
 
     public void updateMarkerTeams(Scoreboard scoreboard) {

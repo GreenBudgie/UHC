@@ -27,7 +27,7 @@ public class ArtifactChaos extends Artifact {
 
 	@Override
 	public int getStartingPrice() {
-		return 22;
+		return 16;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class ArtifactChaos extends Artifact {
 				ArtifactManager.teleport,
 				ArtifactManager.randomEffect,
 				ArtifactManager.hunger,
-				ArtifactManager.request
+				ArtifactManager.dropThief
 		);
 		toAdd.add(MathUtils.choose(ArtifactManager.health, ArtifactManager.damage));
 		boolean canAddMutator = false;

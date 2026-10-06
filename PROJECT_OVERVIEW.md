@@ -178,7 +178,7 @@ LONG    = 20 мин no-PVP + 70 мин total = ~90 минут
 - `ArtifactDisableMutator` — убрать мутатор. Цена: 7 (+1.0).
 - `ArtifactChaos` — 3 рандомных артефакта сразу. Цена: 22 (+0.5).
 - `ArtifactHunger` — голод врагам. Цена: 2 (+0.1).
-- `ArtifactRequest` — бесплатная заявка. Цена: 4 (+0.2).
+- `ArtifactDropThief` — бесплатная заявка. Цена: 4 (+0.2).
 
 **Код:** `artifact/ArtifactManager.java`, `artifact/Artifact.java`. Команда `/artifacts`.
 
@@ -246,7 +246,7 @@ LONG    = 20 мин no-PVP + 70 мин total = ~90 минут
 ### 4.7 Requester (`requester/`)
 Система заявок: игрок может "заказать" предмет за красную/синюю валюту (редстоун/лазурит). Заявка появляется в мире как маркер, любой может забрать.
 
-**Код:** `requester/ItemRequester.java`, `requester/RequestedItem.java`. Команда `/requests`. Артефакт `ArtifactRequest` даёт бесплатную заявку.
+**Код:** `requester/ItemRequester.java`, `requester/RequestedItem.java`. Команда `/requests`. Артефакт `ArtifactDropThief` даёт бесплатную заявку.
 
 ### 4.8 Rating (`rating/`)
 Персистентная статистика игроков. Хранится в `rating.yml`.

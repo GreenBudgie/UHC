@@ -26,7 +26,7 @@ public class ArtifactHealth extends Artifact {
 
 	@Override
 	public int getStartingPrice() {
-		return 14;
+		return 12;
 	}
 
 	@Override

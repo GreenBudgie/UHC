@@ -9,46 +9,48 @@ import ru.greenbudgie.drop.Drops;
 
 import javax.annotation.Nullable;
 
-public class ArtifactDrop extends Artifact {
+public class ArtifactDropThief extends Artifact {
 
 	@Override
 	public String getName() {
-		return "Раздача";
+		return "Вор дропов";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Сокращает время ожидания всех дропов (аирдропа, кейвдропа и незердропа) в 3 раза";
+		return "Меняет локации эирдропа, кейвдропа и незердропа";
 	}
 
 	@Override
 	public int getStartingPrice() {
-		return 6;
+		return 5;
 	}
 
 	@Override
 	public float getPriceIncreaseAmount() {
-		return 1;
+		return 0.5f;
 	}
 
 	@Override
 	public boolean onUse(@Nullable Player player) {
 		for(Drop drop : Drops.DROPS) {
-			drop.setTimer(drop.getTimer() / 3);
+			drop.setLocation(drop.getRandomLocation());
 		}
-		for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+		for (Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 			currentPlayer.playSound(currentPlayer.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1.5F);
 		}
+
 		return true;
 	}
 
 	@Override
 	public Material getType() {
-		return Material.BEACON;
+		return Material.PHANTOM_MEMBRANE;
 	}
 
 	@Override
 	public boolean canBeUsedOnArena() {
 		return false;
 	}
+
 }
