@@ -43,7 +43,7 @@ public class ItemRequester implements Listener {
 	private static final Set<UHCPlayer> playersWithShownGuide = new HashSet<>();
 
 	public static void init() {
-		putItem(CustomItems.shulkerBox, 11);
+		putItem(CustomItems.trashCan, 11);
 		putItem(CustomItems.creatureHighlighter, 12);
 		putItem(CustomItems.highlighter, 13);
 		putItem(CustomItems.infernalLead, 14);

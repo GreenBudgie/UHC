@@ -24,7 +24,7 @@ public class CustomItems {
 	public static CustomItemDarkArtifact darkArtifact = new CustomItemDarkArtifact();
 	public static CustomItemHeavenMembrane heavenMembrane = new CustomItemHeavenMembrane();
 	public static CustomItemCreatureHighlighter creatureHighlighter = new CustomItemCreatureHighlighter();
-	public static CustomItemShulkerBox shulkerBox = new CustomItemShulkerBox();
+	public static CustomItemTrashCan trashCan = new CustomItemTrashCan();
 	public static CustomItemTerraDrill terraDrill = new CustomItemTerraDrill();
 	public static CustomItemInfernalLead infernalLead = new CustomItemInfernalLead();
 	public static CustomItemKnockoutTotem knockoutTotem = new CustomItemKnockoutTotem();

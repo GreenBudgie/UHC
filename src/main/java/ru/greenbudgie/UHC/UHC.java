@@ -1126,8 +1126,9 @@ public class UHC implements Listener {
 			if(MutatorManager.lessHealth.isActive()) {
 				player.setHealth(player.getHealth() / 2);
 			}
-			player.setNoDamageTicks(160);
-			player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 160, 9, true, true, true));
+			var invulnerabilityDuration = UHC.fastStart == FastStart.DISABLED ? 160 : 40;
+			player.setNoDamageTicks(invulnerabilityDuration);
+			player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, invulnerabilityDuration, 9, true, true, true));
 		}
 		Bukkit.getPluginManager().callEvent(new GameStartEvent());
 		if(MutatorManager.hungerGames.isActive()) {

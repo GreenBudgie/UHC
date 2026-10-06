@@ -215,7 +215,7 @@ LONG    = 20 мин no-PVP + 70 мин total = ~90 минут
 ### 4.4 Кастомные предметы (`items/`, 30+)
 Сложные предметы с уникальными механиками, недоступные ванилой.
 
-**Утилиты:** `CustomItemShulkerBox`, `CustomItemHighlighter`, `CustomItemPlayerTracker`, `CustomItemBooster`.
+**Утилиты:** `CustomItemTrashCan`, `CustomItemHighlighter`, `CustomItemPlayerTracker`, `CustomItemBooster`.
 **Оружие:** `CustomItemLaserCutter`, `CustomItemShieldBreaker`, `CustomItemInstantTnt`, `CustomItemWindCharge`.
 **Тотемы:** `CustomItemInfernalTotem`, `CustomItemKnockoutTotem`, `CustomItemPulsatingTotem`, `CustomItemAllurementStone`.
 **Мины/ловушки:** `CustomItemLandmine`.
