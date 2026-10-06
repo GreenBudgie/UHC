@@ -62,7 +62,7 @@ public class CustomItemHighlighter extends RequesterCustomItem {
 
 	@Override
 	public int getRedstonePrice() {
-		return 24;
+		return 16;
 	}
 
 	@Override

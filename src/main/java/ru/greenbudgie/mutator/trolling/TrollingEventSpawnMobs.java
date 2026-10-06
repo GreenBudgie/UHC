@@ -17,19 +17,12 @@ import java.util.Set;
 public class TrollingEventSpawnMobs extends TrollingEvent {
 
     private static final int RADIUS = 5;
-    private static final int MIN_MOBS_TO_SPAWN = 1;
-    private static final int MAX_MOBS_TO_SPAWN = 3;
+    private static final int MIN_MOBS_TO_SPAWN = 2;
+    private static final int MAX_MOBS_TO_SPAWN = 4;
 
     private static final EntityType[] MOBS = new EntityType[] {
-            EntityType.COW,
             EntityType.MOOSHROOM,
             EntityType.BEE,
-            EntityType.RABBIT,
-            EntityType.SHEEP,
-            EntityType.PIG,
-            EntityType.CHICKEN,
-            EntityType.COD,
-            EntityType.SALMON,
             EntityType.PUFFERFISH,
             EntityType.ZOMBIE,
             EntityType.SKELETON,

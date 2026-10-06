@@ -7,10 +7,13 @@ import org.bukkit.Sound;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.ParticleUtils;
 import ru.greenbudgie.util.TaskManager;
+import ru.greenbudgie.util.WorldHelper;
 
 import static org.bukkit.ChatColor.*;
 
@@ -39,6 +42,23 @@ public class RequestedItem {
 		hideStand(timer);
 		timer.setCustomName(AQUA + "" + timeToDrop);
 	}
+
+	public void announcePosition() {
+		for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
+			String distanceInfo = WHITE + " (" + (location.getWorld() == inGamePlayer.getWorld() ?
+						(AQUA + String.valueOf((int) location.distance(inGamePlayer.getLocation()))) :
+						WorldHelper.getEnvironmentNamePrepositional(location.getWorld().getEnvironment(), GRAY)) + WHITE + ")";
+			String message = ItemRequester.padSymbols(
+					AQUA + "Был сделан запрос" +
+							GRAY + ": " +
+							DARK_AQUA + location.getBlockX() +
+							WHITE + ", " + DARK_AQUA +
+							location.getBlockZ() + distanceInfo
+			);
+			inGamePlayer.sendMessage(message);
+		}
+	}
+
 
 	private void hideStand(ArmorStand stand) {
 		stand.setGravity(false);

@@ -84,12 +84,12 @@ public class CustomItemTerraDrill extends RequesterCustomItem implements Listene
 
 	@Override
 	public int getRedstonePrice() {
-		return 48;
+		return 40;
 	}
 
 	@Override
 	public int getLapisPrice() {
-		return 8;
+		return 0;
 	}
 
 }

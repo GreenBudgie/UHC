@@ -13,7 +13,7 @@ public class ArtifactDropThief extends Artifact {
 
 	@Override
 	public String getName() {
-		return "Вор дропов";
+		return "Вор Дропов";
 	}
 
 	@Override

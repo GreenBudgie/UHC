@@ -96,7 +96,7 @@ public class CustomBlockPocketNetherPortal extends CustomBlockItem {
         }
 
         if (unfilledPositions.isEmpty()) {
-            if (portalPositions.stream().anyMatch(pos -> !pos.getBlock().isEmpty())) {
+            if (portalPositions.stream().anyMatch(pos -> !Tag.REPLACEABLE.isTagged(pos.getBlock().getType()))) {
                 dropAndRemove();
                 return;
             }
@@ -112,7 +112,7 @@ public class CustomBlockPocketNetherPortal extends CustomBlockItem {
 
         var randomUnfilledPosition = MathUtils.choose(unfilledPositions);
 
-        if (!randomUnfilledPosition.getBlock().isEmpty()) {
+        if (!Tag.REPLACEABLE.isTagged(randomUnfilledPosition.getBlock().getType())) {
             dropAndRemove();
             return;
         }

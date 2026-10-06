@@ -28,7 +28,7 @@ public class CustomItemLandmine extends RequesterCustomItem implements BlockHold
 
 	@Override
 	public int getRedstonePrice() {
-		return 48;
+		return 40;
 	}
 
 	@Override

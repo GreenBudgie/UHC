@@ -61,6 +61,7 @@ public class MutatorUnexpectedRequests extends Mutator {
 				} else {
 					Location l = getRandomLocation();
 					RequestedItem requestedItem = new RequestedItem(l, MathUtils.choose(ItemRequester.requesterCustomItems.values()).getItemStack());
+					requestedItem.announcePosition();
 					ItemRequester.requestedItems.add(requestedItem);
 					reset();
 				}
