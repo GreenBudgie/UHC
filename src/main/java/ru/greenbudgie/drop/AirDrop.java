@@ -147,7 +147,7 @@ public class AirDrop extends Drop {
                 WorldManager.spawnLocation.getBlockZ() - size,
                 WorldManager.spawnLocation.getBlockZ() + size);
         int y = WorldManager.getGameMap().getHighestBlockYAt(x, z) + 1;
-        return new Location(WorldManager.getGameMap(), x, y, z);
+        return new Location(WorldManager.getGameMap(), x + 0.5, y, z + 0.5);
     }
 
     @Override
