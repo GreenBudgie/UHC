@@ -20,12 +20,6 @@ import static org.bukkit.ChatColor.*;
 
 public class CaveDrop extends ChestBasedDrop {
 
-    private static final ItemStack minerPotion = ItemUtils.potionBuilder()
-            .withName(WHITE + "Potion of Instamine")
-            .withColor(Color.ORANGE)
-            .withEffects(
-                    new PotionEffectBuilder(PotionEffectType.HASTE).minutes(8).amplifier(9).build()
-            ).build();
     private static final ItemStack defencePotion = ItemUtils.potionBuilder()
             .withName(WHITE + "Potion of Defence")
             .withColor(Color.MAROON)
@@ -35,7 +29,6 @@ public class CaveDrop extends ChestBasedDrop {
             ).build();
 
     private static final WeightedItemList weightedDrops = new WeightedItemList(
-            WeightedItem.builder(minerPotion).build(),
             WeightedItem.builder(defencePotion).build(),
 
             WeightedEnchantedItem.item(Material.NETHERITE_PICKAXE)
@@ -92,12 +85,12 @@ public class CaveDrop extends ChestBasedDrop {
 
     @Override
     public int getDefaultDropDelay() {
-        return 6 * 60;
+        return 7 * 60;
     }
 
     @Override
     public int getFirstDropDelay() {
-        return 2 * 60 + 20;
+        return 3 * 60 + 20;
     }
 
     @Override

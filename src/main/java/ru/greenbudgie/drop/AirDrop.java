@@ -104,12 +104,12 @@ public class AirDrop extends Drop {
 
     @Override
     public int getDefaultDropDelay() {
-        return 5 * 60;
+        return 6 * 60;
     }
 
     @Override
     public int getFirstDropDelay() {
-        return 0;
+        return 60;
     }
 
     @Override

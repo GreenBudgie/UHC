@@ -2,7 +2,7 @@ package ru.greenbudgie.configuration;
 
 public enum GameDuration {
 
-    DEFAULT(8, 27),
+    DEFAULT(10, 30),
     OLD(15, 55);
 
     private final int noPvpDurationMinutes;

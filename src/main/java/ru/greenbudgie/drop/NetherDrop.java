@@ -99,12 +99,12 @@ public class NetherDrop extends ChestBasedDrop {
 
     @Override
     public int getDefaultDropDelay() {
-        return 7 * 60;
+        return 8 * 60;
     }
 
     @Override
     public int getFirstDropDelay() {
-        return 3 * 60 + 40;
+        return 5 * 60 + 40;
     }
 
     @Override

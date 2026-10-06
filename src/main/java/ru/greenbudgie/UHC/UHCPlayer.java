@@ -287,7 +287,8 @@ public class UHCPlayer {
     private void dropBonusItemOnDeath() {
         Location location = getLocation();
         UHCPlayer killer = getKiller();
-        location.getWorld().dropItem(location, new ItemStack(Material.GOLDEN_APPLE));
+        var item = location.getWorld().dropItem(location, new ItemStack(Material.GOLDEN_APPLE));
+        item.setGlowing(true);
 
         if (killer == null) {
             return;
