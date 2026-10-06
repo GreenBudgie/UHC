@@ -67,7 +67,6 @@ public class MutatorManager {
 	public static MutatorRandomEffects randomEffects = new MutatorRandomEffects();
 	public static MutatorMoreRegen moreRegen = new MutatorMoreRegen();
 	public static MutatorGamesWithFire gamesWithFire = new MutatorGamesWithFire();
-	public static MutatorHalfDamage halfDamage = new MutatorHalfDamage();
 	public static MutatorDeathCoordinates deathCoordinates = new MutatorDeathCoordinates();
 	public static MutatorImmunity immunity = new MutatorImmunity();
 	public static MutatorHyperExplosions hyperExplosions = new MutatorHyperExplosions();

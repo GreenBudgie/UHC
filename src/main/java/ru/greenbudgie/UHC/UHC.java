@@ -3,6 +3,7 @@ package ru.greenbudgie.UHC;
 import com.google.common.collect.Lists;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -12,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -24,6 +26,7 @@ import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.SuspiciousStewMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.*;
@@ -44,6 +47,7 @@ import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.lobby.Lobby;
 import ru.greenbudgie.lobby.LobbyTeamBuilder;
 import ru.greenbudgie.lobby.sign.SignManager;
+import ru.greenbudgie.main.UHCPlugin;
 import ru.greenbudgie.mutator.base.Mutator;
 import ru.greenbudgie.mutator.manager.MutatorManager;
 import ru.greenbudgie.rating.GameSummary;
@@ -1556,6 +1560,8 @@ public class UHC implements Listener {
 		}
 	}
 
+	private static final Set<Material> allowedArenaBlocks = Set.of(Material.COBWEB);
+
 	@EventHandler
 	public void place(BlockPlaceEvent event) {
 		Player p = event.getPlayer();
@@ -1581,10 +1587,43 @@ public class UHC implements Listener {
 			if(customItem instanceof BlockHolder holder) {
 				if(holder.canPlaceOnDeathmatch()) canPlaceOnArena = true;
 			}
-			if(!CustomItems.tnt.isEquals(itemInHand) && !MutatorManager.interactiveArena.isActive() && !canPlaceOnArena) {
-				event.setCancelled(true);
+			if (!CustomItems.tnt.isEquals(itemInHand) &&
+					!MutatorManager.interactiveArena.isActive() &&
+					!canPlaceOnArena) {
+				if (allowedArenaBlocks.contains(event.getBlock().getType())) {
+					setArenaBreakable(event.getBlock());
+				} else {
+					event.setCancelled(true);
+				}
 			}
 		}
+	}
+
+	@EventHandler
+	public void onBlockForm(BlockFormEvent e) {
+		if (state != GameState.DEATHMATCH) {
+			return;
+		}
+
+		var currentArena = ArenaManager.getCurrentArena();
+		if (currentArena == null) {
+			return;
+		}
+
+		var block = e.getBlock();
+		if (currentArena.getWorld() != block.getWorld()) {
+			return;
+		}
+
+		setArenaBreakable(block);
+	}
+
+	private void setArenaBreakable(Block block) {
+		block.setMetadata("arena_breakable", new FixedMetadataValue(UHCPlugin.instance, true));
+	}
+
+	private boolean isArenaBreakable(Block block) {
+		return block.hasMetadata("arena_breakable");
 	}
 
 	@EventHandler
@@ -1618,7 +1657,7 @@ public class UHC implements Listener {
 			if (isFireExtinguish) {
 				return;
 			}
-			if(MutatorManager.interactiveArena.isActive()) {
+			if(MutatorManager.interactiveArena.isActive() || isArenaBreakable(e.getBlock())) {
 				e.setDropItems(false);
 				e.setExpToDrop(0);
 			} else {

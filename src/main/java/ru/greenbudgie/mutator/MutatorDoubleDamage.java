@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import ru.greenbudgie.mutator.base.Mutator;
 import ru.greenbudgie.mutator.base.ThreatStatus;
-import ru.greenbudgie.mutator.manager.MutatorManager;
 
 public class MutatorDoubleDamage extends Mutator implements Listener {
 
@@ -30,11 +29,6 @@ public class MutatorDoubleDamage extends Mutator implements Listener {
 	@Override
 	public String getDescription() {
 		return "По игрокам будет проходить двойной урон от любых источников";
-	}
-
-	@Override
-	public boolean conflictsWith(Mutator another) {
-		return another == MutatorManager.halfDamage;
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
