@@ -872,7 +872,7 @@ public class UHC implements Listener {
 				if(timeUntilShrink == 0) {
 					ArenaManager.Arena arena = ArenaManager.getCurrentArena();
 					WorldBorder arenaBorder = arena.getWorld().getWorldBorder();
-					arenaBorder.setSize(arena.getMinBorderSize(), DEATHMATCH_ZONE_SHRINK_DURATION);
+					WorldHelper.setWorldBorderSize(arenaBorder, arena.getMinBorderSize(), DEATHMATCH_ZONE_SHRINK_DURATION);
 					for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 						inGamePlayer.playSound(inGamePlayer.getLocation(), Sound.BLOCK_BEACON_DEACTIVATE, 1, 0.8f);
 						inGamePlayer.sendTitle(" ", DARK_RED + "" + BOLD + ">>> " +

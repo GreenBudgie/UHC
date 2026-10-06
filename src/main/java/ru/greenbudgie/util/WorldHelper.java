@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.CraftWorldBorder;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
@@ -29,6 +30,20 @@ public class WorldHelper {
 		Location loc = world.getSpawnLocation();
 		loc.setWorld(world);
 		return loc;
+	}
+
+	/**
+	 * Smoothly changes the world border size over the given time.
+	 * Use it instead of {@link WorldBorder#setSize(double, long)}: Spigot 26.2 passes milliseconds
+	 * to the vanilla border which expects ticks, so the border moves 50 times slower than requested.
+	 */
+	public static void setWorldBorderSize(WorldBorder border, double newSize, long seconds) {
+		if(seconds <= 0) {
+			border.setSize(newSize);
+			return;
+		}
+		net.minecraft.world.level.border.WorldBorder handle = ((CraftWorldBorder) border).getHandle();
+		handle.lerpSizeBetween(handle.getSize(), newSize, seconds * 20L, border.getWorld().getGameTime());
 	}
 
 	public static boolean isBadMob(EntityType t) {

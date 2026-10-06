@@ -81,6 +81,7 @@ public class MutatorManager {
 	public static MutatorBlackMark blackMark = new MutatorBlackMark();
 	public static MutatorTrolling trolling = new MutatorTrolling();
 	public static MutatorKillers killers = new MutatorKillers();
+	public static MutatorHealingDiamonds healingDiamonds = new MutatorHealingDiamonds();
 
 	public static void init() {
 		MutatorPreferenceManager.init();

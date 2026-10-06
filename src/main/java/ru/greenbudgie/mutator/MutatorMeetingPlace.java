@@ -10,10 +10,7 @@ import ru.greenbudgie.UHC.UHCPlayer;
 import ru.greenbudgie.UHC.WorldManager;
 import ru.greenbudgie.mutator.base.BossBarHolderMutator;
 import ru.greenbudgie.mutator.base.ThreatStatus;
-import ru.greenbudgie.util.MathUtils;
-import ru.greenbudgie.util.ParticleUtils;
-import ru.greenbudgie.util.Region;
-import ru.greenbudgie.util.TaskManager;
+import ru.greenbudgie.util.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -144,7 +141,7 @@ public class MutatorMeetingPlace extends BossBarHolderMutator {
 					p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1F, 1F);
 					p.sendTitle(GREEN + "Сбор окончен!", "", 10, 30, 10);
 				}
-				WorldManager.getGameMap().getWorldBorder().setSize(prevBorderSize, 10);
+				WorldHelper.setWorldBorderSize(WorldManager.getGameMap().getWorldBorder(), prevBorderSize, 10);
 				reset();
 			} else {
 				if(!isMeeting) {
@@ -157,7 +154,7 @@ public class MutatorMeetingPlace extends BossBarHolderMutator {
 					bar.setTitle(DARK_RED + "" + BOLD + "Сбор!");
 					prevBorderSize = WorldManager.getGameMap().getWorldBorder().getSize();
 					WorldBorder border = WorldManager.getGameMap().getWorldBorder();
-					border.setSize(radius * 2, 5);
+					WorldHelper.setWorldBorderSize(border, radius * 2, 5);
 					border.setWarningTime(15);
 					border.setWarningDistance(2);
 					border.setDamageBuffer(2);
