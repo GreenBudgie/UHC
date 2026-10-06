@@ -34,7 +34,7 @@ public class MutatorManager {
 	public static MutatorEternalDay eternalDay = new MutatorEternalDay();
 	public static MutatorDoubleArtifacts doubleArtifacts = new MutatorDoubleArtifacts();
 	public static MutatorHaste haste = new MutatorHaste();
-	public static MutatorSimpleRequests simpleRequests = new MutatorSimpleRequests();
+	public static MutatorCheapRequests cheapRequests = new MutatorCheapRequests();
 	public static MutatorSmallMap smallMap = new MutatorSmallMap();
 	public static MutatorNoHunger noHunger = new MutatorNoHunger();
 	public static MutatorDeathTnt deathTnt = new MutatorDeathTnt();
@@ -60,7 +60,6 @@ public class MutatorManager {
 	public static MutatorOneForAll oneForAll = new MutatorOneForAll();
 	public static MutatorRestrictions restrictions = new MutatorRestrictions();
 	public static MutatorTotems totems = new MutatorTotems();
-	public static MutatorRequestAnywhere requestAnywhere = new MutatorRequestAnywhere();
 	public static MutatorDamageFly damageFly = new MutatorDamageFly();
 	public static MutatorOverpoweredMobs overpoweredMobs = new MutatorOverpoweredMobs();
 	public static MutatorVegetarian vegetarian = new MutatorVegetarian();

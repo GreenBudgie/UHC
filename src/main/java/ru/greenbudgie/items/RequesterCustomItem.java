@@ -1,7 +1,6 @@
 package ru.greenbudgie.items;
 
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import ru.greenbudgie.mutator.manager.MutatorManager;
@@ -18,13 +17,8 @@ public abstract class RequesterCustomItem extends CustomItem {
 	public abstract int getLapisPrice();
 
 	public boolean canRequest(Player p) {
-		int lapisPrice = MutatorManager.simpleRequests.isActive() ? 0 : getLapisPrice();
-		boolean isEnoughRedstone = ItemRequester.getRedstone(p) >= getRedstonePrice();
-		boolean isEnoughLapis = ItemRequester.getLapis(p) >= lapisPrice;
-		boolean canRequestHere = p.getLocation().getBlockY() >= p.getWorld().getHighestBlockYAt(p.getLocation())
-				|| MutatorManager.requestAnywhere.isActive()
-				|| p.getWorld().getEnvironment() == World.Environment.NETHER;
-		return isEnoughRedstone && isEnoughLapis && canRequestHere;
+		var priceData = getActualPriceData(p);
+		return priceData.isEnoughRedstone() && priceData.isEnoughLapis();
 	}
 
 	/**
@@ -43,27 +37,24 @@ public abstract class RequesterCustomItem extends CustomItem {
 	 */
 	public ItemStack getInGameItemStack(Player player) {
 		ItemStack item = getItemStack();
-		int lapisPrice = MutatorManager.simpleRequests.isActive() ? 0 : getLapisPrice();
-		boolean enoughRedstone = ItemRequester.getRedstone(player) >= getRedstonePrice();
-		boolean enoughLapis = ItemRequester.getLapis(player) >= lapisPrice;
-		boolean allowPos = player.getLocation().getBlockY() >= player.getWorld().getHighestBlockYAt(player.getLocation()) ||
-				MutatorManager.requestAnywhere.isActive() ||
-				player.getWorld().getEnvironment() == World.Environment.NETHER;
+		var priceData = getActualPriceData(player);
 		getDescription().applyToItem(item);
-		if(getRedstonePrice() > 0) {
-			InventoryHelper.addLore(item, ChatColor.AQUA + "" + getRedstonePrice() + ChatColor.RED + " " + ItemRequester.REDSTONE_CASES.byNumber(getRedstonePrice()));
+		if(priceData.redstonePrice() > 0) {
+			if (priceData.hasDiscount()) {
+				InventoryHelper.addLore(item, ChatColor.DARK_RED + "" + ChatColor.STRIKETHROUGH + getRedstonePrice() + ChatColor.RESET + " " + ChatColor.AQUA + "" + priceData.redstonePrice() + ChatColor.RED + " " + ItemRequester.REDSTONE_CASES.byNumber(priceData.redstonePrice()));
+			} else {
+				InventoryHelper.addLore(item, ChatColor.AQUA + "" + priceData.redstonePrice() + ChatColor.RED + " " + ItemRequester.REDSTONE_CASES.byNumber(priceData.redstonePrice()));
+			}
 		}
-		if(lapisPrice > 0) {
-			InventoryHelper.addLore(item, ChatColor.AQUA + "" + lapisPrice + ChatColor.BLUE + " " + ItemRequester.LAPIS_CASES.byNumber(lapisPrice));
+		if(priceData.lapisPrice() > 0) {
+			InventoryHelper.addLore(item, ChatColor.AQUA + "" + priceData.lapisPrice() + ChatColor.BLUE + " " + ItemRequester.LAPIS_CASES.byNumber(priceData.lapisPrice()));
 		}
-		if(enoughRedstone && enoughLapis && allowPos) {
-			InventoryHelper.addLore(item, ChatColor.GREEN + "Нажми, чтобы создать запрос");
-		} else if(!enoughRedstone) {
+		if(priceData.isEnoughLapis() && priceData.isEnoughRedstone()) {
+			InventoryHelper.addLore(item, ChatColor.GREEN + "Нажми, чтобы купить");
+		} else if(!priceData.isEnoughRedstone()) {
 			InventoryHelper.addLore(item, ChatColor.RED + "Недостаточно редстоуна");
-		} else if(!enoughLapis) {
-			InventoryHelper.addLore(item, ChatColor.RED + "Недостаточно лазурита");
 		} else {
-			InventoryHelper.addLore(item, ChatColor.RED + "Закрытое помещение");
+			InventoryHelper.addLore(item, ChatColor.RED + "Недостаточно лазурита");
 		}
 		return item;
 	}
@@ -81,6 +72,19 @@ public abstract class RequesterCustomItem extends CustomItem {
 			InventoryHelper.addLore(item, ChatColor.AQUA + "" + getLapisPrice() + ChatColor.BLUE + " " + ItemRequester.LAPIS_CASES.byNumber(getLapisPrice()));
 		}
 		return item;
+	}
+
+	public ActualPriceData getActualPriceData(Player player) {
+		var isCheapRequests = MutatorManager.cheapRequests.isActive();
+		int lapisPrice = isCheapRequests ? 0 : getLapisPrice();
+		int redstonePrice = isCheapRequests ? getRedstonePrice() / 2 : getRedstonePrice();
+		boolean enoughRedstone = ItemRequester.getRedstone(player) >= redstonePrice;
+		boolean enoughLapis = ItemRequester.getLapis(player) >= lapisPrice;
+
+		return new ActualPriceData(isCheapRequests, lapisPrice, redstonePrice, enoughLapis, enoughRedstone);
+	}
+
+	public record ActualPriceData(boolean hasDiscount, int lapisPrice, int redstonePrice, boolean isEnoughLapis, boolean isEnoughRedstone) {
 	}
 
 }

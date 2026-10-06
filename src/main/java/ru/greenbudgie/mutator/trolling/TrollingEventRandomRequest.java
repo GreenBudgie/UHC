@@ -22,7 +22,6 @@ public class TrollingEventRandomRequest extends TrollingEvent {
                     player.getLocation(),
                     randomItem
             );
-            requestedItem.announce(null);
             ItemRequester.requestedItems.add(requestedItem);
         }
     }

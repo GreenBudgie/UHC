@@ -4,7 +4,7 @@ import org.bukkit.Material;
 import ru.greenbudgie.mutator.base.Mutator;
 import ru.greenbudgie.mutator.base.ThreatStatus;
 
-public class MutatorSimpleRequests extends Mutator {
+public class MutatorCheapRequests extends Mutator {
 
 	@Override
 	public Material getItemToShow() {
@@ -18,12 +18,12 @@ public class MutatorSimpleRequests extends Mutator {
 
 	@Override
 	public String getName() {
-		return "Щедрые запросы";
+		return "Распродажа";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Всем запросам требуется лишь редстоун";
+		return "Всем предметам в магазине требуется лишь редстоун, а еще они со скидкой 50%";
 	}
 
 }

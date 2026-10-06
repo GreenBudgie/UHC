@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -16,19 +17,17 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import ru.greenbudgie.UHC.PlayerManager;
 import ru.greenbudgie.UHC.UHC;
+import ru.greenbudgie.UHC.UHCPlayer;
+import ru.greenbudgie.event.AfterGameEndEvent;
 import ru.greenbudgie.items.CustomItem;
 import ru.greenbudgie.items.CustomItems;
 import ru.greenbudgie.items.RequesterCustomItem;
 import ru.greenbudgie.main.UHCPlugin;
-import ru.greenbudgie.mutator.manager.MutatorManager;
 import ru.greenbudgie.util.InventoryHelper;
 import ru.greenbudgie.util.NumericalCases;
 import ru.greenbudgie.util.ParticleUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.bukkit.ChatColor.*;
 
@@ -40,7 +39,8 @@ public class ItemRequester implements Listener {
 	public static final NumericalCases LAPIS_CASES = new NumericalCases("лазурит", "лазурита", "лазурита");
 	public static List<RequestedItem> requestedItems = new ArrayList<>();
 	public static Map<Integer, RequesterCustomItem> requesterCustomItems = new HashMap<>();
-	private static final String INVENTORY_NAME = padSymbols(DARK_AQUA + "Запросы");
+	private static final String INVENTORY_NAME = padSymbols(DARK_AQUA + "Магазин");
+	private static final Set<UHCPlayer> playersWithShownGuide = new HashSet<>();
 
 	public static void init() {
 		putItem(CustomItems.shulkerBox, 11);
@@ -127,19 +127,18 @@ public class ItemRequester implements Listener {
 		if(customItem instanceof RequesterCustomItem requesterItem) {
 			if(requesterItem.canRequest(requester)) {
 				requester.getWorld().playSound(requester.getLocation(), Sound.ENTITY_ILLUSIONER_CAST_SPELL, 1F, 0.5F);
-				if(!MutatorManager.requestAnywhere.isActive()) {
-					Firework firework = (Firework) requester.getWorld().spawnEntity(requester.getLocation(), EntityType.FIREWORK_ROCKET);
-					FireworkMeta meta = firework.getFireworkMeta();
-					meta.setPower(2);
-					meta.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(Color.RED).withFade(Color.BLACK).build());
-					firework.setFireworkMeta(meta);
-					firework.setMetadata("request", new FixedMetadataValue(UHCPlugin.instance, true));
-				}
+
+				Firework firework = (Firework) requester.getWorld().spawnEntity(requester.getLocation(), EntityType.FIREWORK_ROCKET);
+				FireworkMeta meta = firework.getFireworkMeta();
+				meta.setPower(2);
+				meta.addEffect(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(Color.RED).withFade(Color.BLACK).build());
+				firework.setFireworkMeta(meta);
+				firework.setMetadata("request", new FixedMetadataValue(UHCPlugin.instance, true));
+
 				ParticleUtils.createParticlesInsideSphere(requester.getLocation(), 3, Particle.TOTEM_OF_UNDYING, null, 30);
-				int lapisPrice = MutatorManager.simpleRequests.isActive() ? 0 : requesterItem.getLapisPrice();
-				removeMaterials(requester, requesterItem.getRedstonePrice(), lapisPrice);
+				var priceData = requesterItem.getActualPriceData(requester);
+				removeMaterials(requester, priceData.redstonePrice(), priceData.lapisPrice());
 				RequestedItem requestedItem = new RequestedItem(requester.getLocation(), requesterItem.getItemStack());
-				requestedItem.announce(requester);
 				requestedItems.add(requestedItem);
 				requester.closeInventory();
 			} else {
@@ -188,6 +187,42 @@ public class ItemRequester implements Listener {
 				if(rocket.hasMetadata("request")) event.setCancelled(true);
 			}
 		}
+	}
+
+	@EventHandler
+	public void onGameEnd(AfterGameEndEvent event) {
+		playersWithShownGuide.clear();
+	}
+
+	@EventHandler
+	public void showGuideOnPickupRedstoneOrLapis(EntityPickupItemEvent event) {
+		if (!UHC.state.isBeforeDeathmatch()) {
+			return;
+		}
+
+		if (!(event.getEntity() instanceof Player player)) {
+			return;
+		}
+
+		var itemType = event.getItem().getItemStack().getType();
+		if (itemType != Material.REDSTONE && itemType != Material.LAPIS_LAZULI) {
+			return;
+		}
+
+		var uhcPlayer = PlayerManager.asUHCPlayer(player);
+		if (uhcPlayer == null || !uhcPlayer.isAliveAndOnline()) {
+			return;
+		}
+
+		if (playersWithShownGuide.contains(uhcPlayer)) {
+			return;
+		}
+
+		playersWithShownGuide.add(uhcPlayer);
+		player.playSound(player, Sound.BLOCK_NOTE_BLOCK_HARP, 0.5f, 1.2f);
+		player.sendMessage(REQUEST_SYMBOL + RESET + GOLD + " Нажми " +
+				AQUA + BOLD + "ПКМ" +
+				RESET + GOLD + " с редстоуном в руке, чтобы открыть магазин");
 	}
 
 }

@@ -46,7 +46,6 @@ public class ArtifactRequest extends Artifact {
 	public boolean onUse(@Nullable Player player) {
 		Location location = getRandomLocation();
 		RequestedItem requestedItem = new RequestedItem(location, MathUtils.choose(ItemRequester.requesterCustomItems.values()).getItemStack());
-		requestedItem.announce(null);
 		ItemRequester.requestedItems.add(requestedItem);
 		for(Player currentPlayer : PlayerManager.getInGamePlayersAndSpectators()) {
 			currentPlayer.playSound(currentPlayer.getLocation(), Sound.ENTITY_PHANTOM_FLAP, 1, 2);
