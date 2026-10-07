@@ -7,6 +7,7 @@ import ru.greenbudgie.configuration.GameType;
 import ru.greenbudgie.mutator.*;
 import ru.greenbudgie.mutator.base.Mutator;
 import ru.greenbudgie.mutator.base.ThreatStatus;
+import ru.greenbudgie.mutator.competition.MutatorCompetition;
 import ru.greenbudgie.mutator.duo.MutatorDependence;
 import ru.greenbudgie.mutator.duo.MutatorFriendsForever;
 import ru.greenbudgie.mutator.duo.MutatorHealthUnion;
@@ -82,6 +83,7 @@ public class MutatorManager {
 	public static MutatorKillers killers = new MutatorKillers();
 	public static MutatorHealingDiamonds healingDiamonds = new MutatorHealingDiamonds();
 	public static MutatorUsefulQuartz usefulQuartz = new MutatorUsefulQuartz();
+	public static MutatorCompetition competition = new MutatorCompetition();
 
 	public static void init() {
 		MutatorPreferenceManager.init();

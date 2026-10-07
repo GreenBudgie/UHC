@@ -474,7 +474,7 @@ public class UHCPlayer {
                 }
             }
             SpectatorManager.preparePlayerToSpectate(player);
-            PlayerManager.registerSpectator(player);
+            PlayerManager.registerSpectator(player, false);
         }
     }
 

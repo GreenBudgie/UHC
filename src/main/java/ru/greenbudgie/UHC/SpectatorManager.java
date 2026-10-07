@@ -118,7 +118,7 @@ public class SpectatorManager implements Listener {
             teleportLocation = WorldManager.spawnLocation;
         }
         SafeTeleport.performSafeTeleport(player, teleportLocation);
-        PlayerManager.registerSpectator(player);
+        PlayerManager.registerSpectator(player, true);
         UHC.refreshScoreboards();
         for(Player inGamePlayer : PlayerManager.getInGamePlayersAndSpectators()) {
             inGamePlayer.sendMessage(

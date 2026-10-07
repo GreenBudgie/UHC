@@ -101,12 +101,12 @@ public class PlayerManager {
      * Registers the spectator. It does not update the player in any way, e.g. it does not clear effects or
      * teleport him to lobby. This method just removes the player from spectator list and calls an event.
      */
-    public static void registerSpectator(Player player) {
+    public static void registerSpectator(Player player, boolean joinedFromLobby) {
         if (spectators.contains(player)) {
             throw new IllegalStateException(player.getName() + " is already a spectator!");
         }
         spectators.add(player);
-        Bukkit.getPluginManager().callEvent(new SpectatorJoinEvent(player));
+        Bukkit.getPluginManager().callEvent(new SpectatorJoinEvent(player, joinedFromLobby));
     }
 
     /**
