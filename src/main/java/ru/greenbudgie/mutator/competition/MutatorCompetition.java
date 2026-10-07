@@ -37,7 +37,9 @@ public class MutatorCompetition extends Mutator implements Listener {
     private final Map<UHCPlayer, Integer> playerScore = new HashMap<>();
 
     private final List<CompetitionTask> tasks = List.of(
-        new CompetitionTaskEatGoldenApple()
+        //new CompetitionTaskEatGoldenApple(),
+        //new CompetitionTaskKillSkeletons(),
+        new CompetitionTaskLoseHealth()
     );
 
     @Nullable
@@ -114,21 +116,25 @@ public class MutatorCompetition extends Mutator implements Listener {
         afterScoreUpdate(previouslyBestPlayers, previouslyWorstPlayers);
     }
 
-    public void addPlayerScore(Player player) {
+    public void addPlayerScore(Player player, int score) {
         var uhcPlayer = PlayerManager.asUHCPlayer(player);
         if (uhcPlayer == null || !uhcPlayer.isAlive()) {
             return;
         }
 
-        addPlayerScore(uhcPlayer);
+        addPlayerScore(uhcPlayer, score);
     }
 
-    public void addPlayerScore(UHCPlayer player) {
+    public void addPlayerScore(UHCPlayer player, int score) {
+        var newScore = getScore(player) + score;
+        setPlayerScore(player, newScore);
+    }
+
+    public void setPlayerScore(UHCPlayer player, int score) {
         var previouslyBestPlayers = new HashSet<>(getBestScore().players);
         var previouslyWorstPlayers = new HashSet<>(getWorstScore().players);
 
-        var newScore = getScore(player) + 1;
-        playerScore.put(player, newScore);
+        playerScore.put(player, score);
 
         if (player.isAlive()) {
             var alivePlayer = player.getPlayer();

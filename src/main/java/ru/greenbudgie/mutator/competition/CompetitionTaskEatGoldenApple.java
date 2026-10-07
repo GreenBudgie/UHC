@@ -24,6 +24,6 @@ public class CompetitionTaskEatGoldenApple extends CompetitionTask {
             return;
         }
 
-        MutatorManager.competition.addPlayerScore(event.getPlayer());
+        MutatorManager.competition.addPlayerScore(event.getPlayer(), 1);
     }
 }

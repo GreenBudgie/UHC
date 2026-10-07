@@ -11,12 +11,16 @@ public abstract class CompetitionTask implements Listener {
 
     public abstract String getDescription();
 
-    public void start() {
+    public final void start() {
         Bukkit.getPluginManager().registerEvents(this, UHCPlugin.instance);
     }
 
-    public void end() {
+    public final void end() {
         HandlerList.unregisterAll(this);
+        onEnd();
+    }
+
+    public void onEnd() {
     }
 
 }
