@@ -13,9 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.potion.PotionEffectType;
-import ru.greenbudgie.UHC.PlayerManager;
-import ru.greenbudgie.UHC.UHC;
-import ru.greenbudgie.UHC.UHCPlayer;
+import ru.greenbudgie.UHC.*;
 import ru.greenbudgie.event.UHCPlayerDeathEvent;
 import ru.greenbudgie.mutator.base.BossBarHolderMutator;
 import ru.greenbudgie.mutator.base.ThreatStatus;
@@ -32,11 +30,10 @@ import static org.bukkit.ChatColor.*;
 
 public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 
-	private final static int MAX_TIMER = 60 * 30;
+	private final static int MAX_TIMER = 60 * 8;
 
 	private int timer = MAX_TIMER;
 	private UHCPlayer blackMarkHolder;
-	private boolean changeHolder = true;
 
 	public MutatorBlackMark() {
 		super(Bukkit.createBossBar("", BarColor.RED, BarStyle.SOLID));
@@ -59,26 +56,25 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 
 	@Override
 	public String getDescription() {
-		return "Проклятие, которое убивает своего носителя через 30 минут от первого его " +
-				"появления в игре. Сначала метку получает случайный игрок. " +
-				"Ее можно передать другому игроку, подойдя к нему вплотную и нажав ПКМ. " +
-				"Однако, если убить игрока с черной меткой, то ты получишь ее проклятие! " +
-				"Если же ее носитель умрет сам, то метка пропадет из игры. " +
-				"Когда 30 минут пройдет и носитель умрет, этот мутатор деактивируется. " +
-				"Не может быть деактивирован!";
+		return "На случайного игрока накладывается проклятие: он умрет через 8 минут. Проклятие можно передать " +
+				"другому игроку, нажав по нему ПКМ (кроме тиммейта). При передаче таймер сбрасывается. Смерть игрока " +
+				"приводит к передаче проклятия другому случайному игроку. Игрок с черной меткой знает, где находится " +
+				"ближайший к нему противник.";
 	}
 
 	@Override
 	public void onChoose() {
 		super.onChoose();
-		changeHolder = true;
 		giveMarkToRandomPlayer();
-		timer = MAX_TIMER;
 		updateBar();
 	}
 
 	@Override
 	public void update() {
+		if (blackMarkHolder != null && blackMarkHolder.isOnline() && ActionBarManager.isUpdateTick()) {
+			ClosestEnemyInfoHelper.showClosestEnemyInfo(blackMarkHolder.getPlayer());
+		}
+
 		if (!TaskManager.isSecUpdated()) {
 			return;
 		}
@@ -94,7 +90,6 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 			return;
 		}
 		killPlayer();
-		deactivate();
 	}
 
 	@Override
@@ -114,7 +109,6 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 							GOLD + blackMarkHolder.getNickname()
 			);
 		}
-		changeHolder = false;
 		blackMarkHolder.kill();
 	}
 
@@ -122,7 +116,7 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 		if (blackMarkHolder != null) {
 			if (blackMarkHolder.isOnline()) {
 				blackMarkHolder.getPlayer().addPotionEffect(
-						new PotionEffectBuilder(PotionEffectType.SPEED).seconds(3).amplifier(1).build()
+						new PotionEffectBuilder(PotionEffectType.SPEED).seconds(5).amplifier(2).build()
 				);
 			}
 			ParticleUtils.createParticlesAround(
@@ -155,6 +149,7 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 							GOLD + uhcPlayer.getNickname()
 			);
 		}
+		timer = MAX_TIMER;
 		blackMarkHolder = uhcPlayer;
 	}
 
@@ -223,17 +218,11 @@ public class MutatorBlackMark extends BossBarHolderMutator implements Listener {
 
 	@EventHandler
 	public void onHolderDeath(UHCPlayerDeathEvent event) {
-		if (!changeHolder) {
-			return;
-		}
 		if (event.getUHCPlayer() != blackMarkHolder) {
 			return;
 		}
-		if (event.getKiller() != null) {
-			giveBlackMarkTo(event.getKiller());
-			return;
-		}
-		deactivate();
+
+		giveMarkToRandomPlayer();
 	}
 
 }
