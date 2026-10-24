@@ -37,8 +37,8 @@ public class MutatorCompetition extends Mutator implements Listener {
     private final Map<UHCPlayer, Integer> playerScore = new HashMap<>();
 
     private final List<CompetitionTask> tasks = List.of(
-        //new CompetitionTaskEatGoldenApple(),
-        //new CompetitionTaskKillSkeletons(),
+        new CompetitionTaskEatGoldenApple(),
+        new CompetitionTaskKillSkeletons(),
         new CompetitionTaskLoseHealth()
     );
 
@@ -416,6 +416,10 @@ public class MutatorCompetition extends Mutator implements Listener {
     }
 
     private void selectTaskAndAnnounce() {
+        if (task != null) {
+            return;
+        }
+
         for (UHCPlayer player : PlayerManager.getAlivePlayers()) {
             playerScore.put(player, 0);
         }

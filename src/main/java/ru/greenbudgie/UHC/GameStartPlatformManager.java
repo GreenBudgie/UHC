@@ -2,7 +2,9 @@ package ru.greenbudgie.UHC;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import ru.greenbudgie.util.MathUtils;
 import ru.greenbudgie.util.Region;
 
 import java.util.HashMap;
@@ -11,6 +13,19 @@ import java.util.Map;
 import java.util.Objects;
 
 public class GameStartPlatformManager {
+
+    /**
+     * Height of the platform from its floor to its ceiling
+     */
+    private static final int PLATFORM_HEIGHT = 4;
+    /**
+     * Vanilla nether generates the bedrock roof as a gradient in the top 5 blocks of the generation height
+     */
+    private static final int NETHER_BEDROCK_ROOF_THICKNESS = 5;
+    /**
+     * Minimal number of free blocks between the nether platform and the lava sea or the bedrock roof
+     */
+    private static final int NETHER_PLATFORM_GAP = 5;
 
     private static Region overworldPlatformRegion = null;
     private static Region netherPlatformRegion = null;
@@ -28,7 +43,13 @@ public class GameStartPlatformManager {
 
     public static void createNetherPlatformAndTeleportPlayers() {
         Location spawnLocation = WorldManager.getGameMap().getSpawnLocation();
-        Location netherSpawnLocation = new Location(WorldManager.getGameMapNether(), spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ());
+        World nether = WorldManager.getGameMapNether();
+        int lavaTopY = nether.getSeaLevel() - 1;
+        int bedrockRoofBottomY = nether.getMinHeight() + nether.getLogicalHeight() - NETHER_BEDROCK_ROOF_THICKNESS;
+        int minPlatformY = lavaTopY + 1 + NETHER_PLATFORM_GAP;
+        int maxPlatformY = bedrockRoofBottomY - 1 - NETHER_PLATFORM_GAP - PLATFORM_HEIGHT;
+        int platformY = MathUtils.clamp(spawnLocation.getBlockY(), minPlatformY, maxPlatformY);
+        Location netherSpawnLocation = new Location(nether, spawnLocation.getX(), platformY, spawnLocation.getZ());
         Map<UHCPlayer, Location> playerSpawnLocations = getPlayerSpawnLocations(netherSpawnLocation);
 
         netherPlatformRegion = createPlatform(netherSpawnLocation);
@@ -87,7 +108,7 @@ public class GameStartPlatformManager {
 
         Region region = new Region(
                 spawnCenter.clone().add(-radius, 0, -radius),
-                spawnCenter.clone().add(radius, 4, radius)
+                spawnCenter.clone().add(radius, PLATFORM_HEIGHT, radius)
         );
         clearRegion(region);
 
@@ -122,10 +143,10 @@ public class GameStartPlatformManager {
                 spawnCenter.clone().add(-x, y, -z).getBlock().setType(block);
 
                 if(y == 0) {
-                    spawnCenter.clone().add(x, 4, z).getBlock().setType(Material.BARRIER);
-                    spawnCenter.clone().add(x, 4, -z).getBlock().setType(Material.BARRIER);
-                    spawnCenter.clone().add(-x, 4, z).getBlock().setType(Material.BARRIER);
-                    spawnCenter.clone().add(-x, 4, -z).getBlock().setType(Material.BARRIER);
+                    spawnCenter.clone().add(x, PLATFORM_HEIGHT, z).getBlock().setType(Material.BARRIER);
+                    spawnCenter.clone().add(x, PLATFORM_HEIGHT, -z).getBlock().setType(Material.BARRIER);
+                    spawnCenter.clone().add(-x, PLATFORM_HEIGHT, z).getBlock().setType(Material.BARRIER);
+                    spawnCenter.clone().add(-x, PLATFORM_HEIGHT, -z).getBlock().setType(Material.BARRIER);
                 }
             }
         }
